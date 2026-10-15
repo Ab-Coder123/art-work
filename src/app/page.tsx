@@ -226,12 +226,12 @@ export default function Home() {
                 title="Art Work — Home"
                 aria-label="Art Work — Home"
               >
-                <div className="relative w-9 h-9 sm:w-10 sm:h-10 hover:rotate-3 transition-transform">
+                <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 hover:rotate-3 transition-transform">
                   <Image
                     src="/assets/images/artwork_logo.png"
                     alt="Art Work Logo"
                     fill
-                    sizes="40px"
+                    sizes="(max-width: 640px) 48px, (max-width: 768px) 56px, 64px"
                     priority
                     className="object-contain"
                   />
