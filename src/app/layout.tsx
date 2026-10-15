@@ -31,8 +31,12 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Art Work Collective" }],
   icons: {
-    icon: "/assets/images/artwork_logo.png",
-    apple: "/assets/images/artwork_logo.png",
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
   },
   openGraph: {
     title: "ART WORK — Creative Marketing Solutions",
