@@ -21,7 +21,7 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    // 1. Scene, Camera, Renderer Setup
+    // 1. Scene, Camera, High-Precision Renderer Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       50,
@@ -38,10 +38,16 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
 
-    // Disposables tracker
-    const disposables: { geometry?: THREE.BufferGeometry; material?: THREE.Material; texture?: THREE.Texture }[] = [];
+    // Disposables tracker for clean memory disposal
+    const disposables: {
+      geometry?: THREE.BufferGeometry;
+      material?: THREE.Material;
+      texture?: THREE.Texture;
+    }[] = [];
+
     const registerMesh = <T extends THREE.Mesh | THREE.LineSegments>(mesh: T): T => {
       if (mesh.geometry) disposables.push({ geometry: mesh.geometry });
       if (Array.isArray(mesh.material)) {
@@ -52,32 +58,21 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
       return mesh;
     };
 
-    // 2. Studio Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+    // 2. Clean Neutral Studio Lighting (No artificial yellow tinting)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
     keyLight.position.set(20, 30, 25);
     scene.add(keyLight);
 
-    const warmFill = new THREE.DirectionalLight(0xfacc15, 2.5);
-    warmFill.position.set(-25, 10, 15);
-    scene.add(warmFill);
+    const fillLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    fillLight.position.set(-25, 10, 15);
+    scene.add(fillLight);
 
-    // Shared Materials
-    const yellowMat = new THREE.MeshStandardMaterial({
-      color: 0xfacc15,
-      roughness: 0.3,
-      metalness: 0.2,
-    });
-    const blackMat = new THREE.MeshStandardMaterial({
-      color: 0x18181b,
-      roughness: 0.4,
-      metalness: 0.1,
-    });
-
-    // Texture Loader for Character Illustrations
+    // 3. High-Fidelity Character Plane Loader with Anisotropic Filtering
     const textureLoader = new THREE.TextureLoader();
+    const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 
     const loadCharPlane = (
       texturePath: string,
@@ -86,13 +81,18 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     ): THREE.Mesh => {
       const texture = textureLoader.load(texturePath);
       texture.colorSpace = THREE.SRGBColorSpace;
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.anisotropy = maxAnisotropy;
       disposables.push({ texture });
 
       const planeGeo = new THREE.PlaneGeometry(width, height);
       const planeMat = new THREE.MeshBasicMaterial({
         map: texture,
         transparent: true,
-        alphaTest: 0.05,
+        alphaTest: 0.02,
+        opacity: 0.85,
         depthWrite: false,
         side: THREE.DoubleSide,
       });
@@ -101,106 +101,53 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     };
 
     // =============================================================
-    // 3. STATION 1: THE GRAPHIC DESIGNER (واحد بيرسم وبيعمل ديزاين)
+    // 4. STATION 1: THE GRAPHIC DESIGNER (واحد بيرسم وبيعمل ديزاين)
     // =============================================================
     const station1 = new THREE.Group();
     station1.position.set(-15, 2, 6);
 
-    // Real Character Illustration Plane (Girl with drawing tablet, pen, & layers)
     const charDesigner = loadCharPlane(
       "/assets/images/char_graphic_designer.png",
       13.5,
-      16.2
+      16.3
     );
     station1.add(charDesigner);
-
-    // Floating 3D Vector Pen Tool Nib hovering near her tablet
-    const penNibGeo = new THREE.ConeGeometry(0.5, 1.8, 4);
-    const penNib = registerMesh(new THREE.Mesh(penNibGeo, yellowMat));
-    penNib.position.set(5.5, -2, 1.8);
-    penNib.rotation.set(-0.3, 0.4, 0.7);
-    station1.add(penNib);
-
-    // Floating 3D Ideation Lightbulb (Glowing)
-    const bulbGeo = new THREE.SphereGeometry(0.7, 16, 16);
-    const bulbMat = new THREE.MeshStandardMaterial({
-      color: 0xfacc15,
-      emissive: 0xfacc15,
-      emissiveIntensity: 0.5,
-    });
-    const bulb1 = registerMesh(new THREE.Mesh(bulbGeo, bulbMat));
-    bulb1.position.set(4.5, 7.5, 1.2);
-    station1.add(bulb1);
-
     scene.add(station1);
 
     // =============================================================
-    // 4. STATION 2: THE MOTION DESIGNER (واحد بيعمل مونتاج وموشن)
+    // 5. STATION 2: THE MOTION DESIGNER (واحد بيعمل مونتاج وموشن)
     // =============================================================
     const station2 = new THREE.Group();
     station2.position.set(16, -2, -2);
 
-    // Real Character Illustration Plane (Guy with headphones, laptop, & timeline)
     const charMotion = loadCharPlane(
       "/assets/images/char_motion_designer.png",
       14.0,
       16.0
     );
     station2.add(charMotion);
-
-    // 3D Video Timeline Playhead scrubber bar
-    const playheadGeo = new THREE.CylinderGeometry(0.06, 0.06, 3.2, 8);
-    const playheadMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const playhead = registerMesh(new THREE.Mesh(playheadGeo, playheadMat));
-    playhead.position.set(3.5, 2.8, 1.2);
-    station2.add(playhead);
-
-    // Floating 3D Video Play Button Frame
-    const playBoxGeo = new THREE.BoxGeometry(1.8, 1.4, 0.2);
-    const playBox = registerMesh(new THREE.Mesh(playBoxGeo, blackMat));
-    playBox.position.set(5.5, 6.5, 1.5);
-    station2.add(playBox);
-
-    const playArrowGeo = new THREE.ConeGeometry(0.35, 0.6, 3);
-    const playArrow = registerMesh(new THREE.Mesh(playArrowGeo, yellowMat));
-    playArrow.rotation.z = -Math.PI / 2;
-    playArrow.position.set(5.5, 6.5, 1.65);
-    station2.add(playArrow);
-
     scene.add(station2);
 
     // =============================================================
-    // 5. STATION 3: THE ART DIRECTOR & CREATIVE LEAD (أرت دايركتور وأفكار)
+    // 6. STATION 3: THE ART DIRECTOR & CREATIVE LEAD (أرت دايركتور)
     // =============================================================
     const station3 = new THREE.Group();
     station3.position.set(-8, -13, -6);
 
-    // Real Character Illustration Plane (Art Director with moodboards & frames)
     const charArtDirector = loadCharPlane(
       "/assets/images/char_art_director.png",
       13.5,
       16.8
     );
     station3.add(charArtDirector);
-
-    // Floating 3D Wireframe Moodboard Frames
-    const frameGeo = new THREE.BoxGeometry(4.5, 3.2, 0.1);
-    const frameEdges = new THREE.EdgesGeometry(frameGeo);
-    const frameMat = new THREE.LineBasicMaterial({ color: 0xfacc15 });
-    const moodFrame = registerMesh(new THREE.LineSegments(frameEdges, frameMat));
-    moodFrame.position.set(5.8, 5.0, 1.2);
-    moodFrame.rotation.set(0.1, 0.3, -0.15);
-    station3.add(moodFrame);
-
     scene.add(station3);
 
     // =============================================================
-    // 6. STATION 4: THE CONTENT CREATOR (صانعة محتوى وتصوير)
+    // 7. STATION 4: THE CONTENT CREATOR (صانعة محتوى وتصوير)
     // =============================================================
     const station4 = new THREE.Group();
     station4.position.set(16, -14, -8);
 
-    // Real Character Illustration Plane (Content Creator with camera & notebook)
     const charContent = loadCharPlane(
       "/assets/images/char_content_creator.png",
       13.5,
@@ -210,41 +157,17 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     scene.add(station4);
 
     // =============================================================
-    // 7. 3D KINETIC MOTION GRAPHICS RIBBON (Connecting All Stations)
+    // 8. MINIMAL CLEAN PERSPECTIVE FLOOR GRID (Subtle Neutral Gray)
     // =============================================================
-    const ribbonPoints = [
-      new THREE.Vector3(-18, 5, 4),
-      new THREE.Vector3(-12, -2, 6),
-      new THREE.Vector3(2, 4, 2),
-      new THREE.Vector3(14, -2, -2),
-      new THREE.Vector3(6, -8, -4),
-      new THREE.Vector3(-6, -12, -6),
-      new THREE.Vector3(14, -14, -8),
-    ];
-    const ribbonCurve = new THREE.CatmullRomCurve3(ribbonPoints);
-    const ribbonGeo = new THREE.TubeGeometry(ribbonCurve, 100, 0.32, 10, false);
-    const ribbonMat = new THREE.MeshStandardMaterial({
-      color: 0xfacc15,
-      roughness: 0.3,
-      metalness: 0.2,
-      transparent: true,
-      opacity: 0.65,
-    });
-    const ribbonMesh = registerMesh(new THREE.Mesh(ribbonGeo, ribbonMat));
-    scene.add(ribbonMesh);
-
-    // -------------------------------------------------------------
-    // 8. PERSPECTIVE STUDIO GROUND GRID
-    // -------------------------------------------------------------
-    const gridHelper = new THREE.GridHelper(90, 30, 0xfacc15, 0x111111);
+    const gridHelper = new THREE.GridHelper(100, 30, 0xd1d5db, 0xe5e7eb);
     gridHelper.position.y = -17;
     (gridHelper.material as THREE.Material).transparent = true;
-    (gridHelper.material as THREE.Material).opacity = 0.25;
+    (gridHelper.material as THREE.Material).opacity = 0.12;
     scene.add(gridHelper);
 
-    // -------------------------------------------------------------
-    // 9. MOUSE PARALLAX & RESIZE
-    // -------------------------------------------------------------
+    // =============================================================
+    // 9. MOUSE PARALLAX & RESIZE HANDLERS
+    // =============================================================
     let mouseX = 0;
     let mouseY = 0;
     const handleMouseMove = (e: MouseEvent) => {
@@ -260,9 +183,9 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     };
     window.addEventListener("resize", handleResize);
 
-    // -------------------------------------------------------------
-    // 10. ANIMATION LOOP (Scroll Navigation & Character Dynamics)
-    // -------------------------------------------------------------
+    // =============================================================
+    // 10. ANIMATION LOOP (Scroll Travel & Subtle Floating Breathing)
+    // =============================================================
     let animationFrameId: number;
     let currentProgress = 0;
 
@@ -274,7 +197,7 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
       currentProgress += (targetProgress - currentProgress) * 0.08;
       const time = performance.now() * 0.001;
 
-      // CAMERA TRAJECTORY: Flies through the 4 Character Workstations!
+      // CAMERA TRAJECTORY: Smooth glide through the stations
       let targetCamX = -6;
       let targetCamY = 2;
       let targetCamZ = 38;
@@ -308,31 +231,19 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
       camera.position.z += (targetCamZ - camera.position.z) * 0.08;
       camera.lookAt(lookTarget);
 
-      // --- KINETIC CHARACTER INTERACTIONS ---
+      // Subtle breathing float for characters
+      station1.position.y = 2 + Math.sin(time * 1.4) * 0.35;
+      station2.position.y = -2 + Math.cos(time * 1.3) * 0.35;
+      station3.position.y = -13 + Math.sin(time * 1.2) * 0.3;
+      station4.position.y = -14 + Math.cos(time * 1.5) * 0.35;
 
-      // 1. Graphic Designer: gentle hover + pen tool rotation + pulsing lightbulb
-      station1.position.y = 2 + Math.sin(time * 1.5) * 0.4;
-      penNib.rotation.y += 0.03;
-      penNib.position.y = -2 + Math.sin(time * 2.5) * 0.3;
-      bulb1.scale.setScalar(0.95 + Math.sin(time * 3) * 0.08);
+      // Subtle tilt responding to mouse
+      station1.rotation.y = Math.sin(time * 0.8) * 0.05 + mouseX * 0.02;
+      station2.rotation.y = Math.cos(time * 0.7) * 0.05 + mouseX * 0.02;
+      station3.rotation.y = Math.sin(time * 0.6) * 0.05;
+      station4.rotation.y = Math.cos(time * 0.8) * 0.05;
 
-      // 2. Motion Designer: scrubbing timeline playhead + rotating play button
-      station2.position.y = -2 + Math.cos(time * 1.4) * 0.35;
-      playhead.position.x = 1.2 + ((time * 2.2) % 4.8);
-      playBox.rotation.y = time * 0.8;
-      playArrow.rotation.y = time * 0.8;
-
-      // 3. Art Director: moodboard tilt
-      station3.position.y = -13 + Math.sin(time * 1.3) * 0.3;
-      moodFrame.rotation.y = 0.3 + Math.sin(time * 0.8) * 0.15;
-
-      // 4. Content Creator: gentle floating
-      station4.position.y = -14 + Math.cos(time * 1.6) * 0.35;
-
-      // Ribbon kinetic wave
-      ribbonMesh.rotation.y = currentProgress * Math.PI * 0.8 + Math.sin(time * 0.4) * 0.1;
-
-      // Floor grid movement
+      // Floor grid movement with scroll
       gridHelper.position.z = ((currentProgress * 50) % 6) - 3;
 
       renderer.render(scene, camera);
@@ -354,15 +265,13 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
         if (item.material) item.material.dispose();
         if (item.texture) item.texture.dispose();
       });
-      yellowMat.dispose();
-      blackMat.dispose();
     };
   }, []);
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-45 select-none transition-opacity duration-300"
+      className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-22 select-none transition-opacity duration-300"
       aria-hidden="true"
     />
   );
