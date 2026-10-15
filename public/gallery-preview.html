@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Art Work — Project Archive &amp; Stage Blueprint Vault</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&amp;family=Public+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            canary: {
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308'
+            },
+            ink: {
+              800: '#1e1e1e',
+              900: '#111111',
+              950: '#080808'
+            }
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            headline: ["Public Sans", "sans-serif"],
+            display: ["Public Sans", "sans-serif"],
+            body: ["Space Grotesk", "sans-serif"],
+            marker: ["Permanent Marker", "cursive"],
+            mono: ["Space Mono", "monospace"],
+            label: ["Public Sans", "sans-serif"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Dot-grid background paper effect */
+    .bg-paper-grid {
+      background-color: #ffffff;
+      background-image: radial-gradient(#d1d5db 1.25px, transparent 1.25px);
+      background-size: 24px 24px;
+    }
+    
+    /* Tactile Hand-drawn stroke card borders */
+    .ink-border-box {
+      border: 2.5px solid #111111;
+      box-shadow: 4px 5px 0px #111111;
+    }
+    .ink-border-box-lg {
+      border: 3px solid #111111;
+      box-shadow: 7px 8px 0px #111111;
+    }
+    .ink-border-box-canary {
+      border: 3px solid #111111;
+      box-shadow: 6px 7px 0px #facc15;
+    }
+    .ink-border-pill {
+      border: 2px solid #111111;
+      box-shadow: 2px 3px 0px #111111;
+    }
+
+    /* Highlighter highlight effect */
+    .highlighter-swath {
+      position: relative;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .highlighter-swath::before {
+      content: "";
+      position: absolute;
+      left: -4px;
+      right: -4px;
+      bottom: 6px;
+      height: 48%;
+      background-color: #facc15;
+      z-index: -1;
+      transform: rotate(-1.2deg);
+      border-radius: 4px;
+    }
+
+    /* Translucent Masking Tape */
+    .washi-tape-yellow {
+      background: rgba(250, 204, 21, 0.85);
+      backdrop-filter: blur(2px);
+      border: 1px dashed rgba(180, 130, 8, 0.4);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+
+    /* Custom Material Symbol styling */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-paper-grid text-neutral-900 font-body antialiased selection:bg-yellow-300 selection:text-black">
+<!-- ================= TOP NAVIGATION BAR (SHARED COMPONENT) ================= -->
+<header class="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-neutral-900/10">
+<div class="flex justify-between items-center w-full px-6 md:px-12 py-4 max-w-7xl mx-auto">
+<!-- Brand Logo -->
+<a class="flex items-center gap-2 group" href="#">
+<div class="w-8 h-8 bg-yellow-400 border-2 border-neutral-900 flex items-center justify-center font-marker text-neutral-900 text-lg shadow-[2px_2px_0px_#111111] group-hover:rotate-6 transition-transform">
+          A
+        </div>
+<span class="font-headline font-black text-xl tracking-tighter uppercase text-neutral-900">
+          Art Work
+        </span>
+<span class="hidden sm:inline-block font-mono text-[10px] tracking-widest px-1.5 py-0.5 bg-neutral-100 border border-neutral-300 text-neutral-600 rounded">
+          SCENO.STUDIO
+        </span>
+</a>
+<!-- Navigation Links (Active mapping on '04 Gallery') -->
+<nav class="hidden md:flex items-center space-x-7 font-headline tracking-tight uppercase text-xs md:text-sm">
+<a class="font-medium text-neutral-600 hover:text-neutral-900 transition-colors duration-200" href="#manifesto">
+          01 Manifesto
+        </a>
+<a class="font-medium text-neutral-600 hover:text-neutral-900 transition-colors duration-200" href="#why-us">
+          02 Why Us
+        </a>
+<a class="font-medium text-neutral-600 hover:text-neutral-900 transition-colors duration-200" href="#services">
+          03 Services
+        </a>
+<!-- Active Nav: 04 Gallery with yellow highlight bar -->
+<a class="relative font-bold text-neutral-900 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1.5 after:bg-yellow-400 after:-rotate-1" href="#gallery">
+          04 Gallery
+        </a>
+<a class="font-medium text-neutral-600 hover:text-neutral-900 transition-colors duration-200" href="#contact">
+          05 Contact
+        </a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center space-x-3">
+<!-- Sound FX Micro-pill -->
+<button class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono border border-neutral-900 bg-white hover:bg-neutral-100 transition-colors rounded-full" id="audio-toggle" title="Toggle tactile sound effects">
+<span class="material-symbols-outlined text-sm">volume_up</span>
+<span class="text-[11px] font-bold">AUDIO: ON</span>
+</button>
+<!-- Primary CTA: Brief Inquiry -->
+<a class="px-4 py-2 font-headline font-bold text-xs uppercase bg-yellow-400 text-neutral-900 border-2 border-neutral-900 rounded shadow-[3px_3px_0px_#111111] hover:shadow-[1px_1px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 active:scale-95 transition-all" href="#brief-inquiry">
+          Brief Inquiry ↗
+        </a>
+<!-- Mobile Menu Trigger -->
+<button aria-label="Open Navigation Menu" class="md:hidden p-1.5 text-neutral-900 hover:text-neutral-700">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+</div>
+</div>
+</header>
+<main class="w-full">
+<!-- ================= HERO SECTION ================= -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 pt-12 pb-14 border-b border-neutral-900/10">
+<!-- Vault Subtitle Tag -->
+<div class="flex items-center gap-3 mb-6">
+<span class="px-3.5 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-white ink-border-pill text-neutral-900 inline-flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-yellow-400 animate-ping"></span>
+          ★ STAGE 04 // PROJECT ARCHIVE &amp; BLUEPRINT VAULT
+        </span>
+<span class="hidden md:inline font-mono text-xs text-neutral-400">
+          LOC: 52°31'N 13°24'E — ARCHIVE REV. 2025.4
+        </span>
+</div>
+<!-- Monumental Headline with Dry-brush & Marker Aesthetics -->
+<div class="max-w-5xl">
+<h1 class="text-4xl sm:text-6xl lg:text-7xl font-black font-headline tracking-tighter uppercase leading-[0.98] text-neutral-900">
+          CRAFTED IN INK.<br/>
+<span class="highlighter-swath text-neutral-950 font-marker text-[0.88em] tracking-normal -rotate-0.5">
+            EXECUTED IN ARENAS.
+          </span>
+</h1>
+</div>
+<!-- Hero Subtitle & Taped Paper Callout Grid -->
+<div class="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Statement: Taped Swatch -->
+<div class="lg:col-span-7 relative p-6 bg-yellow-50/80 rounded-lg border-2 border-dashed border-yellow-500 shadow-[3px_4px_0px_#eab308]">
+<!-- Washi Tape Accents -->
+<div class="washi-tape-yellow absolute -top-3.5 left-8 w-24 h-6 -rotate-2"></div>
+<div class="washi-tape-yellow absolute -top-3.5 right-12 w-20 h-6 rotate-3"></div>
+<p class="font-body text-base md:text-lg text-neutral-900 leading-relaxed font-medium">
+            “From the initial concept to the final execution, we create memorable experiences that bring brands to life. Every stage truss, lighting sequence, and kinetic pavilion begins with wet fountain pen ink on raw grid paper.”
+          </p>
+<div class="mt-4 flex flex-wrap items-center gap-3 pt-3 border-t border-yellow-300/80 font-mono text-xs text-neutral-700">
+<span class="flex items-center gap-1 font-bold">
+<span class="material-symbols-outlined text-sm">architecture</span> CAD / SPATIAL DMX
+            </span>
+<span>•</span>
+<span class="flex items-center gap-1 font-bold">
+<span class="material-symbols-outlined text-sm">palette</span> SCENOGRAPHIC ART
+            </span>
+<span>•</span>
+<span class="flex items-center gap-1 font-bold">
+<span class="material-symbols-outlined text-sm">construction</span> RAPID 72HR FAB
+            </span>
+</div>
+</div>
+<!-- Right: Technical Metadata Bar Card -->
+<div class="lg:col-span-5 bg-neutral-900 text-white p-5 rounded-lg ink-border-box">
+<div class="flex items-center justify-between pb-3 border-b border-neutral-700 text-xs font-mono text-yellow-400">
+<span>[SYS_TELEMETRY: STAGE_OPS]</span>
+<span class="animate-pulse">● LIVE RIGGING</span>
+</div>
+<div class="mt-3 space-y-2.5 font-mono text-xs">
+<div class="flex justify-between">
+<span class="text-neutral-400">INDEX RANGE:</span>
+<span class="font-bold text-white">2018 — 2025</span>
+</div>
+<div class="flex justify-between">
+<span class="text-neutral-400">SHOWS DELIVERED:</span>
+<span class="font-bold text-yellow-400">450+ STAGES GLOBALLY</span>
+</div>
+<div class="flex justify-between">
+<span class="text-neutral-400">CONTROL PROTOCOL:</span>
+<span class="font-bold text-white">ART-NET / DMX512 / SMPTE</span>
+</div>
+<div class="flex justify-between">
+<span class="text-neutral-400">STATUS:</span>
+<span class="font-bold text-white bg-neutral-800 px-1.5 py-0.5 rounded">100% UNAPOLOGETIC CRAFT</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= PANTONE-STYLE CATEGORY FILTER CHIPS ================= -->
+<div class="mt-12 flex flex-wrap items-center gap-2.5 pt-6 border-t border-dashed border-neutral-300">
+<span class="font-mono text-xs font-bold text-neutral-500 uppercase mr-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">filter_list</span> FILTERS:
+        </span>
+<!-- Active Filter: Pop Shadow Comic Style -->
+<button class="px-4 py-2 bg-neutral-950 text-yellow-400 font-headline font-bold text-xs uppercase tracking-wider rounded border-2 border-neutral-900 shadow-[3px_3px_0px_#facc15] transition-all">
+          ★ All Masterpieces (12)
+        </button>
+<button class="px-3.5 py-2 bg-white hover:bg-neutral-100 text-neutral-800 font-headline font-semibold text-xs uppercase tracking-wider rounded border-2 border-neutral-900 shadow-[2px_2px_0px_#111111] transition-all">
+          Stage &amp; Lighting
+        </button>
+<button class="px-3.5 py-2 bg-white hover:bg-neutral-100 text-neutral-800 font-headline font-semibold text-xs uppercase tracking-wider rounded border-2 border-neutral-900 shadow-[2px_2px_0px_#111111] transition-all">
+          Exhibition Booths
+        </button>
+<button class="px-3.5 py-2 bg-white hover:bg-neutral-100 text-neutral-800 font-headline font-semibold text-xs uppercase tracking-wider rounded border-2 border-neutral-900 shadow-[2px_2px_0px_#111111] transition-all">
+          Medical &amp; Conferences
+        </button>
+<button class="px-3.5 py-2 bg-white hover:bg-neutral-100 text-neutral-800 font-headline font-semibold text-xs uppercase tracking-wider rounded border-2 border-neutral-900 shadow-[2px_2px_0px_#111111] transition-all">
+          LED &amp; Audiovisual
+        </button>
+<button class="px-3.5 py-2 bg-white hover:bg-neutral-100 text-neutral-800 font-headline font-semibold text-xs uppercase tracking-wider rounded border-2 border-neutral-900 shadow-[2px_2px_0px_#111111] transition-all">
+          Branding &amp; Merch
+        </button>
+<button class="px-3.5 py-2 bg-white hover:bg-neutral-100 text-neutral-800 font-headline font-semibold text-xs uppercase tracking-wider rounded border-2 border-neutral-900 shadow-[2px_2px_0px_#111111] transition-all">
+          Interactive Tech
+        </button>
+</div>
+</section>
+<!-- ================= 6 UNCONVENTIONAL HAND-DRAWN SHOWCASE PROJECTS ================= -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16" id="gallery">
+<!-- Section Title & Pencil Annotation -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+<div>
+<div class="font-mono text-xs font-bold text-yellow-600 uppercase tracking-widest mb-1">
+            // SELECTED SCENOGRAPHY FOLIO
+          </div>
+<h2 class="text-3xl md:text-5xl font-black font-headline uppercase tracking-tight text-neutral-900">
+            THE TACTILE ARCHIVE
+          </h2>
+</div>
+<p class="font-marker text-sm md:text-base text-neutral-600 rotate-1 max-w-sm">
+          ✎ "Real physical installations built by our hands, tested at 120 decibels."
+        </p>
+</div>
+<!-- Bento-style Irregular Tactile Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+<!-- CARD 1: Neon Horizon World Tour -->
+<article class="relative bg-white rounded-xl p-5 ink-border-box group hover:-translate-y-1 transition-transform duration-200">
+<!-- Translucent Washi Tape -->
+<div class="washi-tape-yellow absolute -top-3 left-6 w-28 h-6 -rotate-2 z-10"></div>
+<!-- Header Stamp Info -->
+<div class="flex items-center justify-between pb-3 pt-2 mb-3 border-b-2 border-dashed border-neutral-200 font-mono text-[11px] text-neutral-600">
+<span class="font-bold text-neutral-900 bg-yellow-300 px-1.5 py-0.5 border border-neutral-900 rounded-sm">
+              STAMP_PASS: ARENA_01
+            </span>
+<span>OCT 2025</span>
+</div>
+<!-- Hand-inked framed image -->
+<div class="relative overflow-hidden rounded-lg border-2 border-neutral-900 mb-4 bg-neutral-100">
+<img class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A massive concert arena tour stage scenography bathed in intense canary yellow laser beams and amber spotlights. Curved volumetric LED panels suspend from custom industrial metal trusses above a vast crowd. Deep jet black concert venue contrasts with high-voltage luminous yellow lighting lines and atmospheric haze, capturing an electrifying live concert production." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-FC0BWXZOrxledi0SwEBRiFeakLCQoJ5EMfKI4R415FhmmPDXzbqcx0V2Nx0M_hr-JzOH6bI9lbU_vEFl1o-tlOy0VG_hWmU9F6EqXjzrFLtcJl75ec2Lm00Nd1Lferh0ipOb3IKcKxpVBufQbSeq7BRI7XVzzd6-r5lOYpxViVe-10L3xmqcbaER0EdQLPjN_SiF-oxTMZx-PhUJcysG_T5ukVReBklT8dRJGOtHk8nsSlf3R790Bb8jA79ARfPV4DxKIaYARjA"/>
+<div class="absolute bottom-2 left-2 bg-neutral-950/90 text-white font-mono text-[10px] px-2 py-1 rounded border border-neutral-700">
+              CAD_ID: NH_TOUR_V4
+            </div>
+</div>
+<!-- Project Title & Description -->
+<h3 class="text-xl font-black font-headline uppercase tracking-tight text-neutral-900 mb-2 group-hover:text-yellow-600 transition-colors">
+            Neon Horizon World Tour
+          </h3>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 mb-4 font-headline text-[10px] font-bold uppercase">
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              Stage, Sound &amp; Lighting
+            </span>
+<span class="bg-yellow-100 border border-yellow-400 px-2 py-0.5 rounded text-neutral-900">
+              LED Screens &amp; AV
+            </span>
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              Concept Creation
+            </span>
+</div>
+<!-- Architectural Stats Annotation -->
+<div class="p-3 bg-neutral-50 rounded border border-neutral-300 font-mono text-xs text-neutral-700 space-y-1 mb-4">
+<div class="text-neutral-900 font-bold flex items-center gap-1.5">
+<span>⚡ 52,000 Fans / Night</span>
+</div>
+<div class="text-[11px] text-neutral-500">
+              0.0s DMX Latency • 100% Custom Rig
+            </div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-2.5 px-4 bg-white hover:bg-yellow-400 text-neutral-900 font-headline font-bold text-xs uppercase border-2 border-neutral-900 rounded shadow-[3px_3px_0px_#111111] hover:shadow-[1px_1px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">edit</span>
+            INSPECT BLUEPRINT ↗
+          </button>
+</article>
+<!-- CARD 2: Global MedTech Summit 2025 -->
+<article class="relative bg-white rounded-xl p-5 ink-border-box group hover:-translate-y-1 transition-transform duration-200">
+<!-- Translucent Washi Tape -->
+<div class="washi-tape-yellow absolute -top-3 right-6 w-24 h-6 rotate-3 z-10"></div>
+<!-- Header Stamp Info -->
+<div class="flex items-center justify-between pb-3 pt-2 mb-3 border-b-2 border-dashed border-neutral-200 font-mono text-[11px] text-neutral-600">
+<span class="font-bold text-neutral-900 bg-neutral-200 px-1.5 py-0.5 border border-neutral-900 rounded-sm">
+              SUMMIT_ID: MED_25
+            </span>
+<span>VENUE: GENEVA EXPO</span>
+</div>
+<!-- Hand-inked framed image -->
+<div class="relative overflow-hidden rounded-lg border-2 border-neutral-900 mb-4 bg-neutral-100">
+<img class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Futuristic double-decker medical technology conference pavilion with crisp white architectural structures and warm canary yellow brand accents. Delegates interacting with high-resolution holographic touch displays in a brightly lit international exhibition hall. Clean minimalist modern aesthetic with architectural lines, glass railings, and precision LED strip illumination." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAxjglvSKfSLU6mmFQlTP1r3Has-ThYGJm2kWq-BxFIg-roPLwWGCqlvSwRR6OafyIMSNmpNtZWJUhrpEsqX8NBjKAaAyQvSATMopbdLH2MPUeKa9-l04njqr8eXk8Znsn0ySiVI6H3zOUvVdS9y_VJl3kl0mFN2ECEm3Uxy0DS7qefFSd0R1ZIyG-9VeIw_NUtybq8uS571cwZl4HBiUYy1B8Zt1Kwu4OSArrY9MQIRO1AbO1NNCA-iHBntFKCPhfEzpkzv5-Vzo"/>
+<div class="absolute bottom-2 left-2 bg-neutral-950/90 text-white font-mono text-[10px] px-2 py-1 rounded border border-neutral-700">
+              REV: PAVILION_STAGE3
+            </div>
+</div>
+<!-- Project Title & Description -->
+<h3 class="text-xl font-black font-headline uppercase tracking-tight text-neutral-900 mb-2 group-hover:text-yellow-600 transition-colors">
+            Global MedTech Summit 2025
+          </h3>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 mb-4 font-headline text-[10px] font-bold uppercase">
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              Medical Event Mgmt
+            </span>
+<span class="bg-yellow-100 border border-yellow-400 px-2 py-0.5 rounded text-neutral-900">
+              Registration &amp; Staffing
+            </span>
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              On-site Logistics
+            </span>
+</div>
+<!-- Architectural Stats Annotation -->
+<div class="p-3 bg-neutral-50 rounded border border-neutral-300 font-mono text-xs text-neutral-700 space-y-1 mb-4">
+<div class="text-neutral-900 font-bold flex items-center gap-1.5">
+<span>🏥 14,000 Delegates</span>
+</div>
+<div class="text-[11px] text-neutral-500">
+              6 Plenary Stages • 99.8% Sync Score
+            </div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-2.5 px-4 bg-white hover:bg-yellow-400 text-neutral-900 font-headline font-bold text-xs uppercase border-2 border-neutral-900 rounded shadow-[3px_3px_0px_#111111] hover:shadow-[1px_1px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">edit</span>
+            INSPECT BLUEPRINT ↗
+          </button>
+</article>
+<!-- CARD 3: CyberTruss Spatial Pavilion -->
+<article class="relative bg-white rounded-xl p-5 ink-border-box group hover:-translate-y-1 transition-transform duration-200">
+<!-- Translucent Washi Tape -->
+<div class="washi-tape-yellow absolute -top-3 left-10 w-28 h-6 -rotate-1 z-10"></div>
+<!-- Header Stamp Info -->
+<div class="flex items-center justify-between pb-3 pt-2 mb-3 border-b-2 border-dashed border-neutral-200 font-mono text-[11px] text-neutral-600">
+<span class="font-bold text-neutral-900 bg-yellow-300 px-1.5 py-0.5 border border-neutral-900 rounded-sm">
+              PATENT_ARCH: EXPO_08
+            </span>
+<span>CNC MILLWORK</span>
+</div>
+<!-- Hand-inked framed image -->
+<div class="relative overflow-hidden rounded-lg border-2 border-neutral-900 mb-4 bg-neutral-100">
+<img class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Grand geometric trade expo pavilion built from heavy black industrial stage trusses, cantilevered mezzanine VIP lounge, and illuminated canary yellow acrylic baffles. Architectural lighting creates dramatic cast shadows on pristine white showroom floors. Modern event architecture showcasing bespoke carpentry, precision steel joins, and suspended neon signage." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSVcmqvjKtjS6nKM_2Si8CswGLy6kRJ22kcW4G7zDtjMUOjwKG9fMsnidx6ty3MSY1B0qKkjfAhkmzJ9VxSt8KIqQxw9ZZwWUrZnsqywxSIaayjL1EOMzIHSPY5to48j6_7pj5BP0zkjSNpppHsVQ9vIzG6lKOFA4eUptozVuab_vsn7HdKzzwztjzblRUW32IwBBgqOVjo5Q41TcJqTuNBRu9CjQJeZWG2h0JCaTqqoTFjStuBUL9HvzR1wVAHR_JTFxCPlVy35k"/>
+<div class="absolute bottom-2 left-2 bg-neutral-950/90 text-white font-mono text-[10px] px-2 py-1 rounded border border-neutral-700">
+              FRAME: 40m x 25m
+            </div>
+</div>
+<!-- Project Title & Description -->
+<h3 class="text-xl font-black font-headline uppercase tracking-tight text-neutral-900 mb-2 group-hover:text-yellow-600 transition-colors">
+            CyberTruss Spatial Pavilion
+          </h3>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 mb-4 font-headline text-[10px] font-bold uppercase">
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              Booth Design &amp; Production
+            </span>
+<span class="bg-yellow-100 border border-yellow-400 px-2 py-0.5 rounded text-neutral-900">
+              Interactive Activities
+            </span>
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              On-site Mgmt
+            </span>
+</div>
+<!-- Architectural Stats Annotation -->
+<div class="p-3 bg-neutral-50 rounded border border-neutral-300 font-mono text-xs text-neutral-700 space-y-1 mb-4">
+<div class="text-neutral-900 font-bold flex items-center gap-1.5">
+<span>📐 1,200 m² Footprint</span>
+</div>
+<div class="text-[11px] text-neutral-500">
+              72-Hour Rapid Build • German Spec Steel
+            </div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-2.5 px-4 bg-white hover:bg-yellow-400 text-neutral-900 font-headline font-bold text-xs uppercase border-2 border-neutral-900 rounded shadow-[3px_3px_0px_#111111] hover:shadow-[1px_1px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">edit</span>
+            INSPECT BLUEPRINT ↗
+          </button>
+</article>
+<!-- CARD 4: Prism Brand Identity & Merch Suite -->
+<article class="relative bg-white rounded-xl p-5 ink-border-box group hover:-translate-y-1 transition-transform duration-200">
+<!-- Translucent Washi Tape -->
+<div class="washi-tape-yellow absolute -top-3 right-12 w-24 h-6 rotate-2 z-10"></div>
+<!-- Header Stamp Info -->
+<div class="flex items-center justify-between pb-3 pt-2 mb-3 border-b-2 border-dashed border-neutral-200 font-mono text-[11px] text-neutral-600">
+<span class="font-bold text-neutral-900 bg-neutral-200 px-1.5 py-0.5 border border-neutral-900 rounded-sm">
+              SYSTEM_SYS: ID_99
+            </span>
+<span>LIMITED EDITION</span>
+</div>
+<!-- Hand-inked framed image -->
+<div class="relative overflow-hidden rounded-lg border-2 border-neutral-900 mb-4 bg-neutral-100">
+<img class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Premium experiential event merchandise and print collateral spread out on an artist drawing table. Includes matte black foil-stamped backstage VIP laminate passes, canary yellow woven heavy-duty lanyards, screenprinted festival apparel, and textured embossed event booklets. Bright clean daylight studio photography showcasing sharp graphic design and tactile textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ7SgNflY5-zFIoVFJXLmf49fhCQLX5qxuN1frUe9jqOPwiS6loNEsSz1n3BFzQXRdP0q2vnD_ON2nNYS8DK7AkwPmFK9uY8sIKx_U1Sa6WxzxHNSygEHsoDwG3imb1rKcK4GlHR2gB9wIrN3N0snMRaUmYJcB3yv14oaMd4KH65Jnxdee-8BmmqLxRscygxPr9XbAn79-YdottBV3bFBXxv8i84I1FiWVe4iKLWL4v-UTyB9bHPSK2lrRSuG6jZq9piJQ4f8_zX8"/>
+<div class="absolute bottom-2 left-2 bg-neutral-950/90 text-white font-mono text-[10px] px-2 py-1 rounded border border-neutral-700">
+              PANTONE: #FACC15
+            </div>
+</div>
+<!-- Project Title & Description -->
+<h3 class="text-xl font-black font-headline uppercase tracking-tight text-neutral-900 mb-2 group-hover:text-yellow-600 transition-colors">
+            Prism Brand Identity &amp; Merch
+          </h3>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 mb-4 font-headline text-[10px] font-bold uppercase">
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              Branding &amp; Event Printing
+            </span>
+<span class="bg-yellow-100 border border-yellow-400 px-2 py-0.5 rounded text-neutral-900">
+              Promotional Merch
+            </span>
+</div>
+<!-- Architectural Stats Annotation -->
+<div class="p-3 bg-neutral-50 rounded border border-neutral-300 font-mono text-xs text-neutral-700 space-y-1 mb-4">
+<div class="text-neutral-900 font-bold flex items-center gap-1.5">
+<span>🎨 35 Custom Swatches</span>
+</div>
+<div class="text-[11px] text-neutral-500">
+              20k Screenprints • Pantone Canary Yellow
+            </div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-2.5 px-4 bg-white hover:bg-yellow-400 text-neutral-900 font-headline font-bold text-xs uppercase border-2 border-neutral-900 rounded shadow-[3px_3px_0px_#111111] hover:shadow-[1px_1px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">edit</span>
+            INSPECT BLUEPRINT ↗
+          </button>
+</article>
+<!-- CARD 5: Arena Genesis Live Broadcast -->
+<article class="relative bg-white rounded-xl p-5 ink-border-box group hover:-translate-y-1 transition-transform duration-200">
+<!-- Translucent Washi Tape -->
+<div class="washi-tape-yellow absolute -top-3 left-8 w-26 h-6 -rotate-3 z-10"></div>
+<!-- Header Stamp Info -->
+<div class="flex items-center justify-between pb-3 pt-2 mb-3 border-b-2 border-dashed border-neutral-200 font-mono text-[11px] text-neutral-600">
+<span class="font-bold text-neutral-900 bg-yellow-300 px-1.5 py-0.5 border border-neutral-900 rounded-sm">
+              BROADCAST: 4K_60FPS
+            </span>
+<span>GLOBAL SYNC</span>
+</div>
+<!-- Hand-inked framed image -->
+<div class="relative overflow-hidden rounded-lg border-2 border-neutral-900 mb-4 bg-neutral-100">
+<img class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" data-alt="High-tech arena live broadcast production studio and camera control deck overlooking a stadium concert stage. Array of monitors showing multi-angle 4K camera feeds, audio equalizers, and anamorphic 3D LED graphics. Dark technical control environment with neon yellow status indicators, robotic camera arms, and active broadcast crew members." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF21PimXEJ5m7AyeFLIloqLpW8N5ScQ5xw1OVdSwZitSCdB5SL1_SZZ_zJlwsJ8qSADsvWXGZEFLfaEC_kNrQ-t1270XtSw6-dtPIsFJzByArP8vs47NbABIfoy_nt36opu_3BxHFnEAfsi1LtdH7gNvX0kUSiUbSj3K9ILXKSgDZM8ZNYw9YYLavoQKS2dNMkF_iq0cJulUVIcrgtJy9BnOJ14jSl-jqGAG_2Iv2zAL0eCuTR83fS4rZtgmx93V7ab1RfMVRBwpI"/>
+<div class="absolute bottom-2 left-2 bg-neutral-950/90 text-white font-mono text-[10px] px-2 py-1 rounded border border-neutral-700">
+              LATENCY: 1.2MS
+            </div>
+</div>
+<!-- Project Title & Description -->
+<h3 class="text-xl font-black font-headline uppercase tracking-tight text-neutral-900 mb-2 group-hover:text-yellow-600 transition-colors">
+            Arena Genesis Live Broadcast
+          </h3>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 mb-4 font-headline text-[10px] font-bold uppercase">
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              Videography &amp; Photo
+            </span>
+<span class="bg-yellow-100 border border-yellow-400 px-2 py-0.5 rounded text-neutral-900">
+              Stage, Sound &amp; Lighting
+            </span>
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              Project Mgmt
+            </span>
+</div>
+<!-- Architectural Stats Annotation -->
+<div class="p-3 bg-neutral-50 rounded border border-neutral-300 font-mono text-xs text-neutral-700 space-y-1 mb-4">
+<div class="text-neutral-900 font-bold flex items-center gap-1.5">
+<span>🎥 18 Ultra-HD Cameras</span>
+</div>
+<div class="text-[11px] text-neutral-500">
+              1.4M Stream Peak • Zero Dropped Frames
+            </div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-2.5 px-4 bg-white hover:bg-yellow-400 text-neutral-900 font-headline font-bold text-xs uppercase border-2 border-neutral-900 rounded shadow-[3px_3px_0px_#111111] hover:shadow-[1px_1px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">edit</span>
+            INSPECT BLUEPRINT ↗
+          </button>
+</article>
+<!-- CARD 6: Sensory Kinetic Expo Booth -->
+<article class="relative bg-white rounded-xl p-5 ink-border-box group hover:-translate-y-1 transition-transform duration-200">
+<!-- Translucent Washi Tape -->
+<div class="washi-tape-yellow absolute -top-3 right-8 w-28 h-6 rotate-2 z-10"></div>
+<!-- Header Stamp Info -->
+<div class="flex items-center justify-between pb-3 pt-2 mb-3 border-b-2 border-dashed border-neutral-200 font-mono text-[11px] text-neutral-600">
+<span class="font-bold text-neutral-900 bg-neutral-200 px-1.5 py-0.5 border border-neutral-900 rounded-sm">
+              INTERACTION: SENSOR_V2
+            </span>
+<span>MWC BARCELONA</span>
+</div>
+<!-- Hand-inked framed image -->
+<div class="relative overflow-hidden rounded-lg border-2 border-neutral-900 mb-4 bg-neutral-100">
+<img class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Immersive interactive trade show exhibition booth featuring transparent holographic scrim screens and motion-reactive LED light pillars. Visitors walking through a sensorial space where kinetic ceiling chandeliers shift in response to audience movement. Striking interplay of deep jet-black architecture, transparent glass, and luminous canary yellow digital projections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS0fY92k_h67amwkMbFOoOun6yV_H3Y-AX76D8zbJM6a5K-gMOOZEmqcjSfZTcpAX3NeWqV05BH6VwvouOH-0V3iLJEBAjK0SXTyvZapxi_Mvm2BSRm1a8EwJEqDO7pJZFxFov3h004UmTrXjmCQHl1Y1XnMMR_YGJ1tVRvEA4KMOjWZcXbB_aGHzJP0eseEltmoXUTc6hZP8eYNhFQWEDnu6yJmHmcVoWGL65J1z_mpYVXOxd6BaI65p7xjeseb49_FAPhxKENeE"/>
+<div class="absolute bottom-2 left-2 bg-neutral-950/90 text-white font-mono text-[10px] px-2 py-1 rounded border border-neutral-700">
+              CUES: 880 SENSOR_TRIG
+            </div>
+</div>
+<!-- Project Title & Description -->
+<h3 class="text-xl font-black font-headline uppercase tracking-tight text-neutral-900 mb-2 group-hover:text-yellow-600 transition-colors">
+            Sensory Kinetic Expo Booth
+          </h3>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 mb-4 font-headline text-[10px] font-bold uppercase">
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              Exhibition Booth Design
+            </span>
+<span class="bg-yellow-100 border border-yellow-400 px-2 py-0.5 rounded text-neutral-900">
+              LED &amp; Audiovisual
+            </span>
+<span class="bg-neutral-100 border border-neutral-400 px-2 py-0.5 rounded text-neutral-800">
+              Creative Dev
+            </span>
+</div>
+<!-- Architectural Stats Annotation -->
+<div class="p-3 bg-neutral-50 rounded border border-neutral-300 font-mono text-xs text-neutral-700 space-y-1 mb-4">
+<div class="text-neutral-900 font-bold flex items-center gap-1.5">
+<span>✨ 880 Interactive Cues</span>
+</div>
+<div class="text-[11px] text-neutral-500">
+              4.9/5 Visitor Rating • Viral Social Surge
+            </div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-2.5 px-4 bg-white hover:bg-yellow-400 text-neutral-900 font-headline font-bold text-xs uppercase border-2 border-neutral-900 rounded shadow-[3px_3px_0px_#111111] hover:shadow-[1px_1px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">edit</span>
+            INSPECT BLUEPRINT ↗
+          </button>
+</article>
+</div>
+</section>
+<!-- ================= FEATURED PROJECT SPOTLIGHT: DRAFTING DESK ================= -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16 border-t-2 border-neutral-900">
+<!-- Section Header -->
+<div class="flex items-center gap-3 mb-8">
+<span class="w-4 h-4 bg-yellow-400 border border-neutral-900"></span>
+<h2 class="text-2xl md:text-4xl font-black font-headline uppercase tracking-tight text-neutral-900">
+          THE BLUEPRINT TO REALITY
+        </h2>
+<span class="font-mono text-xs text-neutral-500 ml-auto hidden sm:inline">
+          DRAFTING TABLE: WORKBENCH 01
+        </span>
+</div>
+<!-- Large Architectural Draft Board Card -->
+<div class="relative bg-white rounded-2xl ink-border-box-lg p-6 md:p-10 overflow-hidden">
+<!-- Washi Tape Accents on corners -->
+<div class="washi-tape-yellow absolute top-3 left-12 w-36 h-7 -rotate-2 z-10"></div>
+<div class="washi-tape-yellow absolute top-3 right-12 w-32 h-7 rotate-3 z-10"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+<!-- Left Column: The Lead Designer Blueprint Easel Presentation -->
+<div class="lg:col-span-7 space-y-4">
+<div class="relative border-2 border-neutral-900 rounded-xl overflow-hidden shadow-[4px_4px_0px_#111111] bg-white">
+<img class="w-full h-auto object-cover max-h-[480px]" data-alt="An artist and stage architect presenting hand-sketched stage and exhibition booth designs on an easel whiteboard. In the hand-drawn illustration style, clean black ink outlines depict four detailed isometric architectural blueprints of theater stages and truss pavilions with vibrant canary yellow marker splashes and yellow sticky notes. The architect points with a stylus in a bright studio environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj9rHLUhrc9R2cgYwY4cu9uWnWXAVULz0WjkXyBTwh_8sMg9JEIFgTzijU3o_IBHQA6N-AoZ2U4wAvwZiu1ImSlBpensXnqI2wDed4yNG38m1ecAib3vCeI1_o45FvJzv8SdoVcixwnEfj-aY05bEXBCYW49M9yp8Kjct8t0dl55m6aNfH-FMPeMfQDoUrNXC30IW-ZZrJe3ES5bbap-4Kp1nIgAj_n3W-_UP9cOfRNYjdryjmKYYZ6WL5DoZTuH3uaPYOTT-xftY"/>
+<!-- Interactive Blueprint Tooltip Overlay -->
+<div class="absolute top-4 right-4 bg-yellow-400 text-neutral-900 font-mono text-xs px-2.5 py-1 rounded border border-neutral-900 font-bold shadow-[2px_2px_0px_#111111]">
+                STAGE_SPEC_REV_04
+              </div>
+</div>
+<!-- Annotation beneath image -->
+<div class="flex items-center justify-between text-xs font-mono text-neutral-500 px-2">
+<span>FIG 1.0: EASEL MASTER SCHEMATIC</span>
+<span class="text-neutral-900 font-bold">CLIENT: INTERNATIONAL EXPO GUILD</span>
+</div>
+</div>
+<!-- Right Column: Scrollytelling Breakdown & CAD Telemetry -->
+<div class="lg:col-span-5 flex flex-col justify-between h-full space-y-6">
+<div>
+<div class="inline-block px-2.5 py-1 bg-neutral-900 text-yellow-400 font-mono text-xs font-bold rounded mb-3">
+                METHODOLOGY: INK-TO-STEEL
+              </div>
+<h3 class="text-2xl md:text-3xl font-black font-headline uppercase tracking-tight text-neutral-900">
+                FROM NAPKIN SKETCH TO 40-TON SUPERSTRUCTURE.
+              </h3>
+<!-- Sticky note quote box -->
+<div class="my-5 p-4 bg-yellow-100/90 rounded border-2 border-neutral-900 shadow-[3px_3px_0px_#111111] relative">
+<span class="material-symbols-outlined text-neutral-800 text-xl absolute -top-3 -right-2 bg-white rounded-full p-0.5 border border-neutral-900">push_pin</span>
+<p class="font-marker text-sm text-neutral-900 leading-snug">
+                  "Every millimeter in vector space was first drawn with black ink on paper. If it doesn't move people on paper, it won't move 50,000 fans in an arena."
+                </p>
+<div class="mt-2 text-right font-mono text-[10px] text-neutral-700 font-bold">
+                  — MARKUS V., SCENOGRAPHIC DIRECTOR
+                </div>
+</div>
+<!-- Workflow Checklist -->
+<ul class="space-y-3 font-body text-sm text-neutral-700">
+<li class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-neutral-900 text-yellow-400 flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">1</span>
+<span><strong>Fountain-Pen Ideation:</strong> We draft preliminary spatial sightlines, lighting focal axes, and audience flow directly on grid paper.</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-neutral-900 text-yellow-400 flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">2</span>
+<span><strong>3D Spatial Vectorization:</strong> Hand doodles convert into structural engineering blueprints tested against fire codes &amp; wind loads.</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded bg-neutral-900 text-yellow-400 flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">3</span>
+<span><strong>Fabrication &amp; On-Site Cueing:</strong> 72-hour build cycles with continuous DMX rehearsal and lighting designer sync.</span>
+</li>
+</ul>
+</div>
+<!-- Download Technical Spec Button -->
+<div class="pt-4 border-t border-dashed border-neutral-300">
+<a class="w-full inline-flex items-center justify-center gap-2 py-3 px-6 bg-neutral-900 text-white hover:bg-yellow-400 hover:text-neutral-900 font-headline font-bold text-xs uppercase rounded ink-border-box transition-colors" href="#brief-inquiry">
+<span class="material-symbols-outlined text-base">download</span>
+                DOWNLOAD FULL TECHNICAL STAGE RIDER (PDF)
+              </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= CREATIVE BRIEF INTAKE BANNER ================= -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 py-16" id="brief-inquiry">
+<div class="bg-yellow-400 rounded-2xl ink-border-box-lg p-8 md:p-14 relative overflow-hidden">
+<!-- Subtle background sketch doodle elements -->
+<div class="absolute -right-8 -bottom-8 opacity-10 pointer-events-none select-none">
+<span class="material-symbols-outlined text-[240px]">draw</span>
+</div>
+<div class="relative z-10 max-w-3xl">
+<span class="px-3 py-1 bg-neutral-900 text-white font-mono text-xs font-bold uppercase rounded inline-block mb-4">
+            // FAST CREATIVE DIRECTORY
+          </span>
+<h2 class="text-3xl md:text-5xl font-black font-headline uppercase tracking-tight text-neutral-900 leading-tight mb-4">
+            GOT A PROJECT IN MIND? LET’S SKETCH IT INTO REALITY.
+          </h2>
+<p class="font-body text-base md:text-lg text-neutral-900 font-medium leading-relaxed mb-8">
+            Send us your event dates, venue specs, or wild ideas. Our creative directors respond with an annotated sketchpad proposal within 24 hours.
+          </p>
+<!-- Action Buttons Cluster -->
+<div class="flex flex-wrap items-center gap-4">
+<a class="px-6 py-3.5 bg-neutral-900 hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-sm uppercase rounded ink-border-box flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-transform" href="#contact">
+<span class="material-symbols-outlined text-lg">send</span>
+              START A BRIEF SPEC
+            </a>
+<a class="px-6 py-3.5 bg-white hover:bg-neutral-100 text-neutral-900 font-headline font-bold text-sm uppercase rounded ink-border-box flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-transform" href="tel:+18002789675">
+<span class="material-symbols-outlined text-lg">call</span>
+              CALL DIRECTOR HOTLINE: +1 800 ART-WORK
+            </a>
+</div>
+<!-- Bottom Micro Details -->
+<div class="mt-8 pt-6 border-t border-neutral-900/20 flex flex-wrap items-center gap-6 font-mono text-xs text-neutral-800">
+<span>⚡ GUARANTEED 24H SKETCH TURNAROUND</span>
+<span>•</span>
+<span>📍 BERLIN • LONDON • NEW YORK</span>
+<span>•</span>
+<span>🔒 NDA COMPLIANT ON INTAKE</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ================= FOOTER (SHARED COMPONENT) ================= -->
+<footer class="w-full bg-white border-t-2 border-neutral-900">
+<div class="w-full max-w-7xl mx-auto px-6 md:px-12 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
+<!-- Brand & Copyright -->
+<div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+<span class="font-headline font-black text-lg tracking-tight uppercase text-neutral-900">
+          Art Work
+        </span>
+<span class="hidden sm:inline text-neutral-400">|</span>
+<p class="font-body text-xs text-neutral-600">
+          © 2025 Art Work Scenography Collective. All sketchbooks &amp; spatial blueprints reserved.
+        </p>
+</div>
+<!-- Footer Navigation Links -->
+<nav class="flex flex-wrap items-center justify-center gap-6 font-body text-xs">
+<a class="text-neutral-500 hover:text-neutral-900 transition-colors" href="#manifesto">
+          Manifesto
+        </a>
+<a class="text-neutral-900 font-bold underline decoration-yellow-400 decoration-2" href="#gallery">
+          Index of Works
+        </a>
+<a class="text-neutral-500 hover:text-neutral-900 transition-colors" href="#blueprints">
+          Stage Blueprints
+        </a>
+<a class="text-neutral-500 hover:text-neutral-900 transition-colors" href="#privacy">
+          Privacy
+        </a>
+<a class="text-neutral-500 hover:text-neutral-900 transition-colors" href="#inquiries">
+          Inquiries
+        </a>
+</nav>
+</div>
+</footer>
+<!-- Micro-interactions Script for Audio FX toggle & Filters -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Audio FX Toggle Button micro-interaction
+      const audioBtn = document.getElementById('audio-toggle');
+      if (audioBtn) {
+        let isMuted = false;
+        audioBtn.addEventListener('click', () => {
+          isMuted = !isMuted;
+          const icon = audioBtn.querySelector('.material-symbols-outlined');
+          const label = audioBtn.querySelector('span:last-child');
+          if (isMuted) {
+            icon.textContent = 'volume_off';
+            label.textContent = 'AUDIO: MUTED';
+            audioBtn.classList.add('bg-neutral-100', 'text-neutral-500');
+          } else {
+            icon.textContent = 'volume_up';
+            label.textContent = 'AUDIO: ON';
+            audioBtn.classList.remove('bg-neutral-100', 'text-neutral-500');
+          }
+        });
+      }
+
+      // Filter Button Switcher
+      const filterButtons = document.querySelectorAll('button');
+      filterButtons.forEach(btn => {
+        if (btn.textContent.includes('Masterpieces') || btn.textContent.includes('Lighting') || btn.textContent.includes('Booths') || btn.textContent.includes('Conferences') || btn.textContent.includes('Audiovisual') || btn.textContent.includes('Merch') || btn.textContent.includes('Interactive')) {
+          btn.addEventListener('click', () => {
+            // Revert others
+            filterButtons.forEach(b => {
+              if (b.textContent.includes('Masterpieces') || b.textContent.includes('Lighting') || b.textContent.includes('Booths') || b.textContent.includes('Conferences') || b.textContent.includes('Audiovisual') || b.textContent.includes('Merch') || b.textContent.includes('Interactive')) {
+                b.className = "px-3.5 py-2 bg-white hover:bg-neutral-100 text-neutral-800 font-headline font-semibold text-xs uppercase tracking-wider rounded border-2 border-neutral-900 shadow-[2px_2px_0px_#111111] transition-all";
+              }
+            });
+            // Highlight selected
+            btn.className = "px-4 py-2 bg-neutral-950 text-yellow-400 font-headline font-bold text-xs uppercase tracking-wider rounded border-2 border-neutral-900 shadow-[3px_3px_0px_#facc15] transition-all";
+          });
+        }
+      });
+    });
+  </script>
+</body></html>
+
