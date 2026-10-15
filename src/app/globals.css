@@ -5,10 +5,10 @@
   --color-primary-yellow: #facc15;
   --color-primary-black: #111111;
   --color-canvas-white: #ffffff;
-  --font-headline: var(--font-public-sans), sans-serif;
-  --font-display: var(--font-public-sans), sans-serif;
-  --font-body: var(--font-space-grotesk), sans-serif;
-  --font-label: var(--font-public-sans), sans-serif;
+  --font-headline: var(--font-plus-jakarta), sans-serif;
+  --font-display: var(--font-plus-jakarta), sans-serif;
+  --font-body: var(--font-plus-jakarta), sans-serif;
+  --font-label: var(--font-plus-jakarta), sans-serif;
   --font-brush: var(--font-permanent-marker), cursive;
 }
 
@@ -36,15 +36,15 @@
 
 /* Font helpers */
 .font-headline {
-  font-family: var(--font-public-sans), sans-serif;
+  font-family: var(--font-plus-jakarta), sans-serif;
 }
 
 .font-body {
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: var(--font-plus-jakarta), sans-serif;
 }
 
 .font-label {
-  font-family: var(--font-public-sans), sans-serif;
+  font-family: var(--font-plus-jakarta), sans-serif;
 }
 
 .font-brush {

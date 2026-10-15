@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
-import { Public_Sans, Space_Grotesk, Permanent_Marker } from "next/font/google";
+import { Plus_Jakarta_Sans, Permanent_Marker } from "next/font/google";
 import "./globals.css";
 
-const publicSans = Public_Sans({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-public-sans",
-  weight: ["300", "400", "600", "700", "800", "900"],
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-plus-jakarta",
   display: "swap",
 });
 
@@ -76,7 +68,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${publicSans.variable} ${spaceGrotesk.variable} ${permanentMarker.variable} scroll-smooth`}
+      className={`${plusJakartaSans.variable} ${permanentMarker.variable} scroll-smooth`}
     >
       <body className="bg-white text-black font-body selection:bg-yellow-400 selection:text-black antialiased overflow-x-hidden relative">
         {children}
