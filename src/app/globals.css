@@ -1,26 +1,255 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
 @import "tailwindcss";
+
+@theme inline {
+  --color-primary-yellow: #facc15;
+  --color-primary-black: #111111;
+  --color-canvas-white: #ffffff;
+  --font-headline: var(--font-public-sans), sans-serif;
+  --font-display: var(--font-public-sans), sans-serif;
+  --font-body: var(--font-space-grotesk), sans-serif;
+  --font-label: var(--font-public-sans), sans-serif;
+  --font-brush: var(--font-permanent-marker), cursive;
+}
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Material Symbols configuration */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Font helpers */
+.font-headline {
+  font-family: var(--font-public-sans), sans-serif;
+}
+
+.font-body {
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+.font-label {
+  font-family: var(--font-public-sans), sans-serif;
+}
+
+.font-brush {
+  font-family: var(--font-permanent-marker), cursive;
+}
+
+/* Border and Radius Helpers */
+.rounded-DEFAULT {
+  border-radius: 0.5rem;
+}
+
+.border-3 {
+  border-width: 3px;
+}
+
+/* Comic Sharp Box Shadow */
+.comic-shadow {
+  box-shadow: 6px 6px 0px #111111;
+}
+
+.comic-shadow-sm {
+  box-shadow: 3px 3px 0px #111111;
+}
+
+.comic-shadow-yellow {
+  box-shadow: 6px 6px 0px #facc15;
+}
+
+/* Dot Grid Background Texture */
+.bg-dot-grid {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
+/* Self Drawing Animated SVG Path */
+@keyframes drawStroke {
+  0% {
+    stroke-dashoffset: 600;
+  }
+  50% {
+    stroke-dashoffset: 0;
+  }
+  90% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 600;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.animate-draw {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: drawStroke 4.5s ease-in-out infinite;
 }
+
+/* Kinetic Float Animations */
+@keyframes doodleFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1.5deg); }
+}
+
+.animate-float-slow {
+  animation: doodleFloat 3.8s ease-in-out infinite;
+}
+
+@keyframes flickerGlow {
+  0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.8)); }
+  50% { opacity: 0.75; transform: scale(0.96); filter: drop-shadow(0 0 3px rgba(250, 204, 21, 0.3)); }
+  70% { opacity: 0.95; }
+}
+
+.animate-flicker {
+  animation: flickerGlow 2.2s infinite;
+}
+
+@keyframes paperPlaneGlide {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  30% { transform: translate(12px, -14px) rotate(6deg); }
+  70% { transform: translate(-8px, -6px) rotate(-4deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.animate-plane {
+  animation: paperPlaneGlide 5s ease-in-out infinite;
+}
+
+/* Starburst Comic Pop */
+@keyframes starPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.08) rotate(6deg); }
+}
+
+.animate-star-pulse {
+  animation: starPulse 2.8s ease-in-out infinite;
+}
+
+/* Custom Cursor Trail */
+.cursor-particle {
+  pointer-events: none;
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #facc15;
+  border: 1px solid #111111;
+  transform: translate(-50%, -50%);
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+  z-index: 9999;
+}
+
+/* Phase 05: Highlighter Marker Swipe Effect */
+.highlighter-yellow {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+.highlighter-yellow::before {
+  content: '';
+  position: absolute;
+  left: -4%;
+  bottom: 6%;
+  width: 108%;
+  height: 48%;
+  background: #facc15;
+  z-index: -1;
+  transform: rotate(-1deg) skewX(-4deg);
+  border-radius: 4px;
+  mix-blend-mode: multiply;
+  opacity: 0.95;
+}
+
+/* Heavy marker brush sweep for US? */
+.brush-swipe-bg {
+  position: relative;
+}
+.brush-swipe-bg::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -6%;
+  right: -6%;
+  height: 75%;
+  background-color: #facc15;
+  transform: translateY(-45%) rotate(-1.5deg) skewX(-6deg);
+  z-index: -1;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.45);
+}
+
+/* Washi Tape Effect */
+.washi-tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 55px;
+  height: 16px;
+  background: rgba(250, 204, 21, 0.75);
+  border-left: 2px dashed rgba(0,0,0,0.25);
+  border-right: 2px dashed rgba(0,0,0,0.25);
+  backdrop-filter: blur(2px);
+  z-index: 20;
+}
+
+/* Brutalist Yellow Box Shadow Hover */
+.hover-brutal-lift {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 4px 4px 0px #111111;
+}
+.hover-brutal-lift:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0px #facc15, 8px 8px 0px 2px #111111;
+}
+.hover-brutal-clean {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-brutal-clean:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px #111111;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.stage-pulse {
+  animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+/* Kinetic Animated Flow Arrows */
+@keyframes flowDash {
+  from {
+    stroke-dashoffset: 40;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-flow-dash {
+  animation: flowDash 1.4s linear infinite;
+}
+
+.animate-flow-dash-reverse {
+  animation: flowDash 1.8s linear infinite reverse;
+}
+
