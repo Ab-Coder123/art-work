@@ -108,8 +108,8 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
 
     const charDesigner = loadCharPlane(
       "/assets/images/char_graphic_designer.png",
-      13.5,
-      16.3
+      8.8,
+      10.6
     );
     station1.add(charDesigner);
     scene.add(station1);
@@ -122,8 +122,8 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
 
     const charMotion = loadCharPlane(
       "/assets/images/char_motion_designer.png",
-      14.0,
-      16.0
+      9.2,
+      10.5
     );
     station2.add(charMotion);
     scene.add(station2);
@@ -136,8 +136,8 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
 
     const charArtDirector = loadCharPlane(
       "/assets/images/char_art_director.png",
-      13.5,
-      16.8
+      8.8,
+      11.0
     );
     station3.add(charArtDirector);
     scene.add(station3);
@@ -150,8 +150,8 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
 
     const charContent = loadCharPlane(
       "/assets/images/char_content_creator.png",
-      13.5,
-      15.8
+      8.8,
+      10.3
     );
     station4.add(charContent);
     scene.add(station4);
