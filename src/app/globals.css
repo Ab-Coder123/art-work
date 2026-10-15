@@ -2,9 +2,19 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary-yellow: #facc15;
+  --color-primary-yellow: #dcb858;
   --color-primary-black: #111111;
   --color-canvas-white: #ffffff;
+  --color-yellow-50: #faf7ee;
+  --color-yellow-100: #f5eccf;
+  --color-yellow-200: #eedda5;
+  --color-yellow-300: #ecd070;
+  --color-yellow-400: #dcb858;
+  --color-yellow-500: #c89e3a;
+  --color-yellow-600: #b08428;
+  --color-brand-gold: #dcb858;
+  --color-brand-gold-light: #ecd070;
+  --color-brand-gold-dark: #c89e3a;
   --font-headline: var(--font-plus-jakarta), sans-serif;
   --font-display: var(--font-plus-jakarta), sans-serif;
   --font-body: var(--font-plus-jakarta), sans-serif;
@@ -70,7 +80,7 @@
 }
 
 .comic-shadow-yellow {
-  box-shadow: 6px 6px 0px #facc15;
+  box-shadow: 6px 6px 0px #dcb858;
 }
 
 /* Dot Grid Background Texture */
@@ -112,8 +122,8 @@
 }
 
 @keyframes flickerGlow {
-  0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.8)); }
-  50% { opacity: 0.75; transform: scale(0.96); filter: drop-shadow(0 0 3px rgba(250, 204, 21, 0.3)); }
+  0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 10px rgba(220, 184, 88, 0.8)); }
+  50% { opacity: 0.75; transform: scale(0.96); filter: drop-shadow(0 0 3px rgba(220, 184, 88, 0.3)); }
   70% { opacity: 0.95; }
 }
 
@@ -149,7 +159,7 @@
   width: 8px;
   height: 8px;
   border-radius: 9999px;
-  background-color: #facc15;
+  background-color: #dcb858;
   border: 1px solid #111111;
   transform: translate(-50%, -50%);
   transition: transform 0.4s ease-out, opacity 0.4s ease-out;
@@ -169,7 +179,7 @@
   bottom: 6%;
   width: 108%;
   height: 48%;
-  background: #facc15;
+  background: #dcb858;
   z-index: -1;
   transform: rotate(-1deg) skewX(-4deg);
   border-radius: 4px;
@@ -188,11 +198,11 @@
   left: -6%;
   right: -6%;
   height: 75%;
-  background-color: #facc15;
+  background-color: #dcb858;
   transform: translateY(-45%) rotate(-1.5deg) skewX(-6deg);
   z-index: -1;
   border-radius: 6px;
-  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.45);
+  box-shadow: 0 4px 14px rgba(220, 184, 88, 0.45);
 }
 
 /* Washi Tape Effect */

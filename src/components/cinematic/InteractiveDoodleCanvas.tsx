@@ -73,7 +73,7 @@ export const InteractiveDoodleCanvas: React.FC = () => {
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(250, 204, 21, ${alpha})`;
+          ctx.fillStyle = `rgba(220, 184, 88, ${alpha})`;
           ctx.shadowColor = `rgba(17, 17, 17, ${alpha * 0.4})`;
           ctx.shadowBlur = 3;
           ctx.shadowOffsetX = 1;
@@ -94,8 +94,8 @@ export const InteractiveDoodleCanvas: React.FC = () => {
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
 
-          // Art Work Logo Canary Yellow (#FACC15) with comic shadow
-          ctx.strokeStyle = `rgba(250, 204, 21, ${alpha})`;
+          // Art Work Logo Artisan Gold (#DCB858) with comic shadow
+          ctx.strokeStyle = `rgba(220, 184, 88, ${alpha})`;
           ctx.lineWidth = 8;
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
@@ -248,10 +248,10 @@ export const InteractiveDoodleCanvas: React.FC = () => {
               {/* Grip */}
               <path d="M 30 80 L 40 80 L 38 96 L 32 96 Z" fill="#111111" stroke="#111111" strokeWidth="2" />
               {/* Nib */}
-              <path d="M 32 96 L 38 96 L 35 112 Z" fill="#facc15" stroke="#111111" strokeWidth="2" strokeLinejoin="round" />
+              <path d="M 32 96 L 38 96 L 35 112 Z" fill="#dcb858" stroke="#111111" strokeWidth="2" strokeLinejoin="round" />
               <circle cx="35" cy="102" r="1.2" fill="#111111" />
               {/* Nib Fresh Ink */}
-              <circle cx="35" cy="113" r="2.5" fill="#facc15" stroke="#111111" strokeWidth="1" />
+              <circle cx="35" cy="113" r="2.5" fill="#dcb858" stroke="#111111" strokeWidth="1" />
             </svg>
           </div>
         </div>
