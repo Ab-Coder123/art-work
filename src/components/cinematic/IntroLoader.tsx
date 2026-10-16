@@ -92,13 +92,13 @@ export const IntroLoader: React.FC = () => {
             scale: 1.04,
             transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] },
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white overflow-hidden select-none"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-[#0C0C10] overflow-hidden select-none"
           role="dialog"
           aria-modal="true"
           aria-label="Welcome cinematic presentation"
         >
-          {/* Video Player: plays until the very last frame, then invokes onEnded */}
-          <div className="flex items-center justify-center -translate-y-4 max-w-xl w-full px-6">
+          {/* Video Player: enlarged for cinematic immersion, plays until last frame */}
+          <div className="flex items-center justify-center -translate-y-2 max-w-2xl sm:max-w-3xl lg:max-w-4xl w-full px-4 sm:px-8">
             <video
               ref={videoRef}
               autoPlay
@@ -108,7 +108,7 @@ export const IntroLoader: React.FC = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleFinish}
               onError={handleFinish}
-              className="w-full object-contain"
+              className="w-full object-contain filter drop-shadow-2xl"
             >
               <source src="/assets/video/intro_loader.mp4" type="video/mp4" />
             </video>
@@ -118,7 +118,7 @@ export const IntroLoader: React.FC = () => {
           <div className="absolute bottom-8 right-8 z-20">
             <button
               onClick={handleFinish}
-              className="px-5 py-2.5 rounded-full bg-white/90 hover:bg-yellow-400 text-black font-mono text-xs uppercase tracking-widest font-bold border-2 border-black/20 shadow-md backdrop-blur-md transition-all duration-200 focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:outline-none cursor-pointer"
+              className="px-5 py-2.5 rounded-full bg-white/90 dark:bg-[#151520]/90 hover:bg-yellow-400 dark:hover:bg-yellow-400 text-black dark:text-white dark:hover:text-black font-mono text-xs uppercase tracking-widest font-bold border-2 border-black/20 dark:border-zinc-700 shadow-md backdrop-blur-md transition-all duration-200 focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:outline-none cursor-pointer"
               aria-label="Skip introductory presentation"
             >
               SKIP INTRO ➔
@@ -126,7 +126,7 @@ export const IntroLoader: React.FC = () => {
           </div>
 
           {/* Dynamic Progress Bar: perfectly synced with actual video duration */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-black/5 z-20">
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-black/10 dark:bg-white/10 z-20">
             <div
               className="h-full bg-yellow-400 origin-left transition-all duration-75 ease-linear"
               style={{ width: `${videoProgress}%` }}
