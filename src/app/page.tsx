@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { IntroLoader } from "@/components/cinematic/IntroLoader";
 import { Capabilities3DMatrix } from "@/components/cinematic/Capabilities3DMatrix";
@@ -482,6 +483,9 @@ function StudioFooter({ scrollToStage }: { scrollToStage: (s: StageId) => void }
           <button onClick={() => scrollToStage("stage-03")} className="hover:text-black hover:underline cursor-pointer">
             03 SERVICES
           </button>
+          <Link href="/gallery" className="text-black font-bold underline decoration-yellow-400 hover:text-black">
+            ★ GALLERY
+          </Link>
           <button onClick={() => scrollToStage("stage-04")} className="hover:text-black hover:underline cursor-pointer">
             04 CONTACT
           </button>
@@ -755,6 +759,12 @@ export default function Home() {
             >
               04 Contact
             </button>
+            <Link
+              href="/gallery"
+              className="text-black hover:text-black font-headline font-black text-xs uppercase px-2 py-0.5 rounded bg-yellow-300 border border-black comic-shadow-sm hover:bg-yellow-400 transition-all ml-1"
+            >
+              ★ Gallery
+            </Link>
             <a
               href="/why-us"
               className="text-black/50 hover:text-black font-mono text-[11px] underline decoration-yellow-400 transition-colors ml-1"

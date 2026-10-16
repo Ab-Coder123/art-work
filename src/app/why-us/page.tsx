@@ -142,10 +142,16 @@ export default function WhyUsPage() {
               03 Services
             </Link>
             <Link
+              href="/gallery"
+              className="text-black hover:text-black font-headline font-black text-xs uppercase px-2 py-0.5 rounded bg-yellow-300 border border-black comic-shadow-sm hover:bg-yellow-400 transition-all active:scale-95"
+            >
+              ★ Gallery
+            </Link>
+            <Link
               href="/#stage-04"
               className="text-black/60 font-medium hover:text-black pb-1 transition-opacity duration-150 active:scale-95"
             >
-              04 Contact
+              05 Contact
             </Link>
           </nav>
 
@@ -728,6 +734,9 @@ export default function WhyUsPage() {
             </Link>
             <Link className="text-black/60 hover:text-black transition-colors duration-150" href="/#stage-03">
               Services
+            </Link>
+            <Link className="text-black/80 hover:text-black font-bold transition-colors duration-150" href="/gallery">
+              Gallery
             </Link>
             <Link className="text-black/60 hover:text-black transition-colors duration-150" href="/#brief-inquiry">
               Start a Brief

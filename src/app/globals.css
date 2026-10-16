@@ -263,3 +263,12 @@
   animation: flowDash 1.8s linear infinite reverse;
 }
 
+/* Translucent Masking Tape */
+.washi-tape-yellow {
+  background: rgba(220, 184, 88, 0.85);
+  backdrop-filter: blur(2px);
+  border: 1px dashed rgba(180, 130, 8, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
+}
+
