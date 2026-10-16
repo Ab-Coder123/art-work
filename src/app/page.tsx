@@ -191,7 +191,7 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
 
             <div className="relative overflow-hidden rounded border border-black bg-white aspect-[16/9] max-h-[160px] lg:max-h-[180px] xl:max-h-[210px] flex items-center justify-center">
               <Image
-                src="/assets/images/stitch_hero_collective.png"
+                src="/assets/images/hero_studio_collective.png"
                 alt="Art Work Creative Marketing Studio Collective"
                 fill
                 priority
@@ -337,13 +337,13 @@ function WhyUsContent() {
                 We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.
               </p>
             </div>
-            <div className="lg:col-span-6 border border-black rounded overflow-hidden aspect-[16/7] max-h-[105px] lg:max-h-[115px] bg-white relative">
+            <div className="lg:col-span-6 border border-black rounded overflow-hidden aspect-[16/9] max-h-[120px] lg:max-h-[135px] bg-white relative">
               <Image
-                src="/assets/images/stitch_blueprint_stage.png"
+                src="/assets/images/blueprint_stage_scenography.png"
                 alt="Stage Architecture Blueprints and Scenography"
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
-                className="object-cover"
+                className="object-cover object-center"
               />
             </div>
           </div>
@@ -394,13 +394,13 @@ function ContactContent() {
             </p>
 
             <div className="border border-black rounded p-1.5 bg-yellow-50 relative">
-              <div className="aspect-[16/9] max-h-[100px] lg:max-h-[110px] rounded overflow-hidden border border-black bg-white relative">
+              <div className="aspect-[16/9] max-h-[110px] lg:max-h-[125px] rounded overflow-hidden border border-black bg-white relative">
                 <Image
-                  src="/assets/images/stitch_thinker_intake.png"
+                  src="/assets/images/creative_chief_intake.png"
                   alt="Creative Chief on call"
                   fill
                   sizes="(max-width: 1024px) 100vw, 30vw"
-                  className="object-cover"
+                  className="object-cover object-center"
                 />
               </div>
               <div className="mt-1 text-center text-[9px] font-headline font-bold text-black/70">
