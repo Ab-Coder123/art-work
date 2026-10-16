@@ -15,6 +15,7 @@ import { soundFX } from "@/utils/soundFX";
 import { useDoodleStore } from "@/store/useDoodleStore";
 import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
+import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import {
   ArrowRight,
   Pencil,
@@ -326,7 +327,7 @@ export default function GalleryPage() {
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>
 
       {/* ================= FIXED TOP HEADER ================= */}
-      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 backdrop-blur-md border-b border-black/10">
+      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 transition-colors duration-200">
         <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-2 sm:py-2.5">
           {/* Logo Anchor */}
           <Link
@@ -350,29 +351,29 @@ export default function GalleryPage() {
           <nav className="hidden md:flex items-center gap-6 font-headline text-xs sm:text-sm uppercase tracking-wider font-bold">
             <Link
               href="/#stage-01"
-              className="text-black/60 font-medium hover:text-black pb-0.5 transition-all"
+              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5 transition-all"
             >
               01 Manifesto
             </Link>
             <Link
               href="/why-us"
-              className="text-black/60 font-medium hover:text-black pb-0.5 transition-all"
+              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5 transition-all"
             >
               02 Why Us
             </Link>
             <Link
               href="/#stage-03"
-              className="text-black/60 font-medium hover:text-black pb-0.5 transition-all"
+              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5 transition-all"
             >
               03 Services
             </Link>
             {/* Active Link: 04 Gallery */}
-            <span className="text-black border-b-2 border-yellow-400 font-bold pb-0.5">
+            <span className="text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5">
               04 Gallery
             </span>
             <Link
               href="/#stage-04"
-              className="text-black/60 font-medium hover:text-black pb-0.5 transition-all"
+              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5 transition-all"
             >
               05 Contact
             </Link>
@@ -380,6 +381,7 @@ export default function GalleryPage() {
 
           {/* Trailing Actions */}
           <div className="flex items-center gap-2 sm:gap-2.5">
+            <ThemeToggle />
             <SoundToggle />
 
             <MagneticButton soundType="pop">
@@ -398,10 +400,10 @@ export default function GalleryPage() {
                 toggleDoodle();
               }}
               aria-label="Toggle Studio Pen Doodle Mode"
-              className="w-8 h-8 border-2 border-black rounded-DEFAULT bg-white hover:bg-yellow-100 comic-shadow-sm active:scale-90 transition-transform cursor-pointer flex items-center justify-center"
+              className="w-8 h-8 border-2 border-black dark:border-zinc-400 rounded-DEFAULT bg-white dark:bg-[#181824] hover:bg-yellow-100 dark:hover:bg-[#222232] comic-shadow-sm active:scale-90 transition-transform cursor-pointer flex items-center justify-center text-black dark:text-yellow-400"
               title="Toggle Studio Pen Doodle Mode"
             >
-              <Pencil className="w-4 h-4 text-black" />
+              <Pencil className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -410,21 +412,21 @@ export default function GalleryPage() {
       {/* ================= MAIN CONTENT ================= */}
       <main className="relative z-10 w-full pt-20 sm:pt-24 pb-20">
         {/* ================= HERO SECTION ================= */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-10 border-b border-black/10">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-10 border-b border-black/10 dark:border-zinc-800">
           {/* Vault Subtitle Tag */}
           <div className="flex items-center gap-3 mb-4">
-            <div className="inline-flex items-center gap-2 border border-black bg-white px-3.5 py-1 rounded-full comic-shadow-sm font-headline text-[10px] font-black uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 border border-black dark:border-zinc-700 bg-white dark:bg-[#151520] text-black dark:text-zinc-200 px-3.5 py-1 rounded-full comic-shadow-sm font-headline text-[10px] font-black uppercase tracking-wider">
               <span className="w-2 h-2 rounded-full bg-yellow-400 animate-ping"></span>
               <span>{"★ STAGE 04 // PROJECT ARCHIVE & BLUEPRINT VAULT"}</span>
             </div>
-            <span className="hidden md:inline font-mono text-[11px] text-black/50">
+            <span className="hidden md:inline font-mono text-[11px] text-black/50 dark:text-zinc-400">
               LOC: 52°31&apos;N 13°24&apos;E — ARCHIVE REV. 2025.4
             </span>
           </div>
 
           {/* Monumental Headline */}
           <div className="max-w-5xl mb-6">
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tighter uppercase leading-[0.98] text-black">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tighter uppercase leading-[0.98] text-black dark:text-white">
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.8} delay={0.1}>
                 CRAFTED IN INK.
               </KineticBrushWord> <br />
@@ -441,35 +443,35 @@ export default function GalleryPage() {
           {/* Hero Subtitle & Taped Paper Callout Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Statement: Taped Swatch */}
-            <div className="lg:col-span-7 relative p-5 bg-yellow-50 rounded-lg border-2 border-dashed border-yellow-500 comic-shadow-sm">
+            <div className="lg:col-span-7 relative p-5 bg-yellow-50 dark:bg-[#161622] rounded-lg border-2 border-dashed border-yellow-500/70 dark:border-yellow-500/40 comic-shadow-sm">
               {/* Washi Masking Tape Accents */}
               <div className="washi-tape-yellow absolute -top-3 left-8 w-24 h-5 -rotate-2"></div>
               <div className="washi-tape-yellow absolute -top-3 right-12 w-20 h-5 rotate-3"></div>
 
-              <p className="font-body text-sm sm:text-base text-black/90 leading-relaxed font-semibold">
+              <p className="font-body text-sm sm:text-base text-black/90 dark:text-zinc-200 leading-relaxed font-semibold">
                 “From the initial concept to the final execution, we create
                 memorable experiences that bring brands to life. Every stage
                 truss, lighting sequence, and kinetic pavilion begins with wet
                 fountain pen ink on raw grid paper.”
               </p>
 
-              <div className="mt-4 flex flex-wrap items-center gap-3 pt-3 border-t border-yellow-300 font-mono text-xs text-black/70">
-                <span className="flex items-center gap-1 font-bold">
-                  <Compass className="w-3.5 h-3.5" /> CAD / SPATIAL DMX
+              <div className="mt-4 flex flex-wrap items-center gap-3 pt-3 border-t border-yellow-300 dark:border-zinc-700 font-mono text-xs text-black/70 dark:text-zinc-400">
+                <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
+                  <Compass className="w-3.5 h-3.5 text-yellow-500" /> CAD / SPATIAL DMX
                 </span>
                 <span>•</span>
-                <span className="flex items-center gap-1 font-bold">
-                  <Layers className="w-3.5 h-3.5" /> SCENOGRAPHIC ART
+                <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
+                  <Layers className="w-3.5 h-3.5 text-yellow-500" /> SCENOGRAPHIC ART
                 </span>
                 <span>•</span>
-                <span className="flex items-center gap-1 font-bold">
-                  <Monitor className="w-3.5 h-3.5" /> RAPID 72HR FAB
+                <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
+                  <Monitor className="w-3.5 h-3.5 text-yellow-500" /> RAPID 72HR FAB
                 </span>
               </div>
             </div>
 
             {/* Right: Technical Telemetry Card */}
-            <div className="lg:col-span-5 bg-black text-white p-4 sm:p-5 rounded-lg border-2 border-black comic-shadow">
+            <div className="lg:col-span-5 bg-black dark:bg-[#12121A] text-white p-4 sm:p-5 rounded-lg border-2 border-black dark:border-zinc-700 comic-shadow">
               <div className="flex items-center justify-between pb-2.5 border-b border-white/20 text-xs font-mono text-yellow-400">
                 <span>[SYS_TELEMETRY: STAGE_OPS]</span>
                 <span className="animate-pulse">● LIVE RIGGING</span>
@@ -502,8 +504,8 @@ export default function GalleryPage() {
           </div>
 
           {/* ================= PANTONE-STYLE CATEGORY FILTER CHIPS ================= */}
-          <div className="mt-10 flex flex-wrap items-center gap-2 pt-6 border-t border-dashed border-black/20">
-            <span className="font-mono text-xs font-bold text-black/60 uppercase mr-2 flex items-center gap-1">
+          <div className="mt-10 flex flex-wrap items-center gap-2 pt-6 border-t border-dashed border-black/20 dark:border-zinc-800">
+            <span className="font-mono text-xs font-bold text-black/60 dark:text-zinc-400 uppercase mr-2 flex items-center gap-1">
               <Filter className="w-3.5 h-3.5" /> FILTERS:
             </span>
 
@@ -519,10 +521,10 @@ export default function GalleryPage() {
               <button
                 key={chip.key}
                 onClick={() => handleFilterClick(chip.key as FilterCategory)}
-                className={`px-3 py-1.5 font-headline font-bold text-xs uppercase tracking-wider rounded border-2 border-black transition-all cursor-pointer ${
+                className={`px-3 py-1.5 font-headline font-bold text-xs uppercase tracking-wider rounded border-2 transition-all cursor-pointer ${
                   activeFilter === chip.key
-                    ? "bg-black text-yellow-400 comic-shadow-sm scale-105"
-                    : "bg-white text-black hover:bg-yellow-100"
+                    ? "bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black border-black comic-shadow-sm scale-105"
+                    : "bg-white dark:bg-[#161622] text-black dark:text-zinc-200 border-black dark:border-zinc-700 hover:bg-yellow-100 dark:hover:bg-[#202030]"
                 }`}
               >
                 {chip.label}
@@ -536,16 +538,16 @@ export default function GalleryPage() {
           {/* Section Sub-heading */}
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-3">
             <div>
-              <div className="font-mono text-xs font-bold text-yellow-600 uppercase tracking-widest mb-1">
+              <div className="font-mono text-xs font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-widest mb-1">
                 {"// SELECTED SCENOGRAPHY FOLIO"}
               </div>
-              <h2 className="text-2xl md:text-4xl font-black font-headline uppercase tracking-tight text-black">
+              <h2 className="text-2xl md:text-4xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
                 <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
                   THE TACTILE ARCHIVE
                 </KineticBrushWord>
               </h2>
             </div>
-            <p className="font-headline font-bold text-xs md:text-sm text-black/70 rotate-1 max-w-sm">
+            <p className="font-headline font-bold text-xs md:text-sm text-black/70 dark:text-zinc-400 rotate-1 max-w-sm">
               ✎ &quot;Real physical installations built by our hands, tested at 120 decibels.&quot;
             </p>
           </div>
@@ -565,7 +567,7 @@ export default function GalleryPage() {
                     delay: (index % 3) * 0.1,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="relative bg-white rounded-xl p-5 border-[2.5px] border-black comic-shadow group hover:-translate-y-1 transition-transform duration-200 flex flex-col justify-between"
+                  className="relative bg-white dark:bg-[#151520] rounded-xl p-5 border-[2.5px] border-black dark:border-zinc-700 comic-shadow group hover:-translate-y-1 transition-transform duration-200 flex flex-col justify-between"
                 >
                   {/* Angled Translucent Washi Masking Tape on Corner */}
                   <div
@@ -576,7 +578,7 @@ export default function GalleryPage() {
 
                   <div>
                     {/* Header Stamp Info */}
-                    <div className="flex items-center justify-between pb-2.5 mb-3 border-b-2 border-dashed border-black/10 font-mono text-[11px] text-black/70">
+                    <div className="flex items-center justify-between pb-2.5 mb-3 border-b-2 border-dashed border-black/10 dark:border-zinc-800 font-mono text-[11px] text-black/70 dark:text-zinc-400">
                       <span className="font-bold text-black bg-yellow-300 px-1.5 py-0.5 border border-black rounded-sm">
                         {project.stamp}
                       </span>
@@ -584,7 +586,7 @@ export default function GalleryPage() {
                     </div>
 
                     {/* Hand-inked framed image */}
-                    <div className="relative overflow-hidden rounded-lg border-2 border-black mb-4 bg-neutral-100 aspect-[16/10]">
+                    <div className="relative overflow-hidden rounded-lg border-2 border-black dark:border-zinc-700 mb-4 bg-neutral-100 dark:bg-zinc-800 aspect-[16/10]">
                       <Image
                         src={project.image}
                         alt={project.title}
@@ -598,7 +600,7 @@ export default function GalleryPage() {
                     </div>
 
                     {/* Project Title */}
-                    <h3 className="text-lg sm:text-xl font-black font-headline uppercase tracking-tight text-black mb-2 group-hover:text-yellow-600 transition-colors">
+                    <h3 className="text-lg sm:text-xl font-black font-headline uppercase tracking-tight text-black dark:text-white mb-2 group-hover:text-yellow-500 transition-colors">
                       {project.title}
                     </h3>
 
@@ -610,7 +612,7 @@ export default function GalleryPage() {
                           className={`border px-2 py-0.5 rounded ${
                             i === 0
                               ? "bg-yellow-200 border-black text-black font-extrabold"
-                              : "bg-neutral-100 border-black/30 text-black/80"
+                              : "bg-neutral-100 dark:bg-zinc-800 border-black/30 dark:border-zinc-700 text-black/80 dark:text-zinc-300"
                           }`}
                         >
                           {tag}
@@ -619,11 +621,11 @@ export default function GalleryPage() {
                     </div>
 
                     {/* Architectural Stats Annotation */}
-                    <div className="p-2.5 bg-yellow-50/80 rounded border border-black/20 font-mono text-xs text-black/80 space-y-0.5 mb-4">
-                      <div className="text-black font-bold flex items-center gap-1.5">
+                    <div className="p-2.5 bg-yellow-50/80 dark:bg-[#1a1a26] rounded border border-black/20 dark:border-zinc-700 font-mono text-xs text-black/80 dark:text-zinc-300 space-y-0.5 mb-4">
+                      <div className="text-black dark:text-white font-bold flex items-center gap-1.5">
                         {project.stats}
                       </div>
-                      <div className="text-[11px] text-black/60">
+                      <div className="text-[11px] text-black/60 dark:text-zinc-400">
                         {project.statsSub}
                       </div>
                     </div>
@@ -632,7 +634,7 @@ export default function GalleryPage() {
                   {/* Action Button: Inspect Blueprint */}
                   <button
                     onClick={() => handleInspectClick(project)}
-                    className="w-full py-2.5 px-4 bg-white hover:bg-yellow-400 text-black font-headline font-bold text-xs uppercase border-2 border-black rounded comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-2.5 px-4 bg-white dark:bg-[#1a1a26] hover:bg-yellow-400 dark:hover:bg-yellow-400 text-black dark:text-white dark:hover:text-black font-headline font-bold text-xs uppercase border-2 border-black dark:border-zinc-700 rounded comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Pencil className="w-3.5 h-3.5" />
                     <span>INSPECT BLUEPRINT ↗</span>
@@ -644,20 +646,20 @@ export default function GalleryPage() {
         </section>
 
         {/* ================= SPOTLIGHT: THE BLUEPRINT TO REALITY ================= */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t-2 border-black">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t-2 border-black dark:border-zinc-800">
           <ScrollReveal direction="up" distance={25} className="flex items-center gap-3 mb-6">
             <span className="w-4 h-4 bg-yellow-400 border border-black"></span>
-            <h2 className="text-2xl md:text-3xl font-black font-headline uppercase tracking-tight text-black">
+            <h2 className="text-2xl md:text-3xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
                 THE BLUEPRINT TO REALITY
               </KineticBrushWord>
             </h2>
-            <span className="font-mono text-xs text-black/50 ml-auto hidden sm:inline">
+            <span className="font-mono text-xs text-black/50 dark:text-zinc-400 ml-auto hidden sm:inline">
               DRAFTING TABLE: WORKBENCH 01
             </span>
           </ScrollReveal>
 
-          <ScrollReveal direction="pop" distance={30} delay={0.1} className="relative bg-white rounded-2xl border-3 border-black p-6 md:p-8 comic-shadow overflow-hidden">
+          <ScrollReveal direction="pop" distance={30} delay={0.1} className="relative bg-white dark:bg-[#151520] rounded-2xl border-3 border-black dark:border-zinc-700 p-6 md:p-8 comic-shadow overflow-hidden">
             {/* Washi Tape on corners */}
             <div className="washi-tape-yellow absolute top-3 left-10 w-32 h-6 -rotate-2 z-10"></div>
             <div className="washi-tape-yellow absolute top-3 right-10 w-28 h-6 rotate-3 z-10"></div>
@@ -665,7 +667,7 @@ export default function GalleryPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               {/* Left Column: Easel Blueprint Presentation */}
               <div className="lg:col-span-7 space-y-3">
-                <div className="relative border-2 border-black rounded-xl overflow-hidden comic-shadow-sm bg-white aspect-[16/11]">
+                <div className="relative border-2 border-black dark:border-zinc-700 rounded-xl overflow-hidden comic-shadow-sm bg-white dark:bg-zinc-900 aspect-[16/11]">
                   <Image
                     src="/assets/images/gallery/spotlight_blueprint_easel.jpg"
                     alt="Stage Architect presenting hand-sketched blueprints"
@@ -677,9 +679,9 @@ export default function GalleryPage() {
                     STAGE_SPEC_REV_04
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-xs font-mono text-black/60 px-1">
+                <div className="flex items-center justify-between text-xs font-mono text-black/60 dark:text-zinc-400 px-1">
                   <span>FIG 1.0: EASEL MASTER SCHEMATIC</span>
-                  <span className="text-black font-bold">
+                  <span className="text-black dark:text-white font-bold">
                     CLIENT: INTERNATIONAL EXPO GUILD
                   </span>
                 </div>
@@ -691,26 +693,26 @@ export default function GalleryPage() {
                   <div className="inline-block px-2.5 py-0.5 bg-black text-yellow-400 font-mono text-xs font-bold rounded mb-2">
                     METHODOLOGY: INK-TO-STEEL
                   </div>
-                  <h3 className="text-xl md:text-2xl font-black font-headline uppercase tracking-tight text-black">
+                  <h3 className="text-xl md:text-2xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
                     FROM NAPKIN SKETCH TO 40-TON SUPERSTRUCTURE.
                   </h3>
 
                   {/* Sticky note quote box */}
-                  <div className="my-4 p-3.5 bg-yellow-100 rounded border-2 border-black comic-shadow-sm relative">
-                    <p className="font-headline font-bold text-xs sm:text-sm text-black leading-snug">
+                  <div className="my-4 p-3.5 bg-yellow-100 dark:bg-[#1e1e2c] rounded border-2 border-black dark:border-zinc-700 comic-shadow-sm relative">
+                    <p className="font-headline font-bold text-xs sm:text-sm text-black dark:text-zinc-100 leading-snug">
                       &quot;Every millimeter in vector space was first drawn with black
                       ink on paper. If it doesn&apos;t move people on paper, it won&apos;t
                       move 50,000 fans in an arena.&quot;
                     </p>
-                    <div className="mt-2 text-right font-mono text-[10px] text-black/70 font-bold">
+                    <div className="mt-2 text-right font-mono text-[10px] text-black/70 dark:text-zinc-400 font-bold">
                       — MARKUS V., SCENOGRAPHIC DIRECTOR
                     </div>
                   </div>
 
                   {/* Workflow Checklist */}
-                  <ul className="space-y-2.5 font-body text-xs sm:text-sm text-black/80">
+                  <ul className="space-y-2.5 font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300">
                     <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 rounded bg-black text-yellow-400 flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
+                      <span className="w-5 h-5 rounded bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
                         1
                       </span>
                       <span>
@@ -720,7 +722,7 @@ export default function GalleryPage() {
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 rounded bg-black text-yellow-400 flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
+                      <span className="w-5 h-5 rounded bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
                         2
                       </span>
                       <span>
@@ -729,7 +731,7 @@ export default function GalleryPage() {
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 rounded bg-black text-yellow-400 flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
+                      <span className="w-5 h-5 rounded bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
                         3
                       </span>
                       <span>
@@ -743,7 +745,7 @@ export default function GalleryPage() {
                 <div className="pt-2">
                   <a
                     href="#brief-inquiry"
-                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-6 bg-black text-white hover:bg-yellow-400 hover:text-black font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors"
+                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-6 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-300 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors"
                   >
                     <Download className="w-4 h-4" />
                     <span>DOWNLOAD FULL TECHNICAL STAGE RIDER (PDF)</span>
@@ -810,7 +812,7 @@ export default function GalleryPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
             onClick={() => setSelectedProject(null)}
           >
             <motion.div
@@ -819,7 +821,7 @@ export default function GalleryPage() {
               exit={{ scale: 0.9, y: 20 }}
               transition={{ type: "spring", stiffness: 350, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white border-4 border-black rounded-2xl p-6 sm:p-8 max-w-2xl w-full comic-shadow relative max-h-[90vh] overflow-y-auto"
+              className="bg-white dark:bg-[#151520] border-4 border-black dark:border-zinc-700 rounded-2xl p-6 sm:p-8 max-w-2xl w-full comic-shadow relative max-h-[90vh] overflow-y-auto"
             >
               {/* Close Button */}
               <button
@@ -836,15 +838,15 @@ export default function GalleryPage() {
                 <span>{selectedProject.metaBadge}</span>
               </div>
 
-              <h2 className="text-2xl font-black font-headline uppercase text-black mb-2">
+              <h2 className="text-2xl font-black font-headline uppercase text-black dark:text-white mb-2">
                 {selectedProject.title}
               </h2>
 
-              <p className="font-body text-sm text-black/80 mb-4">
+              <p className="font-body text-sm text-black/80 dark:text-zinc-300 mb-4">
                 {selectedProject.description}
               </p>
 
-              <div className="relative rounded-lg overflow-hidden border-2 border-black aspect-[16/9] mb-4">
+              <div className="relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 aspect-[16/9] mb-4">
                 <Image
                   src={selectedProject.image}
                   alt={selectedProject.title}
@@ -854,26 +856,26 @@ export default function GalleryPage() {
               </div>
 
               <div className="mb-4">
-                <h4 className="font-headline font-bold text-xs uppercase mb-2 text-black">
+                <h4 className="font-headline font-bold text-xs uppercase mb-2 text-black dark:text-white">
                   Technical Specifications &amp; Rigging Deliverables:
                 </h4>
-                <ul className="space-y-1.5 font-mono text-xs text-black/80">
+                <ul className="space-y-1.5 font-mono text-xs text-black/80 dark:text-zinc-300">
                   {selectedProject.specs.map((spec, i) => (
                     <li key={i} className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-black flex-shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-black dark:text-yellow-400 flex-shrink-0" />
                       <span>{spec}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="pt-3 border-t border-black/10 flex items-center justify-between">
-                <span className="font-mono text-xs font-bold text-yellow-600">
+              <div className="pt-3 border-t border-black/10 dark:border-zinc-800 flex items-center justify-between">
+                <span className="font-mono text-xs font-bold text-yellow-600 dark:text-yellow-400">
                   CLIENT: {selectedProject.client}
                 </span>
                 <Link
                   href="/#stage-04"
-                  className="px-4 py-2 bg-black text-white hover:bg-yellow-400 hover:text-black font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors"
+                  className="px-4 py-2 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-300 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors"
                 >
                   REQUEST SIMILAR STAGE ↗
                 </Link>
@@ -884,26 +886,26 @@ export default function GalleryPage() {
       </AnimatePresence>
 
       {/* ================= FOOTER ================= */}
-      <footer className="w-full py-4 bg-white/95 text-black border-t-2 border-black z-30">
-        <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-7xl mx-auto text-[10px] text-black/70 font-mono gap-2 sm:gap-0">
+      <footer className="w-full py-4 bg-white/95 dark:bg-[#0C0C10]/95 text-black dark:text-zinc-300 border-t-2 border-black dark:border-zinc-800 z-30">
+        <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-7xl mx-auto text-[10px] text-black/70 dark:text-zinc-400 font-mono gap-2 sm:gap-0">
           <div>
             © 2025 Art Work Scenography Collective. All sketchbooks &amp; blueprints
             reserved.
           </div>
           <div className="flex items-center gap-4 font-headline font-bold">
-            <Link href="/" className="hover:text-black hover:underline">
+            <Link href="/" className="hover:text-black dark:hover:text-white hover:underline">
               01 MANIFESTO
             </Link>
-            <Link href="/why-us" className="hover:text-black hover:underline">
+            <Link href="/why-us" className="hover:text-black dark:hover:text-white hover:underline">
               02 WHY US
             </Link>
-            <Link href="/#stage-03" className="hover:text-black hover:underline">
+            <Link href="/#stage-03" className="hover:text-black dark:hover:text-white hover:underline">
               03 SERVICES
             </Link>
-            <Link href="/gallery" className="text-black underline decoration-yellow-400">
+            <Link href="/gallery" className="text-black dark:text-yellow-400 underline decoration-yellow-400">
               04 GALLERY
             </Link>
-            <Link href="/#stage-04" className="hover:text-black hover:underline">
+            <Link href="/#stage-04" className="hover:text-black dark:hover:text-white hover:underline">
               05 CONTACT
             </Link>
           </div>

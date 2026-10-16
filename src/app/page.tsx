@@ -18,6 +18,7 @@ import { soundFX } from "@/utils/soundFX";
 import { useDoodleStore } from "@/store/useDoodleStore";
 import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
+import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import {
   ArrowRight,
   ArrowDown,
@@ -68,7 +69,7 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
 
       {/* Hero Typography Section */}
       <div className="relative mb-2 sm:mb-2.5 max-w-4xl">
-        <h1 className="font-headline font-black text-2xl sm:text-3xl md:text-4xl lg:text-[42px] xl:text-[48px] tracking-tight leading-[1.02] text-black">
+        <h1 className="font-headline font-black text-2xl sm:text-3xl md:text-4xl lg:text-[42px] xl:text-[48px] tracking-tight leading-[1.02] text-black dark:text-white">
           <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4} delay={0.1}>
             CREATIVE IDEAS.
           </KineticBrushWord> <br />
@@ -107,9 +108,9 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
       {/* Action Cluster & Team Collective Art with Magnetic Buttons */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
         <div className="lg:col-span-5 space-y-2 sm:space-y-2.5">
-          <p className="font-body text-xs sm:text-sm text-black/80 max-w-sm leading-relaxed">
+          <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 max-w-sm leading-relaxed">
             We are{" "}
-            <strong className="text-black font-bold underline decoration-yellow-400 decoration-2">
+            <strong className="text-black dark:text-white font-bold underline decoration-yellow-400 decoration-2">
               Art Work
             </strong>
             : an interdisciplinary marketing and experiential design collective translating
@@ -130,7 +131,7 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
             <MagneticButton soundType="click">
               <button
                 onClick={onViewCapabilities}
-                className="inline-flex items-center gap-1 bg-white text-black hover:bg-black hover:text-white font-headline font-bold text-xs px-3 py-1.5 rounded-DEFAULT border-2 border-black comic-shadow-sm transition-all duration-150 cursor-pointer"
+                className="inline-flex items-center gap-1 bg-white dark:bg-[#161622] text-black dark:text-white hover:bg-black dark:hover:bg-yellow-400 hover:text-white dark:hover:text-black font-headline font-bold text-xs px-3 py-1.5 rounded-DEFAULT border-2 border-black dark:border-zinc-600 comic-shadow-sm transition-all duration-150 cursor-pointer"
               >
                 <span>VIEW CAPABILITIES</span>
                 <ArrowDown className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -151,10 +152,10 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.4, delay: 0.1 + idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="border border-black bg-white p-1.5 rounded-DEFAULT comic-shadow-sm text-center"
+                className="border border-black dark:border-zinc-700 bg-white dark:bg-[#151520] p-1.5 rounded-DEFAULT comic-shadow-sm text-center"
               >
-                <div className="font-headline font-black text-sm sm:text-base text-black">{badge.num}</div>
-                <div className="text-[8px] font-headline font-bold text-black/70 uppercase">
+                <div className="font-headline font-black text-sm sm:text-base text-black dark:text-white">{badge.num}</div>
+                <div className="text-[8px] font-headline font-bold text-black/70 dark:text-zinc-400 uppercase">
                   {badge.label}
                 </div>
               </motion.div>
@@ -170,26 +171,26 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
           transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="lg:col-span-7 relative"
         >
-          <div className="border-3 border-black bg-white rounded-lg p-2 comic-shadow relative group">
+          <div className="border-3 border-black dark:border-zinc-600 bg-white dark:bg-[#151520] rounded-lg p-2 comic-shadow relative group">
             <div className="absolute -top-2 left-6 w-10 h-4 bg-yellow-300/80 border border-black/30 -rotate-3 z-30"></div>
             <div className="absolute -top-2 right-6 w-10 h-4 bg-yellow-300/80 border border-black/30 rotate-2 z-30"></div>
 
-            <div className="flex items-center justify-between pb-1 mb-1 border-b border-black/10 text-[10px] font-headline font-bold">
+            <div className="flex items-center justify-between pb-1 mb-1 border-b border-black/10 dark:border-white/10 text-[10px] font-headline font-bold text-black dark:text-white">
               <div className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-red-500 border border-black"></span>
                 <span className="w-2 h-2 rounded-full bg-yellow-400 border border-black"></span>
                 <span className="w-2 h-2 rounded-full bg-green-500 border border-black"></span>
-                <span className="ml-1 text-black/60 font-mono text-[10px]">
+                <span className="ml-1 text-black/60 dark:text-zinc-400 font-mono text-[10px]">
                   STUDIO_COLLECTIVE_CANVAS.V4
                 </span>
               </div>
               <div className="flex items-center gap-1 text-[10px]">
-                <Paintbrush className="w-3.5 h-3.5 text-black" />
-                <span>INK_LAYER_ACTIVE</span>
+                <Paintbrush className="w-3.5 h-3.5 text-black dark:text-yellow-400" />
+                <span className="dark:text-yellow-400">INK_LAYER_ACTIVE</span>
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded border border-black bg-white aspect-[16/9] max-h-[160px] lg:max-h-[180px] xl:max-h-[210px] flex items-center justify-center">
+            <div className="relative overflow-hidden rounded border border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] aspect-[16/9] max-h-[160px] lg:max-h-[180px] xl:max-h-[210px] flex items-center justify-center">
               <Image
                 src="/assets/images/hero_studio_collective.png"
                 alt="Art Work Creative Marketing Studio Collective"
@@ -212,12 +213,12 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
 function WhyUsContent() {
   return (
     <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-2 pb-1.5 border-b-2 border-black">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-2 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-2.5 py-0.5 border border-black comic-shadow-sm text-[10px] font-headline font-black uppercase mb-1">
             <span>02 WHY ART WORK</span>
           </div>
-          <h2 className="font-headline font-black text-lg sm:text-xl lg:text-2xl text-black tracking-tight">
+          <h2 className="font-headline font-black text-lg sm:text-xl lg:text-2xl text-black dark:text-white tracking-tight">
             ENGINEERED FOR{" "}
             <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
               STAGE &amp; SCALE.
@@ -227,7 +228,7 @@ function WhyUsContent() {
         <div className="flex items-center gap-2">
           <a
             href="/why-us"
-            className="inline-flex items-center gap-1.5 font-headline font-black text-[11px] uppercase bg-black text-white hover:bg-yellow-400 hover:text-black px-3 py-1.5 rounded border border-black comic-shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 font-headline font-black text-[11px] uppercase bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black px-3 py-1.5 rounded border border-black comic-shadow-sm transition-all"
           >
             <span>EXPLORE FULL WHY US</span>
             <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -242,25 +243,25 @@ function WhyUsContent() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black p-2.5 sm:p-3 rounded-lg bg-white comic-shadow flex flex-col justify-between"
+          className="border-2 border-black dark:border-zinc-700 p-2.5 sm:p-3 rounded-lg bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between"
         >
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
+              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
                 01
               </span>
-              <Layers className="w-4 h-4 text-black stroke-[1.75]" />
+              <Layers className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-xs sm:text-sm text-black mb-0.5 uppercase">
+            <h3 className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-0.5 uppercase">
               Arena &amp; Stage Scenography
             </h3>
-            <p className="font-body text-[10px] text-black/75 leading-snug">
+            <p className="font-body text-[10px] text-black/75 dark:text-zinc-300 leading-snug">
               Stage blueprints, LED mapping rigs, lighting cue choreographies, and large-format structural storytelling.
             </p>
           </div>
-          <div className="pt-1.5 mt-1.5 border-t border-black/10 flex items-center justify-between text-[9px] font-headline font-bold">
+          <div className="pt-1.5 mt-1.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[9px] font-headline font-bold">
             <span className="bg-black text-white px-1.5 py-0.2 rounded">PRODUCTION READY</span>
-            <CheckCircle2 className="w-3 h-3 text-black" />
+            <CheckCircle2 className="w-3 h-3 text-black dark:text-yellow-400" />
           </div>
         </motion.div>
 
@@ -269,27 +270,27 @@ function WhyUsContent() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black p-2.5 sm:p-3 rounded-lg bg-yellow-50 comic-shadow flex flex-col justify-between"
+          className="border-2 border-black dark:border-zinc-700 p-2.5 sm:p-3 rounded-lg bg-yellow-50 dark:bg-[#1B1B28] comic-shadow flex flex-col justify-between"
         >
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
+              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
                 02
               </span>
-              <Sparkles className="w-4 h-4 text-black fill-yellow-400" />
+              <Sparkles className="w-4 h-4 text-black dark:text-yellow-400 fill-yellow-400" />
             </div>
-            <h3 className="font-headline font-black text-xs sm:text-sm text-black mb-0.5 uppercase">
+            <h3 className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-0.5 uppercase">
               Dynamic Motion Systems
             </h3>
-            <p className="font-body text-[10px] text-black/75 leading-snug">
+            <p className="font-body text-[10px] text-black/75 dark:text-zinc-300 leading-snug">
               Kinetic typography, 3D broadcast packages, real-time reactive shaders, and frame-accurate visual sync.
             </p>
           </div>
-          <div className="pt-1.5 mt-1.5 border-t border-black/10 flex items-center justify-between text-[9px] font-headline font-bold">
+          <div className="pt-1.5 mt-1.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[9px] font-headline font-bold">
             <span className="bg-yellow-400 text-black border border-black px-1.5 py-0.2 rounded">
               60 FPS FIDELITY
             </span>
-            <Zap className="w-3 h-3 text-black fill-yellow-400" />
+            <Zap className="w-3 h-3 text-black dark:text-yellow-400 fill-yellow-400" />
           </div>
         </motion.div>
 
@@ -298,46 +299,46 @@ function WhyUsContent() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black p-2.5 sm:p-3 rounded-lg bg-white comic-shadow flex flex-col justify-between"
+          className="border-2 border-black dark:border-zinc-700 p-2.5 sm:p-3 rounded-lg bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between"
         >
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
+              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
                 03
               </span>
-              <Palette className="w-4 h-4 text-black stroke-[1.75]" />
+              <Palette className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-xs sm:text-sm text-black mb-0.5 uppercase">
+            <h3 className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-0.5 uppercase">
               Brand Architecture
             </h3>
-            <p className="font-body text-[10px] text-black/75 leading-snug">
+            <p className="font-body text-[10px] text-black/75 dark:text-zinc-300 leading-snug">
               Custom hand-drawn vector doodle suites, physical merch design, stage passes, and total campaign cohesion.
             </p>
           </div>
-          <div className="pt-1.5 mt-1.5 border-t border-black/10 flex items-center justify-between text-[9px] font-headline font-bold">
+          <div className="pt-1.5 mt-1.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[9px] font-headline font-bold">
             <span className="bg-black text-white px-1.5 py-0.2 rounded">TACTILE &amp; DIGITAL</span>
-            <Paintbrush className="w-3 h-3 text-black" />
+            <Paintbrush className="w-3 h-3 text-black dark:text-yellow-400" />
           </div>
         </motion.div>
       </div>
 
       {/* Blueprint Showcase Card */}
       <ScrollReveal direction="up" distance={20}>
-        <div className="border-2 sm:border-3 border-black rounded-lg p-2.5 sm:p-3 bg-white comic-shadow relative">
+        <div className="border-2 sm:border-3 border-black dark:border-zinc-700 rounded-lg p-2.5 sm:p-3 bg-white dark:bg-[#151520] comic-shadow relative">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
             <div className="lg:col-span-6 space-y-1">
               <div className="inline-flex items-center gap-1 text-[9px] font-headline font-black uppercase text-black bg-yellow-300 px-1.5 py-0.2 rounded border border-black">
                 <Compass className="w-3 h-3 text-black" />
                 <span>BLUEPRINT &amp; STAGE PREVIEW</span>
               </div>
-              <h3 className="font-headline font-black text-sm sm:text-base text-black">
+              <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white">
                 FROM SKETCHBOARD TO LIVE VENUE IN 72 HOURS.
               </h3>
-              <p className="font-body text-[10px] sm:text-[11px] text-black/80">
+              <p className="font-body text-[10px] sm:text-[11px] text-black/80 dark:text-zinc-300">
                 We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.
               </p>
             </div>
-            <div className="lg:col-span-6 border border-black rounded overflow-hidden aspect-[16/9] max-h-[120px] lg:max-h-[135px] bg-white relative">
+            <div className="lg:col-span-6 border border-black dark:border-zinc-700 rounded overflow-hidden aspect-[16/9] max-h-[120px] lg:max-h-[135px] bg-white dark:bg-[#0E0E14] relative">
               <Image
                 src="/assets/images/blueprint_stage_scenography.png"
                 alt="Stage Architecture Blueprints and Scenography"
@@ -370,8 +371,8 @@ function ServicesContent() {
 function ContactContent() {
   return (
     <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
-      <div className="border-3 border-black bg-white rounded-lg p-3 sm:p-4 comic-shadow relative mt-2.5">
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-300 border border-black px-3 py-0.5 font-headline font-black text-[9px] uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
+      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-lg p-3 sm:p-4 comic-shadow relative mt-2.5">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border border-black px-3 py-0.5 font-headline font-black text-[9px] uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           STAGE 04 // LAUNCH YOUR CAMPAIGN
         </div>
 
@@ -383,18 +384,18 @@ function ContactContent() {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-5 space-y-2"
           >
-            <h2 className="font-headline font-black text-lg sm:text-xl text-black tracking-tight leading-none">
+            <h2 className="font-headline font-black text-lg sm:text-xl text-black dark:text-white tracking-tight leading-none">
               LET’S INK SOMETHING{" "}
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
                 HISTORIC.
               </KineticBrushWord>
             </h2>
-            <p className="font-body text-xs text-black/80">
+            <p className="font-body text-xs text-black/80 dark:text-zinc-300">
               Whether you need a dynamic stage package for an arena tour or an unforgettable brand identity, our sketchpad is open.
             </p>
 
-            <div className="border border-black rounded p-1.5 bg-yellow-50 relative">
-              <div className="aspect-[16/9] max-h-[110px] lg:max-h-[125px] rounded overflow-hidden border border-black bg-white relative">
+            <div className="border border-black dark:border-zinc-700 rounded p-1.5 bg-yellow-50 dark:bg-[#1C1C28] relative">
+              <div className="aspect-[16/9] max-h-[110px] lg:max-h-[125px] rounded overflow-hidden border border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] relative">
                 <Image
                   src="/assets/images/creative_chief_intake.png"
                   alt="Creative Chief on call"
@@ -403,20 +404,20 @@ function ContactContent() {
                   className="object-cover object-center"
                 />
               </div>
-              <div className="mt-1 text-center text-[9px] font-headline font-bold text-black/70">
+              <div className="mt-1 text-center text-[9px] font-headline font-bold text-black/70 dark:text-zinc-400">
                 DIRECT INTAKE // CREATIVE CHIEF ON-CALL
               </div>
             </div>
 
-            <div className="space-y-1 text-[10px] font-headline font-bold">
+            <div className="space-y-1 text-[10px] font-headline font-bold text-black dark:text-zinc-200">
               <div className="flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-yellow-400 border border-black flex items-center justify-center font-bold text-[9px]">
+                <span className="w-4 h-4 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[9px]">
                   @
                 </span>
                 <span>studio@artwork-solutions.stage</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-yellow-400 border border-black flex items-center justify-center font-bold text-[9px]">
+                <span className="w-4 h-4 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[9px]">
                   📍
                 </span>
                 <span>404 Kinetic Way, Arts District</span>
@@ -429,7 +430,7 @@ function ContactContent() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7 bg-white border border-black rounded-lg p-3 comic-shadow-sm"
+            className="lg:col-span-7 bg-white dark:bg-[#181824] border border-black dark:border-zinc-700 rounded-lg p-3 comic-shadow-sm"
           >
             <form
               className="space-y-2"
@@ -441,22 +442,22 @@ function ContactContent() {
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black">
+                  <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black dark:text-zinc-300">
                     Your Name / Title
                   </label>
                   <input
-                    className="w-full border border-black rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                    className="w-full border border-black dark:border-zinc-700 rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
                     placeholder="Alex Mercer, Head of Brand"
                     required
                     type="text"
                   />
                 </div>
                 <div>
-                  <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black">
+                  <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black dark:text-zinc-300">
                     Email Address
                   </label>
                   <input
-                    className="w-full border border-black rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                    className="w-full border border-black dark:border-zinc-700 rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
                     placeholder="alex@company.com"
                     required
                     type="email"
@@ -465,11 +466,11 @@ function ContactContent() {
               </div>
 
               <div>
-                <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black">
+                <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black dark:text-zinc-300">
                   The Core Brief / Vision Constraints
                 </label>
                 <textarea
-                  className="w-full border border-black rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                  className="w-full border border-black dark:border-zinc-700 rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
                   placeholder="Describe your arena, product launch, or brand evolution requirements..."
                   required
                   rows={2}
@@ -477,12 +478,12 @@ function ContactContent() {
               </div>
 
               <div className="flex items-center justify-between pt-0.5">
-                <span className="text-[9px] font-body text-black/60">
+                <span className="text-[9px] font-body text-black/60 dark:text-zinc-400">
                   ⚡ 24h rapid response standard
                 </span>
                 <MagneticButton soundType="pop">
                   <button
-                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-black hover:text-white text-black font-headline font-black text-xs px-3.5 py-1.5 rounded border border-black comic-shadow-sm active:scale-95 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black font-headline font-black text-xs px-3.5 py-1.5 rounded border border-black comic-shadow-sm active:scale-95 transition-all cursor-pointer"
                     type="submit"
                   >
                     <span>DISPATCH BRIEF</span>
@@ -503,23 +504,23 @@ function ContactContent() {
    ========================================================================= */
 function StudioFooter({ scrollToStage }: { scrollToStage: (s: StageId) => void }) {
   return (
-    <footer className="w-full py-2.5 bg-white/95 text-black border-t border-black/10 z-30">
-      <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-7xl mx-auto text-[10px] text-black/70 font-mono gap-2 sm:gap-0">
+    <footer className="w-full py-2.5 bg-white/95 dark:bg-[#0D0D12]/95 text-black dark:text-white border-t border-black/10 dark:border-white/10 z-30 transition-colors duration-200">
+      <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-7xl mx-auto text-[10px] text-black/70 dark:text-zinc-400 font-mono gap-2 sm:gap-0">
         <div>© 2025 Art Work - Marketing Solutions. Pinned Kinetic Stage Engine.</div>
         <div className="flex items-center gap-3 font-headline font-bold">
-          <button onClick={() => scrollToStage("stage-01")} className="hover:text-black hover:underline cursor-pointer">
+          <button onClick={() => scrollToStage("stage-01")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
             01 MANIFESTO
           </button>
-          <button onClick={() => scrollToStage("stage-02")} className="hover:text-black hover:underline cursor-pointer">
+          <button onClick={() => scrollToStage("stage-02")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
             02 WHY US
           </button>
-          <button onClick={() => scrollToStage("stage-03")} className="hover:text-black hover:underline cursor-pointer">
+          <button onClick={() => scrollToStage("stage-03")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
             03 SERVICES
           </button>
-          <Link href="/gallery" className="text-black font-bold underline decoration-yellow-400 hover:text-black">
+          <Link href="/gallery" className="text-black dark:text-white font-bold underline decoration-yellow-400 hover:text-black dark:hover:text-yellow-400">
             ★ GALLERY
           </Link>
-          <button onClick={() => scrollToStage("stage-04")} className="hover:text-black hover:underline cursor-pointer">
+          <button onClick={() => scrollToStage("stage-04")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
             04 CONTACT
           </button>
         </div>
@@ -745,7 +746,7 @@ export default function Home() {
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>
 
       {/* ================= FIXED TOP HEADER (SHARED DESKTOP & MOBILE) ================= */}
-      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 backdrop-blur-md border-b border-black/10">
+      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 transition-colors duration-200">
         <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-1.5 sm:py-2">
           {/* Logo Anchor with Transparent Brand Image */}
           <button
@@ -772,8 +773,8 @@ export default function Home() {
               onClick={() => scrollToStage("stage-01")}
               className={`${
                 activeStage === "stage-01"
-                  ? "text-black border-b-2 border-yellow-400 font-bold pb-0.5"
-                  : "text-black/60 font-medium hover:text-black pb-0.5"
+                  ? "text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5"
+                  : "text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5"
               } transition-all cursor-pointer`}
             >
               01 Manifesto
@@ -782,8 +783,8 @@ export default function Home() {
               onClick={() => scrollToStage("stage-02")}
               className={`${
                 activeStage === "stage-02"
-                  ? "text-black border-b-2 border-yellow-400 font-bold pb-0.5"
-                  : "text-black/60 font-medium hover:text-black pb-0.5"
+                  ? "text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5"
+                  : "text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5"
               } transition-all cursor-pointer`}
             >
               02 Why Us
@@ -792,8 +793,8 @@ export default function Home() {
               onClick={() => scrollToStage("stage-03")}
               className={`${
                 activeStage === "stage-03"
-                  ? "text-black border-b-2 border-yellow-400 font-bold pb-0.5"
-                  : "text-black/60 font-medium hover:text-black pb-0.5"
+                  ? "text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5"
+                  : "text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5"
               } transition-all cursor-pointer`}
             >
               03 Services
@@ -802,28 +803,29 @@ export default function Home() {
               onClick={() => scrollToStage("stage-04")}
               className={`${
                 activeStage === "stage-04"
-                  ? "text-black border-b-2 border-yellow-400 font-bold pb-0.5"
-                  : "text-black/60 font-medium hover:text-black pb-0.5"
+                  ? "text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5"
+                  : "text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5"
               } transition-all cursor-pointer`}
             >
               04 Contact
             </button>
             <Link
               href="/gallery"
-              className="text-black hover:text-black font-headline font-black text-xs uppercase px-2 py-0.5 rounded bg-yellow-300 border border-black comic-shadow-sm hover:bg-yellow-400 transition-all ml-1"
+              className="text-black font-headline font-black text-xs uppercase px-2 py-0.5 rounded bg-yellow-300 dark:bg-yellow-400 border border-black comic-shadow-sm hover:bg-yellow-400 transition-all ml-1"
             >
               ★ Gallery
             </Link>
             <a
               href="/why-us"
-              className="text-black/50 hover:text-black font-mono text-[11px] underline decoration-yellow-400 transition-colors ml-1"
+              className="text-black/50 dark:text-zinc-400 hover:text-black dark:hover:text-white font-mono text-[11px] underline decoration-yellow-400 transition-colors ml-1"
             >
               [Stand-alone View ↗]
             </a>
           </nav>
 
-          {/* Trailing Primary Actions: Sound Toggle + Brief Inquiry + Ink Mode */}
+          {/* Trailing Primary Actions: Theme Toggle + Sound Toggle + Brief Inquiry + Ink Mode */}
           <div className="flex items-center gap-2 sm:gap-2.5">
+            <ThemeToggle />
             <SoundToggle />
 
             <MagneticButton soundType="pop">
@@ -842,56 +844,36 @@ export default function Home() {
                 toggleDoodle();
               }}
               aria-label="Toggle Studio Pen Doodle Mode"
-              className="w-8 h-8 border-2 border-black rounded-DEFAULT bg-white hover:bg-yellow-100 comic-shadow-sm active:scale-90 transition-transform cursor-pointer flex items-center justify-center"
+              className="w-8 h-8 border-2 border-black dark:border-zinc-400 rounded-DEFAULT bg-white dark:bg-[#181824] hover:bg-yellow-100 dark:hover:bg-[#222232] comic-shadow-sm active:scale-90 transition-transform cursor-pointer flex items-center justify-center text-black dark:text-yellow-400"
               title="Toggle Studio Pen Doodle Mode"
             >
-              <Pencil className="w-4 h-4 text-black" />
+              <Pencil className="w-4 h-4" />
             </button>
           </div>
         </div>
 
         {/* Mobile Stage Navigation Pill Strip (Allows Instant Jumping & Status Indicator) */}
-        <div className="md:hidden flex items-center justify-between gap-1 px-3 py-1.5 bg-yellow-50/95 border-t border-black/10 overflow-x-auto">
-          <button
-            onClick={() => scrollToStage("stage-01")}
-            className={`px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-              activeStage === "stage-01"
-                ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black"
-                : "bg-white text-black/60 border border-black/20 hover:text-black"
-            }`}
-          >
-            01 Manifesto
-          </button>
-          <button
-            onClick={() => scrollToStage("stage-02")}
-            className={`px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-              activeStage === "stage-02"
-                ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black"
-                : "bg-white text-black/60 border border-black/20 hover:text-black"
-            }`}
-          >
-            02 Why Us
-          </button>
-          <button
-            onClick={() => scrollToStage("stage-03")}
-            className={`px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-              activeStage === "stage-03"
-                ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black"
-                : "bg-white text-black/60 border border-black/20 hover:text-black"
-            }`}
-          >
-            03 Services
-          </button>
-          <button
-            onClick={() => scrollToStage("stage-04")}
-            className={`px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-              activeStage === "stage-04"
-                ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black"
-                : "bg-white text-black/60 border border-black/20 hover:text-black"
-            }`}
-          >
-            04 Contact
-          </button>
+        <div className="md:hidden flex items-center justify-between gap-1 px-3 py-1.5 bg-yellow-50/95 dark:bg-[#12121A]/95 border-t border-black/10 dark:border-white/10 overflow-x-auto">
+          {(
+            [
+              { id: "stage-01", label: "01 Manifesto" },
+              { id: "stage-02", label: "02 Why Us" },
+              { id: "stage-03", label: "03 Services" },
+              { id: "stage-04", label: "04 Contact" },
+            ] as const
+          ).map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollToStage(item.id)}
+              className={`px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                activeStage === item.id
+                  ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black"
+                  : "bg-white dark:bg-[#181824] text-black/60 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 hover:text-black dark:hover:text-white"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
       </header>
 
@@ -966,10 +948,10 @@ export default function Home() {
                 01 Manifesto
               </span>
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black transition-all ${
+                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
                   activeStage === "stage-01"
                     ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
-                    : "bg-white group-hover:bg-yellow-400"
+                    : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"
                 }`}
               ></div>
             </button>
@@ -981,10 +963,10 @@ export default function Home() {
                 02 Why Us
               </span>
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black transition-all ${
+                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
                   activeStage === "stage-02"
                     ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
-                    : "bg-white group-hover:bg-yellow-400"
+                    : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"
                 }`}
               ></div>
             </button>
@@ -996,10 +978,10 @@ export default function Home() {
                 03 Services
               </span>
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black transition-all ${
+                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
                   activeStage === "stage-03"
                     ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
-                    : "bg-white group-hover:bg-yellow-400"
+                    : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"
                 }`}
               ></div>
             </button>
@@ -1011,10 +993,10 @@ export default function Home() {
                 04 Contact
               </span>
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black transition-all ${
+                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
                   activeStage === "stage-04"
                     ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
-                    : "bg-white group-hover:bg-yellow-400"
+                    : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"
                 }`}
               ></div>
             </button>

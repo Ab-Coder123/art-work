@@ -227,7 +227,7 @@ const TiltCard: React.FC<{
           transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
           transition: "transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
-        className="relative border-2 border-black p-2.5 sm:p-3 rounded-lg bg-white comic-shadow hover:comic-shadow-yellow hover:bg-yellow-50 transition-colors duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1"
+        className="relative border-2 border-black dark:border-zinc-700 p-2.5 sm:p-3 rounded-lg bg-white dark:bg-[#15151F] comic-shadow dark:shadow-[4px_4px_0px_#000000] hover:comic-shadow-yellow hover:bg-yellow-50 dark:hover:bg-[#1D1D2B] transition-colors duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1"
       >
         {/* Dynamic Specular Glare Overlay */}
         <div
@@ -240,7 +240,7 @@ const TiltCard: React.FC<{
 
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-1">
-            <span className="font-headline font-black text-[9px] text-black/50">
+            <span className="font-headline font-black text-[9px] text-black/50 dark:text-zinc-400">
               {discipline.tag}
             </span>
             <span className="w-4 h-4 rounded-full bg-black text-yellow-400 font-mono text-[8px] font-black flex items-center justify-center">
@@ -248,22 +248,22 @@ const TiltCard: React.FC<{
             </span>
           </div>
 
-          <div className="font-headline font-black text-xs sm:text-sm text-black mb-1 group-hover:text-yellow-600 transition-colors">
+          <div className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-1 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
             {discipline.title}
           </div>
 
-          <ul className="text-[10px] font-body text-black/80 space-y-0.5 list-disc list-inside">
+          <ul className="text-[10px] font-body text-black/80 dark:text-zinc-300 space-y-0.5 list-disc list-inside">
             {discipline.specs.map((spec, i) => (
               <li key={i}>{spec}</li>
             ))}
           </ul>
         </div>
 
-        <div className="relative z-10 mt-2 pt-1.5 border-t border-black/20 font-headline font-black text-[9px] text-black flex items-center justify-between">
+        <div className="relative z-10 mt-2 pt-1.5 border-t border-black/20 dark:border-zinc-700 font-headline font-black text-[9px] text-black dark:text-zinc-200 flex items-center justify-between">
           <span className="group-hover:underline decoration-yellow-400 decoration-2">
             ENGAGE TOOLKIT
           </span>
-          <span className="group-hover:translate-x-1 group-hover:scale-125 transition-transform text-black flex items-center justify-center">
+          <span className="group-hover:translate-x-1 group-hover:scale-125 transition-transform text-black dark:text-yellow-400 flex items-center justify-center">
             {renderDisciplineIcon(discipline.icon)}
           </span>
         </div>
@@ -287,13 +287,13 @@ export const Capabilities3DMatrix: React.FC = () => {
         <div className="inline-block bg-yellow-400 text-black px-2.5 py-0.5 border border-black comic-shadow-sm font-headline text-[9px] font-black uppercase mb-1 -rotate-1">
           03 CAPABILITIES &amp; 3D MATRIX
         </div>
-        <h2 className="font-headline font-black text-xl sm:text-2xl text-black tracking-tight mb-0.5 uppercase">
+        <h2 className="font-headline font-black text-xl sm:text-2xl text-black dark:text-white tracking-tight mb-0.5 uppercase">
           Interactive Discipline{" "}
           <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.2}>
             Roster.
           </KineticBrushWord>
         </h2>
-        <p className="font-body text-[11px] text-black/70">
+        <p className="font-body text-[11px] text-black/70 dark:text-zinc-400">
           Tilt in 3D or click any discipline card below to inspect technical delivery specs and arena toolkits.
         </p>
       </ScrollReveal>
@@ -312,10 +312,10 @@ export const Capabilities3DMatrix: React.FC = () => {
           <button
             key={tab.key}
             onClick={() => setActiveFilter(tab.key)}
-            className={`px-2.5 py-0.5 rounded-full font-headline text-[9px] font-bold uppercase tracking-wider border border-black transition-all ${
+            className={`px-2.5 py-0.5 rounded-full font-headline text-[9px] font-bold uppercase tracking-wider border border-black dark:border-zinc-700 transition-all cursor-pointer ${
               activeFilter === tab.key
-                ? "bg-yellow-400 text-black comic-shadow-sm scale-105"
-                : "bg-white text-black/70 hover:bg-yellow-100"
+                ? "bg-yellow-400 text-black comic-shadow-sm scale-105 font-black"
+                : "bg-white dark:bg-[#15151F] text-black/70 dark:text-zinc-300 hover:bg-yellow-100 dark:hover:bg-[#1E1E2C]"
             }`}
           >
             {tab.label}
@@ -351,12 +351,12 @@ export const Capabilities3DMatrix: React.FC = () => {
               exit={{ scale: 0.9, y: 20 }}
               transition={{ type: "spring", stiffness: 350, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white border-4 border-black rounded-2xl p-6 sm:p-8 max-w-2xl w-full comic-shadow relative"
+              className="bg-white dark:bg-[#15151F] border-4 border-black dark:border-zinc-600 rounded-2xl p-6 sm:p-8 max-w-2xl w-full comic-shadow dark:shadow-[8px_8px_0px_#000000] relative text-black dark:text-white"
             >
               {/* Close Button */}
               <button
                 onClick={() => setSelectedDiscipline(null)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-yellow-400 hover:bg-black hover:text-white text-black border-2 border-black font-black flex items-center justify-center transition-colors"
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black border-2 border-black font-black flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Close dialog"
               >
                 ✕
@@ -368,25 +368,25 @@ export const Capabilities3DMatrix: React.FC = () => {
                 <span>{selectedDiscipline.metrics}</span>
               </div>
 
-              <h3 className="font-headline font-black text-2xl sm:text-3xl text-black mb-3">
+              <h3 className="font-headline font-black text-2xl sm:text-3xl text-black dark:text-white mb-3">
                 {selectedDiscipline.title}
               </h3>
 
-              <p className="font-body text-sm sm:text-base text-black/80 mb-6 leading-relaxed">
+              <p className="font-body text-sm sm:text-base text-black/80 dark:text-zinc-300 mb-6 leading-relaxed">
                 {selectedDiscipline.description}
               </p>
 
-              <div className="border-t-2 border-black/10 pt-4 mb-6">
-                <h4 className="font-headline font-bold text-xs uppercase text-black/60 tracking-wider mb-3">
+              <div className="border-t-2 border-black/10 dark:border-white/10 pt-4 mb-6">
+                <h4 className="font-headline font-bold text-xs uppercase text-black/60 dark:text-zinc-400 tracking-wider mb-3">
                   Production Deliverables &amp; Formats
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {selectedDiscipline.deliverables.map((item, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-2 text-xs font-mono font-bold text-black bg-yellow-50 border border-black/20 p-2 rounded"
+                      className="flex items-center gap-2 text-xs font-mono font-bold text-black dark:text-zinc-200 bg-yellow-50 dark:bg-[#1B1B26] border border-black/20 dark:border-zinc-700 p-2 rounded"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5 text-yellow-600 fill-yellow-400/20 stroke-black shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400 fill-yellow-400/20 stroke-black dark:stroke-yellow-400 shrink-0" />
                       <span>{item}</span>
                     </div>
                   ))}
@@ -394,13 +394,13 @@ export const Capabilities3DMatrix: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between pt-2">
-                <span className="text-xs font-mono text-black/60">
+                <span className="text-xs font-mono text-black/60 dark:text-zinc-400">
                   Ready for live arena integration
                 </span>
                 <a
                   href="#brief-inquiry"
                   onClick={() => setSelectedDiscipline(null)}
-                  className="inline-flex items-center gap-2 bg-black text-white hover:bg-yellow-400 hover:text-black font-headline font-bold text-xs px-5 py-2.5 rounded-lg border-2 border-black comic-shadow-sm transition-all"
+                  className="inline-flex items-center gap-2 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black font-headline font-bold text-xs px-5 py-2.5 rounded-lg border-2 border-black comic-shadow-sm transition-all"
                 >
                   <span>Request Spec in Brief</span>
                   <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -413,7 +413,7 @@ export const Capabilities3DMatrix: React.FC = () => {
 
       {/* Live Idea Generation Banner Showcase */}
       <ScrollReveal direction="pop" distance={20} className="mt-3 sm:mt-4">
-        <div className="bg-black text-white px-5 py-3 sm:py-3.5 rounded-lg border-2 border-black comic-shadow relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
+        <div className="bg-black dark:bg-[#14141E] text-white px-5 py-3 sm:py-3.5 rounded-lg border-2 border-black dark:border-zinc-700 comic-shadow relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
           <div className="relative z-10 max-w-xl text-left">
             <div className="flex items-center gap-1.5 mb-0.5 text-yellow-400 font-headline font-black text-[9px] tracking-wider uppercase">
               <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
