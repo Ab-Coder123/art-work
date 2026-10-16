@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useIntroStore } from "@/hooks/useIntroStore";
+import { useTheme } from "@/components/theme/ThemeProvider";
 
 export const IntroLoader: React.FC = () => {
   const { isIntroActive, completeIntro } = useIntroStore();
+  const { resolvedTheme } = useTheme();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoProgress, setVideoProgress] = React.useState(0);
+  const [videoProgress, setVideoProgress] = useState(0);
+
+  const isDark = resolvedTheme === "dark";
 
   // Check if user has already seen intro in this browser session
   useEffect(() => {
@@ -35,7 +39,7 @@ export const IntroLoader: React.FC = () => {
   }, [isIntroActive]);
 
   // Handle completion and store session flag
-  const handleFinish = React.useCallback(() => {
+  const handleFinish = useCallback(() => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem("artwork_intro_seen", "true");
     }
@@ -50,12 +54,11 @@ export const IntroLoader: React.FC = () => {
     }
   };
 
-  // Autoplay handler with graceful fallback if browser policy blocks autoplay
+  // Autoplay handler with graceful fallback
   useEffect(() => {
     if (!isIntroActive) return;
     if (videoRef.current) {
       videoRef.current.play().catch(() => {
-        // If browser blocks unmuted/video playback, gracefully exit
         handleFinish();
       });
     }
@@ -72,7 +75,7 @@ export const IntroLoader: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isIntroActive, handleFinish]);
 
-  // Fail-safe safety timer (12s maximum) so the user is never stuck if video fails or buffers
+  // Fail-safe safety timer (12s maximum)
   useEffect(() => {
     if (!isIntroActive) return;
     const safetyTimer = setTimeout(() => {
@@ -89,16 +92,23 @@ export const IntroLoader: React.FC = () => {
           initial={{ opacity: 1 }}
           exit={{
             opacity: 0,
-            scale: 1.04,
+            scale: 1.05,
             transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] },
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-[#0C0C10] overflow-hidden select-none"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-[#0C0C10] overflow-hidden select-none transition-colors duration-300"
           role="dialog"
           aria-modal="true"
           aria-label="Welcome cinematic presentation"
         >
-          {/* Video Player: enlarged for cinematic immersion, plays until last frame */}
-          <div className="flex items-center justify-center -translate-y-2 max-w-2xl sm:max-w-3xl lg:max-w-4xl w-full px-4 sm:px-8">
+          {/* Subtle Dot Grid Background in Intro matching the theme */}
+          <div className="absolute inset-0 bg-dot-grid pointer-events-none opacity-40"></div>
+
+          {/* Video Player Container: 
+              Uses hardware-accelerated GPU blend modes & color mapping:
+              - In Light Mode: mix-blend-multiply eliminates the white/cream background into 100% transparency.
+              - In Dark Mode: invert + hue-rotate(180deg) + mix-blend-screen eliminates the background into pure black transparency while inverting black ink to crisp white ink and preserving warm golden accents.
+          */}
+          <div className="relative z-10 flex items-center justify-center -translate-y-2 max-w-2xl sm:max-w-3xl lg:max-w-4xl w-full px-4 sm:px-8">
             <video
               ref={videoRef}
               autoPlay
@@ -108,7 +118,11 @@ export const IntroLoader: React.FC = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleFinish}
               onError={handleFinish}
-              className="w-full object-contain filter drop-shadow-2xl"
+              className={`w-full object-contain filter drop-shadow-2xl transition-all duration-300 ${
+                isDark
+                  ? "mix-blend-screen invert hue-rotate-180 contrast-[1.25] brightness-[1.1]"
+                  : "mix-blend-multiply contrast-[1.03]"
+              }`}
             >
               <source src="/assets/video/intro_loader.mp4" type="video/mp4" />
             </video>
@@ -125,7 +139,7 @@ export const IntroLoader: React.FC = () => {
             </button>
           </div>
 
-          {/* Dynamic Progress Bar: perfectly synced with actual video duration */}
+          {/* Dynamic Progress Bar: synced with actual video playback */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-black/10 dark:bg-white/10 z-20">
             <div
               className="h-full bg-yellow-400 origin-left transition-all duration-75 ease-linear"
