@@ -45,9 +45,9 @@ interface ManifestoContentProps {
 
 function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoContentProps) {
   return (
-    <div className="w-full max-w-6xl mx-auto py-2 sm:py-3 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
       {/* Top Energy Badge & Comic Stickers */}
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5 sm:mb-2">
         <div className="inline-flex items-center gap-1.5 border border-black bg-white px-3 py-0.5 rounded-full comic-shadow-sm font-headline text-[10px] font-black uppercase tracking-wider">
           <span className="text-yellow-500 font-black">★</span>
           <span>MARKETING SOLUTIONS FOR KINETIC BRANDS</span>
@@ -67,12 +67,12 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
       </div>
 
       {/* Hero Typography Section */}
-      <div className="relative mb-3 sm:mb-4 max-w-4xl">
-        <h1 className="font-headline font-black text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl tracking-tight leading-[0.98] text-black">
-          <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.6} delay={0.1}>
+      <div className="relative mb-2 sm:mb-2.5 max-w-4xl">
+        <h1 className="font-headline font-black text-2xl sm:text-3xl md:text-4xl lg:text-[42px] xl:text-[48px] tracking-tight leading-[1.02] text-black">
+          <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4} delay={0.1}>
             CREATIVE IDEAS.
           </KineticBrushWord> <br />
-          <span className="relative inline-block mt-1 sm:mt-1.5">
+          <span className="relative inline-block mt-0.5 sm:mt-1">
             {/* Canary Yellow Ink Splash Backdrop */}
             <motion.span
               initial={{ scaleX: 0, originX: 0 }}
@@ -87,8 +87,8 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
         </h1>
 
         {/* Comic Starburst / POW Badge */}
-        <div className="absolute -top-3 right-0 sm:right-6 hidden sm:block animate-star-pulse">
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+        <div className="absolute -top-2 right-0 sm:right-6 hidden sm:block animate-star-pulse">
+          <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center">
             <svg
               className="w-full h-full fill-yellow-400 stroke-black stroke-2 drop-shadow-md"
               viewBox="0 0 100 100"
@@ -105,8 +105,8 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
       </div>
 
       {/* Action Cluster & Team Collective Art with Magnetic Buttons */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-center">
-        <div className="lg:col-span-5 space-y-2.5 sm:space-y-3">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
+        <div className="lg:col-span-5 space-y-2 sm:space-y-2.5">
           <p className="font-body text-xs sm:text-sm text-black/80 max-w-sm leading-relaxed">
             We are{" "}
             <strong className="text-black font-bold underline decoration-yellow-400 decoration-2">
@@ -116,11 +116,11 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
             bold cultural visions into arena-scale reality.
           </p>
 
-          <div className="flex flex-wrap items-center gap-2.5 pt-0.5">
+          <div className="flex flex-wrap items-center gap-2 pt-0.5">
             <MagneticButton soundType="pop">
               <button
                 onClick={onExploreShowreel}
-                className="relative group inline-flex items-center gap-1.5 bg-black text-white hover:bg-yellow-400 hover:text-black font-headline font-extrabold text-xs px-4 py-2 rounded-DEFAULT border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none cursor-pointer"
+                className="relative group inline-flex items-center gap-1.5 bg-black text-white hover:bg-yellow-400 hover:text-black font-headline font-extrabold text-xs px-3.5 py-1.5 rounded-DEFAULT border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none cursor-pointer"
               >
                 <span>EXPLORE SHOWREEL</span>
                 <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -130,7 +130,7 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
             <MagneticButton soundType="click">
               <button
                 onClick={onViewCapabilities}
-                className="inline-flex items-center gap-1 bg-white text-black hover:bg-black hover:text-white font-headline font-bold text-xs px-3.5 py-2 rounded-DEFAULT border-2 border-black comic-shadow-sm transition-all duration-150 cursor-pointer"
+                className="inline-flex items-center gap-1 bg-white text-black hover:bg-black hover:text-white font-headline font-bold text-xs px-3 py-1.5 rounded-DEFAULT border-2 border-black comic-shadow-sm transition-all duration-150 cursor-pointer"
               >
                 <span>VIEW CAPABILITIES</span>
                 <ArrowDown className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -139,7 +139,7 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
           </div>
 
           {/* Milestone Badges */}
-          <div className="grid grid-cols-3 gap-2 pt-1 max-w-sm">
+          <div className="grid grid-cols-3 gap-1.5 pt-0.5 max-w-sm">
             {[
               { num: "450+", label: "Arena Shows" },
               { num: "99.4%", label: "Cue Accuracy" },
@@ -151,9 +151,9 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.4, delay: 0.1 + idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="border border-black bg-white p-2 rounded-DEFAULT comic-shadow-sm text-center"
+                className="border border-black bg-white p-1.5 rounded-DEFAULT comic-shadow-sm text-center"
               >
-                <div className="font-headline font-black text-base text-black">{badge.num}</div>
+                <div className="font-headline font-black text-sm sm:text-base text-black">{badge.num}</div>
                 <div className="text-[8px] font-headline font-bold text-black/70 uppercase">
                   {badge.label}
                 </div>
@@ -170,11 +170,11 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
           transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="lg:col-span-7 relative"
         >
-          <div className="border-3 border-black bg-white rounded-lg p-2.5 comic-shadow relative group">
+          <div className="border-3 border-black bg-white rounded-lg p-2 comic-shadow relative group">
             <div className="absolute -top-2 left-6 w-10 h-4 bg-yellow-300/80 border border-black/30 -rotate-3 z-30"></div>
             <div className="absolute -top-2 right-6 w-10 h-4 bg-yellow-300/80 border border-black/30 rotate-2 z-30"></div>
 
-            <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-black/10 text-[10px] font-headline font-bold">
+            <div className="flex items-center justify-between pb-1 mb-1 border-b border-black/10 text-[10px] font-headline font-bold">
               <div className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-red-500 border border-black"></span>
                 <span className="w-2 h-2 rounded-full bg-yellow-400 border border-black"></span>
@@ -189,7 +189,7 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded border border-black bg-white aspect-[16/9] max-h-[200px] lg:max-h-[220px] xl:max-h-[260px] flex items-center justify-center">
+            <div className="relative overflow-hidden rounded border border-black bg-white aspect-[16/9] max-h-[160px] lg:max-h-[180px] xl:max-h-[210px] flex items-center justify-center">
               <Image
                 src="/assets/images/stitch_hero_collective.png"
                 alt="Art Work Creative Marketing Studio Collective"
@@ -211,13 +211,13 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
    ========================================================================= */
 function WhyUsContent() {
   return (
-    <div className="w-full max-w-6xl mx-auto py-2 sm:py-3 flex flex-col justify-center my-auto">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-3 pb-2 border-b-2 border-black">
+    <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-2 pb-1.5 border-b-2 border-black">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-2.5 py-0.5 border border-black comic-shadow-sm text-[10px] font-headline font-black uppercase mb-1">
             <span>02 WHY ART WORK</span>
           </div>
-          <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black tracking-tight">
+          <h2 className="font-headline font-black text-lg sm:text-xl lg:text-2xl text-black tracking-tight">
             ENGINEERED FOR{" "}
             <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
               STAGE &amp; SCALE.
@@ -236,31 +236,31 @@ function WhyUsContent() {
       </div>
 
       {/* 3 Bento Cards (Compact) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 mb-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 mb-2.5">
         <motion.div
           initial={{ opacity: 0, y: 22, scale: 0.97 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black p-3.5 rounded-lg bg-white comic-shadow flex flex-col justify-between"
+          className="border-2 border-black p-2.5 sm:p-3 rounded-lg bg-white comic-shadow flex flex-col justify-between"
         >
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
                 01
               </span>
-              <Layers className="w-5 h-5 text-black stroke-[1.75]" />
+              <Layers className="w-4 h-4 text-black stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-sm sm:text-base text-black mb-0.5 uppercase">
+            <h3 className="font-headline font-black text-xs sm:text-sm text-black mb-0.5 uppercase">
               Arena &amp; Stage Scenography
             </h3>
-            <p className="font-body text-[11px] text-black/75 leading-snug">
+            <p className="font-body text-[10px] text-black/75 leading-snug">
               Stage blueprints, LED mapping rigs, lighting cue choreographies, and large-format structural storytelling.
             </p>
           </div>
-          <div className="pt-2 mt-2 border-t border-black/10 flex items-center justify-between text-[10px] font-headline font-bold">
+          <div className="pt-1.5 mt-1.5 border-t border-black/10 flex items-center justify-between text-[9px] font-headline font-bold">
             <span className="bg-black text-white px-1.5 py-0.2 rounded">PRODUCTION READY</span>
-            <CheckCircle2 className="w-3.5 h-3.5 text-black" />
+            <CheckCircle2 className="w-3 h-3 text-black" />
           </div>
         </motion.div>
 
@@ -269,27 +269,27 @@ function WhyUsContent() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black p-3.5 rounded-lg bg-yellow-50 comic-shadow flex flex-col justify-between"
+          className="border-2 border-black p-2.5 sm:p-3 rounded-lg bg-yellow-50 comic-shadow flex flex-col justify-between"
         >
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
                 02
               </span>
-              <Sparkles className="w-5 h-5 text-black fill-yellow-400" />
+              <Sparkles className="w-4 h-4 text-black fill-yellow-400" />
             </div>
-            <h3 className="font-headline font-black text-sm sm:text-base text-black mb-0.5 uppercase">
+            <h3 className="font-headline font-black text-xs sm:text-sm text-black mb-0.5 uppercase">
               Dynamic Motion Systems
             </h3>
-            <p className="font-body text-[11px] text-black/75 leading-snug">
+            <p className="font-body text-[10px] text-black/75 leading-snug">
               Kinetic typography, 3D broadcast packages, real-time reactive shaders, and frame-accurate visual sync.
             </p>
           </div>
-          <div className="pt-2 mt-2 border-t border-black/10 flex items-center justify-between text-[10px] font-headline font-bold">
+          <div className="pt-1.5 mt-1.5 border-t border-black/10 flex items-center justify-between text-[9px] font-headline font-bold">
             <span className="bg-yellow-400 text-black border border-black px-1.5 py-0.2 rounded">
               60 FPS FIDELITY
             </span>
-            <Zap className="w-3.5 h-3.5 text-black fill-yellow-400" />
+            <Zap className="w-3 h-3 text-black fill-yellow-400" />
           </div>
         </motion.div>
 
@@ -298,46 +298,46 @@ function WhyUsContent() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black p-3.5 rounded-lg bg-white comic-shadow flex flex-col justify-between"
+          className="border-2 border-black p-2.5 sm:p-3 rounded-lg bg-white comic-shadow flex flex-col justify-between"
         >
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
                 03
               </span>
-              <Palette className="w-5 h-5 text-black stroke-[1.75]" />
+              <Palette className="w-4 h-4 text-black stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-sm sm:text-base text-black mb-0.5 uppercase">
+            <h3 className="font-headline font-black text-xs sm:text-sm text-black mb-0.5 uppercase">
               Brand Architecture
             </h3>
-            <p className="font-body text-[11px] text-black/75 leading-snug">
+            <p className="font-body text-[10px] text-black/75 leading-snug">
               Custom hand-drawn vector doodle suites, physical merch design, stage passes, and total campaign cohesion.
             </p>
           </div>
-          <div className="pt-2 mt-2 border-t border-black/10 flex items-center justify-between text-[10px] font-headline font-bold">
+          <div className="pt-1.5 mt-1.5 border-t border-black/10 flex items-center justify-between text-[9px] font-headline font-bold">
             <span className="bg-black text-white px-1.5 py-0.2 rounded">TACTILE &amp; DIGITAL</span>
-            <Paintbrush className="w-3.5 h-3.5 text-black" />
+            <Paintbrush className="w-3 h-3 text-black" />
           </div>
         </motion.div>
       </div>
 
       {/* Blueprint Showcase Card */}
       <ScrollReveal direction="up" distance={20}>
-        <div className="border-3 border-black rounded-lg p-3 bg-white comic-shadow relative">
+        <div className="border-2 sm:border-3 border-black rounded-lg p-2.5 sm:p-3 bg-white comic-shadow relative">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
             <div className="lg:col-span-6 space-y-1">
-              <div className="inline-flex items-center gap-1 text-[10px] font-headline font-black uppercase text-black bg-yellow-300 px-1.5 py-0.2 rounded border border-black">
-                <Compass className="w-3.5 h-3.5 text-black" />
+              <div className="inline-flex items-center gap-1 text-[9px] font-headline font-black uppercase text-black bg-yellow-300 px-1.5 py-0.2 rounded border border-black">
+                <Compass className="w-3 h-3 text-black" />
                 <span>BLUEPRINT &amp; STAGE PREVIEW</span>
               </div>
-              <h3 className="font-headline font-black text-base sm:text-lg text-black">
+              <h3 className="font-headline font-black text-sm sm:text-base text-black">
                 FROM SKETCHBOARD TO LIVE VENUE IN 72 HOURS.
               </h3>
-              <p className="font-body text-[11px] text-black/80">
+              <p className="font-body text-[10px] sm:text-[11px] text-black/80">
                 We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.
               </p>
             </div>
-            <div className="lg:col-span-6 border border-black rounded overflow-hidden aspect-[16/7] max-h-[140px] bg-white relative">
+            <div className="lg:col-span-6 border border-black rounded overflow-hidden aspect-[16/7] max-h-[105px] lg:max-h-[115px] bg-white relative">
               <Image
                 src="/assets/images/stitch_blueprint_stage.png"
                 alt="Stage Architecture Blueprints and Scenography"
@@ -358,7 +358,7 @@ function WhyUsContent() {
    ========================================================================= */
 function ServicesContent() {
   return (
-    <div className="w-full max-w-6xl mx-auto py-2 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-6xl mx-auto py-1 flex flex-col justify-center my-auto">
       <Capabilities3DMatrix />
     </div>
   );
@@ -369,21 +369,21 @@ function ServicesContent() {
    ========================================================================= */
 function ContactContent() {
   return (
-    <div className="w-full max-w-6xl mx-auto py-2 sm:py-3 flex flex-col justify-center my-auto">
-      <div className="border-3 border-black bg-white rounded-lg p-4 sm:p-5 comic-shadow relative">
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-300 border border-black px-4 py-0.5 font-headline font-black text-[10px] uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
+    <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
+      <div className="border-3 border-black bg-white rounded-lg p-3 sm:p-4 comic-shadow relative mt-2.5">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-300 border border-black px-3 py-0.5 font-headline font-black text-[9px] uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           STAGE 04 // LAUNCH YOUR CAMPAIGN
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start pt-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start pt-1">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-5 space-y-2.5"
+            className="lg:col-span-5 space-y-2"
           >
-            <h2 className="font-headline font-black text-xl sm:text-2xl text-black tracking-tight leading-none">
+            <h2 className="font-headline font-black text-lg sm:text-xl text-black tracking-tight leading-none">
               LET’S INK SOMETHING{" "}
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
                 HISTORIC.
@@ -393,8 +393,8 @@ function ContactContent() {
               Whether you need a dynamic stage package for an arena tour or an unforgettable brand identity, our sketchpad is open.
             </p>
 
-            <div className="border border-black rounded p-2 bg-yellow-50 relative">
-              <div className="aspect-[16/9] max-h-[130px] rounded overflow-hidden border border-black bg-white relative">
+            <div className="border border-black rounded p-1.5 bg-yellow-50 relative">
+              <div className="aspect-[16/9] max-h-[100px] lg:max-h-[110px] rounded overflow-hidden border border-black bg-white relative">
                 <Image
                   src="/assets/images/stitch_thinker_intake.png"
                   alt="Creative Chief on call"
@@ -408,15 +408,15 @@ function ContactContent() {
               </div>
             </div>
 
-            <div className="space-y-1 text-[11px] font-headline font-bold">
+            <div className="space-y-1 text-[10px] font-headline font-bold">
               <div className="flex items-center gap-1.5">
-                <span className="w-5 h-5 rounded-full bg-yellow-400 border border-black flex items-center justify-center font-bold text-[10px]">
+                <span className="w-4 h-4 rounded-full bg-yellow-400 border border-black flex items-center justify-center font-bold text-[9px]">
                   @
                 </span>
                 <span>studio@artwork-solutions.stage</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-5 h-5 rounded-full bg-yellow-400 border border-black flex items-center justify-center font-bold text-[10px]">
+                <span className="w-4 h-4 rounded-full bg-yellow-400 border border-black flex items-center justify-center font-bold text-[9px]">
                   📍
                 </span>
                 <span>404 Kinetic Way, Arts District</span>
@@ -429,17 +429,17 @@ function ContactContent() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7 bg-white border border-black rounded-lg p-3.5 comic-shadow-sm"
+            className="lg:col-span-7 bg-white border border-black rounded-lg p-3 comic-shadow-sm"
           >
             <form
-              className="space-y-2.5"
+              className="space-y-2"
               onSubmit={(e) => {
                 e.preventDefault();
                 soundFX.playPop();
                 alert("Brief submitted to Art Work! Our stage director will be in touch shortly.");
               }}
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black">
                     Your Name / Title
@@ -482,7 +482,7 @@ function ContactContent() {
                 </span>
                 <MagneticButton soundType="pop">
                   <button
-                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-black hover:text-white text-black font-headline font-black text-xs px-4 py-2 rounded border border-black comic-shadow-sm active:scale-95 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-black hover:text-white text-black font-headline font-black text-xs px-3.5 py-1.5 rounded border border-black comic-shadow-sm active:scale-95 transition-all cursor-pointer"
                     type="submit"
                   >
                     <span>DISPATCH BRIEF</span>
@@ -746,7 +746,7 @@ export default function Home() {
 
       {/* ================= FIXED TOP HEADER (SHARED DESKTOP & MOBILE) ================= */}
       <header className="fixed top-0 left-0 w-full z-40 bg-white/95 backdrop-blur-md border-b border-black/10">
-        <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-2 sm:py-2.5">
+        <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-1.5 sm:py-2">
           {/* Logo Anchor with Transparent Brand Image */}
           <button
             onClick={() => scrollToStage("stage-01")}
@@ -754,12 +754,12 @@ export default function Home() {
             title="Art Work — Home"
             aria-label="Art Work — Home"
           >
-            <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 hover:rotate-3 transition-transform">
+            <div className="relative w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 hover:rotate-3 transition-transform">
               <Image
                 src="/assets/images/artwork_logo.png"
                 alt="Art Work Logo"
                 fill
-                sizes="(max-width: 640px) 48px, (max-width: 768px) 56px, 64px"
+                sizes="(max-width: 640px) 44px, (max-width: 768px) 48px, 56px"
                 priority
                 className="object-contain"
               />
@@ -955,7 +955,7 @@ export default function Home() {
         id="pinned-stage-track"
       >
         {/* STICKY FIXED VIEWPORT THEATER */}
-        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[68px]">
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[82px] pb-1">
           {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
           <aside className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
             <button
@@ -1021,16 +1021,16 @@ export default function Home() {
           </aside>
 
           {/* MAIN DYNAMIC SCENE CANVAS (Desktop Pinned & Morphing with AnimatePresence) */}
-          <main className="flex-1 w-full h-[calc(100vh-6.5rem)] relative overflow-y-auto overflow-x-hidden flex flex-col justify-center px-4 sm:px-6">
+          <main className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 py-1">
             <AnimatePresence mode="wait">
               {activeStage === "stage-01" && (
                 <motion.div
                   key="scene-01"
-                  initial={{ opacity: 0, y: 25, scale: 0.98 }}
+                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -25, scale: 0.98 }}
+                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full h-full flex flex-col justify-center"
+                  className="w-full flex-1 flex flex-col items-center justify-center my-auto"
                 >
                   <ManifestoContent
                     onExploreShowreel={() => scrollToStage("stage-03")}
@@ -1042,11 +1042,11 @@ export default function Home() {
               {activeStage === "stage-02" && (
                 <motion.div
                   key="scene-02"
-                  initial={{ opacity: 0, y: 25, scale: 0.98 }}
+                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -25, scale: 0.98 }}
+                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full h-full flex flex-col justify-center"
+                  className="w-full flex-1 flex flex-col items-center justify-center my-auto"
                 >
                   <WhyUsContent />
                 </motion.div>
@@ -1055,11 +1055,11 @@ export default function Home() {
               {activeStage === "stage-03" && (
                 <motion.div
                   key="scene-03"
-                  initial={{ opacity: 0, y: 25, scale: 0.98 }}
+                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -25, scale: 0.98 }}
+                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full h-full flex flex-col justify-center"
+                  className="w-full flex-1 flex flex-col items-center justify-center my-auto"
                 >
                   <ServicesContent />
                 </motion.div>
@@ -1068,11 +1068,11 @@ export default function Home() {
               {activeStage === "stage-04" && (
                 <motion.div
                   key="scene-04"
-                  initial={{ opacity: 0, y: 25, scale: 0.98 }}
+                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -25, scale: 0.98 }}
+                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full h-full flex flex-col justify-center"
+                  className="w-full flex-1 flex flex-col items-center justify-center my-auto"
                 >
                   <ContactContent />
                 </motion.div>
