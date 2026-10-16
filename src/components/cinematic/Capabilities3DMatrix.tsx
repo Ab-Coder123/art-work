@@ -16,6 +16,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
+import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 
 const renderDisciplineIcon = (icon: string) => {
   switch (icon) {
@@ -170,8 +171,9 @@ const DISCIPLINES: Discipline[] = [
 // Interactive 3D Tilt Card Component with Specular Light Beam
 const TiltCard: React.FC<{
   discipline: Discipline;
+  index: number;
   onSelect: (d: Discipline) => void;
-}> = ({ discipline, onSelect }) => {
+}> = ({ discipline, index, onSelect }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
@@ -205,56 +207,68 @@ const TiltCard: React.FC<{
   }, []);
 
   return (
-    <div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={() => onSelect(discipline)}
-      style={{
-        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-        transition: "transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
+    <motion.div
+      initial={{ opacity: 0, y: 24, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{
+        duration: 0.45,
+        delay: (index % 5) * 0.08,
+        ease: [0.22, 1, 0.36, 1],
       }}
-      className="relative border-2 border-black p-3.5 rounded-lg bg-white comic-shadow hover:comic-shadow-yellow hover:bg-yellow-50 transition-colors duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none"
+      className="h-full flex flex-col"
     >
-      {/* Dynamic Specular Glare Overlay */}
       <div
-        className="pointer-events-none absolute inset-0 transition-opacity duration-300"
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onClick={() => onSelect(discipline)}
         style={{
-          background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(250, 204, 21, 0.45) 0%, transparent 60%)`,
-          opacity: glarePos.opacity,
+          transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+          transition: "transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
-      />
+        className="relative border-2 border-black p-3.5 rounded-lg bg-white comic-shadow hover:comic-shadow-yellow hover:bg-yellow-50 transition-colors duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1"
+      >
+        {/* Dynamic Specular Glare Overlay */}
+        <div
+          className="pointer-events-none absolute inset-0 transition-opacity duration-300"
+          style={{
+            background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(250, 204, 21, 0.45) 0%, transparent 60%)`,
+            opacity: glarePos.opacity,
+          }}
+        />
 
-      <div className="relative z-10">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="font-headline font-black text-[10px] text-black/50">
-            {discipline.tag}
-          </span>
-          <span className="w-5 h-5 rounded-full bg-black text-yellow-400 font-mono text-[9px] font-black flex items-center justify-center">
-            {discipline.number}
-          </span>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="font-headline font-black text-[10px] text-black/50">
+              {discipline.tag}
+            </span>
+            <span className="w-5 h-5 rounded-full bg-black text-yellow-400 font-mono text-[9px] font-black flex items-center justify-center">
+              {discipline.number}
+            </span>
+          </div>
+
+          <div className="font-headline font-black text-sm sm:text-base text-black mb-2 group-hover:text-yellow-600 transition-colors">
+            {discipline.title}
+          </div>
+
+          <ul className="text-[11px] font-body text-black/80 space-y-1 list-disc list-inside">
+            {discipline.specs.map((spec, i) => (
+              <li key={i}>{spec}</li>
+            ))}
+          </ul>
         </div>
 
-        <div className="font-headline font-black text-sm sm:text-base text-black mb-2 group-hover:text-yellow-600 transition-colors">
-          {discipline.title}
+        <div className="relative z-10 mt-3 pt-2 border-t border-black/20 font-headline font-black text-[10px] text-black flex items-center justify-between">
+          <span className="group-hover:underline decoration-yellow-400 decoration-2">
+            ENGAGE TOOLKIT
+          </span>
+          <span className="group-hover:translate-x-1 group-hover:scale-125 transition-transform text-black flex items-center justify-center">
+            {renderDisciplineIcon(discipline.icon)}
+          </span>
         </div>
-
-        <ul className="text-[11px] font-body text-black/80 space-y-1 list-disc list-inside">
-          {discipline.specs.map((spec, i) => (
-            <li key={i}>{spec}</li>
-          ))}
-        </ul>
       </div>
-
-      <div className="relative z-10 mt-3 pt-2 border-t border-black/20 font-headline font-black text-[10px] text-black flex items-center justify-between">
-        <span className="group-hover:underline decoration-yellow-400 decoration-2">
-          ENGAGE TOOLKIT
-        </span>
-        <span className="group-hover:translate-x-1 group-hover:scale-125 transition-transform text-black flex items-center justify-center">
-          {renderDisciplineIcon(discipline.icon)}
-        </span>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -269,7 +283,7 @@ export const Capabilities3DMatrix: React.FC = () => {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-2 relative" id="stage-03">
       {/* Section Header */}
-      <div className="text-center max-w-2xl mx-auto mb-3">
+      <ScrollReveal direction="up" distance={20} className="text-center max-w-2xl mx-auto mb-3">
         <div className="inline-block bg-yellow-400 text-black px-3 py-0.5 border-2 border-black comic-shadow-sm font-headline text-[10px] font-black uppercase mb-1.5 -rotate-1">
           03 CAPABILITIES &amp; 3D MATRIX
         </div>
@@ -282,7 +296,7 @@ export const Capabilities3DMatrix: React.FC = () => {
         <p className="font-body text-xs text-black/70">
           Tilt in 3D or click any discipline card below to inspect technical delivery specs and arena toolkits.
         </p>
-      </div>
+      </ScrollReveal>
 
       {/* Filter Tabs */}
       <div className="flex flex-wrap items-center justify-center gap-1.5 mb-3.5">
@@ -311,10 +325,11 @@ export const Capabilities3DMatrix: React.FC = () => {
 
       {/* 3D Tilt Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-        {filteredDisciplines.map((d) => (
+        {filteredDisciplines.map((d, index) => (
           <TiltCard
             key={d.id}
             discipline={d}
+            index={index}
             onSelect={(discipline) => setSelectedDiscipline(discipline)}
           />
         ))}
@@ -397,34 +412,36 @@ export const Capabilities3DMatrix: React.FC = () => {
       </AnimatePresence>
 
       {/* Live Idea Generation Banner Showcase */}
-      <div className="mt-16 bg-black text-white p-8 rounded-lg border-2 border-black comic-shadow relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="relative z-10 max-w-xl">
-          <div className="flex items-center gap-2 mb-2 text-yellow-400 font-headline font-black text-xs tracking-wider uppercase">
-            <Sparkles className="w-4 h-4 text-yellow-400" />
-            <span>PROPRIETARY KINETIC STAGE WORKFLOW</span>
+      <ScrollReveal direction="pop" distance={30} className="mt-16">
+        <div className="bg-black text-white p-8 rounded-lg border-2 border-black comic-shadow relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="relative z-10 max-w-xl">
+            <div className="flex items-center gap-2 mb-2 text-yellow-400 font-headline font-black text-xs tracking-wider uppercase">
+              <Sparkles className="w-4 h-4 text-yellow-400" />
+              <span>PROPRIETARY KINETIC STAGE WORKFLOW</span>
+            </div>
+            <h3 className="font-headline font-black text-2xl sm:text-3xl tracking-tight mb-2">
+              HAVE A TOUGH{" "}
+              <KineticBrushWord variant="wave" color="#facc15" strokeWidth={2.4}>
+                CREATIVE CHALLENGE?
+              </KineticBrushWord>
+            </h3>
+            <p className="font-body text-sm text-white/80">
+              Submit your core constraints. Our team responds within 24 hours with an annotated
+              kinetic sketch proposal.
+            </p>
           </div>
-          <h3 className="font-headline font-black text-2xl sm:text-3xl tracking-tight mb-2">
-            HAVE A TOUGH{" "}
-            <KineticBrushWord variant="wave" color="#facc15" strokeWidth={2.4}>
-              CREATIVE CHALLENGE?
-            </KineticBrushWord>
-          </h3>
-          <p className="font-body text-sm text-white/80">
-            Submit your core constraints. Our team responds within 24 hours with an annotated
-            kinetic sketch proposal.
-          </p>
+          <div className="relative z-10 flex-shrink-0">
+            <a
+              className="inline-flex items-center gap-2 bg-yellow-400 text-black hover:bg-white font-headline font-black text-sm px-6 py-3.5 rounded-DEFAULT border-2 border-black comic-shadow-sm active:scale-95 transition-all"
+              href="#brief-inquiry"
+            >
+              <span>SEND RAPID BRIEF</span>
+              <Send className="w-4 h-4 stroke-[2.5]" />
+            </a>
+          </div>
+          <div className="absolute -right-8 -top-8 w-48 h-48 bg-yellow-400/10 rounded-full blur-2xl pointer-events-none"></div>
         </div>
-        <div className="relative z-10 flex-shrink-0">
-          <a
-            className="inline-flex items-center gap-2 bg-yellow-400 text-black hover:bg-white font-headline font-black text-sm px-6 py-3.5 rounded-DEFAULT border-2 border-black comic-shadow-sm active:scale-95 transition-all"
-            href="#brief-inquiry"
-          >
-            <span>SEND RAPID BRIEF</span>
-            <Send className="w-4 h-4 stroke-[2.5]" />
-          </a>
-        </div>
-        <div className="absolute -right-8 -top-8 w-48 h-48 bg-yellow-400/10 rounded-full blur-2xl pointer-events-none"></div>
-      </div>
+      </ScrollReveal>
     </section>
   );
 };

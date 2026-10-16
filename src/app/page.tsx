@@ -17,6 +17,7 @@ import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { soundFX } from "@/utils/soundFX";
 import { useDoodleStore } from "@/store/useDoodleStore";
 import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
+import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import {
   ArrowRight,
   ArrowDown,
@@ -139,29 +140,36 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
 
           {/* Milestone Badges */}
           <div className="grid grid-cols-3 gap-2 pt-1 max-w-sm">
-            <div className="border border-black bg-white p-2 rounded-DEFAULT comic-shadow-sm text-center">
-              <div className="font-headline font-black text-base text-black">450+</div>
-              <div className="text-[8px] font-headline font-bold text-black/70 uppercase">
-                Arena Shows
-              </div>
-            </div>
-            <div className="border border-black bg-white p-2 rounded-DEFAULT comic-shadow-sm text-center">
-              <div className="font-headline font-black text-base text-black">99.4%</div>
-              <div className="text-[8px] font-headline font-bold text-black/70 uppercase">
-                Cue Accuracy
-              </div>
-            </div>
-            <div className="border border-black bg-white p-2 rounded-DEFAULT comic-shadow-sm text-center">
-              <div className="font-headline font-black text-base text-black">1.2M+</div>
-              <div className="text-[8px] font-headline font-bold text-black/70 uppercase">
-                Live Reach
-              </div>
-            </div>
+            {[
+              { num: "450+", label: "Arena Shows" },
+              { num: "99.4%", label: "Cue Accuracy" },
+              { num: "1.2M+", label: "Live Reach" },
+            ].map((badge, idx) => (
+              <motion.div
+                key={badge.label}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.4, delay: 0.1 + idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="border border-black bg-white p-2 rounded-DEFAULT comic-shadow-sm text-center"
+              >
+                <div className="font-headline font-black text-base text-black">{badge.num}</div>
+                <div className="text-[8px] font-headline font-bold text-black/70 uppercase">
+                  {badge.label}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
 
         {/* Right Visual: Collective Canvas */}
-        <div className="lg:col-span-7 relative">
+        <motion.div
+          initial={{ opacity: 0, x: 25, scale: 0.98 }}
+          whileInView={{ opacity: 1, x: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="lg:col-span-7 relative"
+        >
           <div className="border-3 border-black bg-white rounded-lg p-2.5 comic-shadow relative group">
             <div className="absolute -top-2 left-6 w-10 h-4 bg-yellow-300/80 border border-black/30 -rotate-3 z-30"></div>
             <div className="absolute -top-2 right-6 w-10 h-4 bg-yellow-300/80 border border-black/30 rotate-2 z-30"></div>
@@ -192,7 +200,7 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
               />
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
@@ -229,7 +237,13 @@ function WhyUsContent() {
 
       {/* 3 Bento Cards (Compact) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 mb-3">
-        <div className="border-2 border-black p-3.5 rounded-lg bg-white comic-shadow flex flex-col justify-between">
+        <motion.div
+          initial={{ opacity: 0, y: 22, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.45, delay: 0, ease: [0.22, 1, 0.36, 1] }}
+          className="border-2 border-black p-3.5 rounded-lg bg-white comic-shadow flex flex-col justify-between"
+        >
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
@@ -248,9 +262,15 @@ function WhyUsContent() {
             <span className="bg-black text-white px-1.5 py-0.2 rounded">PRODUCTION READY</span>
             <CheckCircle2 className="w-3.5 h-3.5 text-black" />
           </div>
-        </div>
+        </motion.div>
 
-        <div className="border-2 border-black p-3.5 rounded-lg bg-yellow-50 comic-shadow flex flex-col justify-between">
+        <motion.div
+          initial={{ opacity: 0, y: 22, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="border-2 border-black p-3.5 rounded-lg bg-yellow-50 comic-shadow flex flex-col justify-between"
+        >
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
@@ -271,9 +291,15 @@ function WhyUsContent() {
             </span>
             <Zap className="w-3.5 h-3.5 text-black fill-yellow-400" />
           </div>
-        </div>
+        </motion.div>
 
-        <div className="border-2 border-black p-3.5 rounded-lg bg-white comic-shadow flex flex-col justify-between">
+        <motion.div
+          initial={{ opacity: 0, y: 22, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="border-2 border-black p-3.5 rounded-lg bg-white comic-shadow flex flex-col justify-between"
+        >
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
@@ -292,35 +318,37 @@ function WhyUsContent() {
             <span className="bg-black text-white px-1.5 py-0.2 rounded">TACTILE &amp; DIGITAL</span>
             <Paintbrush className="w-3.5 h-3.5 text-black" />
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Blueprint Showcase Card */}
-      <div className="border-3 border-black rounded-lg p-3 bg-white comic-shadow relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
-          <div className="lg:col-span-6 space-y-1">
-            <div className="inline-flex items-center gap-1 text-[10px] font-headline font-black uppercase text-black bg-yellow-300 px-1.5 py-0.2 rounded border border-black">
-              <Compass className="w-3.5 h-3.5 text-black" />
-              <span>BLUEPRINT &amp; STAGE PREVIEW</span>
+      <ScrollReveal direction="up" distance={20}>
+        <div className="border-3 border-black rounded-lg p-3 bg-white comic-shadow relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
+            <div className="lg:col-span-6 space-y-1">
+              <div className="inline-flex items-center gap-1 text-[10px] font-headline font-black uppercase text-black bg-yellow-300 px-1.5 py-0.2 rounded border border-black">
+                <Compass className="w-3.5 h-3.5 text-black" />
+                <span>BLUEPRINT &amp; STAGE PREVIEW</span>
+              </div>
+              <h3 className="font-headline font-black text-base sm:text-lg text-black">
+                FROM SKETCHBOARD TO LIVE VENUE IN 72 HOURS.
+              </h3>
+              <p className="font-body text-[11px] text-black/80">
+                We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.
+              </p>
             </div>
-            <h3 className="font-headline font-black text-base sm:text-lg text-black">
-              FROM SKETCHBOARD TO LIVE VENUE IN 72 HOURS.
-            </h3>
-            <p className="font-body text-[11px] text-black/80">
-              We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.
-            </p>
-          </div>
-          <div className="lg:col-span-6 border border-black rounded overflow-hidden aspect-[16/7] max-h-[140px] bg-white relative">
-            <Image
-              src="/assets/images/stitch_blueprint_stage.png"
-              alt="Stage Architecture Blueprints and Scenography"
-              fill
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-cover"
-            />
+            <div className="lg:col-span-6 border border-black rounded overflow-hidden aspect-[16/7] max-h-[140px] bg-white relative">
+              <Image
+                src="/assets/images/stitch_blueprint_stage.png"
+                alt="Stage Architecture Blueprints and Scenography"
+                fill
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </ScrollReveal>
     </div>
   );
 }
@@ -348,7 +376,13 @@ function ContactContent() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start pt-1">
-          <div className="lg:col-span-5 space-y-2.5">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-5 space-y-2.5"
+          >
             <h2 className="font-headline font-black text-xl sm:text-2xl text-black tracking-tight leading-none">
               LET’S INK SOMETHING{" "}
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
@@ -388,9 +422,15 @@ function ContactContent() {
                 <span>404 Kinetic Way, Arts District</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="lg:col-span-7 bg-white border border-black rounded-lg p-3.5 comic-shadow-sm">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-7 bg-white border border-black rounded-lg p-3.5 comic-shadow-sm"
+          >
             <form
               className="space-y-2.5"
               onSubmit={(e) => {
@@ -451,7 +491,7 @@ function ContactContent() {
                 </MagneticButton>
               </div>
             </form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
@@ -860,39 +900,47 @@ export default function Home() {
           ========================================================================= */}
       <div className="block md:hidden w-full relative z-10 pt-28">
         {/* Stage 01 Mobile */}
-        <section
-          id="stage-01-mobile"
-          className="w-full min-h-[calc(100vh-7rem)] py-6 px-4 flex flex-col justify-center"
-        >
-          <ManifestoContent
-            onExploreShowreel={() => scrollToStage("stage-03")}
-            onViewCapabilities={() => scrollToStage("stage-02")}
-          />
-        </section>
+        <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
+          <section
+            id="stage-01-mobile"
+            className="w-full min-h-[calc(100vh-7rem)] py-6 px-4 flex flex-col justify-center"
+          >
+            <ManifestoContent
+              onExploreShowreel={() => scrollToStage("stage-03")}
+              onViewCapabilities={() => scrollToStage("stage-02")}
+            />
+          </section>
+        </ScrollReveal>
 
         {/* Stage 02 Mobile */}
-        <section
-          id="stage-02-mobile"
-          className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
-        >
-          <WhyUsContent />
-        </section>
+        <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
+          <section
+            id="stage-02-mobile"
+            className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
+          >
+            <WhyUsContent />
+          </section>
+        </ScrollReveal>
 
         {/* Stage 03 Mobile */}
-        <section
-          id="stage-03-mobile"
-          className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
-        >
-          <ServicesContent />
-        </section>
+        <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
+          <section
+            id="stage-03-mobile"
+            className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
+          >
+            <ServicesContent />
+          </section>
+        </ScrollReveal>
 
         {/* Stage 04 Mobile */}
-        <section
-          id="stage-04-mobile"
-          className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
-        >
-          <ContactContent />
-        </section>
+        <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
+          <section
+            id="stage-04-mobile"
+            className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
+          >
+            <ContactContent />
+          </section>
+        </ScrollReveal>
 
         {/* Mobile Page Footer */}
         <StudioFooter scrollToStage={scrollToStage} />

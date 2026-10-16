@@ -11,6 +11,7 @@ import { InteractiveDoodleCanvas } from "@/components/cinematic/InteractiveDoodl
 import { SoundToggle } from "@/components/cinematic/SoundToggle";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
+import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import {
   ArrowRight,
   ArrowLeft,
@@ -381,7 +382,7 @@ export default function WhyUsPage() {
           </div>
 
           {/* RIGHT COLUMN: CAD Drafting Easel & Real Presentation Blueprint Illustration */}
-          <div className="lg:col-span-5 relative mt-4 lg:mt-0">
+          <ScrollReveal direction="left" distance={30} className="lg:col-span-5 relative mt-4 lg:mt-0">
             <div className="relative bg-white border-2 border-black rounded-2xl p-4 sm:p-5 shadow-[6px_6px_0px_#111111]">
               {/* Top Technical Ribbon */}
               <div className="flex items-center justify-between border-b-2 border-black pb-3 mb-4 font-mono text-[11px] text-black">
@@ -444,42 +445,38 @@ export default function WhyUsPage() {
                 <span>0% COOKIE-CUTTER TEMPLATES</span>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
 
         {/* ================= PROOF & METRICS TICKER ================= */}
         <section className="mb-24 py-6 border-y-2 border-black bg-yellow-400/20 rounded-2xl px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#111111]">
-              <div className="font-brush text-3xl md:text-4xl text-black">450+</div>
-              <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 mt-1">
-                Arena Stages Delivered
-              </div>
-            </div>
-            <div className="p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#111111]">
-              <div className="font-brush text-3xl md:text-4xl text-black">1.2M+</div>
-              <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 mt-1">
-                Live Spectators Reached
-              </div>
-            </div>
-            <div className="p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#111111]">
-              <div className="font-brush text-3xl md:text-4xl text-black">99.4%</div>
-              <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 mt-1">
-                Live Cue Accuracy
-              </div>
-            </div>
-            <div className="p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#111111]">
-              <div className="font-brush text-3xl md:text-4xl text-black">0%</div>
-              <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 mt-1">
-                Generic Templates
-              </div>
-            </div>
+            {[
+              { num: "450+", label: "Arena Stages Delivered" },
+              { num: "1.2M+", label: "Live Spectators Reached" },
+              { num: "99.4%", label: "Live Cue Accuracy" },
+              { num: "0%", label: "Generic Templates" },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 25, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.45, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                className="p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#111111]"
+              >
+                <div className="font-brush text-3xl md:text-4xl text-black">{stat.num}</div>
+                <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 mt-1">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </section>
 
         {/* ================= SCENE 2 INTERACTIVE CAPABILITIES & EVENT MATRIX (Bento Grid) ================= */}
         <section className="mb-24" id="matrix">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+          <ScrollReveal direction="up" distance={25} className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-yellow-400 font-mono text-xs font-black rounded mb-3">
                 <LayoutDashboard className="w-3.5 h-3.5 text-yellow-400 stroke-[2.5]" />
@@ -496,12 +493,18 @@ export default function WhyUsPage() {
               Every discipline is owned in-house. From acoustic calculations to millimetric CNC stage
               craft, we merge brutal strategic clarity with theater-grade engineering.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Bento Grid (4 Cards) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* CARD 01 */}
-            <div className="bg-white border-2 border-black rounded-2xl p-8 hover-brutal-lift flex flex-col justify-between relative overflow-hidden group">
+            <motion.div
+              initial={{ opacity: 0, y: 35, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.5, delay: 0, ease: [0.22, 1, 0.36, 1] }}
+              className="bg-white border-2 border-black rounded-2xl p-8 hover-brutal-lift flex flex-col justify-between relative overflow-hidden group"
+            >
               <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-yellow-400/20 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none"></div>
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -535,10 +538,16 @@ export default function WhyUsPage() {
                   </li>
                 </ul>
               </div>
-            </div>
+            </motion.div>
 
             {/* CARD 02 */}
-            <div className="bg-white border-2 border-black rounded-2xl p-8 hover-brutal-lift flex flex-col justify-between relative overflow-hidden group">
+            <motion.div
+              initial={{ opacity: 0, y: 35, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="bg-white border-2 border-black rounded-2xl p-8 hover-brutal-lift flex flex-col justify-between relative overflow-hidden group"
+            >
               <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-yellow-400/20 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none"></div>
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -572,10 +581,16 @@ export default function WhyUsPage() {
                   </li>
                 </ul>
               </div>
-            </div>
+            </motion.div>
 
             {/* CARD 03 */}
-            <div className="bg-white border-2 border-black rounded-2xl p-8 hover-brutal-lift flex flex-col justify-between relative overflow-hidden group">
+            <motion.div
+              initial={{ opacity: 0, y: 35, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.5, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+              className="bg-white border-2 border-black rounded-2xl p-8 hover-brutal-lift flex flex-col justify-between relative overflow-hidden group"
+            >
               <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-yellow-400/20 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none"></div>
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -609,10 +624,16 @@ export default function WhyUsPage() {
                   </li>
                 </ul>
               </div>
-            </div>
+            </motion.div>
 
             {/* CARD 04 */}
-            <div className="bg-white border-2 border-black rounded-2xl p-8 hover-brutal-lift flex flex-col justify-between relative overflow-hidden group">
+            <motion.div
+              initial={{ opacity: 0, y: 35, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="bg-white border-2 border-black rounded-2xl p-8 hover-brutal-lift flex flex-col justify-between relative overflow-hidden group"
+            >
               <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-yellow-400/20 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none"></div>
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -646,50 +667,52 @@ export default function WhyUsPage() {
                   </li>
                 </ul>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* ================= STAGE 02 INTERACTIVE BRIEF CALLOUT ================= */}
-        <section
-          className="mb-20 bg-yellow-400 border-2 border-black rounded-2xl p-6 sm:p-10 shadow-[8px_8px_0px_#111111] relative overflow-hidden"
-          id="brief"
-        >
-          <div className="washi-tape !w-24 !h-5 !bg-black/20"></div>
-          <div className="relative z-10 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 sm:gap-8">
-            <div className="flex-1 max-w-2xl text-left">
-              <div className="font-brush text-sm tracking-wider uppercase text-black mb-2">
-                Ready to blow your competition out of the water?
+        <ScrollReveal direction="pop" distance={30} className="mb-20">
+          <section
+            className="bg-yellow-400 border-2 border-black rounded-2xl p-6 sm:p-10 shadow-[8px_8px_0px_#111111] relative overflow-hidden"
+            id="brief"
+          >
+            <div className="washi-tape !w-24 !h-5 !bg-black/20"></div>
+            <div className="relative z-10 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 sm:gap-8">
+              <div className="flex-1 max-w-2xl text-left">
+                <div className="font-brush text-sm tracking-wider uppercase text-black mb-2">
+                  Ready to blow your competition out of the water?
+                </div>
+                <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black text-black uppercase tracking-tight leading-none mb-3">
+                  LET&apos;S DRAFT YOUR{" "}
+                  <KineticBrushWord variant="double" color="#111111" strokeWidth={2.4}>
+                    MASTERSTAGE BRIEF.
+                  </KineticBrushWord>
+                </h3>
+                <p className="font-body text-sm sm:text-base font-semibold text-black/80 max-w-xl leading-relaxed">
+                  Tell us your target milestone, space dimensions, or commercial goals. We return with a
+                  fully costed 3D structural preview within 72 hours.
+                </p>
               </div>
-              <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black text-black uppercase tracking-tight leading-none mb-3">
-                LET&apos;S DRAFT YOUR{" "}
-                <KineticBrushWord variant="double" color="#111111" strokeWidth={2.4}>
-                  MASTERSTAGE BRIEF.
-                </KineticBrushWord>
-              </h3>
-              <p className="font-body text-sm sm:text-base font-semibold text-black/80 max-w-xl leading-relaxed">
-                Tell us your target milestone, space dimensions, or commercial goals. We return with a
-                fully costed 3D structural preview within 72 hours.
-              </p>
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-3.5 shrink-0 w-full sm:w-auto">
+                <Link
+                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-black text-white hover:bg-white hover:text-black font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black shadow-[4px_4px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_#111111] active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
+                  href="/#brief-inquiry"
+                >
+                  <span>SUBMIT BRIEF SPEC</span>
+                  <Send className="w-4 h-4 stroke-[2.5]" />
+                </Link>
+                <Link
+                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-white text-black hover:bg-black hover:text-white font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black shadow-[4px_4px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_#111111] active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
+                  href="/#stage-01"
+                >
+                  <span>VIEW SHOWREEL</span>
+                  <Play className="w-4 h-4 fill-current" />
+                </Link>
+              </div>
             </div>
-            <div className="flex flex-wrap sm:flex-nowrap items-center gap-3.5 shrink-0 w-full sm:w-auto">
-              <Link
-                className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-black text-white hover:bg-white hover:text-black font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black shadow-[4px_4px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_#111111] active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
-                href="/#brief-inquiry"
-              >
-                <span>SUBMIT BRIEF SPEC</span>
-                <Send className="w-4 h-4 stroke-[2.5]" />
-              </Link>
-              <Link
-                className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-white text-black hover:bg-black hover:text-white font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black shadow-[4px_4px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_#111111] active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
-                href="/#stage-01"
-              >
-                <span>VIEW SHOWREEL</span>
-                <Play className="w-4 h-4 fill-current" />
-              </Link>
-            </div>
-          </div>
-        </section>
+          </section>
+        </ScrollReveal>
 
         {/* STAGE SCROLL NAVIGATION CONTROLS */}
         <div className="flex items-center justify-between border-t-2 border-black pt-6 mb-12">

@@ -14,6 +14,7 @@ import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { soundFX } from "@/utils/soundFX";
 import { useDoodleStore } from "@/store/useDoodleStore";
 import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
+import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import {
   ArrowRight,
   Pencil,
@@ -554,8 +555,16 @@ export default function GalleryPage() {
             {filteredProjects.map((project, index) => {
               const tapeRot = index % 2 === 0 ? "-rotate-2" : "rotate-3";
               return (
-                <article
+                <motion.article
                   key={project.id}
+                  initial={{ opacity: 0, y: 35, scale: 0.96 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.12 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: (index % 3) * 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                   className="relative bg-white rounded-xl p-5 border-[2.5px] border-black comic-shadow group hover:-translate-y-1 transition-transform duration-200 flex flex-col justify-between"
                 >
                   {/* Angled Translucent Washi Masking Tape on Corner */}
@@ -628,7 +637,7 @@ export default function GalleryPage() {
                     <Pencil className="w-3.5 h-3.5" />
                     <span>INSPECT BLUEPRINT ↗</span>
                   </button>
-                </article>
+                </motion.article>
               );
             })}
           </div>
@@ -636,7 +645,7 @@ export default function GalleryPage() {
 
         {/* ================= SPOTLIGHT: THE BLUEPRINT TO REALITY ================= */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t-2 border-black">
-          <div className="flex items-center gap-3 mb-6">
+          <ScrollReveal direction="up" distance={25} className="flex items-center gap-3 mb-6">
             <span className="w-4 h-4 bg-yellow-400 border border-black"></span>
             <h2 className="text-2xl md:text-3xl font-black font-headline uppercase tracking-tight text-black">
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
@@ -646,9 +655,9 @@ export default function GalleryPage() {
             <span className="font-mono text-xs text-black/50 ml-auto hidden sm:inline">
               DRAFTING TABLE: WORKBENCH 01
             </span>
-          </div>
+          </ScrollReveal>
 
-          <div className="relative bg-white rounded-2xl border-3 border-black p-6 md:p-8 comic-shadow overflow-hidden">
+          <ScrollReveal direction="pop" distance={30} delay={0.1} className="relative bg-white rounded-2xl border-3 border-black p-6 md:p-8 comic-shadow overflow-hidden">
             {/* Washi Tape on corners */}
             <div className="washi-tape-yellow absolute top-3 left-10 w-32 h-6 -rotate-2 z-10"></div>
             <div className="washi-tape-yellow absolute top-3 right-10 w-28 h-6 rotate-3 z-10"></div>
@@ -742,12 +751,12 @@ export default function GalleryPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         </section>
 
         {/* ================= CREATIVE BRIEF INTAKE BANNER ================= */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12" id="brief-inquiry">
-          <div className="bg-yellow-400 rounded-2xl border-3 border-black p-6 sm:p-10 comic-shadow relative overflow-hidden">
+          <ScrollReveal direction="pop" distance={35} className="bg-yellow-400 rounded-2xl border-3 border-black p-6 sm:p-10 comic-shadow relative overflow-hidden">
             <div className="relative z-10 max-w-3xl">
               <span className="px-3 py-0.5 bg-black text-white font-mono text-xs font-bold uppercase rounded inline-block mb-3">
                 {"// FAST CREATIVE DIRECTORY"}
@@ -790,7 +799,7 @@ export default function GalleryPage() {
                 <span>🔒 NDA COMPLIANT ON INTAKE</span>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         </section>
       </main>
 
