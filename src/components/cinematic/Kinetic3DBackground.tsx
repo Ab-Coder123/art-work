@@ -4,14 +4,14 @@ import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 interface Kinetic3DBackgroundProps {
-  scrollProgress: number; // 0 to 1
+  scrollProgress?: number; // 0 to 1 (optional, auto-computed from window.scrollY if omitted)
 }
 
 export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
   scrollProgress,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef(scrollProgress);
+  const scrollRef = useRef<number | undefined>(scrollProgress);
 
   useEffect(() => {
     scrollRef.current = scrollProgress;
@@ -37,7 +37,7 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
       powerPreference: "high-performance",
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
 
@@ -188,12 +188,24 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     // =============================================================
     let animationFrameId: number;
     let currentProgress = 0;
+    let isVisible = !document.hidden;
 
     const animate = () => {
+      if (!isVisible) return;
       animationFrameId = requestAnimationFrame(animate);
 
-      // Smooth scroll interpolation
-      const targetProgress = scrollRef.current;
+      // Direct high-performance scroll calculation without React state triggers:
+      let targetProgress = 0;
+      if (typeof scrollRef.current === "number" && !isNaN(scrollRef.current)) {
+        targetProgress = scrollRef.current;
+      } else {
+        const track = document.getElementById("pinned-stage-track");
+        const total = track
+          ? Math.max(1, track.scrollHeight - window.innerHeight)
+          : Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        targetProgress = Math.min(1, Math.max(0, window.scrollY / total));
+      }
+
       currentProgress += (targetProgress - currentProgress) * 0.08;
       const time = performance.now() * 0.001;
 
@@ -249,11 +261,22 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
       renderer.render(scene, camera);
     };
 
+    const handleVisibilityChange = () => {
+      isVisible = !document.hidden;
+      if (isVisible) {
+        animate();
+      } else {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     animate();
 
     // Cleanup
     return () => {
       cancelAnimationFrame(animationFrameId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       if (container.contains(renderer.domElement)) {

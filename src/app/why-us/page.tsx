@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -9,6 +9,7 @@ import { KineticPaintPen } from "@/components/cinematic/KineticPaintPen";
 import { Kinetic3DBackground } from "@/components/cinematic/Kinetic3DBackground";
 import { InteractiveDoodleCanvas } from "@/components/cinematic/InteractiveDoodleCanvas";
 import { SoundToggle } from "@/components/cinematic/SoundToggle";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import {
   ArrowRight,
   ArrowLeft,
@@ -28,8 +29,14 @@ import {
 } from "lucide-react";
 
 export default function WhyUsPage() {
+  // Activate Lenis luxury virtual smooth scroll
+  useSmoothScroll();
+
   // Mouse sparkle trail physics from Stitch design
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
     const createSparkle = (x: number, y: number) => {
       const p = document.createElement("div");
       p.className = "cursor-particle";
@@ -59,36 +66,20 @@ export default function WhyUsPage() {
     let lastMove = 0;
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now();
-      if (now - lastMove > 45) {
+      if (now - lastMove > 110) {
         createSparkle(e.clientX, e.clientY);
         lastMove = now;
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  // 3D Background Scroll Progress Sync
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      if (maxScroll <= 0) return;
-      setScrollProgress(Math.min(1, Math.max(0, scrollY / maxScroll)));
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <div className="bg-drafting-grid text-black font-body antialiased min-h-screen selection:bg-yellow-400 selection:text-black relative overflow-x-hidden">
       {/* Real 3D Kinetic Three.js Background with Scroll-Driven Motion (opacity-25) */}
-      <Kinetic3DBackground scrollProgress={scrollProgress} />
+      <Kinetic3DBackground />
 
       {/* Dot Grid Sketchpad Canvas */}
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>

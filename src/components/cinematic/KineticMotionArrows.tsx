@@ -10,6 +10,8 @@ export const KineticMotionArrows: React.FC = () => {
   const yArrowLeft = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const yArrowRight = useTransform(scrollYProgress, [0, 1], [0, -140]);
   const rotateSwoop = useTransform(scrollYProgress, [0, 1], [-3, 5]);
+  const yArrowBottom = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const rotateArrowBottom = useTransform(scrollYProgress, [0, 1], [0, -10]);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
@@ -91,8 +93,8 @@ export const KineticMotionArrows: React.FC = () => {
       {/* 3. LOWER-LEFT CORKSCREW LOOP ARROW (Safe bottom margin, low opacity) */}
       <motion.div
         style={{
-          y: useTransform(scrollYProgress, [0, 1], [0, -80]),
-          rotate: useTransform(scrollYProgress, [0, 1], [0, -10]),
+          y: yArrowBottom,
+          rotate: rotateArrowBottom,
         }}
         className="absolute bottom-[6%] left-4 2xl:left-12 hidden 2xl:block opacity-20"
       >

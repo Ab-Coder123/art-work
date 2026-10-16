@@ -500,7 +500,6 @@ function StudioFooter({ scrollToStage }: { scrollToStage: (s: StageId) => void }
    ========================================================================= */
 export default function Home() {
   const [activeStage, setActiveStage] = useState<StageId>("stage-01");
-  const [scrollProgress, setScrollProgress] = useState(0);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -541,41 +540,37 @@ export default function Home() {
     let lastMove = 0;
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now();
-      if (now - lastMove > 50) {
+      if (now - lastMove > 110) {
         createSparkle(e.clientX, e.clientY);
         lastMove = now;
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
-    // SCROLL SYNCHRONIZER:
-    // Handles Desktop Pinned Scrollytelling & Mobile Continuous Reading
+    // HIGH-PERFORMANCE SCROLL SYNCHRONIZER:
+    // Throttled via RAF with zero redundant re-renders
+    let ticking = false;
     const handleScroll = () => {
       const isMobile = window.innerWidth < 768;
 
       if (isMobile) {
-        // Mobile: Calculate progress across the entire natural document
-        const scrollY = window.scrollY;
-        const totalScrollable = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = totalScrollable > 0 ? Math.min(1, Math.max(0, scrollY / totalScrollable)) : 0;
-        setScrollProgress(progress);
-
-        // Detect active stage based on section bounding boxes
+        // Mobile: Detect active stage based on section bounding boxes
         const s2 = document.getElementById("stage-02-mobile");
         const s3 = document.getElementById("stage-03-mobile");
         const s4 = document.getElementById("stage-04-mobile");
         const threshold = window.innerHeight * 0.38;
 
+        let nextStage: StageId = "stage-01";
         if (s4 && s4.getBoundingClientRect().top <= threshold) {
-          setActiveStage("stage-04");
+          nextStage = "stage-04";
         } else if (s3 && s3.getBoundingClientRect().top <= threshold) {
-          setActiveStage("stage-03");
+          nextStage = "stage-03";
         } else if (s2 && s2.getBoundingClientRect().top <= threshold) {
-          setActiveStage("stage-02");
-        } else {
-          setActiveStage("stage-01");
+          nextStage = "stage-02";
         }
+
+        setActiveStage((prev) => (prev === nextStage ? prev : nextStage));
       } else {
         // Desktop: Calculate progress within pinned scrollytelling track
         if (!trackRef.current) return;
@@ -584,28 +579,39 @@ export default function Home() {
         if (maxScroll <= 0) return;
 
         const progress = Math.min(1, Math.max(0, scrollY / maxScroll));
-        setScrollProgress(progress);
-
+        let nextStage: StageId = "stage-01";
         if (progress < 0.25) {
-          setActiveStage("stage-01");
-        } else if (progress >= 0.25 && progress < 0.52) {
-          setActiveStage("stage-02");
-        } else if (progress >= 0.52 && progress < 0.78) {
-          setActiveStage("stage-03");
+          nextStage = "stage-01";
+        } else if (progress < 0.52) {
+          nextStage = "stage-02";
+        } else if (progress < 0.78) {
+          nextStage = "stage-03";
         } else {
-          setActiveStage("stage-04");
+          nextStage = "stage-04";
         }
+
+        setActiveStage((prev) => (prev === nextStage ? prev : nextStage));
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
     handleScroll();
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
   }, []);
 
@@ -619,10 +625,16 @@ export default function Home() {
         const headerOffset = 104; // Height of fixed header + mobile pill bar
         const elementPosition = targetEl.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        window.scrollTo({
-          top: Math.max(0, offsetPosition),
-          behavior: "smooth",
-        });
+        const targetTop = Math.max(0, offsetPosition);
+
+        if (window.__lenis) {
+          window.__lenis.scrollTo(targetTop);
+        } else {
+          window.scrollTo({
+            top: targetTop,
+            behavior: "smooth",
+          });
+        }
         setActiveStage(stage);
         return;
       }
@@ -637,7 +649,11 @@ export default function Home() {
     if (stage === "stage-03") target = maxScroll * 0.65;
     if (stage === "stage-04") target = maxScroll * 0.95;
 
-    window.scrollTo({ top: target, behavior: "smooth" });
+    if (window.__lenis) {
+      window.__lenis.scrollTo(target);
+    } else {
+      window.scrollTo({ top: target, behavior: "smooth" });
+    }
   }, []);
 
   const triggerInkBurst = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -677,8 +693,8 @@ export default function Home() {
     <>
       <IntroLoader />
 
-      {/* Real 3D Kinetic Three.js Background with Scroll-Driven Motion */}
-      <Kinetic3DBackground scrollProgress={scrollProgress} />
+      {/* Real 3D Kinetic Three.js Background with Auto-Synced Scroll Motion */}
+      <Kinetic3DBackground />
 
       {/* Kinetic Doodles Layer in Safe Margins */}
       <KineticDoodlesLayer />

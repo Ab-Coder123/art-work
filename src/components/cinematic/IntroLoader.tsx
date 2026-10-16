@@ -7,6 +7,7 @@ import { useIntroStore } from "@/hooks/useIntroStore";
 export const IntroLoader: React.FC = () => {
   const { isIntroActive, completeIntro } = useIntroStore();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoProgress, setVideoProgress] = React.useState(0);
 
   // Check if user has already seen intro in this browser session
   useEffect(() => {
@@ -41,6 +42,25 @@ export const IntroLoader: React.FC = () => {
     completeIntro();
   }, [completeIntro]);
 
+  // Real-time video progress tracker
+  const handleTimeUpdate = () => {
+    if (videoRef.current && videoRef.current.duration) {
+      const pct = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      setVideoProgress(Math.min(100, Math.max(0, pct)));
+    }
+  };
+
+  // Autoplay handler with graceful fallback if browser policy blocks autoplay
+  useEffect(() => {
+    if (!isIntroActive) return;
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // If browser blocks unmuted/video playback, gracefully exit
+        handleFinish();
+      });
+    }
+  }, [isIntroActive, handleFinish]);
+
   // Keyboard accessibility: Escape to skip
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -52,12 +72,12 @@ export const IntroLoader: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isIntroActive, handleFinish]);
 
-  // High performance LCP safety timer: guarantee intro transitions within 2.2s max
+  // Fail-safe safety timer (12s maximum) so the user is never stuck if video fails or buffers
   useEffect(() => {
     if (!isIntroActive) return;
     const safetyTimer = setTimeout(() => {
       handleFinish();
-    }, 2200);
+    }, 12000);
     return () => clearTimeout(safetyTimer);
   }, [isIntroActive, handleFinish]);
 
@@ -69,47 +89,47 @@ export const IntroLoader: React.FC = () => {
           initial={{ opacity: 1 }}
           exit={{
             opacity: 0,
-            scale: 1.08,
-            transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] },
+            scale: 1.04,
+            transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] },
           }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-white overflow-hidden select-none"
           role="dialog"
           aria-modal="true"
           aria-label="Welcome cinematic presentation"
         >
-          {/* 1080p Intro Video: w-40 compact logo scale, perfectly centered */}
-          <div className="flex items-center justify-center -translate-y-4 w">
+          {/* Video Player: plays until the very last frame, then invokes onEnded */}
+          <div className="flex items-center justify-center -translate-y-4 max-w-xl w-full px-6">
             <video
               ref={videoRef}
               autoPlay
               muted
               playsInline
               preload="auto"
+              onTimeUpdate={handleTimeUpdate}
               onEnded={handleFinish}
+              onError={handleFinish}
               className="w-full object-contain"
             >
               <source src="/assets/video/intro_loader.mp4" type="video/mp4" />
             </video>
           </div>
 
-          {/* Accessible Skip Button (WCAG compliant) */}
+          {/* Accessible Skip Button */}
           <div className="absolute bottom-8 right-8 z-20">
             <button
               onClick={handleFinish}
-              className="px-5 py-2.5 rounded-full bg-white/90 hover:bg-yellow-400 text-black font-mono text-xs uppercase tracking-widest font-bold border-2 border-black/20 shadow-md backdrop-blur-md transition-all duration-200 focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:outline-none"
+              className="px-5 py-2.5 rounded-full bg-white/90 hover:bg-yellow-400 text-black font-mono text-xs uppercase tracking-widest font-bold border-2 border-black/20 shadow-md backdrop-blur-md transition-all duration-200 focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:outline-none cursor-pointer"
               aria-label="Skip introductory presentation"
             >
               SKIP INTRO ➔
             </button>
           </div>
 
-          {/* Visual Progress Bar Accent */}
+          {/* Dynamic Progress Bar: perfectly synced with actual video duration */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-black/5 z-20">
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 4.5, ease: "linear" }}
-              className="h-full bg-yellow-400 origin-left"
+            <div
+              className="h-full bg-yellow-400 origin-left transition-all duration-75 ease-linear"
+              style={{ width: `${videoProgress}%` }}
             />
           </div>
         </motion.div>

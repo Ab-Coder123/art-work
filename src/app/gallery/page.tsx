@@ -206,7 +206,6 @@ const PROJECTS: ProjectItem[] = [
 export default function GalleryPage() {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
 
   // Activate Lenis luxury virtual smooth scroll
@@ -246,28 +245,16 @@ export default function GalleryPage() {
     let lastMove = 0;
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now();
-      if (now - lastMove > 50) {
+      if (now - lastMove > 110) {
         createSparkle(e.clientX, e.clientY);
         lastMove = now;
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-
-    // Sync 3D background with window scroll
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = maxScroll > 0 ? Math.min(1, Math.max(0, scrollY / maxScroll)) : 0;
-      setScrollProgress(progress);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -322,7 +309,7 @@ export default function GalleryPage() {
   return (
     <>
       {/* 1. Real 3D Kinetic Three.js Background with characters */}
-      <Kinetic3DBackground scrollProgress={scrollProgress} />
+      <Kinetic3DBackground />
 
       {/* 2. Kinetic Motion Arrows in background */}
       <KineticMotionArrows />
