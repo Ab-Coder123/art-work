@@ -16,6 +16,7 @@ import { MagneticButton } from "@/components/cinematic/MagneticButton";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { soundFX } from "@/utils/soundFX";
 import { useDoodleStore } from "@/store/useDoodleStore";
+import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
 import {
   ArrowRight,
   ArrowDown,
@@ -67,7 +68,9 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
       {/* Hero Typography Section */}
       <div className="relative mb-3 sm:mb-4 max-w-4xl">
         <h1 className="font-headline font-black text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl tracking-tight leading-[0.98] text-black">
-          CREATIVE IDEAS. <br />
+          <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.6} delay={0.1}>
+            CREATIVE IDEAS.
+          </KineticBrushWord> <br />
           <span className="relative inline-block mt-1 sm:mt-1.5">
             {/* Canary Yellow Ink Splash Backdrop */}
             <motion.span
@@ -77,23 +80,8 @@ function ManifestoContent({ onExploreShowreel, onViewCapabilities }: ManifestoCo
               className="absolute -inset-1 sm:-inset-1.5 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"
             ></motion.span>
             <span className="text-black relative z-10 px-1 sm:px-2">REAL IMPACT.</span>
-            {/* Hand-drawn SVG Highlighter Scribble Underline */}
-            <svg
-              className="absolute -bottom-3 left-0 w-full h-4 text-black pointer-events-none"
-              fill="none"
-              preserveAspectRatio="none"
-              viewBox="0 0 400 20"
-            >
-              <motion.path
-                d="M 5,12 Q 100,2 200,14 T 395,8"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="5"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 0.8, delay: 0.35, ease: "easeInOut" }}
-              />
-            </svg>
+            {/* Slender Hand-drawn Paintbrush Stroke */}
+            <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.2} delay={0.35} />
           </span>
         </h1>
 
@@ -222,7 +210,10 @@ function WhyUsContent() {
             <span>02 WHY ART WORK</span>
           </div>
           <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black tracking-tight">
-            ENGINEERED FOR STAGE &amp; SCALE.
+            ENGINEERED FOR{" "}
+            <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
+              STAGE &amp; SCALE.
+            </KineticBrushWord>
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -360,7 +351,9 @@ function ContactContent() {
           <div className="lg:col-span-5 space-y-2.5">
             <h2 className="font-headline font-black text-xl sm:text-2xl text-black tracking-tight leading-none">
               LET’S INK SOMETHING{" "}
-              <span className="bg-yellow-400 px-1.5 underline decoration-black">HISTORIC.</span>
+              <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
+                HISTORIC.
+              </KineticBrushWord>
             </h2>
             <p className="font-body text-xs text-black/80">
               Whether you need a dynamic stage package for an arena tour or an unforgettable brand identity, our sketchpad is open.

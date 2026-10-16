@@ -13,6 +13,7 @@ import { MagneticButton } from "@/components/cinematic/MagneticButton";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { soundFX } from "@/utils/soundFX";
 import { useDoodleStore } from "@/store/useDoodleStore";
+import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
 import {
   ArrowRight,
   Pencil,
@@ -423,12 +424,15 @@ export default function GalleryPage() {
           {/* Monumental Headline */}
           <div className="max-w-5xl mb-6">
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tighter uppercase leading-[0.98] text-black">
-              CRAFTED IN INK. <br />
+              <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.8} delay={0.1}>
+                CRAFTED IN INK.
+              </KineticBrushWord> <br />
               <span className="relative inline-block mt-2">
                 <span className="absolute -inset-1.5 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"></span>
                 <span className="text-black relative z-10 px-2">
                   EXECUTED IN ARENAS.
                 </span>
+                <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.2} delay={0.35} />
               </span>
             </h1>
           </div>
@@ -535,7 +539,9 @@ export default function GalleryPage() {
                 {"// SELECTED SCENOGRAPHY FOLIO"}
               </div>
               <h2 className="text-2xl md:text-4xl font-black font-headline uppercase tracking-tight text-black">
-                THE TACTILE ARCHIVE
+                <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
+                  THE TACTILE ARCHIVE
+                </KineticBrushWord>
               </h2>
             </div>
             <p className="font-headline font-bold text-xs md:text-sm text-black/70 rotate-1 max-w-sm">
@@ -633,7 +639,9 @@ export default function GalleryPage() {
           <div className="flex items-center gap-3 mb-6">
             <span className="w-4 h-4 bg-yellow-400 border border-black"></span>
             <h2 className="text-2xl md:text-3xl font-black font-headline uppercase tracking-tight text-black">
-              THE BLUEPRINT TO REALITY
+              <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
+                THE BLUEPRINT TO REALITY
+              </KineticBrushWord>
             </h2>
             <span className="font-mono text-xs text-black/50 ml-auto hidden sm:inline">
               DRAFTING TABLE: WORKBENCH 01
@@ -745,7 +753,10 @@ export default function GalleryPage() {
                 {"// FAST CREATIVE DIRECTORY"}
               </span>
               <h2 className="text-2xl sm:text-4xl font-black font-headline uppercase tracking-tight text-black leading-tight mb-3">
-                GOT A PROJECT IN MIND? LET’S SKETCH IT INTO REALITY.
+                GOT A PROJECT IN MIND?{" "}
+                <KineticBrushWord variant="double" color="#111111" strokeWidth={2.4}>
+                  LET’S SKETCH IT INTO REALITY.
+                </KineticBrushWord>
               </h2>
               <p className="font-body text-sm sm:text-base text-black/90 font-medium leading-relaxed mb-6">
                 Send us your event dates, venue specs, or wild ideas. Our

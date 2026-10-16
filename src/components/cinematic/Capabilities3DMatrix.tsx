@@ -15,6 +15,7 @@ import {
   Send,
   ArrowUpRight,
 } from "lucide-react";
+import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 
 const renderDisciplineIcon = (icon: string) => {
   switch (icon) {
@@ -273,7 +274,10 @@ export const Capabilities3DMatrix: React.FC = () => {
           03 CAPABILITIES &amp; 3D MATRIX
         </div>
         <h2 className="font-headline font-black text-2xl sm:text-3xl text-black tracking-tight mb-1 uppercase">
-          Interactive Discipline <span className="highlighter-yellow">Roster.</span>
+          Interactive Discipline{" "}
+          <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
+            Roster.
+          </KineticBrushWord>
         </h2>
         <p className="font-body text-xs text-black/70">
           Tilt in 3D or click any discipline card below to inspect technical delivery specs and arena toolkits.
@@ -400,7 +404,10 @@ export const Capabilities3DMatrix: React.FC = () => {
             <span>PROPRIETARY KINETIC STAGE WORKFLOW</span>
           </div>
           <h3 className="font-headline font-black text-2xl sm:text-3xl tracking-tight mb-2">
-            HAVE A TOUGH CREATIVE CHALLENGE?
+            HAVE A TOUGH{" "}
+            <KineticBrushWord variant="wave" color="#facc15" strokeWidth={2.4}>
+              CREATIVE CHALLENGE?
+            </KineticBrushWord>
           </h3>
           <p className="font-body text-sm text-white/80">
             Submit your core constraints. Our team responds within 24 hours with an annotated

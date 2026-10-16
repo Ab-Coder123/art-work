@@ -10,6 +10,7 @@ import { Kinetic3DBackground } from "@/components/cinematic/Kinetic3DBackground"
 import { InteractiveDoodleCanvas } from "@/components/cinematic/InteractiveDoodleCanvas";
 import { SoundToggle } from "@/components/cinematic/SoundToggle";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import {
   ArrowRight,
   ArrowLeft,
@@ -339,7 +340,9 @@ export default function WhyUsPage() {
             {/* Editorial Subheading */}
             <h2 className="font-headline text-2xl sm:text-3xl md:text-4xl font-black text-black leading-tight tracking-tight mb-4">
               Because your brand deserves more than just posts,{" "}
-              <span className="highlighter-yellow font-black">it deserves a strategy.</span>
+              <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
+                it deserves a strategy.
+              </KineticBrushWord>
             </h2>
 
             {/* High-Impact Body Copy */}
@@ -484,7 +487,9 @@ export default function WhyUsPage() {
               </div>
               <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black text-black tracking-tight uppercase">
                 Core Physical &amp; Experiential{" "}
-                <span className="highlighter-yellow">Capabilities</span>
+                <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.6}>
+                  Capabilities
+                </KineticBrushWord>
               </h3>
             </div>
             <p className="font-body text-sm text-black/70 max-w-md">
@@ -657,7 +662,10 @@ export default function WhyUsPage() {
                 Ready to blow your competition out of the water?
               </div>
               <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black text-black uppercase tracking-tight leading-none mb-3">
-                LET&apos;S DRAFT YOUR MASTERSTAGE BRIEF.
+                LET&apos;S DRAFT YOUR{" "}
+                <KineticBrushWord variant="double" color="#111111" strokeWidth={2.4}>
+                  MASTERSTAGE BRIEF.
+                </KineticBrushWord>
               </h3>
               <p className="font-body text-sm sm:text-base font-semibold text-black/80 max-w-xl leading-relaxed">
                 Tell us your target milestone, space dimensions, or commercial goals. We return with a
