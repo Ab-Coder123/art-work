@@ -104,12 +104,13 @@ export const IntroLoader: React.FC = () => {
           <div className="absolute inset-0 bg-dot-grid pointer-events-none opacity-40"></div>
 
           {/* Video Player Container: 
-              Uses hardware-accelerated GPU blend modes & color mapping:
-              - In Light Mode: mix-blend-multiply eliminates the white/cream background into 100% transparency.
-              - In Dark Mode: invert + hue-rotate(180deg) + mix-blend-screen eliminates the background into pure black transparency while inverting black ink to crisp white ink and preserving warm golden accents.
+              Natively transparent video without white or black background box:
+              - Light Mode: intro_loader_light.webm (alpha channel VP9, deep black ink & yellow accents)
+              - Dark Mode: intro_loader_dark.webm (alpha channel VP9, crisp white ink & amber accents)
           */}
           <div className="relative z-10 flex items-center justify-center -translate-y-2 max-w-2xl sm:max-w-3xl lg:max-w-4xl w-full px-4 sm:px-8">
             <video
+              key={isDark ? "intro-video-dark" : "intro-video-light"}
               ref={videoRef}
               autoPlay
               muted
@@ -118,12 +119,13 @@ export const IntroLoader: React.FC = () => {
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleFinish}
               onError={handleFinish}
-              className={`w-full object-contain filter drop-shadow-2xl transition-all duration-300 ${
-                isDark
-                  ? "mix-blend-screen invert hue-rotate-180 contrast-[1.25] brightness-[1.1]"
-                  : "mix-blend-multiply contrast-[1.03]"
-              }`}
+              className="w-full object-contain filter drop-shadow-2xl transition-all duration-300"
             >
+              <source
+                src={isDark ? "/assets/video/intro_loader_dark.webm" : "/assets/video/intro_loader_light.webm"}
+                type="video/webm"
+              />
+              <source src="/assets/video/intro_loader.webm" type="video/webm" />
               <source src="/assets/video/intro_loader.mp4" type="video/mp4" />
             </video>
           </div>
