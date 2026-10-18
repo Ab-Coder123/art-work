@@ -335,12 +335,12 @@ export default function GalleryPage() {
             className="group cursor-pointer active:scale-95 transition-transform flex items-center"
             title="Art Work — Home"
           >
-            <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 hover:rotate-3 transition-transform">
+            <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-[72px] md:h-[72px] lg:w-20 lg:h-20 hover:rotate-3 transition-transform">
               <Image
                 src="/assets/images/artwork_logo.png"
                 alt="Art Work Logo"
                 fill
-                sizes="(max-width: 640px) 48px, (max-width: 768px) 56px, 64px"
+                sizes="(max-width: 640px) 56px, (max-width: 768px) 64px, 80px"
                 priority
                 className="object-contain"
               />
@@ -410,7 +410,7 @@ export default function GalleryPage() {
       </header>
 
       {/* ================= MAIN CONTENT ================= */}
-      <main className="relative z-10 w-full pt-20 sm:pt-24 pb-20">
+      <main className="relative z-10 w-full pt-20 sm:pt-24 md:pt-28 pb-20">
         {/* ================= HERO SECTION ================= */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-10 border-b border-black/10 dark:border-zinc-800">
           {/* Vault Subtitle Tag */}

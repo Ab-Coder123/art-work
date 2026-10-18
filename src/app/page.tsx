@@ -755,12 +755,12 @@ export default function Home() {
             title="Art Work — Home"
             aria-label="Art Work — Home"
           >
-            <div className="relative w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 hover:rotate-3 transition-transform">
+            <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-[72px] md:h-[72px] lg:w-20 lg:h-20 hover:rotate-3 transition-transform">
               <Image
                 src="/assets/images/artwork_logo.png"
                 alt="Art Work Logo"
                 fill
-                sizes="(max-width: 640px) 44px, (max-width: 768px) 48px, 56px"
+                sizes="(max-width: 640px) 56px, (max-width: 768px) 64px, 80px"
                 priority
                 className="object-contain"
               />
@@ -937,7 +937,7 @@ export default function Home() {
         id="pinned-stage-track"
       >
         {/* STICKY FIXED VIEWPORT THEATER */}
-        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[82px] pb-1">
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[90px] pb-1">
           {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
           <aside className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
             <button

@@ -98,7 +98,7 @@ export default function WhyUsPage() {
 
       {/* ================= TOP NAVIGATION ================= */}
       <header className="fixed top-0 left-0 w-full z-50 bg-white/90 dark:bg-[#0C0C10]/90 backdrop-blur-md border-b border-black/10 dark:border-zinc-800">
-        <div className="flex justify-between items-center w-full px-6 py-3.5 max-w-7xl mx-auto">
+        <div className="flex justify-between items-center w-full px-6 py-2 sm:py-2.5 max-w-7xl mx-auto">
           {/* Logo Anchor with Transparent Brand Image */}
           <Link
             href="/"
@@ -106,12 +106,12 @@ export default function WhyUsPage() {
             title="Art Work — Home"
             aria-label="Art Work — Home"
           >
-            <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 hover:rotate-3 transition-transform">
+            <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-[72px] md:h-[72px] lg:w-20 lg:h-20 hover:rotate-3 transition-transform">
               <Image
                 src="/assets/images/artwork_logo.png"
                 alt="Art Work Logo"
                 fill
-                sizes="(max-width: 640px) 48px, (max-width: 768px) 56px, 64px"
+                sizes="(max-width: 640px) 56px, (max-width: 768px) 64px, 80px"
                 priority
                 className="object-contain"
               />
@@ -207,7 +207,7 @@ export default function WhyUsPage() {
       </aside>
 
       {/* ================= MAIN VIEWPORT STAGE ================= */}
-      <main className="relative z-10 pt-24 pb-20 max-w-6xl mx-auto px-6 sm:px-8 xl:pr-14">
+      <main className="relative z-10 pt-24 sm:pt-28 pb-20 max-w-6xl mx-auto px-6 sm:px-8 xl:pr-14">
         {/* Technical Header Ribbon */}
         <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-3 mb-8 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
           <div className="flex items-center gap-3">
