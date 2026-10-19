@@ -1,9 +1,15 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# Art Work Project & Development Protocol
 
-## This is NOT the Next.js you know
+## Strict Execution Rules:
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+1. **Server Management (CRITICAL RULE):**
+   - **DO NOT** run or start the server (`npm run start`, `npm run dev`, or background daemons) automatically after implementations.
+   - The **USER** is exclusively responsible for starting, stopping, and running the local server.
+   - Never attempt to occupy or kill port 3000 unless explicitly commanded by the user.
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
+2. **Scope of Implementation Verification:**
+   - After every implementation or code update, the agent's responsibility strictly ends at:
+     1. Running `npm run build` to verify compilation, types, and zero lint errors.
+     2. Running automated component or Playwright tests.
+     3. Providing a clear status summary to the user.
+   - Once build & tests are verified, conclude the turn without launching the server.
