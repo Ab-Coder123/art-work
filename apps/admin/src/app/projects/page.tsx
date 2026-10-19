@@ -12,8 +12,32 @@ import {
   AlertTriangle,
   X,
   Save,
+  Video,
 } from "lucide-react";
 import { ProjectRecord, ProjectCategory } from "@art-work/types";
+
+function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
+function getYouTubeEmbedUrl(input?: string): string | null {
+  if (!input) return null;
+  const trimmed = input.trim();
+  const iframeMatch = trimmed.match(/src=["'](.*?)["']/);
+  if (iframeMatch && iframeMatch[1]) {
+    return iframeMatch[1];
+  }
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = trimmed.match(regExp);
+  if (match && match[2].length === 11) {
+    return `https://www.youtube-nocookie.com/embed/${match[2]}`;
+  }
+  return null;
+}
 
 const INITIAL_PROJECTS: ProjectRecord[] = [
   {
@@ -34,6 +58,7 @@ const INITIAL_PROJECTS: ProjectRecord[] = [
     status: "published",
     order: 1,
     featured: true,
+    youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   },
   {
     id: "medtech-summit",
@@ -293,11 +318,17 @@ export default function GalleryProjectsManager() {
                   </div>
 
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h4 className="text-sm font-bold text-white tracking-tight">{project.title}</h4>
                       <span className="text-[10px] font-mono uppercase bg-yellow-400/10 text-yellow-400 px-1.5 py-0.5 rounded border border-yellow-400/20">
                         {project.category}
                       </span>
+                      {project.youtubeUrl && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-mono text-red-400 bg-red-500/10 border border-red-500/30 px-1.5 py-0.5 rounded">
+                          <YouTubeIcon className="w-3 h-3 text-red-500" />
+                          <span>YouTube Embedded</span>
+                        </span>
+                      )}
                     </div>
                     <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-400 font-mono">
                       <span>{project.client}</span>
@@ -483,6 +514,47 @@ export default function GalleryProjectsManager() {
                     }
                     className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 leading-relaxed font-sans"
                   />
+                </div>
+
+                {/* YouTube Video Embed & Channel Stream */}
+                <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-zinc-300 font-bold flex items-center gap-2">
+                      <YouTubeIcon className="w-4 h-4 text-red-500" />
+                      <span>YouTube Channel / Video Embed Link</span>
+                    </label>
+                    <span className="text-[10px] text-zinc-500">Supports watch link, youtu.be, or &lt;iframe&gt; code</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="https://www.youtube.com/watch?v=... or <iframe src='...'></iframe>"
+                    value={editingProject.youtubeUrl || ""}
+                    onChange={(e) =>
+                      setEditingProject({ ...editingProject, youtubeUrl: e.target.value })
+                    }
+                    className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                  />
+                  {getYouTubeEmbedUrl(editingProject.youtubeUrl) ? (
+                    <div className="space-y-1.5 pt-1">
+                      <div className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+                        <Video className="w-3 h-3" />
+                        <span>Live Embed Stream Preview</span>
+                      </div>
+                      <div className="aspect-video w-full rounded-lg overflow-hidden border border-[#262638] bg-black">
+                        <iframe
+                          src={getYouTubeEmbedUrl(editingProject.youtubeUrl)!}
+                          title="YouTube Video Preview"
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    </div>
+                  ) : editingProject.youtubeUrl ? (
+                    <p className="text-[10px] text-amber-400/80 font-mono">
+                      * Paste a valid YouTube video URL or iframe embed snippet to activate preview.
+                    </p>
+                  ) : null}
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t border-[#262638]">

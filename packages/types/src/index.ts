@@ -32,6 +32,8 @@ export interface ProjectRecord {
   status: PublicationStatus;
   order: number;
   featured?: boolean;
+  youtubeUrl?: string; // YouTube video or shorts link (e.g. "https://www.youtube.com/watch?v=...")
+  youtubeEmbedCode?: string; // Raw or generated iframe embed code
   createdAt?: string;
   updatedAt?: string;
 }
