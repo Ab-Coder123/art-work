@@ -23,6 +23,6 @@ test-report/
 .DS_Store
 Thumbs.db
 
-# Legacy / Non-monorepo working folders
-artwork-app/
-downloads/
+# Legacy root folders
+/artwork-app/
+/downloads/
