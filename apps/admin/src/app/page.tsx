@@ -10,7 +10,6 @@ import {
   Layers,
   Sparkles,
   CheckCircle2,
-  Clock,
   Box,
 } from "lucide-react";
 

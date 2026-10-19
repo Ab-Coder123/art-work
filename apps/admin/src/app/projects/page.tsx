@@ -1,26 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { AdminHeader } from "@/components/AdminHeader";
 import {
   Plus,
   Search,
-  Filter,
   Edit2,
   Trash2,
-  CheckCircle2,
-  Eye,
   ArrowUp,
   ArrowDown,
-  Layers,
-  Sparkles,
-  Tag,
   AlertTriangle,
   X,
   Save,
 } from "lucide-react";
-import { ProjectRecord, ProjectCategory, PublicationStatus } from "@art-work/types";
+import { ProjectRecord, ProjectCategory } from "@art-work/types";
 
 const INITIAL_PROJECTS: ProjectRecord[] = [
   {
@@ -424,7 +417,7 @@ export default function GalleryProjectsManager() {
                     <select
                       value={editingProject.category}
                       onChange={(e) =>
-                        setEditingProject({ ...editingProject, category: e.target.value as any })
+                        setEditingProject({ ...editingProject, category: e.target.value as ProjectRecord["category"] })
                       }
                       className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
                     >

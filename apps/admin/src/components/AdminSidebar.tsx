@@ -9,7 +9,6 @@ import {
   LayoutDashboard,
   ExternalLink,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 
 export function AdminSidebar() {

@@ -4,16 +4,9 @@ import React, { useState } from "react";
 import { AdminHeader } from "@/components/AdminHeader";
 import {
   Save,
-  RotateCcw,
   CheckCircle2,
   AlertCircle,
-  FileText,
-  Layers,
-  Phone,
-  Compass,
-  ExternalLink,
 } from "lucide-react";
-import { SiteContent } from "@art-work/types";
 
 export default function WebsiteContentEditor() {
   const [activeSection, setActiveSection] = useState<"manifesto" | "teaser" | "contact" | "whyUs">("manifesto");

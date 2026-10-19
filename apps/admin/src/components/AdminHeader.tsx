@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Activity, Clock } from "lucide-react";
 
 interface AdminHeaderProps {
   title: string;
