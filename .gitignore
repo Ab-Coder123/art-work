@@ -7,9 +7,10 @@ node_modules
 out/
 .turbo/
 
-# Production
+# Production & Build Artifacts
 build/
 dist/
+*.tsbuildinfo
 
 # Environment Variables
 .env*.local

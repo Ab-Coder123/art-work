@@ -1,0 +1,34 @@
+{
+  "name": "@art-work/database",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "node --import tsx/esm --test tests/**/*.spec.ts",
+    "status": "node --import tsx/esm src/cli.ts status",
+    "check": "node --import tsx/esm src/cli.ts check",
+    "migrate": "node --import tsx/esm src/cli.ts migrate",
+    "reset": "node --import tsx/esm src/cli.ts reset"
+  },
+  "dependencies": {
+    "@art-work/types": "workspace:*",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.1",
+    "pg": "^8.13.3",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/pg": "^8.11.11",
+    "tsx": "^4.19.3",
+    "typescript": "^5"
+  }
+}

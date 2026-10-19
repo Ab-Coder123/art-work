@@ -6,7 +6,12 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "type-check": "turbo run type-check"
+    "type-check": "turbo run type-check",
+    "test": "pnpm --filter @art-work/database run test",
+    "db:status": "pnpm --filter @art-work/database run status",
+    "db:check": "pnpm --filter @art-work/database run check",
+    "db:migrate": "pnpm --filter @art-work/database run migrate",
+    "db:reset": "pnpm --filter @art-work/database run reset"
   },
   "devDependencies": {
     "turbo": "^2.11.9",
