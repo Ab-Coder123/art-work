@@ -1,0 +1,169 @@
+[
+  {
+    "id": "neon-horizon",
+    "title": "Neon Horizon World Tour",
+    "stamp": "STAMP_PASS: ARENA_01",
+    "metaBadge": "OCT 2025",
+    "cadId": "CAD_ID: NH_TOUR_V4",
+    "image": "/assets/images/gallery/project_01_neon_horizon.jpg",
+    "altText": "Neon Horizon World Tour Arena Scenography and Laser Rig",
+    "category": "stage",
+    "tags": [
+      "Stage, Sound & Lighting",
+      "LED Screens & Audiovisual",
+      "Concept Creation"
+    ],
+    "stats": "⚡ 52,000 Fans / Night",
+    "statsSub": "0.0s DMX Latency • 100% Custom Rig",
+    "description": "A massive arena tour stage scenography bathed in canary yellow laser arrays, kinetic ceiling hoists, and curved volumetric 8K LED walls.",
+    "client": "Global Music Collective",
+    "specs": [
+      "40m x 22m Custom Truss Grid",
+      "180 DMX Controlled Moving Heads",
+      "Notch Real-time Audio-Reactive Shaders",
+      "SMPTE Timecode Precision Sync"
+    ],
+    "status": "published",
+    "order": 1,
+    "featured": true
+  },
+  {
+    "id": "medtech-summit",
+    "title": "Global MedTech Summit 2025",
+    "stamp": "SUMMIT_ID: MED_25",
+    "metaBadge": "VENUE: GENEVA EXPO",
+    "cadId": "REV: PAVILION_STAGE3",
+    "image": "/assets/images/gallery/project_02_medtech_summit.jpg",
+    "altText": "Global MedTech Summit Multi-tier Interactive Conference Pavilion",
+    "category": "conferences",
+    "tags": [
+      "Conference & Medical Event Management",
+      "Registration & Event Staffing",
+      "On-site Logistics"
+    ],
+    "stats": "🏥 14,000 Delegates",
+    "statsSub": "6 Plenary Stages • 99.8% Sync Score",
+    "description": "Ultra-sleek double-decker medical conference pavilion with interactive digital demo kiosks, glass railings, and precision LED strip illumination.",
+    "client": "World Medical Technology Forum",
+    "specs": [
+      "6 Simultaneous Plenary Streams",
+      "Full RFID Registration Badge Flow",
+      "45 Multilingual Host Team",
+      "Custom Medical Demo Staging"
+    ],
+    "status": "published",
+    "order": 2,
+    "featured": true
+  },
+  {
+    "id": "cybertruss-pavilion",
+    "title": "CyberTruss Spatial Pavilion",
+    "stamp": "PATENT_ARCH: EXPO_08",
+    "metaBadge": "FAB: CNC MILLWORK",
+    "cadId": "FRAME: 40m x 25m",
+    "image": "/assets/images/gallery/project_03_cybertruss.jpg",
+    "altText": "CyberTruss Trade Expo Structural Pavilion Architecture",
+    "category": "booths",
+    "tags": [
+      "Exhibition Booth Design & Production",
+      "Interactive Activities & Engagement",
+      "On-site Management"
+    ],
+    "stats": "📐 1,200 m² Footprint",
+    "statsSub": "72-Hour Rapid Build • German Spec Steel",
+    "description": "Grand geometric trade expo pavilion built from heavy industrial stage trusses, cantilevered VIP mezzanine lounge, and volumetric lighting.",
+    "client": "Industrial Tech Conglomerate",
+    "specs": [
+      "German-Spec CNC Steel Beams",
+      "Cantilevered VIP Hospitality Deck",
+      "Interactive Floor Tracking Projections",
+      "Full Fire & Wind Safety Compliance"
+    ],
+    "status": "published",
+    "order": 3,
+    "featured": true
+  },
+  {
+    "id": "prism-brand-suite",
+    "title": "Prism Brand Identity & Merch",
+    "stamp": "SYSTEM_SYS: ID_99",
+    "metaBadge": "BATCH: LIMITED EDITION",
+    "cadId": "PANTONE: #FACC15",
+    "image": "/assets/images/gallery/project_04_prism_merch.jpg",
+    "altText": "Prism Brand Merch Suite and VIP Credential System",
+    "category": "branding",
+    "tags": [
+      "Branding, Printing & Event Branding",
+      "Promotional Giveaways & Merchandise"
+    ],
+    "stats": "🎨 35 Custom Swatches",
+    "statsSub": "20k Screenprints • Pantone Canary Yellow",
+    "description": "Tactile event branding system: matte black foil-stamped VIP laminate passes, woven canary yellow lanyards, screenprinted hoodies, and signage.",
+    "client": "Creative Arts Festival",
+    "specs": [
+      "Embossed Foil Laminate VIP Badges",
+      "Heavy-Duty Custom Woven Lanyards",
+      "Screenprinted Organic Cotton Merch",
+      "Wayfinding Architectural Signage"
+    ],
+    "status": "published",
+    "order": 4,
+    "featured": false
+  },
+  {
+    "id": "arena-genesis",
+    "title": "Arena Genesis Live Broadcast",
+    "stamp": "BROADCAST: 4K_60FPS",
+    "metaBadge": "GLOBAL SYNC",
+    "cadId": "LATENCY: 1.2MS",
+    "image": "/assets/images/gallery/project_05_arena_genesis.jpg",
+    "altText": "Arena Genesis Multi-camera Broadcast Arena and Anamorphic Stage",
+    "category": "tech",
+    "tags": [
+      "Photography & Videography",
+      "Stage, Sound & Lighting",
+      "Event Planning & Project Management"
+    ],
+    "stats": "🎥 18 Ultra-HD Cameras",
+    "statsSub": "1.4M Stream Peak • Zero Dropped Frames",
+    "description": "Multi-camera broadcast production studio and stadium stage with anamorphic 3D LED screens and automated robotic spotlight rigs.",
+    "client": "Global Esports Arena",
+    "specs": [
+      "18 4K HDR Broadcast Cameras",
+      "Robotic Jib & Wire-Cam Tracking",
+      "Instant Multi-Angle Replay Servers",
+      "Worldwide Satellite Relay Sync"
+    ],
+    "status": "published",
+    "order": 5,
+    "featured": true
+  },
+  {
+    "id": "sensory-expo",
+    "title": "Sensory Kinetic Expo Booth",
+    "stamp": "INTERACTION: SENSOR_V2",
+    "metaBadge": "MWC BARCELONA",
+    "cadId": "CUES: 880 SENSOR_TRIG",
+    "image": "/assets/images/gallery/project_06_sensory_expo.jpg",
+    "altText": "Sensory Kinetic Expo Booth with Holographic LED Mesh and Sensors",
+    "category": "led",
+    "tags": [
+      "Exhibition Booth Design",
+      "LED Screens & Audiovisual",
+      "Concept Creation & Creative Development"
+    ],
+    "stats": "✨ 880 Interactive Cues",
+    "statsSub": "4.9/5 Visitor Rating • Viral Social Surge",
+    "description": "Sensorial experiential booth with holographic transparent mesh screens, motion-reactive LED light pillars, and kinetic chandeliers.",
+    "client": "Next-Gen Telecommunications",
+    "specs": [
+      "Transparent Micro-LED Glass Walls",
+      "LiDAR Audience Motion Sensing",
+      "Kinetic Ceiling Lighting Matrix",
+      "Spatial Surround Sound Arrays"
+    ],
+    "status": "published",
+    "order": 6,
+    "featured": false
+  }
+]
