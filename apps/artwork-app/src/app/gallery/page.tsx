@@ -407,10 +407,35 @@ export default function GalleryPage() {
             </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Strip in Gallery */}
+        <div className="md:hidden flex items-center justify-start gap-1.5 px-3 py-1.5 bg-yellow-50/95 dark:bg-[#12121A]/95 border-t border-black/10 dark:border-white/10 overflow-x-auto no-scrollbar">
+          <Link
+            href="/#stage-01"
+            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
+          >
+            ← Home
+          </Link>
+          <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
+            ★ Gallery Vault
+          </span>
+          <Link
+            href="/why-us"
+            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
+          >
+            Why Us
+          </Link>
+          <Link
+            href="/#stage-04"
+            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
+          >
+            Contact
+          </Link>
+        </div>
       </header>
 
       {/* ================= MAIN CONTENT ================= */}
-      <main className="relative z-10 w-full pt-20 sm:pt-24 md:pt-28 pb-20">
+      <main className="relative z-10 w-full pt-28 sm:pt-28 md:pt-28 pb-20">
         {/* ================= HERO SECTION ================= */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-10 border-b border-black/10 dark:border-zinc-800">
           {/* Vault Subtitle Tag */}

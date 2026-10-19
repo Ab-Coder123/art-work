@@ -115,7 +115,7 @@ export const IntroLoader: React.FC = () => {
               autoPlay
               muted
               playsInline
-              preload="auto"
+              preload="metadata"
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleFinish}
               onError={handleFinish}

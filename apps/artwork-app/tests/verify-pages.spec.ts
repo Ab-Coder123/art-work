@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 test('verify separate /why-us and / home pages', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
