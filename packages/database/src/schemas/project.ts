@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { parseYouTubeInput } from "../media/youtube";
 
 export const PROJECT_CATEGORIES = [
   "stage",
@@ -34,8 +35,8 @@ export const YouTubeUrlSchema = z
   .string()
   .url("YouTube URL must be a valid URL")
   .refine(
-    (url) => url.includes("youtube.com") || url.includes("youtu.be"),
-    "URL must belong to youtube.com or youtu.be domain"
+    (url) => parseYouTubeInput(url).ok,
+    "URL must be a valid link on an approved YouTube host with an 11-character video ID"
   )
   .nullable()
   .optional();

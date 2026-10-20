@@ -22,3 +22,6 @@ export * from "./schemas/index";
 
 // Authentication, Session Lifecycle & CSRF Defense (Phase 03)
 export * from "./auth/index";
+
+// YouTube Media Engine (Phase 05)
+export * from "./media/youtube";

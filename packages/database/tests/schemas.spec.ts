@@ -102,7 +102,7 @@ describe("Phase 02: Relational Schemas & Zod Constraints", () => {
 
       assert.throws(() => {
         YouTubeUrlSchema.parse("https://vimeo.com/12345678");
-      }, /URL must belong to youtube.com or youtu.be domain/);
+      }, /approved YouTube host/);
     });
 
     it("should reject invalid project categories", () => {
