@@ -19,3 +19,6 @@ export * from "./health/check.js";
 
 // Canonical Migrations
 export * from "./migrations/runner.js";
+
+// Relational Schemas & Domain Models (Phase 02)
+export * from "./schemas/index.js";

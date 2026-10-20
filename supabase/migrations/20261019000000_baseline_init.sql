@@ -4,7 +4,11 @@
 -- Target: PostgreSQL 15+ via Supabase (Direct: 5432, Supavisor Pooler: 6543)
 -- ============================================================================
 
--- 1. Enable Core Cryptographic and UUID Extensions
+-- 1. Ensure extensions and auth schemas exist
+CREATE SCHEMA IF NOT EXISTS extensions;
+CREATE SCHEMA IF NOT EXISTS auth;
+
+-- Enable Core Cryptographic and UUID Extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
 CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA extensions;
 
