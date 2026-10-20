@@ -1,6 +1,6 @@
 import { Pool, Client } from "pg";
-import { parseDatabaseEnv, validatePoolerUrl, type DatabaseEnv } from "../config/env.js";
-import { getSupavisorPoolOptions, type SupavisorPoolConfig } from "../pooler/connection.js";
+import { parseDatabaseEnv, validatePoolerUrl, type DatabaseEnv } from "../config/env";
+import { getSupavisorPoolOptions, type SupavisorPoolConfig } from "../pooler/connection";
 
 export interface HealthAuditResult {
   ok: boolean;

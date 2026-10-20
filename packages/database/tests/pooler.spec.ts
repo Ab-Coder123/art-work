@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { getSupavisorPoolOptions, auditPoolerConfiguration } from "../src/index.js";
+import { getSupavisorPoolOptions, auditPoolerConfiguration } from "../src/index";
 
 describe("Phase 01: Supavisor Connection Pooling & prepare: false Configuration", () => {
   it("should enforce disablePreparedStatements = true for Supavisor compatibility", () => {

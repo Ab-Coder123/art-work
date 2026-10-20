@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
-import { getMigrationFiles } from "../src/index.js";
+import { getMigrationFiles } from "../src/migrations/runner";
 
 describe("Phase 02: DDL Migration & Schema Integrity Verification", () => {
   const migrationsDir = path.resolve(process.cwd(), "..", "..", "supabase", "migrations");

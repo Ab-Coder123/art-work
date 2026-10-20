@@ -10,7 +10,7 @@ import {
   InquiryInputSchema,
   AdminUserInputSchema,
   ContentAuditLogSchema,
-} from "../src/index.js";
+} from "../src/index";
 
 describe("Phase 02: Relational Schemas & Zod Constraints", () => {
   describe("Project Showcase Schema", () => {

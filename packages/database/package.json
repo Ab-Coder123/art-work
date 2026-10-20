@@ -9,6 +9,10 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./migrations": {
+      "types": "./src/migrations/runner.ts",
+      "default": "./src/migrations/runner.ts"
     }
   },
   "scripts": {

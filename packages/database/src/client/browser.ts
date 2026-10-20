@@ -1,5 +1,5 @@
 import { createBrowserClient as createSupabaseBrowserClient } from "@supabase/ssr";
-import { parseDatabaseEnv } from "../config/env.js";
+import { parseDatabaseEnv } from "../config/env";
 
 /**
  * Creates a browser-safe Supabase client configured with public anonymous credentials.

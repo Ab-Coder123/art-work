@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
-import { getMigrationFiles, runMigrations } from "../src/index.js";
+import { getMigrationFiles, runMigrations } from "../src/migrations/runner";
 
 describe("Phase 01: Canonical Migrations & Runner Verification", () => {
   it("should locate and parse canonical baseline migration files in supabase/migrations", () => {

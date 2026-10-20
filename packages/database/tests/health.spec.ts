@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { performSystemHealthAudit, testDatabaseHandshake } from "../src/index.js";
+import { performSystemHealthAudit, testDatabaseHandshake } from "../src/index";
 
 describe("Phase 01: Deterministic Health & Pooler Handshake Audit", () => {
   it("should perform static health and configuration audit deterministically", async () => {

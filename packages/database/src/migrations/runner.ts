@@ -1,8 +1,8 @@
-import fs from "node:fs";
-import path from "node:path";
-import crypto from "node:crypto";
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
 import { Client } from "pg";
-import { parseDatabaseEnv } from "../config/env.js";
+import { parseDatabaseEnv } from "../config/env";
 
 export interface MigrationFile {
   filename: string;

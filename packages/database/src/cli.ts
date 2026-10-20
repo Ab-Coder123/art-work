@@ -1,9 +1,9 @@
-import fs from "node:fs";
-import path from "node:path";
+import fs from "fs";
+import path from "path";
 import { Client } from "pg";
-import { parseDatabaseEnv } from "./config/env.js";
-import { getMigrationFiles, runMigrations } from "./migrations/runner.js";
-import { performSystemHealthAudit, testDatabaseHandshake } from "./health/check.js";
+import { parseDatabaseEnv } from "./config/env";
+import { getMigrationFiles, runMigrations } from "./migrations/runner";
+import { performSystemHealthAudit, testDatabaseHandshake } from "./health/check";
 
 async function main() {
   const args = process.argv.slice(2);

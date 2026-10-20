@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { parseDatabaseEnv } from "../config/env.js";
+import { parseDatabaseEnv } from "../config/env";
 
 /**
  * Creates an administrative Supabase client using the service_role key.

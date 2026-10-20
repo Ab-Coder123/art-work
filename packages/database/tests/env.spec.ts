@@ -4,7 +4,7 @@ import {
   DatabaseEnvSchema,
   parseDatabaseEnv,
   validatePoolerUrl,
-} from "../src/config/env.js";
+} from "../src/config/env";
 
 describe("Phase 01: Database Environment Configuration & Zod Schema", () => {
   it("should validate default environment settings successfully", () => {

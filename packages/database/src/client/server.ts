@@ -1,5 +1,5 @@
 import { createServerClient as createSupabaseServerClient, type CookieOptions } from "@supabase/ssr";
-import { parseDatabaseEnv } from "../config/env.js";
+import { parseDatabaseEnv } from "../config/env";
 
 export interface CookieMethodsServer {
   getAll: () => { name: string; value: string }[] | Promise<{ name: string; value: string }[]>;

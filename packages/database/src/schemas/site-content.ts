@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ContentStatusEnum, type ContentStatus } from "./project.js";
+import { ContentStatusEnum, type ContentStatus } from "./project";
 
 export const SITE_SECTION_KEYS = [
   "hero",

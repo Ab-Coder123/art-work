@@ -1,5 +1,5 @@
 import { Pool, PoolConfig, QueryResult, QueryResultRow } from "pg";
-import { parseDatabaseEnv, validatePoolerUrl } from "../config/env.js";
+import { parseDatabaseEnv, validatePoolerUrl } from "../config/env";
 
 export interface SupavisorPoolConfig extends PoolConfig {
   /**

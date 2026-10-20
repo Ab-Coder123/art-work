@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { createBrowserClient, createAdminClient } from "../src/index.js";
+import { createBrowserClient, createAdminClient } from "../src/index";
 
 describe("Phase 01: Supabase Client Factories & Security Boundaries", () => {
   it("should initialize browser client with public anonymous credentials", () => {

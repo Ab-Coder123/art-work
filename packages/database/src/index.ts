@@ -4,21 +4,21 @@
  */
 
 // Configuration & Environment Validation
-export * from "./config/env.js";
+export * from "./config/env";
 
 // Supavisor Connection Pooling
-export * from "./pooler/connection.js";
+export * from "./pooler/connection";
 
 // Supabase Clients (Browser, Server SSR, Guarded Admin)
-export * from "./client/browser.js";
-export * from "./client/server.js";
-export * from "./client/admin.js";
+export * from "./client/browser";
+export * from "./client/server";
+export * from "./client/admin";
 
 // System Health & Deterministic Audits
-export * from "./health/check.js";
-
-// Canonical Migrations
-export * from "./migrations/runner.js";
+export * from "./health/check";
 
 // Relational Schemas & Domain Models (Phase 02)
-export * from "./schemas/index.js";
+export * from "./schemas/index";
+
+// Authentication, Session Lifecycle & CSRF Defense (Phase 03)
+export * from "./auth/index";
