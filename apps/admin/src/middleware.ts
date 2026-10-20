@@ -3,7 +3,7 @@ import {
   AUTH_COOKIES,
   CSRF_HEADER_NAME,
   validateCsrfToken,
-} from "@art-work/database";
+} from "@art-work/database/edge";
 
 // Routes exempt from authentication checks
 const PUBLIC_PATHS = ["/login", "/api/auth/login", "/api/auth/csrf"];

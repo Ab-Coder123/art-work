@@ -10,6 +10,10 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./edge": {
+      "types": "./src/auth/edge.ts",
+      "default": "./src/auth/edge.ts"
+    },
     "./migrations": {
       "types": "./src/migrations/runner.ts",
       "default": "./src/migrations/runner.ts"
