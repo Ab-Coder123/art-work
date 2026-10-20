@@ -25,3 +25,6 @@ export * from "./auth/index";
 
 // YouTube Media Engine (Phase 05)
 export * from "./media/youtube";
+
+// Projects Showcase Service & Repository (Phase 06)
+export * from "./projects/service";

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { AdminHeader } from "@/components/AdminHeader";
 import {
   Plus,
@@ -235,9 +235,47 @@ export default function GalleryProjectsManager() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ProjectCategory>("all");
   const [editingProject, setEditingProject] = useState<ProjectRecord | null>(null);
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [resolvingYt, setResolvingYt] = useState(false);
   const [ytStatusMessage, setYtStatusMessage] = useState<string | null>(null);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const ensureCsrfToken = useCallback(async (): Promise<string | null> => {
+    const existing = readCsrfCookie();
+    if (existing) return existing;
+    try {
+      const res = await fetch("/api/auth/csrf");
+      if (res.ok) {
+        const data = await res.json();
+        return data.csrfToken || null;
+      }
+    } catch {
+      // Ignore offline
+    }
+    return null;
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/projects?limit=50", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (mounted && Array.isArray(data.items) && data.items.length > 0) {
+            setProjects(data.items);
+          }
+        }
+      } catch {
+        // Fallback to INITIAL_PROJECTS if offline
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const filtered = projects.filter((p) => {
     const matchesCat = activeCategory === "all" || p.category === activeCategory;
@@ -249,15 +287,40 @@ export default function GalleryProjectsManager() {
     return matchesCat && matchesQuery;
   });
 
-  const handleToggleStatus = (id: string) => {
-    setProjects(
-      projects.map((p) =>
-        p.id === id ? { ...p, status: p.status === "published" ? "draft" : "published" } : p
-      )
+  const handleToggleStatus = async (id: string) => {
+    const target = projects.find((p) => p.id === id);
+    if (!target) return;
+    const nextStatus = target.status === "published" ? "draft" : "published";
+
+    setProjects((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, status: nextStatus } : p))
     );
+
+    try {
+      const csrf = await ensureCsrfToken();
+      const res = await fetch(`/api/projects/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrf ? { [CSRF_HEADER_NAME]: csrf } : {}),
+        },
+        body: JSON.stringify({ ...target, status: nextStatus }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.project) {
+          setProjects((prev) =>
+            prev.map((p) => (p.id === id ? data.project : p))
+          );
+          setSyncMessage(`✓ Status updated to '${nextStatus.toUpperCase()}' in Supabase`);
+        }
+      }
+    } catch {
+      // Optimistic state kept locally
+    }
   };
 
-  const handleMoveOrder = (id: string, direction: "up" | "down") => {
+  const handleMoveOrder = async (id: string, direction: "up" | "down") => {
     const index = projects.findIndex((p) => p.id === id);
     if (index < 0) return;
     const targetIndex = direction === "up" ? index - 1 : index + 1;
@@ -266,12 +329,47 @@ export default function GalleryProjectsManager() {
     const updated = [...projects];
     const [moved] = updated.splice(index, 1);
     updated.splice(targetIndex, 0, moved);
-    setProjects(updated.map((p, idx) => ({ ...p, order: idx + 1 })));
+    const reordered = updated.map((p, idx) => ({ ...p, order: idx + 1 }));
+    setProjects(reordered);
+
+    try {
+      const csrf = await ensureCsrfToken();
+      const res = await fetch("/api/projects/reorder", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrf ? { [CSRF_HEADER_NAME]: csrf } : {}),
+        },
+        body: JSON.stringify({
+          items: reordered.map((p) => ({ id: p.id, order: p.order })),
+        }),
+      });
+      if (res.ok) {
+        setSyncMessage("✓ Project display order synced to Supabase");
+      }
+    } catch {
+      // Optimistic state kept locally
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setProjects(projects.filter((p) => p.id !== id));
+  const handleDelete = async (id: string) => {
+    setProjects((prev) => prev.filter((p) => p.id !== id));
     setDeleteConfirmId(null);
+
+    try {
+      const csrf = await ensureCsrfToken();
+      const res = await fetch(`/api/projects/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: {
+          ...(csrf ? { [CSRF_HEADER_NAME]: csrf } : {}),
+        },
+      });
+      if (res.ok) {
+        setSyncMessage(`✓ Deleted project '${id}' from Supabase`);
+      }
+    } catch {
+      // Optimistic state kept locally
+    }
   };
 
   const handleYouTubeInputChange = (rawInput: string) => {
@@ -365,16 +463,65 @@ export default function GalleryProjectsManager() {
     }
   };
 
-  const handleSaveEdit = (e: React.FormEvent) => {
+  const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingProject) return;
-    const exists = projects.some((p) => p.id === editingProject.id);
+    if (!editingProject || isSaving) return;
+    setIsSaving(true);
+    setSyncMessage(null);
+
+    const exists = !isCreatingNew && projects.some((p) => p.id === editingProject.id);
+
+    try {
+      const csrf = await ensureCsrfToken();
+      const endpoint = exists
+        ? `/api/projects/${encodeURIComponent(editingProject.id)}`
+        : "/api/projects";
+      const method = exists ? "PUT" : "POST";
+
+      const res = await fetch(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrf ? { [CSRF_HEADER_NAME]: csrf } : {}),
+        },
+        body: JSON.stringify(editingProject),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const saved: ProjectRecord = data.project || editingProject;
+        setProjects((prev) =>
+          exists
+            ? prev.map((p) => (p.id === editingProject.id ? saved : p))
+            : [...prev, saved]
+        );
+        setSyncMessage(
+          exists
+            ? `✓ Project "${saved.title}" updated in Supabase PostgreSQL`
+            : `✓ Project "${saved.title}" created in Supabase PostgreSQL`
+        );
+        setEditingProject(null);
+        setIsCreatingNew(false);
+        return;
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setSyncMessage(`⚠ ${errData.error || "Saved locally (API validation warning)"}`);
+      }
+    } catch {
+      setSyncMessage("✓ Saved in local studio state");
+    } finally {
+      setIsSaving(false);
+    }
+
     if (exists) {
-      setProjects(projects.map((p) => (p.id === editingProject.id ? editingProject : p)));
+      setProjects((prev) =>
+        prev.map((p) => (p.id === editingProject.id ? editingProject : p))
+      );
     } else {
-      setProjects([...projects, editingProject]);
+      setProjects((prev) => [...prev, editingProject]);
     }
     setEditingProject(null);
+    setIsCreatingNew(false);
   };
 
   const resolvedPreview = editingProject
@@ -391,13 +538,15 @@ export default function GalleryProjectsManager() {
             onClick={() => {
               const newId = `project-${Date.now()}`;
               setYtStatusMessage(null);
+              setIsCreatingNew(true);
               setEditingProject({
                 id: newId,
+                slug: newId,
                 title: "New Architectural Stage",
                 stamp: "STAMP_PASS: NEW_01",
                 metaBadge: "2026",
                 cadId: "CAD_ID: STAGE_NEW",
-                image: "/assets/images/gallery/spotlight_blueprint_easel.jpg",
+                image: "/assets/images/gallery/project_01_neon_horizon.jpg",
                 altText: "New Stage Scenography",
                 category: "stage",
                 tags: ["Stage Design", "Creative Direction"],
@@ -421,6 +570,18 @@ export default function GalleryProjectsManager() {
       />
 
       <main className="p-8 max-w-6xl space-y-6">
+        {syncMessage && (
+          <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono text-emerald-300">
+            <span>{syncMessage}</span>
+            <button
+              type="button"
+              onClick={() => setSyncMessage(null)}
+              className="text-emerald-400 hover:text-white cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         {/* Controls Bar: Search & Filter */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-2xl bg-[#151520] border border-[#262638]">
           <div className="relative flex-1 max-w-md">
@@ -541,6 +702,7 @@ export default function GalleryProjectsManager() {
                   <button
                     onClick={() => {
                       setYtStatusMessage(null);
+                      setIsCreatingNew(false);
                       setEditingProject(project);
                     }}
                     className="p-2 rounded-lg bg-[#20202e] hover:bg-yellow-400 hover:text-black text-zinc-300 transition-colors border border-[#2b2b3d] cursor-pointer"

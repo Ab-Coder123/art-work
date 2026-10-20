@@ -75,6 +75,9 @@ importers:
 
   apps/artwork-app:
     dependencies:
+      '@art-work/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@art-work/types':
         specifier: workspace:*
         version: link:../../packages/types

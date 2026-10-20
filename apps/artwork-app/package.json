@@ -10,6 +10,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@art-work/database": "workspace:*",
     "@art-work/types": "workspace:*",
     "@studio-freight/lenis": "^1.0.42",
     "@types/three": "^0.186.0",

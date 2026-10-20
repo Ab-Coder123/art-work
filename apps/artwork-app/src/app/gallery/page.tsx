@@ -37,15 +37,34 @@ import {
 } from "@art-work/types";
 import { SEED_PROJECTS } from "@/data/seedContent";
 
-const PROJECTS: ProjectRecord[] = SEED_PROJECTS;
-
 export default function GalleryPage() {
+  const [projects, setProjects] = useState<ProjectRecord[]>(SEED_PROJECTS);
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
 
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/projects?limit=24");
+        if (res.ok) {
+          const data = await res.json();
+          if (mounted && Array.isArray(data.items) && data.items.length > 0) {
+            setProjects(data.items);
+          }
+        }
+      } catch {
+        // Fallback to SEED_PROJECTS when offline
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Mouse sparkle physics
   useEffect(() => {
@@ -139,8 +158,8 @@ export default function GalleryPage() {
 
   const filteredProjects =
     activeFilter === "all"
-      ? PROJECTS
-      : PROJECTS.filter((p) => p.category === activeFilter);
+      ? projects
+      : projects.filter((p) => p.category === activeFilter);
 
   const selectedYtEmbed = selectedProject
     ? resolveSafeYouTubeEmbed(selectedProject.youtubeVideoId || selectedProject.youtubeUrl)
@@ -366,7 +385,7 @@ export default function GalleryPage() {
             </span>
 
             {[
-              { key: "all", label: "★ All Masterpieces (6)" },
+              { key: "all", label: `★ All Masterpieces (${projects.length})` },
               { key: "stage", label: "Stage & Lighting" },
               { key: "booths", label: "Exhibition Booths" },
               { key: "conferences", label: "Medical & Conferences" },

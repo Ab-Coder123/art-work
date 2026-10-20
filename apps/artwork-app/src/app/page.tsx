@@ -372,7 +372,31 @@ function ServicesContent() {
    SCENE 03.5: PROJECT ARCHIVE & GALLERY SHOWCASE COMPONENT
    ========================================================================= */
 function GalleryShowcaseContent() {
-  const featured = (rawProjects as ProjectRecord[]).slice(0, 3);
+  const [projectsList, setProjectsList] = useState<ProjectRecord[]>(
+    rawProjects as ProjectRecord[]
+  );
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/projects?limit=6");
+        if (res.ok) {
+          const data = await res.json();
+          if (mounted && Array.isArray(data.items) && data.items.length > 0) {
+            setProjectsList(data.items);
+          }
+        }
+      } catch {
+        // Fallback to rawProjects seed data
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const featured = projectsList.slice(0, 3);
 
   return (
     <div className="w-full max-w-6xl mx-auto py-2 flex flex-col justify-center my-auto">

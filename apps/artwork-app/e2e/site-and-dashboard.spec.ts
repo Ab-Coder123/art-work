@@ -65,4 +65,32 @@ test.describe('Public site + dashboard together in Edge', () => {
     await expect(iframe).toBeVisible();
     await expect(page.getByText(/Vertical 9:16 time-lapse Reel capturing our 72-hour rapid structural build/i).first()).toBeVisible();
   });
+
+  test('Phase 06 Public Projects REST API: GET /api/projects & GET /api/projects/:slug return live published projects', async ({ request }) => {
+    const listRes = await request.get(`${SITE_URL}/api/projects?limit=10`);
+    expect(listRes.status()).toBe(200);
+    const listJson = await listRes.json();
+    expect(listJson.total).toBeGreaterThanOrEqual(6);
+    expect(Array.isArray(listJson.items)).toBe(true);
+    expect(listJson.items.every((p: { status: string }) => p.status === 'published')).toBe(true);
+
+    // Filter by category=conferences
+    const confRes = await request.get(`${SITE_URL}/api/projects?category=conferences`);
+    expect(confRes.status()).toBe(200);
+    const confJson = await confRes.json();
+    expect(confJson.items.length).toBeGreaterThanOrEqual(1);
+    expect(confJson.items[0].id).toBe('medtech-summit');
+    expect(confJson.items[0].isShort).toBe(true);
+
+    // Single project lookup by slug
+    const singleRes = await request.get(`${SITE_URL}/api/projects/neon-horizon`);
+    expect(singleRes.status()).toBe(200);
+    const singleJson = await singleRes.json();
+    expect(singleJson.project.id).toBe('neon-horizon');
+    expect(singleJson.project.youtubeVideoId).toBe('dQw4w9WgXcQ');
+
+    // Non-existent slug returns 404
+    const notFoundRes = await request.get(`${SITE_URL}/api/projects/does-not-exist-999`);
+    expect(notFoundRes.status()).toBe(404);
+  });
 });

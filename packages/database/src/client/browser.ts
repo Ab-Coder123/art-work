@@ -1,16 +1,18 @@
 import { createBrowserClient as createSupabaseBrowserClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import { parseDatabaseEnv } from "../config/env";
 
 /**
- * Creates a browser-safe Supabase client configured with public anonymous credentials.
- * Used exclusively in Client Components (apps/artwork-app and apps/admin).
+ * Creates a public anonymous Supabase client.
+ * In browser contexts, uses `@supabase/ssr` browser client.
+ * In Node.js server contexts (e.g. login route handler or tests), uses an in-memory session store
+ * so `signInWithPassword` + immediate RLS queries carry the authenticated JWT.
  */
 export function createBrowserClient(customUrl?: string, customAnonKey?: string) {
   let url = customUrl;
   let anonKey = customAnonKey;
 
   if (!url || !anonKey) {
-    // In browser context, read from NEXT_PUBLIC_ env vars
     url =
       url ||
       process.env.NEXT_PUBLIC_SUPABASE_URL ||
@@ -19,6 +21,16 @@ export function createBrowserClient(customUrl?: string, customAnonKey?: string) 
       anonKey ||
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder-anon-key";
+  }
+
+  if (typeof window === "undefined") {
+    return createClient(url, anonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    });
   }
 
   return createSupabaseBrowserClient(url, anonKey);

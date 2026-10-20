@@ -32,10 +32,16 @@ test.describe('Dashboard (admin) — security & auth events in Edge', () => {
   });
 
   test('mutating requests without CSRF header are blocked by middleware (403)', async ({ request }) => {
-    for (const path of ['/api/auth/logout', '/api/media/youtube/resolve']) {
+    for (const path of ['/api/auth/logout', '/api/media/youtube/resolve', '/api/projects']) {
       const res = await request.post(`${ADMIN_URL}${path}`, { data: {} });
       expect(res.status(), path).toBe(403);
     }
+    const putRes = await request.put(`${ADMIN_URL}/api/projects/neon-horizon`, { data: {} });
+    expect(putRes.status()).toBe(403);
+    const delRes = await request.delete(`${ADMIN_URL}/api/projects/neon-horizon`);
+    expect(delRes.status()).toBe(403);
+    const patchRes = await request.patch(`${ADMIN_URL}/api/projects/reorder`, { data: {} });
+    expect(patchRes.status()).toBe(403);
   });
 
   test('mismatched CSRF header vs cookie is rejected (403)', async ({ request }) => {
@@ -48,11 +54,22 @@ test.describe('Dashboard (admin) — security & auth events in Edge', () => {
 
   test('valid CSRF but no admin session cannot use admin endpoints (401)', async ({ request }) => {
     const token = (await (await request.get(`${ADMIN_URL}/api/auth/csrf`)).json()).csrfToken as string;
-    const res = await request.post(`${ADMIN_URL}/api/media/youtube/resolve`, {
-      headers: { 'x-csrf-token': token, cookie: `csrf-token=${token}` },
+    const headers = { 'x-csrf-token': token, cookie: `csrf-token=${token}` };
+
+    const ytRes = await request.post(`${ADMIN_URL}/api/media/youtube/resolve`, {
+      headers,
       data: { input: 'https://youtu.be/dQw4w9WgXcQ' },
     });
-    expect(res.status()).toBe(401);
+    expect(ytRes.status()).toBe(401);
+
+    const listRes = await request.get(`${ADMIN_URL}/api/projects`);
+    expect(listRes.status()).toBe(401);
+
+    const createRes = await request.post(`${ADMIN_URL}/api/projects`, {
+      headers,
+      data: { title: 'Unauthorized Project' },
+    });
+    expect(createRes.status()).toBe(401);
   });
 
   test('login UI: invalid credentials show an error and stay on /login (live Supabase)', async ({ page }) => {

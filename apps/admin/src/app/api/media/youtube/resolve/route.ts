@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  createServerClient,
-  verifyAdminMembership,
+  verifyAdminSessionFromCookies,
   parseYouTubeInput,
   buildYouTubeEmbedUrl,
   getYouTubePosterCandidates,
@@ -15,17 +14,11 @@ import {
  * and when fetchMetadata !== false, the extracted headline (title) and paragraph (description).
  */
 export async function POST(request: NextRequest) {
-  const supabase = createServerClient({
+  const sessionCheck = await verifyAdminSessionFromCookies({
     getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
   });
-
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-  const membership = await verifyAdminMembership(supabase, user.id);
-  if (!membership.isAuthorized) {
-    return NextResponse.json({ error: "Administrator access required" }, { status: 403 });
+  if (!sessionCheck.ok) {
+    return NextResponse.json({ error: sessionCheck.error }, { status: sessionCheck.status });
   }
 
   let body: unknown;

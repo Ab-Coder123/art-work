@@ -2,6 +2,8 @@ import { z } from "zod";
 import type { SupabaseClient, Session } from "@supabase/supabase-js";
 import { generateCsrfToken } from "./csrf";
 import { LoginRateLimiter, globalLoginRateLimiter } from "./rate-limiter";
+import { AUTH_COOKIES } from "./session";
+import { createServerClient, type CookieMethodsServer } from "../client/server";
 import type { AdminUserRow } from "../schemas/admin-user";
 
 export const LoginCredentialsSchema = z.object({
@@ -135,5 +137,59 @@ export async function authenticateAdmin(
     session: authData.session,
     adminUser: membership.adminUser,
     csrfToken,
+  };
+}
+
+/**
+ * Validates an incoming server request's cookies (`sb-access-token` or SSR session cookies)
+ * and verifies that the authenticated user is an active administrator in `public.admin_users`.
+ */
+export async function verifyAdminSessionFromCookies(
+  cookieStore: CookieMethodsServer
+): Promise<
+  | {
+      ok: true;
+      supabase: SupabaseClient;
+      adminUser: Pick<AdminUserRow, "user_id" | "email" | "full_name" | "role">;
+    }
+  | {
+      ok: false;
+      status: 401 | 403;
+      error: string;
+    }
+> {
+  const cookies = await cookieStore.getAll();
+  const accessToken = cookies.find((c) => c.name === AUTH_COOKIES.ACCESS_TOKEN)?.value;
+  const supabase = createServerClient({
+    getAll: () => cookies,
+    setAll: cookieStore.setAll,
+  });
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser(accessToken);
+
+  if (error || !user) {
+    return {
+      ok: false,
+      status: 401,
+      error: "Authentication required",
+    };
+  }
+
+  const membership = await verifyAdminMembership(supabase, user.id);
+  if (!membership.isAuthorized || !membership.adminUser) {
+    return {
+      ok: false,
+      status: 403,
+      error: "Administrator access required",
+    };
+  }
+
+  return {
+    ok: true,
+    supabase,
+    adminUser: membership.adminUser,
   };
 }
