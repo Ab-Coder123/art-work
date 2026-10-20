@@ -25,7 +25,8 @@
     "status": "node --import tsx/esm src/cli.ts status",
     "check": "node --import tsx/esm src/cli.ts check",
     "migrate": "node --import tsx/esm src/cli.ts migrate",
-    "reset": "node --import tsx/esm src/cli.ts reset"
+    "reset": "node --import tsx/esm src/cli.ts reset",
+    "seed:admin": "node --import tsx/esm src/cli.ts seed-admin"
   },
   "dependencies": {
     "@art-work/types": "workspace:*",

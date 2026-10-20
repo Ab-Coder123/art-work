@@ -1,6 +1,7 @@
 /**
- * Edge-runtime-safe entry point (used by Next.js middleware).
- * Must NOT import pg, Supabase clients or anything Node-only.
+ * Edge & Client runtime-safe entry point (used by Next.js middleware & browser components).
+ * Must NOT import pg, Supabase server clients or anything Node-only.
  */
 export * from "./csrf";
 export * from "./session";
+export * from "../media/youtube";

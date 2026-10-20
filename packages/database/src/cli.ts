@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { Client } from "pg";
 import { parseDatabaseEnv } from "./config/env";
+import { createAdminClient } from "./client/admin";
 import { getMigrationFiles, runMigrations } from "./migrations/runner";
 import { performSystemHealthAudit, testDatabaseHandshake } from "./health/check";
 
@@ -109,8 +110,70 @@ async function main() {
       break;
     }
 
+    case "seed-admin": {
+      const email = process.env.ADMIN_BOOTSTRAP_EMAIL?.trim().toLowerCase();
+      const password = process.env.ADMIN_BOOTSTRAP_PASSWORD;
+      const fullName = process.env.ADMIN_BOOTSTRAP_NAME?.trim() || "Chief Studio Administrator";
+
+      if (!email || !password) {
+        console.error("ADMIN_BOOTSTRAP_EMAIL and ADMIN_BOOTSTRAP_PASSWORD environment variables are required.");
+        process.exitCode = 1;
+        break;
+      }
+
+      const supabaseAdmin = createAdminClient(env.SUPABASE_SERVICE_ROLE_KEY);
+      const { data: listData, error: listErr } = await supabaseAdmin.auth.admin.listUsers();
+      if (listErr) {
+        throw new Error(`Failed to list users: ${listErr.message}`);
+      }
+
+      const existing = listData.users.find((u) => u.email?.toLowerCase() === email);
+      let userId: string;
+
+      if (existing) {
+        const { data: updated, error: updErr } = await supabaseAdmin.auth.admin.updateUserById(existing.id, {
+          password,
+          email_confirm: true,
+        });
+        if (updErr || !updated.user) {
+          throw new Error(`Failed to update admin user: ${updErr?.message}`);
+        }
+        userId = updated.user.id;
+        console.log(`Updated existing Auth user: ${email} (${userId})`);
+      } else {
+        const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: true,
+        });
+        if (createErr || !created.user) {
+          throw new Error(`Failed to create admin user: ${createErr?.message}`);
+        }
+        userId = created.user.id;
+        console.log(`Created new Auth user: ${email} (${userId})`);
+      }
+
+      const { error: upsertErr } = await supabaseAdmin.from("admin_users").upsert(
+        {
+          user_id: userId,
+          email,
+          full_name: fullName,
+          role: "super_admin",
+          is_active: true,
+        },
+        { onConflict: "user_id" }
+      );
+
+      if (upsertErr) {
+        throw new Error(`Failed to upsert public.admin_users: ${upsertErr.message}`);
+      }
+
+      console.log(`✅ Super Admin provisioned in public.admin_users: ${email}`);
+      break;
+    }
+
     default: {
-      console.error(`Unknown command: ${command}. Available: status, check, migrate, reset`);
+      console.error(`Unknown command: ${command}. Available: status, check, migrate, reset, seed-admin`);
       process.exitCode = 1;
     }
   }

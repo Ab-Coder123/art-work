@@ -1,4 +1,4 @@
-import { SiteContent, ProjectRecord } from "@/types/content";
+import { SiteContent, ProjectRecord } from "@art-work/types";
 
 export const SEED_PROJECTS: ProjectRecord[] = [
   {
@@ -29,6 +29,12 @@ export const SEED_PROJECTS: ProjectRecord[] = [
     status: "published",
     order: 1,
     featured: true,
+    youtubeVideoId: "dQw4w9WgXcQ",
+    youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    youtubeTitle: "Neon Horizon Arena Stage — Live Timecode Showreel (4K)",
+    youtubeDescription:
+      "Full arena rehearsal capture showcasing the 40m parametric truss rig, 180 moving heads, and zero-latency SMPTE timecode laser synchronization.",
+    isShort: false,
   },
   {
     id: "medtech-summit",
@@ -58,6 +64,12 @@ export const SEED_PROJECTS: ProjectRecord[] = [
     status: "published",
     order: 2,
     featured: true,
+    youtubeVideoId: "aqz-KE-bpKQ",
+    youtubeUrl: "https://www.youtube.com/shorts/aqz-KE-bpKQ",
+    youtubeTitle: "60-Second Behind-The-Scenes Reel: Geneva MedTech Pavilion Build",
+    youtubeDescription:
+      "Vertical 9:16 time-lapse Reel capturing our 72-hour rapid structural build and interactive kiosk calibration in Geneva.",
+    isShort: true,
   },
   {
     id: "cybertruss-pavilion",
@@ -144,6 +156,12 @@ export const SEED_PROJECTS: ProjectRecord[] = [
     status: "published",
     order: 5,
     featured: true,
+    youtubeVideoId: "M7lc1UVf-VE",
+    youtubeUrl: "https://www.youtube.com/watch?v=M7lc1UVf-VE",
+    youtubeTitle: "Arena Genesis Esports Finals — Multi-Cam Broadcast Highlights",
+    youtubeDescription:
+      "Anamorphic 3D LED stage reveal and robotic wire-cam tracking during the live Championship opening ceremony.",
+    isShort: false,
   },
   {
     id: "sensory-expo",

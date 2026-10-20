@@ -4,8 +4,11 @@ import {
   parseYouTubeInput,
   buildYouTubeEmbedUrl,
   buildYouTubeWatchUrl,
+  buildYouTubeShortsUrl,
   getYouTubePosterCandidates,
   isValidYouTubeId,
+  extractDescriptionFromHtml,
+  fetchYouTubeMetadata,
 } from "../src/media/youtube";
 import { YouTubeUrlSchema } from "../src/schemas/project";
 
@@ -125,5 +128,69 @@ describe("Phase 05: YouTube Media Engine", () => {
     assert.ok(YouTubeUrlSchema.safeParse(null).success);
     assert.equal(YouTubeUrlSchema.safeParse("https://evil.com/?youtube.com").success, false);
     assert.equal(YouTubeUrlSchema.safeParse("https://www.youtube.com/").success, false);
+  });
+
+  it("should detect YouTube Shorts/Reels format on /shorts/ URLs", () => {
+    const shortRes = parseYouTubeInput(`https://www.youtube.com/shorts/${ID}`);
+    assert.ok(shortRes.ok);
+    if (shortRes.ok) {
+      assert.equal(shortRes.isShort, true);
+    }
+
+    const watchRes = parseYouTubeInput(`https://www.youtube.com/watch?v=${ID}`);
+    assert.ok(watchRes.ok);
+    if (watchRes.ok) {
+      assert.equal(watchRes.isShort, undefined);
+    }
+
+    assert.equal(buildYouTubeShortsUrl(ID), `https://www.youtube.com/shorts/${ID}`);
+  });
+
+  it("should extract and decode meta description from YouTube HTML safely", () => {
+    const sampleHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta property="og:description" content="Volumetric 8K &amp; Kinetic Stage Rig &#39;Live&#39; in Arena." />
+      </head>
+      </html>
+    `;
+    const desc = extractDescriptionFromHtml(sampleHtml);
+    assert.equal(desc, "Volumetric 8K & Kinetic Stage Rig 'Live' in Arena.");
+  });
+
+  it("should fetch YouTube Headline (title) and Paragraph (description) via mocked fetch", async () => {
+    const mockFetch: typeof fetch = async (input) => {
+      const url = String(input);
+      if (url.includes("/oembed")) {
+        return new Response(
+          JSON.stringify({
+            title: "NEON GENESIS ARENA — Official 9:16 Reel",
+            author_name: "Art Work Studio",
+            thumbnail_url: `https://i.ytimg.com/vi/${ID}/hqdefault.jpg`,
+            width: 315,
+            height: 560,
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        );
+      }
+      return new Response(
+        `<html><head><meta name="description" content="Behind the scenes of our 180-degree curved LED megastructure and kinetic lighting choreography."></head></html>`,
+        { status: 200, headers: { "content-type": "text/html" } },
+      );
+    };
+
+    const meta = await fetchYouTubeMetadata(`https://www.youtube.com/shorts/${ID}`, mockFetch);
+    assert.ok(meta.ok);
+    if (meta.ok) {
+      assert.equal(meta.data.videoId, ID);
+      assert.equal(meta.data.isShort, true);
+      assert.equal(meta.data.headline, "NEON GENESIS ARENA — Official 9:16 Reel");
+      assert.equal(
+        meta.data.paragraph,
+        "Behind the scenes of our 180-degree curved LED megastructure and kinetic lighting choreography.",
+      );
+      assert.equal(meta.data.authorName, "Art Work Studio");
+    }
   });
 });

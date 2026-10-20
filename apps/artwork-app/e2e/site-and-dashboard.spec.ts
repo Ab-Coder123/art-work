@@ -49,4 +49,20 @@ test.describe('Public site + dashboard together in Edge', () => {
     });
     expect([401, 403]).toContain(insert.status());
   });
+
+  test('gallery renders YouTube Video & 9:16 Reel Headline, Paragraph, and privacy-enhanced Lightbox embed', async ({ page }) => {
+    await page.goto(`${SITE_URL}/gallery`, { waitUntil: 'domcontentloaded' });
+    // Verify YouTube Video Headline & Paragraph + 9:16 Reel Headline & Paragraph render on project cards
+    await expect(page.getByRole('heading', { name: /Neon Horizon Arena Stage — Live Timecode Showreel \(4K\)/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /60-Second Behind-The-Scenes Reel: Geneva MedTech Pavilion Build/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /REEL 9:16/i }).first()).toBeVisible();
+
+    // Open the 9:16 Reel project modal (Global MedTech Summit 2025)
+    await page.getByRole('button', { name: /WATCH REEL & BLUEPRINT/i }).first().click();
+
+    // Verify privacy-enhanced youtube-nocookie iframe & YouTube Reel Headline + Paragraph in the modal
+    const iframe = page.locator('iframe[src*="youtube-nocookie.com/embed/"]');
+    await expect(iframe).toBeVisible();
+    await expect(page.getByText(/Vertical 9:16 time-lapse Reel capturing our 72-hour rapid structural build/i).first()).toBeVisible();
+  });
 });

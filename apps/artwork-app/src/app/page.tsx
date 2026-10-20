@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 
 import rawProjects from "@/data/projects.json";
+import { type ProjectRecord, resolveSafeYouTubeEmbed } from "@art-work/types";
 
 type StageId = "stage-01" | "stage-02" | "stage-03" | "stage-gallery" | "stage-04";
 
@@ -371,19 +372,7 @@ function ServicesContent() {
    SCENE 03.5: PROJECT ARCHIVE & GALLERY SHOWCASE COMPONENT
    ========================================================================= */
 function GalleryShowcaseContent() {
-  const featured = (
-    rawProjects as Array<{
-      id: string;
-      title: string;
-      stamp: string;
-      client: string;
-      image: string;
-      category: string;
-      stats: string;
-      description: string;
-      tags: string[];
-    }>
-  ).slice(0, 3);
+  const featured = (rawProjects as ProjectRecord[]).slice(0, 3);
 
   return (
     <div className="w-full max-w-6xl mx-auto py-2 flex flex-col justify-center my-auto">
@@ -416,43 +405,56 @@ function GalleryShowcaseContent() {
 
       {/* Project Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-3">
-        {featured.map((p) => (
-          <Link
-            key={p.id}
-            href="/gallery"
-            className="group border-2 border-black dark:border-zinc-700 p-2.5 rounded-lg bg-white dark:bg-[#151520] comic-shadow hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all flex flex-col justify-between"
-          >
-            <div>
-              <div className="relative aspect-[16/10] rounded overflow-hidden border border-black mb-2 bg-black">
-                <Image
-                  src={p.image}
-                  alt={p.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <span className="absolute top-1.5 left-1.5 bg-yellow-400 text-black text-[9px] font-headline font-black px-1.5 py-0.5 rounded border border-black comic-shadow-sm">
-                  {p.stamp}
+        {featured.map((p) => {
+          const ytEmbed = resolveSafeYouTubeEmbed(p);
+          return (
+            <Link
+              key={p.id}
+              href="/gallery"
+              className="group border-2 border-black dark:border-zinc-700 p-2.5 rounded-lg bg-white dark:bg-[#151520] comic-shadow hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="relative aspect-[16/10] rounded overflow-hidden border border-black mb-2 bg-black">
+                  <Image
+                    src={p.image}
+                    alt={p.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <span className="absolute top-1.5 left-1.5 bg-yellow-400 text-black text-[9px] font-headline font-black px-1.5 py-0.5 rounded border border-black comic-shadow-sm">
+                    {p.stamp}
+                  </span>
+                  {ytEmbed && (
+                    <span className="absolute bottom-1.5 right-1.5 bg-red-600 text-white text-[9px] font-headline font-black px-1.5 py-0.5 rounded border border-black comic-shadow-sm">
+                      {ytEmbed.isShort ? "▶ 9:16 REEL" : "▶ VIDEO"}
+                    </span>
+                  )}
+                </div>
+                <div className="text-[10px] font-mono text-black/60 dark:text-zinc-400 mb-0.5 uppercase">
+                  {p.client}
+                </div>
+                <h3 className="font-headline font-black text-sm text-black dark:text-white group-hover:text-yellow-500 transition-colors mb-1 line-clamp-1">
+                  {p.title}
+                </h3>
+                {p.youtubeTitle && (
+                  <div className="text-[10px] font-headline font-bold text-red-700 dark:text-red-300 line-clamp-1 mb-0.5">
+                    🎬 {p.youtubeTitle}
+                  </div>
+                )}
+                <p className="font-body text-[11px] text-black/70 dark:text-zinc-300 line-clamp-2 leading-relaxed mb-2">
+                  {p.description}
+                </p>
+              </div>
+              <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold text-black dark:text-yellow-400">
+                <span>{p.stats}</span>
+                <span className="group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                  EXPLORE ➔
                 </span>
               </div>
-              <div className="text-[10px] font-mono text-black/60 dark:text-zinc-400 mb-0.5 uppercase">
-                {p.client}
-              </div>
-              <h3 className="font-headline font-black text-sm text-black dark:text-white group-hover:text-yellow-500 transition-colors mb-1 line-clamp-1">
-                {p.title}
-              </h3>
-              <p className="font-body text-[11px] text-black/70 dark:text-zinc-300 line-clamp-2 leading-relaxed mb-2">
-                {p.description}
-              </p>
-            </div>
-            <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold text-black dark:text-yellow-400">
-              <span>{p.stats}</span>
-              <span className="group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                EXPLORE ➔
-              </span>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
 
       {/* Full Vault CTA Button on Mobile */}

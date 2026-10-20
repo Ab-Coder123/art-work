@@ -27,188 +27,21 @@ import {
   Filter,
   Phone,
   Compass,
+  Play,
+  Smartphone,
 } from "lucide-react";
+import {
+  ProjectCategory,
+  ProjectRecord,
+  resolveSafeYouTubeEmbed,
+} from "@art-work/types";
+import { SEED_PROJECTS } from "@/data/seedContent";
 
-type FilterCategory =
-  | "all"
-  | "stage"
-  | "booths"
-  | "conferences"
-  | "led"
-  | "branding"
-  | "tech";
-
-interface ProjectItem {
-  id: string;
-  title: string;
-  stamp: string;
-  metaBadge: string;
-  cadId: string;
-  image: string;
-  category: FilterCategory;
-  tags: string[];
-  stats: string;
-  statsSub: string;
-  description: string;
-  client: string;
-  specs: string[];
-}
-
-const PROJECTS: ProjectItem[] = [
-  {
-    id: "neon-horizon",
-    title: "Neon Horizon World Tour",
-    stamp: "STAMP_PASS: ARENA_01",
-    metaBadge: "OCT 2025",
-    cadId: "CAD_ID: NH_TOUR_V4",
-    image: "/assets/images/gallery/project_01_neon_horizon.jpg",
-    category: "stage",
-    tags: [
-      "Stage, Sound & Lighting",
-      "LED Screens & Audiovisual",
-      "Concept Creation",
-    ],
-    stats: "⚡ 52,000 Fans / Night",
-    statsSub: "0.0s DMX Latency • 100% Custom Rig",
-    description:
-      "A massive arena tour stage scenography bathed in canary yellow laser arrays, kinetic ceiling hoists, and curved volumetric 8K LED walls.",
-    client: "Global Music Collective",
-    specs: [
-      "40m x 22m Custom Truss Grid",
-      "180 DMX Controlled Moving Heads",
-      "Notch Real-time Audio-Reactive Shaders",
-      "SMPTE Timecode Precision Sync",
-    ],
-  },
-  {
-    id: "medtech-summit",
-    title: "Global MedTech Summit 2025",
-    stamp: "SUMMIT_ID: MED_25",
-    metaBadge: "VENUE: GENEVA EXPO",
-    cadId: "REV: PAVILION_STAGE3",
-    image: "/assets/images/gallery/project_02_medtech_summit.jpg",
-    category: "conferences",
-    tags: [
-      "Conference & Medical Event Management",
-      "Registration & Event Staffing",
-      "On-site Logistics",
-    ],
-    stats: "🏥 14,000 Delegates",
-    statsSub: "6 Plenary Stages • 99.8% Sync Score",
-    description:
-      "Ultra-sleek double-decker medical conference pavilion with interactive digital demo kiosks, glass railings, and precision LED strip illumination.",
-    client: "World Medical Technology Forum",
-    specs: [
-      "6 Simultaneous Plenary Streams",
-      "Full RFID Registration Badge Flow",
-      "45 Multilingual Host Team",
-      "Custom Medical Demo Staging",
-    ],
-  },
-  {
-    id: "cybertruss-pavilion",
-    title: "CyberTruss Spatial Pavilion",
-    stamp: "PATENT_ARCH: EXPO_08",
-    metaBadge: "FAB: CNC MILLWORK",
-    cadId: "FRAME: 40m x 25m",
-    image: "/assets/images/gallery/project_03_cybertruss.jpg",
-    category: "booths",
-    tags: [
-      "Exhibition Booth Design & Production",
-      "Interactive Activities & Engagement",
-      "On-site Management",
-    ],
-    stats: "📐 1,200 m² Footprint",
-    statsSub: "72-Hour Rapid Build • German Spec Steel",
-    description:
-      "Grand geometric trade expo pavilion built from heavy industrial stage trusses, cantilevered VIP mezzanine lounge, and volumetric lighting.",
-    client: "Industrial Tech Conglomerate",
-    specs: [
-      "German-Spec CNC Steel Beams",
-      "Cantilevered VIP Hospitality Deck",
-      "Interactive Floor Tracking Projections",
-      "Full Fire & Wind Safety Compliance",
-    ],
-  },
-  {
-    id: "prism-brand-suite",
-    title: "Prism Brand Identity & Merch",
-    stamp: "SYSTEM_SYS: ID_99",
-    metaBadge: "BATCH: LIMITED EDITION",
-    cadId: "PANTONE: #FACC15",
-    image: "/assets/images/gallery/project_04_prism_merch.jpg",
-    category: "branding",
-    tags: [
-      "Branding, Printing & Event Branding",
-      "Promotional Giveaways & Merchandise",
-    ],
-    stats: "🎨 35 Custom Swatches",
-    statsSub: "20k Screenprints • Pantone Canary Yellow",
-    description:
-      "Tactile event branding system: matte black foil-stamped VIP laminate passes, woven canary yellow lanyards, screenprinted hoodies, and signage.",
-    client: "Creative Arts Festival",
-    specs: [
-      "Embossed Foil Laminate VIP Badges",
-      "Heavy-Duty Custom Woven Lanyards",
-      "Screenprinted Organic Cotton Merch",
-      "Wayfinding Architectural Signage",
-    ],
-  },
-  {
-    id: "arena-genesis",
-    title: "Arena Genesis Live Broadcast",
-    stamp: "BROADCAST: 4K_60FPS",
-    metaBadge: "GLOBAL SYNC",
-    cadId: "LATENCY: 1.2MS",
-    image: "/assets/images/gallery/project_05_arena_genesis.jpg",
-    category: "tech",
-    tags: [
-      "Photography & Videography",
-      "Stage, Sound & Lighting",
-      "Event Planning & Project Management",
-    ],
-    stats: "🎥 18 Ultra-HD Cameras",
-    statsSub: "1.4M Stream Peak • Zero Dropped Frames",
-    description:
-      "Multi-camera broadcast production studio and stadium stage with anamorphic 3D LED screens and automated robotic spotlight rigs.",
-    client: "Global Esports Arena",
-    specs: [
-      "18 4K HDR Broadcast Cameras",
-      "Robotic Jib & Wire-Cam Tracking",
-      "Instant Multi-Angle Replay Servers",
-      "Worldwide Satellite Relay Sync",
-    ],
-  },
-  {
-    id: "sensory-expo",
-    title: "Sensory Kinetic Expo Booth",
-    stamp: "INTERACTION: SENSOR_V2",
-    metaBadge: "MWC BARCELONA",
-    cadId: "CUES: 880 SENSOR_TRIG",
-    image: "/assets/images/gallery/project_06_sensory_expo.jpg",
-    category: "led",
-    tags: [
-      "Exhibition Booth Design",
-      "LED Screens & Audiovisual",
-      "Concept Creation & Creative Development",
-    ],
-    stats: "✨ 880 Interactive Cues",
-    statsSub: "4.9/5 Visitor Rating • Viral Social Surge",
-    description:
-      "Sensorial experiential booth with holographic transparent mesh screens, motion-reactive LED light pillars, and kinetic chandeliers.",
-    client: "Next-Gen Telecommunications",
-    specs: [
-      "Transparent Micro-LED Glass Walls",
-      "LiDAR Audience Motion Sensing",
-      "Kinetic Ceiling Lighting Matrix",
-      "Spatial Surround Sound Arrays",
-    ],
-  },
-];
+const PROJECTS: ProjectRecord[] = SEED_PROJECTS;
 
 export default function GalleryPage() {
-  const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
-  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
+  const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
 
   // Activate Lenis luxury virtual smooth scroll
@@ -261,12 +94,12 @@ export default function GalleryPage() {
     };
   }, []);
 
-  const handleFilterClick = (cat: FilterCategory) => {
+  const handleFilterClick = (cat: ProjectCategory) => {
     soundFX.playClick();
     setActiveFilter(cat);
   };
 
-  const handleInspectClick = (project: ProjectItem) => {
+  const handleInspectClick = (project: ProjectRecord) => {
     soundFX.playPop();
     setSelectedProject(project);
   };
@@ -308,6 +141,10 @@ export default function GalleryPage() {
     activeFilter === "all"
       ? PROJECTS
       : PROJECTS.filter((p) => p.category === activeFilter);
+
+  const selectedYtEmbed = selectedProject
+    ? resolveSafeYouTubeEmbed(selectedProject.youtubeVideoId || selectedProject.youtubeUrl)
+    : null;
 
   return (
     <>
@@ -454,12 +291,11 @@ export default function GalleryPage() {
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tighter uppercase leading-[0.98] text-black dark:text-white">
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.8} delay={0.1}>
                 CRAFTED IN INK.
-              </KineticBrushWord> <br />
+              </KineticBrushWord>{" "}
+              <br />
               <span className="relative inline-block mt-2">
                 <span className="absolute -inset-1.5 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"></span>
-                <span className="text-black relative z-10 px-2">
-                  EXECUTED IN ARENAS.
-                </span>
+                <span className="text-black relative z-10 px-2">EXECUTED IN ARENAS.</span>
                 <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.2} delay={0.35} />
               </span>
             </h1>
@@ -474,10 +310,9 @@ export default function GalleryPage() {
               <div className="washi-tape-yellow absolute -top-3 right-12 w-20 h-5 rotate-3"></div>
 
               <p className="font-body text-sm sm:text-base text-black/90 dark:text-zinc-200 leading-relaxed font-semibold">
-                “From the initial concept to the final execution, we create
-                memorable experiences that bring brands to life. Every stage
-                truss, lighting sequence, and kinetic pavilion begins with wet
-                fountain pen ink on raw grid paper.”
+                “From the initial concept to the final execution, we create memorable experiences
+                that bring brands to life. Every stage truss, lighting sequence, and kinetic
+                pavilion begins with wet fountain pen ink on raw grid paper.”
               </p>
 
               <div className="mt-4 flex flex-wrap items-center gap-3 pt-3 border-t border-yellow-300 dark:border-zinc-700 font-mono text-xs text-black/70 dark:text-zinc-400">
@@ -508,15 +343,11 @@ export default function GalleryPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/60">SHOWS DELIVERED:</span>
-                  <span className="font-bold text-yellow-400">
-                    450+ STAGES GLOBALLY
-                  </span>
+                  <span className="font-bold text-yellow-400">450+ STAGES GLOBALLY</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/60">CONTROL PROTOCOL:</span>
-                  <span className="font-bold text-white">
-                    ART-NET / DMX512 / SMPTE
-                  </span>
+                  <span className="font-bold text-white">ART-NET / DMX512 / SMPTE</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/60">STATUS:</span>
@@ -545,7 +376,7 @@ export default function GalleryPage() {
             ].map((chip) => (
               <button
                 key={chip.key}
-                onClick={() => handleFilterClick(chip.key as FilterCategory)}
+                onClick={() => handleFilterClick(chip.key as ProjectCategory)}
                 className={`px-3 py-1.5 font-headline font-bold text-xs uppercase tracking-wider rounded border-2 transition-all cursor-pointer ${
                   activeFilter === chip.key
                     ? "bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black border-black comic-shadow-sm scale-105"
@@ -581,6 +412,10 @@ export default function GalleryPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects.map((project, index) => {
               const tapeRot = index % 2 === 0 ? "-rotate-2" : "rotate-3";
+              const ytMedia = resolveSafeYouTubeEmbed(
+                project.youtubeVideoId || project.youtubeUrl
+              );
+
               return (
                 <motion.article
                   key={project.id}
@@ -614,7 +449,7 @@ export default function GalleryPage() {
                     <div className="relative overflow-hidden rounded-lg border-2 border-black dark:border-zinc-700 mb-4 bg-neutral-100 dark:bg-zinc-800 aspect-[16/10]">
                       <Image
                         src={project.image}
-                        alt={project.title}
+                        alt={project.altText || project.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -622,6 +457,26 @@ export default function GalleryPage() {
                       <div className="absolute bottom-2 left-2 bg-black/90 text-white font-mono text-[10px] px-2 py-0.5 rounded border border-white/20">
                         {project.cadId}
                       </div>
+
+                      {ytMedia && (
+                        <button
+                          type="button"
+                          onClick={() => handleInspectClick(project)}
+                          className="absolute top-2 right-2 inline-flex items-center gap-1 bg-red-600 hover:bg-red-500 text-white font-headline font-black text-[10px] uppercase px-2 py-1 rounded border border-black comic-shadow-sm cursor-pointer"
+                        >
+                          {project.isShort || ytMedia.isShort ? (
+                            <>
+                              <Smartphone className="w-3 h-3" />
+                              <span>REEL 9:16</span>
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-3 h-3 fill-current" />
+                              <span>SHOWREEL</span>
+                            </>
+                          )}
+                        </button>
+                      )}
                     </div>
 
                     {/* Project Title */}
@@ -645,6 +500,30 @@ export default function GalleryPage() {
                       ))}
                     </div>
 
+                    {/* YouTube Video / Reel Headline & Paragraph Callout */}
+                    {ytMedia && (project.youtubeTitle || project.youtubeDescription) && (
+                      <div className="mb-3 p-2.5 rounded-lg border-2 border-black dark:border-zinc-700 bg-neutral-50 dark:bg-[#111119] space-y-1">
+                        <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-red-600 dark:text-red-400">
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>
+                            {project.isShort || ytMedia.isShort
+                              ? "YOUTUBE REEL / SHORT"
+                              : "YOUTUBE VIDEO SHOWCASE"}
+                          </span>
+                        </div>
+                        {project.youtubeTitle && (
+                          <h4 className="font-headline font-extrabold text-xs text-black dark:text-white leading-snug">
+                            {project.youtubeTitle}
+                          </h4>
+                        )}
+                        {project.youtubeDescription && (
+                          <p className="font-body text-[11px] text-black/75 dark:text-zinc-300 leading-relaxed line-clamp-2">
+                            {project.youtubeDescription}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
                     {/* Architectural Stats Annotation */}
                     <div className="p-2.5 bg-yellow-50/80 dark:bg-[#1a1a26] rounded border border-black/20 dark:border-zinc-700 font-mono text-xs text-black/80 dark:text-zinc-300 space-y-0.5 mb-4">
                       <div className="text-black dark:text-white font-bold flex items-center gap-1.5">
@@ -661,8 +540,21 @@ export default function GalleryPage() {
                     onClick={() => handleInspectClick(project)}
                     className="w-full py-2.5 px-4 bg-white dark:bg-[#1a1a26] hover:bg-yellow-400 dark:hover:bg-yellow-400 text-black dark:text-white dark:hover:text-black font-headline font-bold text-xs uppercase border-2 border-black dark:border-zinc-700 rounded comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <Pencil className="w-3.5 h-3.5" />
-                    <span>INSPECT BLUEPRINT ↗</span>
+                    {ytMedia ? (
+                      <>
+                        <Play className="w-3.5 h-3.5 fill-current" />
+                        <span>
+                          {project.isShort || ytMedia.isShort
+                            ? "WATCH REEL & BLUEPRINT ↗"
+                            : "WATCH SHOWREEL & BLUEPRINT ↗"}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Pencil className="w-3.5 h-3.5" />
+                        <span>INSPECT BLUEPRINT ↗</span>
+                      </>
+                    )}
                   </button>
                 </motion.article>
               );
@@ -684,7 +576,12 @@ export default function GalleryPage() {
             </span>
           </ScrollReveal>
 
-          <ScrollReveal direction="pop" distance={30} delay={0.1} className="relative bg-white dark:bg-[#151520] rounded-2xl border-3 border-black dark:border-zinc-700 p-6 md:p-8 comic-shadow overflow-hidden">
+          <ScrollReveal
+            direction="pop"
+            distance={30}
+            delay={0.1}
+            className="relative bg-white dark:bg-[#151520] rounded-2xl border-3 border-black dark:border-zinc-700 p-6 md:p-8 comic-shadow overflow-hidden"
+          >
             {/* Washi Tape on corners */}
             <div className="washi-tape-yellow absolute top-3 left-10 w-32 h-6 -rotate-2 z-10"></div>
             <div className="washi-tape-yellow absolute top-3 right-10 w-28 h-6 rotate-3 z-10"></div>
@@ -725,9 +622,9 @@ export default function GalleryPage() {
                   {/* Sticky note quote box */}
                   <div className="my-4 p-3.5 bg-yellow-100 dark:bg-[#1e1e2c] rounded border-2 border-black dark:border-zinc-700 comic-shadow-sm relative">
                     <p className="font-headline font-bold text-xs sm:text-sm text-black dark:text-zinc-100 leading-snug">
-                      &quot;Every millimeter in vector space was first drawn with black
-                      ink on paper. If it doesn&apos;t move people on paper, it won&apos;t
-                      move 50,000 fans in an arena.&quot;
+                      &quot;Every millimeter in vector space was first drawn with black ink on paper.
+                      If it doesn&apos;t move people on paper, it won&apos;t move 50,000 fans in an
+                      arena.&quot;
                     </p>
                     <div className="mt-2 text-right font-mono text-[10px] text-black/70 dark:text-zinc-400 font-bold">
                       — MARKUS V., SCENOGRAPHIC DIRECTOR
@@ -741,9 +638,8 @@ export default function GalleryPage() {
                         1
                       </span>
                       <span>
-                        <strong>Fountain-Pen Ideation:</strong> Preliminary
-                        sightlines and audience flow drafted directly on grid
-                        paper.
+                        <strong>Fountain-Pen Ideation:</strong> Preliminary sightlines and audience
+                        flow drafted directly on grid paper.
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -751,8 +647,8 @@ export default function GalleryPage() {
                         2
                       </span>
                       <span>
-                        <strong>3D Spatial Vectorization:</strong> Hand doodles
-                        converted into structural engineering CAD models.
+                        <strong>3D Spatial Vectorization:</strong> Hand doodles converted into
+                        structural engineering CAD models.
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -760,8 +656,8 @@ export default function GalleryPage() {
                         3
                       </span>
                       <span>
-                        <strong>Fabrication &amp; Cueing:</strong> 72-hour rapid
-                        build cycles with continuous DMX rehearsal.
+                        <strong>Fabrication &amp; Cueing:</strong> 72-hour rapid build cycles with
+                        continuous DMX rehearsal.
                       </span>
                     </li>
                   </ul>
@@ -783,7 +679,11 @@ export default function GalleryPage() {
 
         {/* ================= CREATIVE BRIEF INTAKE BANNER ================= */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12" id="brief-inquiry">
-          <ScrollReveal direction="pop" distance={35} className="bg-yellow-400 rounded-2xl border-3 border-black p-6 sm:p-10 comic-shadow relative overflow-hidden">
+          <ScrollReveal
+            direction="pop"
+            distance={35}
+            className="bg-yellow-400 rounded-2xl border-3 border-black p-6 sm:p-10 comic-shadow relative overflow-hidden"
+          >
             <div className="relative z-10 max-w-3xl">
               <span className="px-3 py-0.5 bg-black text-white font-mono text-xs font-bold uppercase rounded inline-block mb-3">
                 {"// FAST CREATIVE DIRECTORY"}
@@ -795,9 +695,8 @@ export default function GalleryPage() {
                 </KineticBrushWord>
               </h2>
               <p className="font-body text-sm sm:text-base text-black/90 font-medium leading-relaxed mb-6">
-                Send us your event dates, venue specs, or wild ideas. Our
-                creative directors respond with an annotated sketchpad proposal
-                within 24 hours.
+                Send us your event dates, venue specs, or wild ideas. Our creative directors
+                respond with an annotated sketchpad proposal within 24 hours.
               </p>
 
               {/* Action Buttons Cluster */}
@@ -871,14 +770,63 @@ export default function GalleryPage() {
                 {selectedProject.description}
               </p>
 
-              <div className="relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 aspect-[16/9] mb-4">
-                <Image
-                  src={selectedProject.image}
-                  alt={selectedProject.title}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+              {/* YouTube Video or Reel/Short Embed + Headline + Paragraph */}
+              {selectedYtEmbed ? (
+                <div className="mb-5 p-4 rounded-xl border-2 border-black dark:border-zinc-700 bg-neutral-50 dark:bg-[#0e0e16] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 bg-red-600 text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
+                      <Play className="w-3 h-3 fill-current" />
+                      <span>
+                        {selectedProject.isShort || selectedYtEmbed.isShort
+                          ? "YOUTUBE REEL / SHORT (9:16)"
+                          : "YOUTUBE SHOWREEL (16:9)"}
+                      </span>
+                    </span>
+                    <span className="font-mono text-[10px] text-black/60 dark:text-zinc-400">
+                      ID: {selectedYtEmbed.videoId}
+                    </span>
+                  </div>
+
+                  {selectedProject.youtubeTitle && (
+                    <h3 className="font-headline font-black text-base text-black dark:text-white">
+                      {selectedProject.youtubeTitle}
+                    </h3>
+                  )}
+
+                  {selectedProject.youtubeDescription && (
+                    <p className="font-body text-xs text-black/80 dark:text-zinc-300 leading-relaxed">
+                      {selectedProject.youtubeDescription}
+                    </p>
+                  )}
+
+                  <div
+                    className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
+                      selectedProject.isShort || selectedYtEmbed.isShort
+                        ? "aspect-[9/16] max-w-[280px] mx-auto"
+                        : "aspect-video w-full"
+                    }`}
+                  >
+                    <iframe
+                      src={selectedYtEmbed.embedUrl}
+                      title={selectedProject.youtubeTitle || selectedProject.title}
+                      loading="lazy"
+                      sandbox="allow-scripts allow-same-origin allow-presentation"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full border-0"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 aspect-[16/9] mb-4">
+                  <Image
+                    src={selectedProject.image}
+                    alt={selectedProject.altText || selectedProject.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
 
               <div className="mb-4">
                 <h4 className="font-headline font-bold text-xs uppercase mb-2 text-black dark:text-white">
@@ -914,8 +862,7 @@ export default function GalleryPage() {
       <footer className="w-full py-4 bg-white/95 dark:bg-[#0C0C10]/95 text-black dark:text-zinc-300 border-t-2 border-black dark:border-zinc-800 z-30">
         <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-7xl mx-auto text-[10px] text-black/70 dark:text-zinc-400 font-mono gap-2 sm:gap-0">
           <div>
-            © 2025 Art Work Scenography Collective. All sketchbooks &amp; blueprints
-            reserved.
+            © 2025 Art Work Scenography Collective. All sketchbooks &amp; blueprints reserved.
           </div>
           <div className="flex items-center gap-4 font-headline font-bold">
             <Link href="/" className="hover:text-black dark:hover:text-white hover:underline">
@@ -924,13 +871,22 @@ export default function GalleryPage() {
             <Link href="/why-us" className="hover:text-black dark:hover:text-white hover:underline">
               02 WHY US
             </Link>
-            <Link href="/#stage-03" className="hover:text-black dark:hover:text-white hover:underline">
+            <Link
+              href="/#stage-03"
+              className="hover:text-black dark:hover:text-white hover:underline"
+            >
               03 SERVICES
             </Link>
-            <Link href="/gallery" className="text-black dark:text-yellow-400 underline decoration-yellow-400">
+            <Link
+              href="/gallery"
+              className="text-black dark:text-yellow-400 underline decoration-yellow-400"
+            >
               04 GALLERY
             </Link>
-            <Link href="/#stage-04" className="hover:text-black dark:hover:text-white hover:underline">
+            <Link
+              href="/#stage-04"
+              className="hover:text-black dark:hover:text-white hover:underline"
+            >
               05 CONTACT
             </Link>
           </div>
