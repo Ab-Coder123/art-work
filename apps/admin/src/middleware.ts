@@ -6,7 +6,7 @@ import {
 } from "@art-work/database/edge";
 
 // Routes exempt from authentication checks
-const PUBLIC_PATHS = ["/login", "/api/auth/login", "/api/auth/csrf"];
+const PUBLIC_PATHS = ["/login", "/api/auth/login", "/api/auth/csrf", "/api/health"];
 
 // Mutating HTTP methods requiring CSRF validation
 const MUTATING_METHODS = ["POST", "PUT", "PATCH", "DELETE"];

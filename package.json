@@ -4,6 +4,10 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:web": "pnpm --filter @art-work/artwork-app... run build",
+    "build:admin": "pnpm --filter @art-work/admin... run build",
+    "start:web": "pnpm --filter @art-work/artwork-app exec next start -H 0.0.0.0",
+    "start:admin": "pnpm --filter @art-work/admin exec next start -H 0.0.0.0",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
