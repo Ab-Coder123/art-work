@@ -200,7 +200,7 @@ export function resolveSafeYouTubeEmbed(
   if (SAFE_YT_ID_REGEX.test(raw)) {
     return {
       videoId: raw,
-      embedUrl: `https://www.youtube-nocookie.com/embed/${raw}?rel=0&modestbranding=1`,
+      embedUrl: `https://www.youtube.com/embed/${raw}?enablejsapi=1&rel=0`,
       canonicalUrl: explicitShort
         ? `https://www.youtube.com/shorts/${raw}`
         : `https://www.youtube.com/watch?v=${raw}`,
@@ -243,7 +243,7 @@ export function resolveSafeYouTubeEmbed(
 
   return {
     videoId: candidate,
-    embedUrl: `https://www.youtube-nocookie.com/embed/${candidate}?rel=0&modestbranding=1`,
+    embedUrl: `https://www.youtube.com/embed/${candidate}?enablejsapi=1&rel=0`,
     canonicalUrl: isShort
       ? `https://www.youtube.com/shorts/${candidate}`
       : `https://www.youtube.com/watch?v=${candidate}`,

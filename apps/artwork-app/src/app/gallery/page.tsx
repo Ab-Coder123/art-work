@@ -815,9 +815,15 @@ export default function GalleryPage() {
                           : "YOUTUBE SHOWREEL (16:9)"}
                       </span>
                     </span>
-                    <span className="font-mono text-[10px] text-black/60 dark:text-zinc-400">
-                      ID: {selectedYtEmbed.videoId}
-                    </span>
+                    <a
+                      href={selectedYtEmbed.canonicalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 font-headline font-bold text-[11px] text-red-600 dark:text-red-400 hover:underline"
+                    >
+                      <span>WATCH ON YOUTUBE</span>
+                      <span>↗</span>
+                    </a>
                   </div>
 
                   {selectedProject.youtubeTitle && (
@@ -842,7 +848,6 @@ export default function GalleryPage() {
                     <iframe
                       src={selectedYtEmbed.embedUrl}
                       title={selectedProject.youtubeTitle || selectedProject.title}
-                      loading="lazy"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerPolicy="strict-origin-when-cross-origin"
                       allowFullScreen

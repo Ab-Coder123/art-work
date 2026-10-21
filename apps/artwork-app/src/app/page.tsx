@@ -491,17 +491,28 @@ function GalleryShowcaseContent() {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between">
+                <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between flex-wrap gap-2">
                   <span className="font-headline font-black text-xs text-black dark:text-yellow-400">
                     {primary.stats}
                   </span>
-                  <Link
-                    href="/gallery"
-                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-headline font-black px-3.5 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
-                  >
-                    <span>EXPLORE GALLERY</span>
-                    <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={yt.canonicalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-headline font-black px-3 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
+                    >
+                      <span>YOUTUBE</span>
+                      <span className="text-[10px]">↗</span>
+                    </a>
+                    <Link
+                      href="/gallery"
+                      className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-headline font-black px-3.5 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
+                    >
+                      <span>EXPLORE GALLERY</span>
+                      <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
