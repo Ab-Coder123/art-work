@@ -313,8 +313,13 @@ html.lenis, html.lenis body {
   overflow: hidden;
 }
 
-.lenis.lenis-smooth iframe {
+/* Only disable pointer events on iframes WHILE active scrolling is occurring */
+html.lenis-scrolling iframe {
   pointer-events: none;
+}
+
+iframe {
+  pointer-events: auto;
 }
 
 /* GPU Hardware Acceleration for Smooth Animation */

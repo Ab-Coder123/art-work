@@ -442,7 +442,7 @@ function GalleryShowcaseContent() {
                   <iframe
                     src={yt.embedUrl}
                     title={primary.youtubeTitle || primary.title}
-                    className="w-full h-full border-0"
+                    className="w-full h-full border-0 pointer-events-auto cursor-pointer relative z-10"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen
