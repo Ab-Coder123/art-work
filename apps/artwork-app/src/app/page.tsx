@@ -421,7 +421,7 @@ function GalleryShowcaseContent() {
             href="/gallery"
             className="inline-flex items-center gap-1.5 font-headline font-black text-xs uppercase bg-yellow-400 hover:bg-yellow-300 text-black px-3.5 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
           >
-            <span>VIEW ALL PROJECTS (6)</span>
+            <span>VIEW ALL PROJECTS ({projectsList.length})</span>
             <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
           </Link>
         </div>
@@ -487,7 +487,7 @@ function GalleryShowcaseContent() {
           href="/gallery"
           className="w-full inline-flex items-center justify-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs py-2.5 px-4 rounded-lg border-2 border-black comic-shadow active:scale-95 transition-all"
         >
-          <span>★ EXPLORE COMPLETE PROJECT ARCHIVE (6+ SHOWCASES)</span>
+          <span>★ EXPLORE COMPLETE PROJECT ARCHIVE ({projectsList.length} SHOWCASE{projectsList.length === 1 ? "" : "S"})</span>
           <ArrowRight className="w-4 h-4 stroke-[2.5]" />
         </Link>
       </div>
