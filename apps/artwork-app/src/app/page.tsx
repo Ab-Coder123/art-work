@@ -427,59 +427,143 @@ function GalleryShowcaseContent() {
         </div>
       </div>
 
-      {/* Project Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-3">
-        {featured.map((p) => {
-          const ytEmbed = resolveSafeYouTubeEmbed(p);
-          return (
-            <Link
-              key={p.id}
-              href="/gallery"
-              className="group border-2 border-black dark:border-zinc-700 p-2.5 rounded-lg bg-white dark:bg-[#151520] comic-shadow hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="relative aspect-[16/10] rounded overflow-hidden border border-black mb-2 bg-black">
-                  <Image
-                    src={p.image}
-                    alt={p.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+      {/* Featured Video Showcase Theater */}
+      {featured.length > 0 && (() => {
+        const primary = featured[0];
+        const yt = resolveSafeYouTubeEmbed(primary);
+        if (!yt) return null;
+
+        return (
+          <div className="mb-4 p-3.5 sm:p-5 rounded-2xl border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] comic-shadow">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+              {/* Responsive Embedded YouTube Player */}
+              <div className="lg:col-span-7">
+                <div className="relative aspect-video rounded-xl overflow-hidden border-2 border-black bg-black comic-shadow-sm">
+                  <iframe
+                    src={yt.embedUrl}
+                    title={primary.youtubeTitle || primary.title}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
                   />
-                  <span className="absolute top-1.5 left-1.5 bg-yellow-400 text-black text-[9px] font-headline font-black px-1.5 py-0.5 rounded border border-black comic-shadow-sm">
-                    {p.stamp}
-                  </span>
-                  {ytEmbed && (
-                    <span className="absolute bottom-1.5 right-1.5 bg-red-600 text-white text-[9px] font-headline font-black px-1.5 py-0.5 rounded border border-black comic-shadow-sm">
-                      {ytEmbed.isShort ? "▶ 9:16 REEL" : "▶ VIDEO"}
+                </div>
+              </div>
+
+              {/* Video Info & Metadata */}
+              <div className="lg:col-span-5 flex flex-col justify-between space-y-2.5">
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                    <span className="bg-yellow-400 text-black text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm">
+                      {primary.stamp}
                     </span>
-                  )}
-                </div>
-                <div className="text-[10px] font-mono text-black/60 dark:text-zinc-400 mb-0.5 uppercase">
-                  {p.client}
-                </div>
-                <h3 className="font-headline font-black text-sm text-black dark:text-white group-hover:text-yellow-500 transition-colors mb-1 line-clamp-1">
-                  {p.title}
-                </h3>
-                {p.youtubeTitle && (
-                  <div className="text-[10px] font-headline font-bold text-red-700 dark:text-red-300 line-clamp-1 mb-0.5">
-                    🎬 {p.youtubeTitle}
+                    <span className="bg-red-600 text-white text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm">
+                      ▶ OFFICIAL SHOWREEL
+                    </span>
+                    <span className="text-[10px] font-mono text-black/60 dark:text-zinc-400 uppercase">
+                      {primary.client}
+                    </span>
                   </div>
-                )}
-                <p className="font-body text-[11px] text-black/70 dark:text-zinc-300 line-clamp-2 leading-relaxed mb-2">
-                  {p.description}
-                </p>
+
+                  <h3 className="font-headline font-black text-lg sm:text-xl text-black dark:text-white tracking-tight mb-1">
+                    {primary.title}
+                  </h3>
+
+                  {primary.youtubeTitle && primary.youtubeTitle !== primary.title && (
+                    <div className="text-xs font-headline font-extrabold text-red-600 dark:text-red-400 mb-1">
+                      🎬 {primary.youtubeTitle}
+                    </div>
+                  )}
+
+                  <p className="font-body text-xs text-black/80 dark:text-zinc-300 leading-relaxed line-clamp-4 mb-2.5">
+                    {primary.youtubeDescription || primary.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {primary.tags.map((tag, i) => (
+                      <span
+                        key={i}
+                        className="text-[9px] font-headline font-bold uppercase bg-yellow-100 dark:bg-zinc-800 border border-black/30 dark:border-zinc-700 text-black dark:text-zinc-200 px-2 py-0.5 rounded"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between">
+                  <span className="font-headline font-black text-xs text-black dark:text-yellow-400">
+                    {primary.stats}
+                  </span>
+                  <Link
+                    href="/gallery"
+                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-headline font-black px-3.5 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
+                  >
+                    <span>EXPLORE GALLERY</span>
+                    <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                  </Link>
+                </div>
               </div>
-              <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold text-black dark:text-yellow-400">
-                <span>{p.stats}</span>
-                <span className="group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                  EXPLORE ➔
-                </span>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Additional Project Cards Grid (if more than 1) */}
+      {featured.length > 1 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-3">
+          {featured.slice(1).map((p) => {
+            const ytEmbed = resolveSafeYouTubeEmbed(p);
+            return (
+              <Link
+                key={p.id}
+                href="/gallery"
+                className="group border-2 border-black dark:border-zinc-700 p-2.5 rounded-lg bg-white dark:bg-[#151520] comic-shadow hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="relative aspect-[16/10] rounded overflow-hidden border border-black mb-2 bg-black">
+                    <Image
+                      src={p.image}
+                      alt={p.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <span className="absolute top-1.5 left-1.5 bg-yellow-400 text-black text-[9px] font-headline font-black px-1.5 py-0.5 rounded border border-black comic-shadow-sm">
+                      {p.stamp}
+                    </span>
+                    {ytEmbed && (
+                      <span className="absolute bottom-1.5 right-1.5 bg-red-600 text-white text-[9px] font-headline font-black px-1.5 py-0.5 rounded border border-black comic-shadow-sm">
+                        {ytEmbed.isShort ? "▶ 9:16 REEL" : "▶ VIDEO"}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[10px] font-mono text-black/60 dark:text-zinc-400 mb-0.5 uppercase">
+                    {p.client}
+                  </div>
+                  <h3 className="font-headline font-black text-sm text-black dark:text-white group-hover:text-yellow-500 transition-colors mb-1 line-clamp-1">
+                    {p.title}
+                  </h3>
+                  {p.youtubeTitle && (
+                    <div className="text-[10px] font-headline font-bold text-red-700 dark:text-red-300 line-clamp-1 mb-0.5">
+                      🎬 {p.youtubeTitle}
+                    </div>
+                  )}
+                  <p className="font-body text-[11px] text-black/70 dark:text-zinc-300 line-clamp-2 leading-relaxed mb-2">
+                    {p.description}
+                  </p>
+                </div>
+                <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold text-black dark:text-yellow-400">
+                  <span>{p.stats}</span>
+                  <span className="group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                    EXPLORE ➔
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
 
       {/* Full Vault CTA Button on Mobile */}
       <div className="text-center pt-1 block md:hidden">

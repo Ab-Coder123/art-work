@@ -578,6 +578,20 @@ export default function GalleryPage() {
                 </motion.article>
               );
             })}
+
+            {filteredProjects.length === 0 && (
+              <div className="col-span-full py-12 text-center border-2 border-dashed border-black/30 dark:border-zinc-700 rounded-xl bg-white/50 dark:bg-[#151520]/50">
+                <p className="font-headline font-bold text-sm text-black dark:text-zinc-200 mb-3">
+                  No projects categorized under this filter yet.
+                </p>
+                <button
+                  onClick={() => setActiveFilter("all")}
+                  className="px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs uppercase rounded border-2 border-black comic-shadow-sm cursor-pointer"
+                >
+                  VIEW ALL MASTERPIECES ({projects.length})
+                </button>
+              </div>
+            )}
           </div>
         </section>
 
@@ -829,8 +843,8 @@ export default function GalleryPage() {
                       src={selectedYtEmbed.embedUrl}
                       title={selectedProject.youtubeTitle || selectedProject.title}
                       loading="lazy"
-                      sandbox="allow-scripts allow-same-origin allow-presentation"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
                       allowFullScreen
                       className="w-full h-full border-0"
                     />
