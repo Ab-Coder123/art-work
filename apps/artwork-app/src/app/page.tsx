@@ -32,6 +32,8 @@ import {
   Palette,
   Compass,
   Send,
+  AlertCircle,
+  Loader2,
 } from "lucide-react";
 
 import rawProjects from "@/data/projects.json";
@@ -594,6 +596,83 @@ function GalleryShowcaseContent() {
    SCENE 04: CONTACT & BRIEF INQUIRY COMPONENT
    ========================================================================= */
 function ContactContent() {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    serviceType: "Stage Design & Arena Rigging",
+    brief: "",
+    _hp: "",
+  });
+  const formLoadedAtRef = useRef<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
+
+  useEffect(() => {
+    formLoadedAtRef.current = Date.now();
+  }, []);
+
+  const serviceOptions = [
+    "Stage Design & Arena Rigging",
+    "Conferences & Keynote LED",
+    "Exhibition Booths",
+    "Brand Architecture",
+    "Custom Rigging & Tech",
+  ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    soundFX.playPop();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: "" });
+
+    try {
+      const response = await fetch("/api/contact/brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          serviceType: formData.serviceType,
+          brief: formData.brief,
+          _hp: formData._hp,
+          _ts: formLoadedAtRef.current,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        setSubmitStatus({
+          type: "error",
+          message: data.error || "Failed to submit project brief. Please check your information.",
+        });
+      } else {
+        setSubmitStatus({
+          type: "success",
+          message: "⚡ Brief dispatched! Our stage director has received your specifications and will respond within 24 hours.",
+        });
+        setFormData({
+          fullName: "",
+          email: "",
+          serviceType: "Stage Design & Arena Rigging",
+          brief: "",
+          _hp: "",
+        });
+        formLoadedAtRef.current = Date.now();
+      }
+    } catch {
+      setSubmitStatus({
+        type: "error",
+        message: "Network error occurred while sending your brief. Please verify your connection.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
       <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-lg p-3 sm:p-4 comic-shadow relative mt-2.5">
@@ -657,14 +736,42 @@ function ContactContent() {
             transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-7 bg-white dark:bg-[#181824] border border-black dark:border-zinc-700 rounded-lg p-3 comic-shadow-sm"
           >
-            <form
-              className="space-y-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                soundFX.playPop();
-                alert("Brief submitted to Art Work! Our stage director will be in touch shortly.");
-              }}
-            >
+            {submitStatus.type === "success" && (
+              <div className="mb-2.5 p-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500 rounded text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                <p className="font-body">{submitStatus.message}</p>
+              </div>
+            )}
+
+            {submitStatus.type === "error" && (
+              <div className="mb-2.5 p-2.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-500 rounded text-rose-800 dark:text-rose-300 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                <p className="font-body">{submitStatus.message}</p>
+              </div>
+            )}
+
+            <form className="space-y-2" onSubmit={handleSubmit}>
+              {/* Invisible Honeypot field for bot deterrence */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  top: "-9999px",
+                  opacity: 0,
+                  pointerEvents: "none",
+                }}
+                aria-hidden="true"
+              >
+                <input
+                  type="text"
+                  name="_hp"
+                  tabIndex={-1}
+                  value={formData._hp}
+                  onChange={(e) => setFormData({ ...formData, _hp: e.target.value })}
+                  autoComplete="off"
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black dark:text-zinc-300">
@@ -675,6 +782,8 @@ function ContactContent() {
                     placeholder="Alex Mercer, Head of Brand"
                     required
                     type="text"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   />
                 </div>
                 <div>
@@ -686,7 +795,31 @@ function ContactContent() {
                     placeholder="alex@company.com"
                     required
                     type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-headline font-bold text-[10px] uppercase mb-1 text-black dark:text-zinc-300">
+                  Target Service
+                </label>
+                <div className="flex flex-wrap gap-1">
+                  {serviceOptions.map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, serviceType: opt })}
+                      className={`text-[9px] font-headline font-bold px-2 py-0.5 rounded border transition-all ${
+                        formData.serviceType === opt
+                          ? "bg-yellow-400 text-black border-black shadow-[1px_1px_0px_#000]"
+                          : "bg-zinc-100 dark:bg-zinc-800 text-black/70 dark:text-zinc-300 border-zinc-300 dark:border-zinc-700 hover:border-black dark:hover:border-white"
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -696,9 +829,11 @@ function ContactContent() {
                 </label>
                 <textarea
                   className="w-full border border-black dark:border-zinc-700 rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
-                  placeholder="Describe your arena, product launch, or brand evolution requirements..."
+                  placeholder="Describe your arena, product launch, or brand evolution requirements (min 10 characters)..."
                   required
                   rows={2}
+                  value={formData.brief}
+                  onChange={(e) => setFormData({ ...formData, brief: e.target.value })}
                 ></textarea>
               </div>
 
@@ -708,11 +843,21 @@ function ContactContent() {
                 </span>
                 <MagneticButton soundType="pop">
                   <button
-                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black font-headline font-black text-xs px-3.5 py-1.5 rounded border border-black comic-shadow-sm active:scale-95 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black font-headline font-black text-xs px-3.5 py-1.5 rounded border border-black comic-shadow-sm active:scale-95 transition-all cursor-pointer disabled:opacity-50"
                     type="submit"
+                    disabled={isSubmitting}
                   >
-                    <span>DISPATCH BRIEF</span>
-                    <Send className="w-3.5 h-3.5 stroke-[2.5]" />
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>DISPATCHING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>DISPATCH BRIEF</span>
+                        <Send className="w-3.5 h-3.5 stroke-[2.5]" />
+                      </>
+                    )}
                   </button>
                 </MagneticButton>
               </div>

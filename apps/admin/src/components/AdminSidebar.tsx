@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   ExternalLink,
   ShieldCheck,
+  Mail,
 } from "lucide-react";
 
 export function AdminSidebar() {
@@ -20,6 +21,13 @@ export function AdminSidebar() {
       href: "/",
       icon: LayoutDashboard,
       active: pathname === "/",
+    },
+    {
+      label: "Client Leads",
+      href: "/inquiries",
+      icon: Mail,
+      active: pathname.startsWith("/inquiries"),
+      badge: "Intake",
     },
     {
       label: "Website Content",

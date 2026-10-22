@@ -347,3 +347,30 @@ export interface SiteContent {
   contact: ContactSectionContent;
   whyUsPage: WhyUsPageContent;
 }
+
+// ---------------------------------------------------------------------------
+// Client Inquiry & Lead Submission Types (Phase 08)
+// ---------------------------------------------------------------------------
+
+export type InquiryStatus = "pending" | "reviewed" | "contacted" | "archived";
+
+export interface InquiryRecord {
+  id: string;
+  fullName: string;
+  email: string;
+  serviceType: string;
+  brief: string;
+  status: InquiryStatus;
+  ipHash?: string;
+  createdAt: string;
+}
+
+export interface LeadSubmissionPayload {
+  fullName: string;
+  email: string;
+  serviceType: string;
+  brief: string;
+  _hp?: string; // Honeypot field (must remain empty)
+  _ts?: number; // Millisecond timestamp when form opened (time-gate)
+}
+
