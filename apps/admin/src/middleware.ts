@@ -67,17 +67,8 @@ export function middleware(request: NextRequest) {
   ) {
     const headerToken = request.headers.get(CSRF_HEADER_NAME);
     const cookieToken = request.cookies.get(AUTH_COOKIES.CSRF_TOKEN)?.value;
-    const secFetchSite = request.headers.get("sec-fetch-site");
-    const isSameOrigin =
-      secFetchSite === "same-origin" ||
-      (origin && origin === request.nextUrl.origin) ||
-      !origin;
 
-    const isDoubleSubmitValid = validateCsrfToken(headerToken, cookieToken);
-    const isSameOriginValid =
-      isSameOrigin && Boolean(headerToken && headerToken.length === 64);
-
-    if (!isDoubleSubmitValid && !isSameOriginValid) {
+    if (!validateCsrfToken(headerToken, cookieToken)) {
       // Generate a fresh token so client can self-heal on next request
       const recoveryCsrfToken = generateCsrfToken();
       const errorResponse = NextResponse.json(
@@ -108,16 +99,6 @@ export function middleware(request: NextRequest) {
       freshCsrfTokenForPage,
       getCsrfCookieOptions(isProd)
     );
-  } else {
-    const headerToken = request.headers.get(CSRF_HEADER_NAME);
-    const cookieToken = request.cookies.get(AUTH_COOKIES.CSRF_TOKEN)?.value;
-    if (!cookieToken && headerToken && headerToken.length === 64) {
-      response.cookies.set(
-        AUTH_COOKIES.CSRF_TOKEN,
-        headerToken,
-        getCsrfCookieOptions(isProd)
-      );
-    }
   }
 
   if (pathname.startsWith("/api/")) {

@@ -62,16 +62,16 @@ describe("Dashboard & Public App Full Request Integration Suite", () => {
       assert.equal(validateCsrfToken(token1, token1.slice(0, 63) + "x"), false, "Tampered token must fail");
     });
 
-    it("should permit same-origin dashboard mutating requests with valid 64-char header even during initial cookie race", () => {
-      const headerToken = generateCsrfToken();
-      const origin = "https://art-work-ivory.vercel.app";
-      const hostOrigin = "https://art-work-ivory.vercel.app";
-      const secFetchSite = "same-origin";
-
-      const isSameOrigin = secFetchSite === "same-origin" || origin === hostOrigin;
-      const isHeaderValid = Boolean(headerToken && headerToken.length === 64);
-
-      assert.equal(isSameOrigin && isHeaderValid, true, "Same-origin fetch with valid header is trusted");
+    it("should strictly enforce double-submit CSRF matching for mutating methods and reject when cookie or header is absent", () => {
+      const validToken = generateCsrfToken();
+      // 1. Missing header
+      assert.equal(validateCsrfToken(null, validToken), false, "Missing header must fail");
+      // 2. Missing cookie
+      assert.equal(validateCsrfToken(validToken, null), false, "Missing cookie must fail");
+      // 3. Mismatched token
+      assert.equal(validateCsrfToken(validToken, "tampered-token-1234567890abcdef1234567890abcdef1234567890abcdef12"), false, "Mismatched tokens must fail");
+      // 4. Exactly matching 64-char hex tokens
+      assert.equal(validateCsrfToken(validToken, validToken), true, "Matching tokens must pass");
     });
 
     it("should reject cross-origin mutating requests from unauthorized origins", () => {
@@ -233,6 +233,54 @@ describe("Dashboard & Public App Full Request Integration Suite", () => {
       assert.equal(canWriteAdminData("viewer"), false, "Viewer role cannot write");
       assert.equal(canWriteAdminData("editor"), true, "Editor role can write");
       assert.equal(canWriteAdminData("super_admin"), true, "Super admin role can write");
+    });
+
+    it("should verify successful PUT saves for all four sections with valid matching CSRF token", async () => {
+      const repo = createInMemoryContentRepository();
+      const validToken = generateCsrfToken();
+      assert.equal(validateCsrfToken(validToken, validToken), true);
+
+      // 1. manifesto
+      const r1 = await updateContentSection("manifesto", { ...DEFAULT_SITE_CONTENT.manifesto, headlinePart1: "STAGE 1 PASS" }, repo, testAdminEmail);
+      assert.equal(r1.ok, true, "manifesto save must succeed");
+
+      // 2. whyUsTeaser
+      const r2 = await updateContentSection("whyUsTeaser", { ...DEFAULT_SITE_CONTENT.whyUsTeaser, headline: "STAGE 2 PASS" }, repo, testAdminEmail);
+      assert.equal(r2.ok, true, "whyUsTeaser save must succeed");
+
+      // 3. contact
+      const r3 = await updateContentSection("contact", { ...DEFAULT_SITE_CONTENT.contact, email: "stage3@artwork.agency" }, repo, testAdminEmail);
+      assert.equal(r3.ok, true, "contact save must succeed");
+
+      // 4. whyUsPage
+      const r4 = await updateContentSection("whyUsPage", { ...DEFAULT_SITE_CONTENT.whyUsPage, heroHeadlineRow1: "STAGE 4 PASS" }, repo, testAdminEmail);
+      assert.equal(r4.ok, true, "whyUsPage save must succeed");
+    });
+
+    it("should reject requests without a token or with mismatched tokens for all four sections with 403", () => {
+      const validCookie = generateCsrfToken();
+      const sections = ["manifesto", "whyUsTeaser", "contact", "whyUsPage"];
+
+      for (const section of sections) {
+        // Without header token -> 403
+        assert.equal(validateCsrfToken(null, validCookie), false, `${section}: Missing header must fail`);
+        assert.equal(validateCsrfToken("", validCookie), false, `${section}: Empty header must fail`);
+
+        // Without cookie token -> 403
+        assert.equal(validateCsrfToken(validCookie, null), false, `${section}: Missing cookie must fail`);
+        assert.equal(validateCsrfToken(validCookie, ""), false, `${section}: Empty cookie must fail`);
+
+        // Mismatched token -> 403
+        const mismatchedHeader = generateCsrfToken();
+        assert.equal(validateCsrfToken(mismatchedHeader, validCookie), false, `${section}: Mismatched tokens must fail`);
+      }
+    });
+
+    it("should guarantee that empty tokens can never pass CSRF validation", () => {
+      assert.equal(validateCsrfToken("", ""), false, "Empty strings must be rejected");
+      assert.equal(validateCsrfToken(undefined, undefined), false, "Undefined must be rejected");
+      assert.equal(validateCsrfToken(null, null), false, "Null must be rejected");
+      assert.equal(validateCsrfToken("short", "short"), false, "Non-64-character tokens must be rejected");
     });
   });
 
