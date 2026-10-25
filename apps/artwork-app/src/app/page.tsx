@@ -9,7 +9,7 @@ import { Capabilities3DMatrix } from "@/components/cinematic/Capabilities3DMatri
 import { KineticDoodlesLayer } from "@/components/cinematic/KineticDoodlesLayer";
 import { KineticMotionArrows } from "@/components/cinematic/KineticMotionArrows";
 import { KineticPaintPen } from "@/components/cinematic/KineticPaintPen";
-import { Kinetic3DBackground } from "@/components/cinematic/Kinetic3DBackground";
+import { DeferredKinetic3DBackground } from "@/components/cinematic/DeferredKinetic3DBackground";
 import { InteractiveDoodleCanvas } from "@/components/cinematic/InteractiveDoodleCanvas";
 import { SoundToggle } from "@/components/cinematic/SoundToggle";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
@@ -42,35 +42,14 @@ import { type ContactSectionContent, type ProjectRecord, resolveSafeYouTubeEmbed
 
 type StageId = "stage-01" | "stage-02" | "stage-03" | "stage-gallery" | "stage-04";
 const DEFAULT_HERO_CONTENT = {
-  announcementBadge: "MARKETING SOLUTIONS FOR KINETIC BRANDS",
-  editionBadge: "EDITION 2026",
-  headlinePart1: "CREATIVE IDEAS.",
-  headlinePart2: "REAL IMPACT.",
-  introParagraph:
-    "We are Art Work: an interdisciplinary marketing and experiential design collective translating bold cultural visions into arena-scale reality.",
-  metrics: [
-    { num: "450+", label: "Arena Shows" },
-    { num: "99.4%", label: "Cue Accuracy" },
-    { num: "1.2M+", label: "Live Reach" },
-  ],
+  announcementBadge: DEFAULT_SITE_CONTENT.manifesto.announcementBadge,
+  editionBadge: DEFAULT_SITE_CONTENT.manifesto.editionBadge,
+  headlinePart1: DEFAULT_SITE_CONTENT.manifesto.headlinePart1,
+  headlinePart2: DEFAULT_SITE_CONTENT.manifesto.headlinePart2,
+  introParagraph: DEFAULT_SITE_CONTENT.manifesto.introParagraph,
+  metrics: DEFAULT_SITE_CONTENT.manifesto.metrics,
 };
-const DEFAULT_WHY_US_CONTENT = {
-  eyebrow: "02 WHY ART WORK",
-  headline: "ENGINEERED FOR STAGE & SCALE.",
-  exploreCtaText: "EXPLORE FULL WHY US",
-  bentoCards: [
-    { number: "01", title: "Arena & Stage Scenography", description: "Stage blueprints, LED mapping rigs, lighting cue choreographies, and large-format structural storytelling.", badge: "PRODUCTION READY" },
-    { number: "02", title: "Dynamic Motion Systems", description: "Kinetic typography, 3D broadcast packages, real-time reactive shaders, and frame-accurate visual sync.", badge: "60 FPS FIDELITY" },
-    { number: "03", title: "Brand Architecture", description: "Custom hand-drawn vector doodle suites, physical merch design, stage passes, and total campaign cohesion.", badge: "TACTILE & DIGITAL" },
-  ],
-  blueprint: {
-    badge: "BLUEPRINT & STAGE PREVIEW",
-    title: "FROM SKETCHBOARD TO LIVE VENUE IN 72 HOURS.",
-    description: "We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.",
-    image: "/assets/images/blueprint_stage_scenography.webp",
-    altText: "Stage Architecture Blueprints and Scenography",
-  },
-};
+const DEFAULT_WHY_US_CONTENT = DEFAULT_SITE_CONTENT.whyUsTeaser;
 
 /* =========================================================================
    SCENE 01: HERO / MANIFESTO COMPONENT
@@ -1182,7 +1161,7 @@ export default function Home() {
       <IntroLoader />
 
       {/* Real 3D Kinetic Three.js Background with Auto-Synced Scroll Motion */}
-      <Kinetic3DBackground />
+      <DeferredKinetic3DBackground />
 
       {/* Kinetic Doodles Layer in Safe Margins */}
       <KineticDoodlesLayer />

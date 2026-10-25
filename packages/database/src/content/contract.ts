@@ -5,7 +5,7 @@ import type {
   WhyUsPageContent,
   WhyUsTeaserContent,
 } from "@art-work/types";
-import { DEFAULT_SITE_CONTENT } from "./default-content";
+import { DEFAULT_SITE_CONTENT, normalizeSiteMediaPath } from "./default-content";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -114,7 +114,10 @@ function normalizeWhyUsTeaser(value: unknown): WhyUsTeaserContent {
       badge: readString(blueprint, "badge", defaults.blueprint.badge),
       title: readString(blueprint, "title", defaults.blueprint.title),
       description: readString(blueprint, "description", defaults.blueprint.description),
-      image: readString(blueprint, "image", defaults.blueprint.image),
+      image: normalizeSiteMediaPath(
+        readString(blueprint, "image", defaults.blueprint.image),
+        defaults.blueprint.image
+      ),
       altText: readString(blueprint, "altText", defaults.blueprint.altText),
     },
   };
@@ -156,7 +159,10 @@ function normalizeWhyUsPage(value: unknown): WhyUsPageContent {
       : defaults.doodleStickers,
     presentationTitle: readString(raw, "presentationTitle", defaults.presentationTitle),
     presentationSubtitle: readString(raw, "presentationSubtitle", defaults.presentationSubtitle),
-    presentationImage: readString(raw, "presentationImage", defaults.presentationImage),
+    presentationImage: normalizeSiteMediaPath(
+      readString(raw, "presentationImage", defaults.presentationImage),
+      defaults.presentationImage
+    ),
     presentationImageAlt: readString(raw, "presentationImageAlt", defaults.presentationImageAlt),
     metrics: normalizeMetrics(raw.metrics),
   };
@@ -170,6 +176,10 @@ function normalizeContact(value: unknown): ContactSectionContent {
     ...legacy,
     email: readString(raw, "email", defaults.email),
     phone: readString(raw, "phone", defaults.phone),
+    intakeImage: normalizeSiteMediaPath(
+      readString(raw, "intakeImage", defaults.intakeImage),
+      defaults.intakeImage
+    ),
     studioLocations: readString(raw, "studioLocations", readString(raw, "address", defaults.studioLocations)),
     formFields: Array.isArray(raw.formFields) && raw.formFields.length
       ? raw.formFields as ContactSectionContent["formFields"]

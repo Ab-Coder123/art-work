@@ -366,7 +366,7 @@ describe("Dashboard & Public App Full Request Integration Suite", () => {
       assert.equal(incomingSecret === correctSecret, true, "Secret authorization check");
 
       const wrongSecret = "unauthorized-intruder";
-      assert.equal(wrongSecret === correctSecret, false, "Unauthorized secret rejected");
+      assert.notEqual(wrongSecret, correctSecret, "Unauthorized secret rejected");
 
       const publicAppUrl = "https://artwork-agency.vercel.app";
       const revalidateUrl = `${publicAppUrl}/api/revalidate?secret=${correctSecret}&tag=site-content`;

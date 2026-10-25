@@ -1,4 +1,5 @@
-import { SiteContent, ProjectRecord } from "@art-work/types";
+import type { SiteContent, ProjectRecord } from "@art-work/types";
+import { SITE_MEDIA } from "@art-work/database/content/default-content";
 
 export const SEED_PROJECTS: ProjectRecord[] = [
   {
@@ -166,7 +167,7 @@ export const SEED_SITE_CONTENT: SiteContent = {
     presentationTitle: "CREATIVE CHIEF ON-CALL // CONCEPT INTAKE",
     presentationSubtitle:
       "From wet fountain pen on raw grid paper to arena execution.",
-    presentationImage: "/assets/images/why_us_architect_presentation.png",
+    presentationImage: SITE_MEDIA.stageBlueprint,
     presentationImageAlt:
       "Art Work Creative Director presenting stage CAD schematics",
     metrics: [

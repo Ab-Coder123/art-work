@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AdminHeader } from "@/components/AdminHeader";
 import {
   Save,
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { SiteContent } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
+import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
 
 interface RevisionItem {
   id: string;
@@ -27,6 +28,7 @@ interface RevisionItem {
 }
 
 export default function WebsiteContentEditor() {
+  const loadedContentRef = useRef<SiteContent>(DEFAULT_SITE_CONTENT);
   const [activeSection, setActiveSection] = useState<
     "manifesto" | "teaser" | "contact" | "whyUs"
   >("manifesto");
@@ -102,6 +104,7 @@ export default function WebsiteContentEditor() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data: SiteContent = await res.json();
         if (!mounted) return;
+        loadedContentRef.current = data;
 
         if (data.manifesto) {
           setManifesto({
@@ -178,6 +181,7 @@ export default function WebsiteContentEditor() {
       const res = await fetch("/api/content", { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: SiteContent = await res.json();
+      loadedContentRef.current = data;
 
       if (data.manifesto) {
         setManifesto({
@@ -249,18 +253,19 @@ export default function WebsiteContentEditor() {
     setIsSaving(true);
     setErrorMessage(null);
 
-    let targetSection = "manifesto";
+    let targetSection: "manifesto" | "whyUsTeaser" | "contact" | "whyUsPage" = "manifesto";
     let payload: Record<string, unknown> = {};
+    const savedContent = loadedContentRef.current;
 
     if (activeSection === "manifesto") {
       targetSection = "manifesto";
       payload = {
+        ...savedContent.manifesto,
         announcementBadge: manifesto.announcementBadge,
         editionBadge: manifesto.editionBadge,
         stickyNote: manifesto.stickyNote,
         headlinePart1: manifesto.headlinePart1,
         headlinePart2: manifesto.headlinePart2,
-        starburstText: { top: "KINETIC", middle: "STAGE", bottom: "2026" },
         introParagraph: manifesto.introParagraph,
         primaryCtaText: manifesto.primaryCtaText,
         secondaryCtaText: manifesto.secondaryCtaText,
@@ -269,112 +274,44 @@ export default function WebsiteContentEditor() {
           { num: manifesto.metric2Num, label: manifesto.metric2Label },
           { num: manifesto.metric3Num, label: manifesto.metric3Label },
         ],
-        canvasHeader: "STUDIO_COLLECTIVE_CANVAS.V4",
-        canvasTag: "INK_LAYER_ACTIVE",
-        heroImage: "/assets/images/hero_studio_collective.webp",
-        heroImageAlt: "Art Work Creative Marketing Studio Collective",
       };
     } else if (activeSection === "teaser") {
       targetSection = "whyUsTeaser";
       payload = {
+        ...savedContent.whyUsTeaser,
         eyebrow: whyUsTeaser.eyebrow,
         headline: whyUsTeaser.headline,
         exploreCtaText: whyUsTeaser.exploreCtaText,
-        bentoCards: [
-          {
-            number: "01",
-            title: "Arena & Stage Scenography",
-            description:
-              "Kinetic typography, 3D broadcast packages, real-time reactive shaders, and frame-accurate visual sync.",
-            badge: "01",
-          },
-          {
-            number: "02",
-            title: "Brand Spatial Identity",
-            description:
-              "Tactile print collateral, custom architectural booths, bespoke typography, and physical touchpoints.",
-            badge: "02",
-          },
-          {
-            number: "03",
-            title: "Event Technology & DMX",
-            description:
-              "Multi-camera broadcast direction, interactive lighting protocols, timecode audio, and stage production.",
-            badge: "03",
-          },
-        ],
         blueprint: {
-          badge: "BLUEPRINT // REV 4.2",
+          ...savedContent.whyUsTeaser.blueprint,
           title: whyUsTeaser.blueprintTitle,
           description: whyUsTeaser.blueprintDesc,
-          image: "/assets/images/stage_design_architect.webp",
-          altText: "Art Work Stage Design Blueprint",
         },
       };
     } else if (activeSection === "contact") {
       targetSection = "contact";
       payload = {
+        ...savedContent.contact,
         stageTag: contact.stageTag,
         headline: contact.headline,
         description: contact.description,
         intakeLabel: contact.intakeLabel,
-        intakeImage: "/assets/images/creative_chief_on_call.webp",
-        intakeImageAlt: "Creative Chief On-Call Concept Intake",
         email: contact.email,
         phone: contact.phone,
         studioLocations: contact.studioLocations,
         submitButtonText: contact.submitButtonText,
-        formFields: [
-          {
-            name: "fullName",
-            label: "01 YOUR NAME / ALIAS",
-            placeholder: "e.g. Alex Mercer, Studio Lead",
-            type: "text",
-            required: true,
-          },
-          {
-            name: "email",
-            label: "02 DIRECT COMM SIGNAL (EMAIL)",
-            placeholder: "alex@enterprise.stage",
-            type: "email",
-            required: true,
-          },
-          {
-            name: "serviceType",
-            label: "03 MISSION OBJECTIVE",
-            placeholder: "Arena Scenography / Kinetic Stage Direction",
-            type: "select",
-            required: true,
-          },
-          {
-            name: "brief",
-            label: "04 PROJECT BRIEF / STAGE SPEC",
-            placeholder: "Tell us about your stage dimensions, vision, and timeline...",
-            type: "textarea",
-            required: true,
-          },
-        ],
       };
     } else if (activeSection === "whyUs") {
       targetSection = "whyUsPage";
       payload = {
+        ...savedContent.whyUsPage,
         sceneBadge: whyUsPage.sceneBadge,
-        sceneTitle: "02 / WHY ART WORK",
         statusBadge: whyUsPage.statusBadge,
         heroHeadlineRow1: whyUsPage.heroHeadlineRow1,
         heroHeadlineRow2: whyUsPage.heroHeadlineRow2,
         roiBadge: whyUsPage.roiBadge,
-        contentCreationBadge: "EXPERIENTIAL PRODUCTION",
-        doodleStickers: ["DMX_SYNCED", "ARENA_TESTED", "ZERO_TEMPLATES", "TACTILE_INK"],
         presentationTitle: whyUsPage.presentationTitle,
         presentationSubtitle: whyUsPage.presentationSubtitle,
-        presentationImage: "/assets/images/stage_design_architect.webp",
-        presentationImageAlt: "Creative Architecture Blueprint",
-        metrics: [
-          { num: "450+", label: "Arena Shows" },
-          { num: "99.4%", label: "Cue Accuracy" },
-          { num: "1.2M+", label: "Live Reach" },
-        ],
       };
     }
 
@@ -391,6 +328,11 @@ export default function WebsiteContentEditor() {
         const errJson = await res.json().catch(() => ({}));
         throw new Error(errJson.error || `HTTP ${res.status}`);
       }
+
+      loadedContentRef.current = {
+        ...loadedContentRef.current,
+        [targetSection]: payload,
+      } as SiteContent;
 
       setIsSaved(true);
       setIsDirty(false);

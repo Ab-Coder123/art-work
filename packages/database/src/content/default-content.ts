@@ -1,5 +1,22 @@
 import type { SiteContent } from "@art-work/types";
 
+export const SITE_MEDIA = {
+  heroCollective: "/assets/images/hero_studio_collective.webp",
+  stageBlueprint: "/assets/images/blueprint_stage_scenography.webp",
+  creativeChiefIntake: "/assets/images/creative_chief_intake.webp",
+} as const;
+
+const LEGACY_SITE_MEDIA: Record<string, string> = {
+  "/assets/images/stage_design_architect.webp": SITE_MEDIA.stageBlueprint,
+  "/assets/images/why_us_architect_presentation.png": SITE_MEDIA.stageBlueprint,
+  "/assets/images/creative_chief_on_call.webp": SITE_MEDIA.creativeChiefIntake,
+};
+
+export function normalizeSiteMediaPath(value: string, fallback: string): string {
+  const path = value.trim();
+  return LEGACY_SITE_MEDIA[path] || path || fallback;
+}
+
 /**
  * Canonical default site content for the Art Work marketing platform.
  * Used as high-fidelity fallback if the database is unreachable or newly initialized.
@@ -30,7 +47,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ],
     canvasHeader: "STUDIO_COLLECTIVE_CANVAS.V4",
     canvasTag: "INK_LAYER_ACTIVE",
-    heroImage: "/assets/images/hero_studio_collective.webp",
+    heroImage: SITE_MEDIA.heroCollective,
     heroImageAlt: "Art Work Creative Marketing Studio Collective",
   },
 
@@ -66,7 +83,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       title: "FROM SKETCHBOARD TO LIVE VENUE IN 72 HOURS.",
       description:
         "We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.",
-      image: "/assets/images/stage_design_architect.webp",
+      image: SITE_MEDIA.stageBlueprint,
       altText: "Art Work Stage Design Blueprint and Architectural Scenography",
     },
   },
@@ -77,7 +94,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     description:
       "Whether you need a dynamic stage package for an arena tour or an unforgettable brand identity, our sketchpad is open.",
     intakeLabel: "DIRECT INTAKE // CREATIVE CHIEF ON-CALL",
-    intakeImage: "/assets/images/creative_chief_on_call.webp",
+    intakeImage: SITE_MEDIA.creativeChiefIntake,
     intakeImageAlt: "Art Work Creative Chief On-Call Concept Intake",
     email: "studio@artwork-solutions.stage",
     phone: "+1 (800) ART-WORK // DMX-EXT: 04",
@@ -132,7 +149,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     presentationTitle: "CREATIVE CHIEF ON-CALL // CONCEPT INTAKE",
     presentationSubtitle:
       "From wet fountain pen on raw grid paper to arena execution.",
-    presentationImage: "/assets/images/stage_design_architect.webp",
+    presentationImage: SITE_MEDIA.stageBlueprint,
     presentationImageAlt: "Creative Architecture Blueprint",
     metrics: [
       { num: "450+", label: "Arena Shows" },
