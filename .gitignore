@@ -24,6 +24,8 @@ test-report/
 # OS Files
 .DS_Store
 Thumbs.db
+*.log
+.next-ui-review/
 
 # Legacy root folders
 /artwork-app/
