@@ -243,12 +243,6 @@ export default function WebsiteContentEditor() {
     setIsSaved(false);
   };
 
-  // Helper to get CSRF token
-  const getCsrfToken = () => {
-    if (typeof document === "undefined") return "";
-    const match = document.cookie.match(/csrf-token=([^;]+)/);
-    return match ? match[1] : "";
-  };
 
   // Save handler for active section
   const handleSave = async () => {
@@ -389,7 +383,6 @@ export default function WebsiteContentEditor() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "x-csrf-token": getCsrfToken(),
         },
         body: JSON.stringify(payload),
       });
@@ -433,9 +426,6 @@ export default function WebsiteContentEditor() {
     try {
       const res = await apiFetchWithCsrf(`/api/content/rollback/${revisionId}`, {
         method: "POST",
-        headers: {
-          "x-csrf-token": getCsrfToken(),
-        },
       });
 
       if (!res.ok) {
