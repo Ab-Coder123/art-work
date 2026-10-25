@@ -15,9 +15,39 @@ import {
   updateInquiryStatus,
   removeInquiry,
   MIN_FILL_TIME_MS,
+  InquiryRateLimiter,
+  SupabaseInquiryRepository,
 } from "../src/index";
 
 describe("Phase 08: Client Lead Intake & Notification Pipeline", () => {
+  it("persists public inquiries with INSERT only and returns its locally generated record", async () => {
+    let inserted: Record<string, unknown> | undefined;
+    const query = {
+      insert(payload: Record<string, unknown>) {
+        inserted = payload;
+        return Promise.resolve({ error: null });
+      },
+    };
+    const client = { from: (table: string) => {
+      assert.equal(table, "inquiries");
+      return query;
+    } };
+    const repository = new SupabaseInquiryRepository(client as never);
+
+    const record = await repository.create({
+      fullName: "Insert Only",
+      email: "insert-only@example.test",
+      serviceType: "Stage Design",
+      brief: "A sufficiently detailed test inquiry for insert only behavior.",
+    });
+
+    assert.match(record.id, /^[0-9a-f-]{36}$/i);
+    assert.equal(inserted?.id, record.id);
+    assert.equal(inserted?.status, "pending");
+    assert.equal(record.email, "insert-only@example.test");
+    assert.equal("select" in query, false);
+  });
+
   describe("Contact Brief Validation & Normalization", () => {
     it("should accept a complete and valid payload with camelCase keys", () => {
       const input = {
@@ -107,6 +137,16 @@ describe("Phase 08: Client Lead Intake & Notification Pipeline", () => {
   });
 
   describe("Spam Defense, Honeypot & Time-Gate Engine", () => {
+    it("should throttle submissions by anonymous key and reset after the window", () => {
+      const limiter = new InquiryRateLimiter(2, 60_000);
+      assert.equal(limiter.consume("hashed-ip", 1_000).allowed, true);
+      assert.equal(limiter.consume("hashed-ip", 2_000).allowed, true);
+      const limited = limiter.consume("hashed-ip", 3_000);
+      assert.equal(limited.allowed, false);
+      assert.equal(limited.retryAfterSeconds, 58);
+      assert.equal(limiter.consume("hashed-ip", 61_000).allowed, true);
+    });
+
     it("should reject bot submissions when honeypot field is filled", () => {
       const check = checkSpam({
         honeypot: "automated_spam_url_http://spam.org",
@@ -238,6 +278,37 @@ describe("Phase 08: Client Lead Intake & Notification Pipeline", () => {
   });
 
   describe("End-to-End Inquiry Pipeline Service", () => {
+    it("should reject over-limit valid submissions before persistence", async () => {
+      const repo = new InMemoryInquiryRepository();
+      const limiter = new InquiryRateLimiter(1, 60_000);
+      const makePayload = () => ({
+        fullName: "Rate Limit Test",
+        email: "rate-limit@example.test",
+        serviceType: "Stage Design",
+        brief: "A test brief that is long enough to pass validation.",
+        _ts: Date.now() - 5000,
+      });
+
+      const first = await submitLeadBrief(makePayload(), repo, {
+        ip: "198.51.100.88",
+        rateLimiter: limiter,
+        notifier: new MockNotificationService(),
+        waitForNotifications: true,
+      });
+      const second = await submitLeadBrief(makePayload(), repo, {
+        ip: "198.51.100.88",
+        rateLimiter: limiter,
+        notifier: new MockNotificationService(),
+        waitForNotifications: true,
+      });
+
+      assert.equal(first.status, 201);
+      assert.equal(second.status, 429);
+      assert.ok((second.retryAfterSeconds || 0) > 0);
+      const listed = await fetchInquiries(repo);
+      assert.equal(listed.data?.total, 1);
+    });
+
     it("should submit a valid lead brief, persist as pending, and trigger notifications", async () => {
       const repo = new InMemoryInquiryRepository();
       const notifier = new MockNotificationService();

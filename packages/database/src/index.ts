@@ -31,11 +31,13 @@ export * from "./projects/service";
 
 // Site Content Versioning & Dynamic Content Service (Phase 07)
 export * from "./content/default-content";
+export * from "./content/contract";
 export * from "./content/service";
 
 // Client Lead Intake & Notification Pipeline (Phase 08)
 export * from "./inquiries/types";
 export * from "./inquiries/spam-filter";
+export * from "./inquiries/rate-limiter";
 export * from "./inquiries/notifications";
 export * from "./inquiries/repository";
 export * from "./inquiries/service";

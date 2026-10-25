@@ -39,7 +39,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 export async function PUT(request: NextRequest, context: RouteContext) {
   const sessionCheck = await verifyAdminSessionFromCookies({
     getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
-  });
+  }, { requireWriteAccess: true });
   if (!sessionCheck.ok) {
     return NextResponse.json({ error: sessionCheck.error }, { status: sessionCheck.status });
   }
@@ -68,7 +68,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 export async function DELETE(request: NextRequest, context: RouteContext) {
   const sessionCheck = await verifyAdminSessionFromCookies({
     getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
-  });
+  }, { requireWriteAccess: true });
   if (!sessionCheck.ok) {
     return NextResponse.json({ error: sessionCheck.error }, { status: sessionCheck.status });
   }

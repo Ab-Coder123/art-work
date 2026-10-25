@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { AdminHeader } from "@/components/AdminHeader";
 import {
   Plus,
@@ -22,7 +22,7 @@ import {
   ProjectCategory,
   resolveSafeYouTubeEmbed,
 } from "@art-work/types";
-import { AUTH_COOKIES, CSRF_HEADER_NAME } from "@art-work/database/edge";
+import { apiFetchWithCsrf } from "@/lib/csrf";
 
 function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -30,14 +30,6 @@ function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
     </svg>
   );
-}
-
-function readCsrfCookie(): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(
-    new RegExp(`(?:^|;\\s*)${AUTH_COOKIES.CSRF_TOKEN}=([^;]+)`)
-  );
-  return match ? decodeURIComponent(match[1]) : null;
 }
 
 const INITIAL_PROJECTS: ProjectRecord[] = [
@@ -91,21 +83,6 @@ export default function GalleryProjectsManager() {
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const ensureCsrfToken = useCallback(async (): Promise<string | null> => {
-    const existing = readCsrfCookie();
-    if (existing) return existing;
-    try {
-      const res = await fetch("/api/auth/csrf");
-      if (res.ok) {
-        const data = await res.json();
-        return data.csrfToken || null;
-      }
-    } catch {
-      // Ignore offline
-    }
-    return null;
-  }, []);
-
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -146,12 +123,10 @@ export default function GalleryProjectsManager() {
     );
 
     try {
-      const csrf = await ensureCsrfToken();
-      const res = await fetch(`/api/projects/${encodeURIComponent(id)}`, {
+      const res = await apiFetchWithCsrf(`/api/projects/${encodeURIComponent(id)}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          ...(csrf ? { [CSRF_HEADER_NAME]: csrf } : {}),
         },
         body: JSON.stringify({ ...target, status: nextStatus }),
       });
@@ -182,12 +157,10 @@ export default function GalleryProjectsManager() {
     setProjects(reordered);
 
     try {
-      const csrf = await ensureCsrfToken();
-      const res = await fetch("/api/projects/reorder", {
+      const res = await apiFetchWithCsrf("/api/projects/reorder", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          ...(csrf ? { [CSRF_HEADER_NAME]: csrf } : {}),
         },
         body: JSON.stringify({
           items: reordered.map((p) => ({ id: p.id, order: p.order })),
@@ -206,12 +179,8 @@ export default function GalleryProjectsManager() {
     setDeleteConfirmId(null);
 
     try {
-      const csrf = await ensureCsrfToken();
-      const res = await fetch(`/api/projects/${encodeURIComponent(id)}`, {
+      const res = await apiFetchWithCsrf(`/api/projects/${encodeURIComponent(id)}`, {
         method: "DELETE",
-        headers: {
-          ...(csrf ? { [CSRF_HEADER_NAME]: csrf } : {}),
-        },
       });
       if (res.ok) {
         setSyncMessage(`✓ Deleted project '${id}' from Supabase`);
@@ -247,20 +216,10 @@ export default function GalleryProjectsManager() {
     setYtStatusMessage(null);
 
     try {
-      let csrf = readCsrfCookie();
-      if (!csrf) {
-        const csrfRes = await fetch("/api/auth/csrf");
-        if (csrfRes.ok) {
-          const data = await csrfRes.json();
-          csrf = data.csrfToken;
-        }
-      }
-
-      const res = await fetch("/api/media/youtube/resolve", {
+      const res = await apiFetchWithCsrf("/api/media/youtube/resolve", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(csrf ? { [CSRF_HEADER_NAME]: csrf } : {}),
         },
         body: JSON.stringify({
           input: editingProject.youtubeUrl,
@@ -321,17 +280,15 @@ export default function GalleryProjectsManager() {
     const exists = !isCreatingNew && projects.some((p) => p.id === editingProject.id);
 
     try {
-      const csrf = await ensureCsrfToken();
       const endpoint = exists
         ? `/api/projects/${encodeURIComponent(editingProject.id)}`
         : "/api/projects";
       const method = exists ? "PUT" : "POST";
 
-      const res = await fetch(endpoint, {
+      const res = await apiFetchWithCsrf(endpoint, {
         method,
         headers: {
           "Content-Type": "application/json",
-          ...(csrf ? { [CSRF_HEADER_NAME]: csrf } : {}),
         },
         body: JSON.stringify(editingProject),
       });

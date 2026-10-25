@@ -122,24 +122,36 @@ export class SupabaseInquiryRepository implements InquiryRepository {
     status?: InquiryStatus;
     ipHash?: string;
   }): Promise<InquiryRecord> {
-    const { data: row, error } = await this.client
+    // Anonymous clients are intentionally allowed to INSERT inquiries but not
+    // SELECT them. Avoid PostgREST's returning representation (`.select()`),
+    // which would require granting anonymous read access.
+    const record: InquiryRecord = {
+      id: crypto.randomUUID(),
+      fullName: data.fullName,
+      email: data.email,
+      serviceType: data.serviceType,
+      brief: data.brief,
+      status: data.status || "pending",
+      ipHash: data.ipHash,
+      createdAt: new Date().toISOString(),
+    };
+    const { error } = await this.client
       .from("inquiries")
       .insert({
+        id: record.id,
         full_name: data.fullName,
         email: data.email,
         service_type: data.serviceType,
         brief: data.brief,
-        status: data.status || "pending",
+        status: record.status,
         ip_hash: data.ipHash || null,
-      })
-      .select()
-      .single();
+      });
 
-    if (error || !row) {
+    if (error) {
       throw new Error(`Failed to insert inquiry: ${error?.message || "Unknown error"}`);
     }
 
-    return this.mapRowToRecord(row);
+    return record;
   }
 
   async list(filter?: InquiryFilter): Promise<{ items: InquiryRecord[]; total: number }> {

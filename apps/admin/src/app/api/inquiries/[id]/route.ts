@@ -54,7 +54,7 @@ export async function PATCH(
   const sessionCheck = await verifyAdminSessionFromCookies({
     getAll: () =>
       request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
-  });
+  }, { requireWriteAccess: true });
   if (!sessionCheck.ok) {
     return NextResponse.json(
       { ok: false, error: sessionCheck.error },
@@ -97,7 +97,7 @@ export async function DELETE(
   const sessionCheck = await verifyAdminSessionFromCookies({
     getAll: () =>
       request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
-  });
+  }, { requireWriteAccess: true });
   if (!sessionCheck.ok) {
     return NextResponse.json(
       { ok: false, error: sessionCheck.error },

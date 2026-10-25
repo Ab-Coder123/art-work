@@ -4,6 +4,7 @@ import {
   createSupabaseContentRepository,
   fetchSiteContent,
   DEFAULT_SITE_CONTENT,
+  normalizeSiteContent,
 } from "@art-work/database";
 
 /**
@@ -19,7 +20,7 @@ export async function GET() {
     const result = await fetchSiteContent(repo);
 
     if (result.ok) {
-      return NextResponse.json(result.data, {
+      return NextResponse.json(normalizeSiteContent(result.data), {
         status: 200,
         headers: {
           "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120",
@@ -30,7 +31,7 @@ export async function GET() {
     // Graceful offline fallback
   }
 
-  return NextResponse.json(DEFAULT_SITE_CONTENT, {
+  return NextResponse.json(normalizeSiteContent(DEFAULT_SITE_CONTENT), {
     status: 200,
     headers: {
       "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",

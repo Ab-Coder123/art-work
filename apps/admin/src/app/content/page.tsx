@@ -14,6 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import type { SiteContent } from "@art-work/types";
+import { apiFetchWithCsrf } from "@/lib/csrf";
 
 interface RevisionItem {
   id: string;
@@ -245,7 +246,7 @@ export default function WebsiteContentEditor() {
   // Helper to get CSRF token
   const getCsrfToken = () => {
     if (typeof document === "undefined") return "";
-    const match = document.cookie.match(/art_work_csrf_token=([^;]+)/);
+    const match = document.cookie.match(/csrf-token=([^;]+)/);
     return match ? match[1] : "";
   };
 
@@ -384,7 +385,7 @@ export default function WebsiteContentEditor() {
     }
 
     try {
-      const res = await fetch(`/api/content/${targetSection}`, {
+      const res = await apiFetchWithCsrf(`/api/content/${targetSection}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -430,7 +431,7 @@ export default function WebsiteContentEditor() {
     if (!confirm("Are you sure you want to rollback to this snapshot?")) return;
     setRollingBackId(revisionId);
     try {
-      const res = await fetch(`/api/content/rollback/${revisionId}`, {
+      const res = await apiFetchWithCsrf(`/api/content/rollback/${revisionId}`, {
         method: "POST",
         headers: {
           "x-csrf-token": getCsrfToken(),

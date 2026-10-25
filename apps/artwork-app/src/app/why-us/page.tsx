@@ -13,6 +13,8 @@ import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
+import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
+import type { WhyUsPageContent } from "@art-work/types";
 import {
   ArrowRight,
   ArrowLeft,
@@ -32,8 +34,25 @@ import {
 } from "lucide-react";
 
 export default function WhyUsPage() {
+  const [content, setContent] = React.useState<WhyUsPageContent>(DEFAULT_SITE_CONTENT.whyUsPage);
+
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/content", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then((siteContent: { whyUsPage?: WhyUsPageContent }) => {
+        if (mounted && siteContent.whyUsPage) {
+          setContent({ ...DEFAULT_SITE_CONTENT.whyUsPage, ...siteContent.whyUsPage });
+        }
+      })
+      .catch(() => {
+        // Keep the complete local defaults available when the content API is offline.
+      });
+    return () => { mounted = false; };
+  }, []);
 
   // Mouse sparkle trail physics from Stitch design
   useEffect(() => {
@@ -211,15 +230,15 @@ export default function WhyUsPage() {
         {/* Technical Header Ribbon */}
         <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-3 mb-8 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
           <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 02</span>
-            <span className="font-bold">AGENCY PROPOSITION &amp; EXPERIENTIAL PROOF</span>
+            <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">{content.sceneBadge}</span>
+            <span className="font-bold">{content.sceneTitle}</span>
           </div>
           <div className="hidden sm:flex items-center gap-4">
             <span>CAD: REV-2025.02</span>
             <span>•</span>
             <span>STAGE: PINNED PERSPECTIVE</span>
             <span>•</span>
-            <span className="text-black dark:text-white font-extrabold">STATUS: 100% UNAPOLOGETIC</span>
+            <span className="text-black dark:text-white font-extrabold">{content.statusBadge}</span>
           </div>
         </div>
 
@@ -238,8 +257,7 @@ export default function WhyUsPage() {
                 <div className="washi-tape"></div>
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
                 <span>
-                  PERFORMANCE MARKETING{" "}
-                  <strong className="bg-yellow-300 dark:bg-yellow-400 text-black px-1 rounded">(+340% ROI)</strong>
+                  {content.roiBadge}
                 </span>
               </motion.div>
 
@@ -250,7 +268,7 @@ export default function WhyUsPage() {
                 className="bg-yellow-300 border-2 border-black px-3 py-1 rounded-lg shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 text-[11px] font-extrabold uppercase text-black"
               >
                 <Sparkles className="w-3.5 h-3.5 text-black fill-yellow-500" />
-                <span>CONTENT CREATION</span>
+                <span>{content.contentCreationBadge}</span>
               </motion.div>
             </div>
 
@@ -276,13 +294,13 @@ export default function WhyUsPage() {
 
               {/* Row 1: "WHY" */}
               <div className="font-brush text-7xl sm:text-8xl md:text-9xl text-black dark:text-white leading-none tracking-tight">
-                WHY
+                {content.heroHeadlineRow1}
               </div>
 
               {/* Row 2: "US?" with Canary Yellow highlighter swipe backing */}
               <div className="relative inline-block mt-1 font-brush text-7xl sm:text-8xl md:text-9xl text-black leading-none brush-swipe-bg">
                 <span className="relative z-10 drop-shadow-[2px_3px_0px_rgba(255,255,255,0.8)]">
-                  US?
+                  {content.heroHeadlineRow2}
                 </span>
               </div>
 
@@ -310,7 +328,7 @@ export default function WhyUsPage() {
                 className="relative bg-yellow-400 text-black border-2 border-black font-brush text-xs tracking-wider px-3 py-1.5 rounded rotate-[-2deg] shadow-[2px_2px_0px_#111111] cursor-pointer"
               >
                 <div className="washi-tape !w-8 !h-2.5"></div>
-                ★ BRANDING
+              ★ {content.doodleStickers[0]}
               </motion.div>
 
               {/* Sticker: CONTENT STRATEGY */}
@@ -318,7 +336,7 @@ export default function WhyUsPage() {
                 whileHover={{ scale: 1.05, rotate: 0 }}
                 className="relative bg-white dark:bg-[#161622] text-black dark:text-zinc-200 border-2 border-dashed border-black dark:border-zinc-700 font-headline text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded rotate-[1.5deg] shadow-[2px_2px_0px_#FACC15] cursor-pointer"
               >
-                CONTENT STRATEGY // 360°
+              {content.doodleStickers[1]}
               </motion.div>
 
               {/* Sticker: DESIGNING */}
@@ -327,7 +345,7 @@ export default function WhyUsPage() {
                 className="relative bg-yellow-300 text-black border-2 border-black font-headline text-xs font-black uppercase tracking-wide px-3 py-1.5 rounded rotate-[-1deg] shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 cursor-pointer"
               >
                 <PenTool className="w-3.5 h-3.5 text-black" />
-                <span>DESIGNING</span>
+                <span>{content.doodleStickers[2]}</span>
               </motion.div>
 
               {/* Sticker: WEB DEVELOPMENT */}
@@ -335,23 +353,19 @@ export default function WhyUsPage() {
                 whileHover={{ scale: 1.05, rotate: 0 }}
                 className="relative bg-white dark:bg-[#161622] text-black dark:text-zinc-200 border-2 border-black dark:border-zinc-700 font-headline text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded rotate-[2deg] shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 cursor-pointer"
               >
-                <span>WEB DEV</span>
+                <span>{content.doodleStickers[3]}</span>
                 <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5] text-black dark:text-zinc-200" />
               </motion.div>
             </div>
 
             {/* Editorial Subheading */}
             <h2 className="font-headline text-2xl sm:text-3xl md:text-4xl font-black text-black dark:text-white leading-tight tracking-tight mb-4">
-              Because your brand deserves more than just posts,{" "}
-              <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
-                it deserves a strategy.
-              </KineticBrushWord>
+              {content.presentationTitle}
             </h2>
 
             {/* High-Impact Body Copy */}
             <p className="font-body text-base sm:text-lg text-black/80 dark:text-zinc-300 leading-relaxed max-w-xl mb-6">
-              From monumental stadium touring architecture and bespoke exhibition booths to viral
-              kinetic content, we engineer experiential marketing that leaves competitors invisible.
+              {content.presentationSubtitle}
             </p>
 
             {/* CTAs */}
@@ -410,8 +424,8 @@ export default function WhyUsPage() {
               {/* The Presentation Easel Image */}
               <div className="relative overflow-hidden rounded-xl border-2 border-black dark:border-zinc-700 bg-white dark:bg-zinc-900 group aspect-[4/3]">
                 <Image
-                  src="/assets/images/stitch_why_us_easel.png"
-                  alt="Art Work Stage 02 architectural presentation easel illustration with kinetic lighting rigs, custom exhibition booth structures, and creative director blueprint"
+                  src={content.presentationImage}
+                  alt={content.presentationImageAlt}
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover transform group-hover:scale-105 transition-transform duration-500"
@@ -454,11 +468,9 @@ export default function WhyUsPage() {
         <section className="mb-24 py-6 border-y-2 border-black dark:border-zinc-800 bg-yellow-400/20 dark:bg-yellow-400/10 rounded-2xl px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { num: "450+", label: "Arena Stages Delivered" },
-              { num: "1.2M+", label: "Live Spectators Reached" },
-              { num: "99.4%", label: "Live Cue Accuracy" },
+              ...content.metrics,
               { num: "0%", label: "Generic Templates" },
-            ].map((stat, i) => (
+            ].slice(0, 4).map((stat, i) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 25, scale: 0.95 }}

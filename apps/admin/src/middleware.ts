@@ -3,6 +3,11 @@ import {
   AUTH_COOKIES,
   CSRF_HEADER_NAME,
   validateCsrfToken,
+  generateCsrfToken,
+  getCsrfCookieOptions,
+  handleCorsPreflight,
+  applyCorsHeaders,
+  applySecurityHeaders,
 } from "@art-work/database/edge";
 
 // Routes exempt from authentication checks
@@ -13,11 +18,21 @@ const MUTATING_METHODS = ["POST", "PUT", "PATCH", "DELETE"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const origin = request.headers.get("origin");
+  const isProd = process.env.NODE_ENV === "production";
 
-  // 1. Allow public paths without auth redirection
+  // 1. Handle CORS Preflight for API routes
+  if (request.method === "OPTIONS" && pathname.startsWith("/api/")) {
+    const preflight = handleCorsPreflight(origin, request.method);
+    if (preflight) {
+      return applySecurityHeaders(preflight, { appType: "admin" });
+    }
+  }
+
+  // 2. Allow public paths without auth redirection
   const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
 
-  // 2. Check for session token cookie
+  // 3. Check for session token cookie
   const accessToken = request.cookies.get(AUTH_COOKIES.ACCESS_TOKEN)?.value;
   const isAuthenticated = Boolean(accessToken);
 
@@ -33,7 +48,18 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 3. CSRF Validation on Mutating API Requests
+  // 4. Auto-seed CSRF cookie on page visits if authenticated user is missing it
+  let freshCsrfTokenForPage: string | null = null;
+  const existingCsrfCookie = request.cookies.get(AUTH_COOKIES.CSRF_TOKEN)?.value;
+  if (
+    isAuthenticated &&
+    !pathname.startsWith("/api/") &&
+    (!existingCsrfCookie || existingCsrfCookie.length !== 64)
+  ) {
+    freshCsrfTokenForPage = generateCsrfToken();
+  }
+
+  // 5. CSRF Validation on Mutating API Requests
   if (
     pathname.startsWith("/api/") &&
     MUTATING_METHODS.includes(request.method) &&
@@ -43,14 +69,43 @@ export function middleware(request: NextRequest) {
     const cookieToken = request.cookies.get(AUTH_COOKIES.CSRF_TOKEN)?.value;
 
     if (!validateCsrfToken(headerToken, cookieToken)) {
-      return NextResponse.json(
-        { error: "CSRF defense: Invalid or missing X-CSRF-Token header" },
+      // Generate a fresh token so client can self-heal on next request
+      const recoveryCsrfToken = generateCsrfToken();
+      const errorResponse = NextResponse.json(
+        {
+          error: "CSRF defense: Invalid or missing X-CSRF-Token header",
+          csrfToken: recoveryCsrfToken,
+        },
         { status: 403 }
       );
+
+      errorResponse.cookies.set(
+        AUTH_COOKIES.CSRF_TOKEN,
+        recoveryCsrfToken,
+        getCsrfCookieOptions(isProd)
+      );
+
+      applyCorsHeaders(errorResponse, origin);
+      return applySecurityHeaders(errorResponse, { appType: "admin" });
     }
   }
 
-  return NextResponse.next();
+  // 6. Proceed with Next.js pipeline and attach security + CORS headers
+  const response = NextResponse.next();
+
+  if (freshCsrfTokenForPage) {
+    response.cookies.set(
+      AUTH_COOKIES.CSRF_TOKEN,
+      freshCsrfTokenForPage,
+      getCsrfCookieOptions(isProd)
+    );
+  }
+
+  if (pathname.startsWith("/api/")) {
+    applyCorsHeaders(response, origin);
+  }
+
+  return applySecurityHeaders(response, { appType: "admin" });
 }
 
 export const config = {

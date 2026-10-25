@@ -14,6 +14,10 @@
       "types": "./src/auth/edge.ts",
       "default": "./src/auth/edge.ts"
     },
+    "./content/default-content": {
+      "types": "./src/content/default-content.ts",
+      "default": "./src/content/default-content.ts"
+    },
     "./migrations": {
       "types": "./src/migrations/runner.ts",
       "default": "./src/migrations/runner.ts"

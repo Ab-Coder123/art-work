@@ -37,9 +37,40 @@ import {
 } from "lucide-react";
 
 import rawProjects from "@/data/projects.json";
-import { type ProjectRecord, resolveSafeYouTubeEmbed } from "@art-work/types";
+import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
+import { type ContactSectionContent, type ProjectRecord, resolveSafeYouTubeEmbed } from "@art-work/types";
 
 type StageId = "stage-01" | "stage-02" | "stage-03" | "stage-gallery" | "stage-04";
+const DEFAULT_HERO_CONTENT = {
+  announcementBadge: "MARKETING SOLUTIONS FOR KINETIC BRANDS",
+  editionBadge: "EDITION 2026",
+  headlinePart1: "CREATIVE IDEAS.",
+  headlinePart2: "REAL IMPACT.",
+  introParagraph:
+    "We are Art Work: an interdisciplinary marketing and experiential design collective translating bold cultural visions into arena-scale reality.",
+  metrics: [
+    { num: "450+", label: "Arena Shows" },
+    { num: "99.4%", label: "Cue Accuracy" },
+    { num: "1.2M+", label: "Live Reach" },
+  ],
+};
+const DEFAULT_WHY_US_CONTENT = {
+  eyebrow: "02 WHY ART WORK",
+  headline: "ENGINEERED FOR STAGE & SCALE.",
+  exploreCtaText: "EXPLORE FULL WHY US",
+  bentoCards: [
+    { number: "01", title: "Arena & Stage Scenography", description: "Stage blueprints, LED mapping rigs, lighting cue choreographies, and large-format structural storytelling.", badge: "PRODUCTION READY" },
+    { number: "02", title: "Dynamic Motion Systems", description: "Kinetic typography, 3D broadcast packages, real-time reactive shaders, and frame-accurate visual sync.", badge: "60 FPS FIDELITY" },
+    { number: "03", title: "Brand Architecture", description: "Custom hand-drawn vector doodle suites, physical merch design, stage passes, and total campaign cohesion.", badge: "TACTILE & DIGITAL" },
+  ],
+  blueprint: {
+    badge: "BLUEPRINT & STAGE PREVIEW",
+    title: "FROM SKETCHBOARD TO LIVE VENUE IN 72 HOURS.",
+    description: "We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.",
+    image: "/assets/images/blueprint_stage_scenography.webp",
+    altText: "Stage Architecture Blueprints and Scenography",
+  },
+};
 
 /* =========================================================================
    SCENE 01: HERO / MANIFESTO COMPONENT
@@ -48,18 +79,29 @@ interface ManifestoContentProps {
   onViewCapabilities: () => void;
   onExploreShowreel?: () => void;
   onViewGallery?: () => void;
+  content: {
+    announcementBadge: string;
+    editionBadge: string;
+    headlinePart1: string;
+    headlinePart2: string;
+    introParagraph: string;
+    metrics: Array<{ num: string; label: string }>;
+  };
 }
 
-function ManifestoContent({ onViewCapabilities }: ManifestoContentProps) {
+function ManifestoContent({
+  onViewCapabilities,
+  content = DEFAULT_HERO_CONTENT,
+}: ManifestoContentProps) {
   return (
     <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
       {/* Top Energy Badge & Comic Stickers */}
       <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 mb-2 sm:mb-2.5">
         <div className="inline-flex items-center gap-1.5 border border-black bg-white dark:bg-[#151520] text-black dark:text-zinc-200 px-2.5 sm:px-3 py-0.5 rounded-full comic-shadow-sm font-headline text-[9px] sm:text-[10px] font-black uppercase tracking-wider">
           <span className="text-yellow-500 font-black">★</span>
-          <span>MARKETING SOLUTIONS FOR KINETIC BRANDS</span>
+          <span>{content.announcementBadge}</span>
           <span className="bg-yellow-400 text-black px-1.5 py-0.2 rounded-full font-bold ml-0.5 sm:ml-1 text-[8px] sm:text-[9px]">
-            EDITION 2026
+            {content.editionBadge}
           </span>
         </div>
 
@@ -77,7 +119,7 @@ function ManifestoContent({ onViewCapabilities }: ManifestoContentProps) {
       <div className="relative mb-2.5 sm:mb-3 max-w-4xl">
         <h1 className="font-headline font-black text-[27px] xs:text-[32px] sm:text-4xl md:text-5xl lg:text-[44px] xl:text-[48px] tracking-tight leading-[1.05] sm:leading-[1.02] text-black dark:text-white">
           <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4} delay={0.1}>
-            CREATIVE IDEAS.
+            {content.headlinePart1}
           </KineticBrushWord> <br />
           <span className="relative inline-block mt-1 sm:mt-1.5">
             {/* Canary Yellow Ink Splash Backdrop */}
@@ -87,7 +129,7 @@ function ManifestoContent({ onViewCapabilities }: ManifestoContentProps) {
               transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
               className="absolute -inset-1 sm:-inset-1.5 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"
             ></motion.span>
-            <span className="text-black relative z-10 px-1.5 sm:px-2">REAL IMPACT.</span>
+            <span className="text-black relative z-10 px-1.5 sm:px-2">{content.headlinePart2}</span>
             {/* Slender Hand-drawn Paintbrush Stroke */}
             <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.2} delay={0.35} />
           </span>
@@ -115,12 +157,7 @@ function ManifestoContent({ onViewCapabilities }: ManifestoContentProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
         <div className="lg:col-span-5 space-y-2 sm:space-y-2.5">
           <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 max-w-sm leading-relaxed">
-            We are{" "}
-            <strong className="text-black dark:text-white font-bold underline decoration-yellow-400 decoration-2">
-              Art Work
-            </strong>
-            : an interdisciplinary marketing and experiential design collective translating
-            bold cultural visions into arena-scale reality.
+            {content.introParagraph}
           </p>
 
           {/* Primary Action Buttons: Gallery + Capabilities */}
@@ -146,11 +183,7 @@ function ManifestoContent({ onViewCapabilities }: ManifestoContentProps) {
 
           {/* Milestone Badges */}
           <div className="grid grid-cols-3 gap-1.5 pt-0.5 max-w-sm">
-            {[
-              { num: "450+", label: "Arena Shows" },
-              { num: "99.4%", label: "Cue Accuracy" },
-              { num: "1.2M+", label: "Live Reach" },
-            ].map((badge, idx) => (
+            {content.metrics.map((badge, idx) => (
               <motion.div
                 key={badge.label}
                 initial={{ opacity: 0, y: 15 }}
@@ -215,18 +248,17 @@ function ManifestoContent({ onViewCapabilities }: ManifestoContentProps) {
 /* =========================================================================
    SCENE 02: WHY US / BENTO & BLUEPRINT COMPONENT
    ========================================================================= */
-function WhyUsContent() {
+function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof DEFAULT_WHY_US_CONTENT }) {
   return (
     <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-2 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-2.5 py-0.5 border border-black comic-shadow-sm text-[10px] font-headline font-black uppercase mb-1">
-            <span>02 WHY ART WORK</span>
+            <span>{content.eyebrow}</span>
           </div>
           <h2 className="font-headline font-black text-lg sm:text-xl lg:text-2xl text-black dark:text-white tracking-tight">
-            ENGINEERED FOR{" "}
             <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
-              STAGE &amp; SCALE.
+              {content.headline}
             </KineticBrushWord>
           </h2>
         </div>
@@ -235,7 +267,7 @@ function WhyUsContent() {
             href="/why-us"
             className="inline-flex items-center gap-1.5 font-headline font-black text-[11px] uppercase bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black px-3 py-1.5 rounded border border-black comic-shadow-sm transition-all"
           >
-            <span>EXPLORE FULL WHY US</span>
+            <span>{content.exploreCtaText}</span>
             <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
           </a>
         </div>
@@ -253,19 +285,19 @@ function WhyUsContent() {
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
-                01
+                {content.bentoCards[0].number}
               </span>
               <Layers className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
             <h3 className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-0.5 uppercase">
-              Arena &amp; Stage Scenography
+              {content.bentoCards[0].title}
             </h3>
             <p className="font-body text-[10px] text-black/75 dark:text-zinc-300 leading-snug">
-              Stage blueprints, LED mapping rigs, lighting cue choreographies, and large-format structural storytelling.
+              {content.bentoCards[0].description}
             </p>
           </div>
           <div className="pt-1.5 mt-1.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[9px] font-headline font-bold">
-            <span className="bg-black text-white px-1.5 py-0.2 rounded">PRODUCTION READY</span>
+            <span className="bg-black text-white px-1.5 py-0.2 rounded">{content.bentoCards[0].badge}</span>
             <CheckCircle2 className="w-3 h-3 text-black dark:text-yellow-400" />
           </div>
         </motion.div>
@@ -280,20 +312,20 @@ function WhyUsContent() {
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
-                02
+                {content.bentoCards[1].number}
               </span>
               <Sparkles className="w-4 h-4 text-black dark:text-yellow-400 fill-yellow-400" />
             </div>
             <h3 className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-0.5 uppercase">
-              Dynamic Motion Systems
+              {content.bentoCards[1].title}
             </h3>
             <p className="font-body text-[10px] text-black/75 dark:text-zinc-300 leading-snug">
-              Kinetic typography, 3D broadcast packages, real-time reactive shaders, and frame-accurate visual sync.
+              {content.bentoCards[1].description}
             </p>
           </div>
           <div className="pt-1.5 mt-1.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[9px] font-headline font-bold">
             <span className="bg-yellow-400 text-black border border-black px-1.5 py-0.2 rounded">
-              60 FPS FIDELITY
+              {content.bentoCards[1].badge}
             </span>
             <Zap className="w-3 h-3 text-black dark:text-yellow-400 fill-yellow-400" />
           </div>
@@ -309,19 +341,19 @@ function WhyUsContent() {
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
-                03
+                {content.bentoCards[2].number}
               </span>
               <Palette className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
             <h3 className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-0.5 uppercase">
-              Brand Architecture
+              {content.bentoCards[2].title}
             </h3>
             <p className="font-body text-[10px] text-black/75 dark:text-zinc-300 leading-snug">
-              Custom hand-drawn vector doodle suites, physical merch design, stage passes, and total campaign cohesion.
+              {content.bentoCards[2].description}
             </p>
           </div>
           <div className="pt-1.5 mt-1.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[9px] font-headline font-bold">
-            <span className="bg-black text-white px-1.5 py-0.2 rounded">TACTILE &amp; DIGITAL</span>
+            <span className="bg-black text-white px-1.5 py-0.2 rounded">{content.bentoCards[2].badge}</span>
             <Paintbrush className="w-3 h-3 text-black dark:text-yellow-400" />
           </div>
         </motion.div>
@@ -334,19 +366,19 @@ function WhyUsContent() {
             <div className="lg:col-span-6 space-y-1">
               <div className="inline-flex items-center gap-1 text-[9px] font-headline font-black uppercase text-black bg-yellow-300 px-1.5 py-0.2 rounded border border-black">
                 <Compass className="w-3 h-3 text-black" />
-                <span>BLUEPRINT &amp; STAGE PREVIEW</span>
+                <span>{content.blueprint.badge}</span>
               </div>
               <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white">
-                FROM SKETCHBOARD TO LIVE VENUE IN 72 HOURS.
+                {content.blueprint.title}
               </h3>
               <p className="font-body text-[10px] sm:text-[11px] text-black/80 dark:text-zinc-300">
-                We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.
+                {content.blueprint.description}
               </p>
             </div>
             <div className="lg:col-span-6 border border-black dark:border-zinc-700 rounded overflow-hidden aspect-[16/9] max-h-[120px] lg:max-h-[135px] bg-white dark:bg-[#0E0E14] relative">
               <Image
-                src="/assets/images/blueprint_stage_scenography.webp"
-                alt="Stage Architecture Blueprints and Scenography"
+                src={content.blueprint.image}
+                alt={content.blueprint.altText}
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover object-center"
@@ -595,7 +627,7 @@ function GalleryShowcaseContent() {
 /* =========================================================================
    SCENE 04: CONTACT & BRIEF INQUIRY COMPONENT
    ========================================================================= */
-function ContactContent() {
+function ContactContent({ content }: { content: ContactSectionContent }) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -677,7 +709,7 @@ function ContactContent() {
     <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
       <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-lg p-3 sm:p-4 comic-shadow relative mt-2.5">
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border border-black px-3 py-0.5 font-headline font-black text-[9px] uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
-          STAGE 05 // LAUNCH YOUR CAMPAIGN
+          {content.stageTag}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start pt-1">
@@ -689,27 +721,24 @@ function ContactContent() {
             className="lg:col-span-5 space-y-2"
           >
             <h2 className="font-headline font-black text-lg sm:text-xl text-black dark:text-white tracking-tight leading-none">
-              LET’S INK SOMETHING{" "}
-              <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
-                HISTORIC.
-              </KineticBrushWord>
+              {content.headline}
             </h2>
             <p className="font-body text-xs text-black/80 dark:text-zinc-300">
-              Whether you need a dynamic stage package for an arena tour or an unforgettable brand identity, our sketchpad is open.
+              {content.description}
             </p>
 
             <div className="border border-black dark:border-zinc-700 rounded p-1.5 bg-yellow-50 dark:bg-[#1C1C28] relative">
               <div className="aspect-[16/9] max-h-[110px] lg:max-h-[125px] rounded overflow-hidden border border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] relative">
                 <Image
-                  src="/assets/images/creative_chief_intake.webp"
-                  alt="Creative Chief on call"
+                  src={content.intakeImage}
+                  alt={content.intakeImageAlt}
                   fill
                   sizes="(max-width: 1024px) 100vw, 30vw"
                   className="object-cover object-center"
                 />
               </div>
               <div className="mt-1 text-center text-[9px] font-headline font-bold text-black/70 dark:text-zinc-400">
-                DIRECT INTAKE // CREATIVE CHIEF ON-CALL
+                {content.intakeLabel}
               </div>
             </div>
 
@@ -718,13 +747,13 @@ function ContactContent() {
                 <span className="w-4 h-4 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[9px]">
                   @
                 </span>
-                <span>studio@artwork-solutions.stage</span>
+                <a href={`mailto:${content.email}`}>{content.email}</a>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-4 h-4 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[9px]">
                   📍
                 </span>
-                <span>404 Kinetic Way, Arts District</span>
+                <span>{content.studioLocations}</span>
               </div>
             </div>
           </motion.div>
@@ -854,7 +883,7 @@ function ContactContent() {
                       </>
                     ) : (
                       <>
-                        <span>DISPATCH BRIEF</span>
+                    <span>{content.submitButtonText}</span>
                         <Send className="w-3.5 h-3.5 stroke-[2.5]" />
                       </>
                     )}
@@ -904,11 +933,60 @@ function StudioFooter({ scrollToStage }: { scrollToStage: (s: StageId) => void }
    ========================================================================= */
 export default function Home() {
   const [activeStage, setActiveStage] = useState<StageId>("stage-01");
+  const [heroContent, setHeroContent] = useState(DEFAULT_HERO_CONTENT);
+  const [whyUsContent, setWhyUsContent] = useState(DEFAULT_WHY_US_CONTENT);
+  const [contactContent, setContactContent] = useState(DEFAULT_SITE_CONTENT.contact);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
   const trackRef = useRef<HTMLDivElement>(null);
 
   // Activate Lenis luxury 60-120 FPS momentum smooth virtual scrolling
   useSmoothScroll();
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/content", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then((siteContent: {
+        manifesto?: Record<string, unknown>;
+        whyUsTeaser?: typeof DEFAULT_WHY_US_CONTENT;
+        contact?: ContactSectionContent;
+      }) => {
+        const manifesto = siteContent.manifesto;
+        if (!mounted) return;
+        const teaser = siteContent.whyUsTeaser;
+        if (siteContent.contact) {
+          setContactContent({ ...DEFAULT_SITE_CONTENT.contact, ...siteContent.contact });
+        }
+        if (teaser?.bentoCards && teaser.bentoCards.length >= 3 && teaser.blueprint) {
+          setWhyUsContent({
+            ...DEFAULT_WHY_US_CONTENT,
+            ...teaser,
+            bentoCards: teaser.bentoCards.slice(0, 3),
+            blueprint: { ...DEFAULT_WHY_US_CONTENT.blueprint, ...teaser.blueprint },
+          });
+        }
+        if (!manifesto) return;
+        const metrics = Array.isArray(manifesto.metrics)
+          ? manifesto.metrics
+              .filter((item): item is { num: string; label: string } =>
+                Boolean(item && typeof item === "object" && "num" in item && "label" in item)
+              )
+              .map((item) => ({ num: String(item.num), label: String(item.label) }))
+          : DEFAULT_HERO_CONTENT.metrics;
+        setHeroContent({
+          announcementBadge: String(manifesto.announcementBadge || manifesto.banner_badge || DEFAULT_HERO_CONTENT.announcementBadge),
+          editionBadge: String(manifesto.editionBadge || DEFAULT_HERO_CONTENT.editionBadge),
+          headlinePart1: String(manifesto.headlinePart1 || manifesto.headline_highlight || DEFAULT_HERO_CONTENT.headlinePart1),
+          headlinePart2: String(manifesto.headlinePart2 || manifesto.headline_suffix || DEFAULT_HERO_CONTENT.headlinePart2),
+          introParagraph: String(manifesto.introParagraph || manifesto.subheadline || DEFAULT_HERO_CONTENT.introParagraph),
+          metrics: metrics.length ? metrics.slice(0, 3) : DEFAULT_HERO_CONTENT.metrics,
+        });
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Mouse sparkle trail physics (bypassed if prefers-reduced-motion is active)
   useEffect(() => {
@@ -1279,6 +1357,7 @@ export default function Home() {
             className="w-full min-h-[calc(100vh-7rem)] py-6 px-4 flex flex-col justify-center"
           >
             <ManifestoContent
+              content={heroContent}
               onExploreShowreel={() => scrollToStage("stage-gallery")}
               onViewCapabilities={() => scrollToStage("stage-03")}
             />
@@ -1291,7 +1370,7 @@ export default function Home() {
             id="stage-02-mobile"
             className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
           >
-            <WhyUsContent />
+            <WhyUsContent content={whyUsContent} />
           </section>
         </ScrollReveal>
 
@@ -1321,7 +1400,7 @@ export default function Home() {
             id="stage-04-mobile"
             className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
           >
-            <ContactContent />
+            <ContactContent content={contactContent} />
           </section>
         </ScrollReveal>
 
@@ -1431,6 +1510,7 @@ export default function Home() {
                   className="w-full flex-1 flex flex-col items-center justify-center my-auto"
                 >
                   <ManifestoContent
+                    content={heroContent}
                     onExploreShowreel={() => scrollToStage("stage-gallery")}
                     onViewCapabilities={() => scrollToStage("stage-03")}
                   />
@@ -1446,7 +1526,7 @@ export default function Home() {
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                   className="w-full flex-1 flex flex-col items-center justify-center my-auto"
                 >
-                  <WhyUsContent />
+                  <WhyUsContent content={whyUsContent} />
                 </motion.div>
               )}
 
@@ -1485,7 +1565,7 @@ export default function Home() {
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                   className="w-full flex-1 flex flex-col items-center justify-center my-auto"
                 >
-                  <ContactContent />
+                  <ContactContent content={contactContent} />
                 </motion.div>
               )}
             </AnimatePresence>

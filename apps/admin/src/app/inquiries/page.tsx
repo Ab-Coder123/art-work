@@ -14,6 +14,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import type { InquiryRecord, InquiryStatus } from "@art-work/types";
+import { apiFetchWithCsrf } from "@/lib/csrf";
 
 const STATUS_CONFIG: Record<
   InquiryStatus,
@@ -115,17 +116,10 @@ export default function InquiriesPage() {
   const handleStatusChange = async (id: string, newStatus: InquiryStatus) => {
     setIsUpdating(true);
     try {
-      // Read CSRF token from cookie
-      const csrfCookie = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("aw_csrf_token="))
-        ?.split("=")[1];
-
-      const res = await fetch(`/api/inquiries/${id}`, {
+      const res = await apiFetchWithCsrf(`/api/inquiries/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "x-csrf-token": csrfCookie || "",
         },
         body: JSON.stringify({ status: newStatus }),
       });
@@ -157,16 +151,8 @@ export default function InquiriesPage() {
 
     setIsUpdating(true);
     try {
-      const csrfCookie = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("aw_csrf_token="))
-        ?.split("=")[1];
-
-      const res = await fetch(`/api/inquiries/${id}`, {
+      const res = await apiFetchWithCsrf(`/api/inquiries/${id}`, {
         method: "DELETE",
-        headers: {
-          "x-csrf-token": csrfCookie || "",
-        },
       });
 
       if (res.ok) {

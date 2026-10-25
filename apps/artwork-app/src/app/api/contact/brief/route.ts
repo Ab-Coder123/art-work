@@ -42,7 +42,12 @@ export async function POST(request: NextRequest) {
     if (!result.ok) {
       return NextResponse.json(
         { ok: false, error: result.error },
-        { status: result.status }
+        {
+          status: result.status,
+          headers: result.retryAfterSeconds
+            ? { "Retry-After": String(result.retryAfterSeconds) }
+            : undefined,
+        }
       );
     }
 

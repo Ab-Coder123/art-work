@@ -11,6 +11,7 @@ import {
   fetchYouTubeMetadata,
 } from "../src/media/youtube";
 import { YouTubeUrlSchema } from "../src/schemas/project";
+import { resolveSafeYouTubeEmbed } from "@art-work/types";
 
 const ID = "dQw4w9WgXcQ";
 
@@ -99,6 +100,16 @@ describe("Phase 05: YouTube Media Engine", () => {
     const timed = new URL(buildYouTubeEmbedUrl(ID, { start: 12.9, autoplay: true }));
     assert.equal(timed.searchParams.get("start"), "12");
     assert.equal(timed.searchParams.get("autoplay"), "1");
+  });
+
+  it("should use the privacy-enhanced host for embeds returned to public pages", () => {
+    const result = resolveSafeYouTubeEmbed(`https://www.youtube.com/shorts/${ID}`);
+    assert.ok(result);
+    if (!result) return;
+    const url = new URL(result.embedUrl);
+    assert.equal(url.origin, "https://www.youtube-nocookie.com");
+    assert.equal(url.pathname, `/embed/${ID}`);
+    assert.equal(result.isShort, true);
   });
 
   it("should refuse to build URLs from an invalid ID (no injection)", () => {

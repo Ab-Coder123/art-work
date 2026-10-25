@@ -5,6 +5,7 @@ import {
   InquiryStatusSchema,
 } from "./types";
 import { checkSpam, hashIp } from "./spam-filter";
+import { globalInquiryRateLimiter, InquiryRateLimiter } from "./rate-limiter";
 import {
   NotificationService,
   EmailAndWebhookNotifier,
@@ -16,6 +17,7 @@ export interface SubmitLeadOptions {
   notifier?: NotificationService;
   waitForNotifications?: boolean;
   minFillTimeMs?: number;
+  rateLimiter?: InquiryRateLimiter;
 }
 
 export interface ServiceResult<T> {
@@ -23,6 +25,7 @@ export interface ServiceResult<T> {
   data?: T;
   error?: string;
   status: number;
+  retryAfterSeconds?: number;
 }
 
 /**
@@ -68,6 +71,18 @@ export async function submitLeadBrief(
 
   // 3. Compute hashed IP for abuse defense
   const ipHash = hashIp(options.ip);
+
+  if (ipHash) {
+    const limit = (options.rateLimiter || globalInquiryRateLimiter).consume(ipHash);
+    if (!limit.allowed) {
+      return {
+        ok: false,
+        error: "Too many project briefs from this connection. Please try again later.",
+        status: 429,
+        retryAfterSeconds: limit.retryAfterSeconds,
+      };
+    }
+  }
 
   // 4. Persist to repository
   let record: InquiryRecord;

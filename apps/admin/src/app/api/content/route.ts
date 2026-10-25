@@ -4,6 +4,7 @@ import {
   createSupabaseContentRepository,
   createBrowserClient,
   fetchSiteContent,
+  normalizeSiteContent,
 } from "@art-work/database";
 
 /**
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
-    return NextResponse.json(result.data, { status: 200 });
+    return NextResponse.json(normalizeSiteContent(result.data), { status: 200 });
   } catch (err: unknown) {
     const message =
       err instanceof Error ? err.message : "Failed to load site content";

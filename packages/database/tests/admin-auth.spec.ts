@@ -5,9 +5,16 @@ import {
   verifyAdminMembership,
   authenticateAdmin,
   LoginRateLimiter,
+  canWriteAdminData,
 } from "../src/index";
 
 describe("Phase 03: Administrator Authentication & Membership Verification", () => {
+  it("allows editors and super admins to write but keeps viewers read-only", () => {
+    assert.equal(canWriteAdminData("viewer"), false);
+    assert.equal(canWriteAdminData("editor"), true);
+    assert.equal(canWriteAdminData("super_admin"), true);
+  });
+
   it("should validate credentials schema format strictly", () => {
     // Valid
     const valid = LoginCredentialsSchema.parse({

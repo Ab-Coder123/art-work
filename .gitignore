@@ -4,6 +4,7 @@ node_modules
 
 # Next.js & Turbo
 .next/
+.next-phase-verification/
 out/
 .turbo/
 

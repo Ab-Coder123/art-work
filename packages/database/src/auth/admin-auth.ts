@@ -4,7 +4,7 @@ import { generateCsrfToken } from "./csrf";
 import { LoginRateLimiter, globalLoginRateLimiter } from "./rate-limiter";
 import { AUTH_COOKIES } from "./session";
 import { createServerClient, type CookieMethodsServer } from "../client/server";
-import type { AdminUserRow } from "../schemas/admin-user";
+import type { AdminRole, AdminUserRow } from "../schemas/admin-user";
 
 export const LoginCredentialsSchema = z.object({
   email: z.string().email("Please provide a valid studio administrator email"),
@@ -28,6 +28,11 @@ export interface AuthFailureResult {
 }
 
 export type AuthResult = AuthSuccessResult | AuthFailureResult;
+
+/** Viewer accounts can inspect permitted records but cannot mutate them. */
+export function canWriteAdminData(role: AdminRole): boolean {
+  return role === "super_admin" || role === "editor";
+}
 
 /**
  * Checks whether a given user UUID belongs to an active administrator in public.admin_users.
@@ -145,7 +150,8 @@ export async function authenticateAdmin(
  * and verifies that the authenticated user is an active administrator in `public.admin_users`.
  */
 export async function verifyAdminSessionFromCookies(
-  cookieStore: CookieMethodsServer
+  cookieStore: CookieMethodsServer,
+  options: { requireWriteAccess?: boolean } = {}
 ): Promise<
   | {
       ok: true;
@@ -184,6 +190,14 @@ export async function verifyAdminSessionFromCookies(
       ok: false,
       status: 403,
       error: "Administrator access required",
+    };
+  }
+
+  if (options.requireWriteAccess && !canWriteAdminData(membership.adminUser.role)) {
+    return {
+      ok: false,
+      status: 403,
+      error: "Editor access required",
     };
   }
 

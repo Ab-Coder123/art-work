@@ -7,10 +7,26 @@ import {
   fetchContentHistory,
   rollbackContent,
   validateSectionPayload,
+  normalizeContentAuditSnapshot,
   DEFAULT_SITE_CONTENT,
 } from "../src/index";
 
 describe("Phase 07: Site Content Versioning & Dynamic Content API", () => {
+  it("unwraps full site_content rows from audit snapshots for history and rollback", () => {
+    const sectionData = { headlinePart1: "BEFORE UPDATE", metrics: [{ num: "1", label: "Test" }] };
+    assert.deepEqual(
+      normalizeContentAuditSnapshot({
+        section_key: "manifesto",
+        data: sectionData,
+        status: "published",
+        version: 4,
+      }),
+      sectionData
+    );
+    assert.deepEqual(normalizeContentAuditSnapshot(sectionData), sectionData);
+    assert.equal(normalizeContentAuditSnapshot(null), null);
+  });
+
   it("should fetch complete site content tree conforming to SiteContent schema", async () => {
     const repo = createInMemoryContentRepository();
     const result = await fetchSiteContent(repo);

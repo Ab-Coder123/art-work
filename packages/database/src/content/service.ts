@@ -141,6 +141,31 @@ export interface ContentRevisionItem {
   createdAt: string;
 }
 
+/**
+ * The audit trigger stores the full site_content row. Expose only its JSONB
+ * content payload to the editor and rollback service while accepting older
+ * audit records that stored the section payload directly.
+ */
+export function normalizeContentAuditSnapshot(
+  value: unknown
+): Record<string, unknown> | null {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const snapshot = value as Record<string, unknown>;
+  if (
+    typeof snapshot.section_key === "string" &&
+    snapshot.data !== null &&
+    typeof snapshot.data === "object" &&
+    !Array.isArray(snapshot.data)
+  ) {
+    return snapshot.data as Record<string, unknown>;
+  }
+
+  return snapshot;
+}
+
 export type ContentServiceResult<T> =
   | { ok: true; status: 200 | 201; data: T }
   | { ok: false; status: 400 | 404 | 422 | 500; error: string };
@@ -361,8 +386,8 @@ export class SupabaseContentRepository implements ContentRepository {
           sectionKey: canonicalKey,
           action: row.action as "insert" | "update" | "delete",
           actorEmail: row.actor_email || "system@art-work.internal",
-          beforeState: row.before_state as Record<string, unknown> | null,
-          afterState: row.after_state as Record<string, unknown> | null,
+          beforeState: normalizeContentAuditSnapshot(row.before_state),
+          afterState: normalizeContentAuditSnapshot(row.after_state),
           createdAt: row.created_at,
         };
       })
@@ -385,8 +410,8 @@ export class SupabaseContentRepository implements ContentRepository {
       sectionKey: canonicalKey,
       action: data.action as "insert" | "update" | "delete",
       actorEmail: data.actor_email || "system@art-work.internal",
-      beforeState: data.before_state as Record<string, unknown> | null,
-      afterState: data.after_state as Record<string, unknown> | null,
+      beforeState: normalizeContentAuditSnapshot(data.before_state),
+      afterState: normalizeContentAuditSnapshot(data.after_state),
       createdAt: data.created_at,
     };
   }

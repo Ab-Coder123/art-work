@@ -4,4 +4,7 @@
  */
 export * from "./csrf";
 export * from "./session";
+export * from "./cors";
+export * from "./security-headers";
 export * from "../media/youtube";
+

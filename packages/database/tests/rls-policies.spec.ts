@@ -8,6 +8,10 @@ describe("Phase 04: RLS & Storage Access Policy Verification", () => {
   const migrations = getMigrationFiles(migrationsDir);
   const rls = migrations.find((m) => m.filename.includes("rls_policies"));
   const sql = rls?.sql ?? "";
+  const roleMigration = migrations.find((m) => m.filename.includes("editor_role_permissions"));
+  const roleSql = roleMigration?.sql ?? "";
+  const inquiryGrantMigration = migrations.find((m) => m.filename.includes("inquiry_insert_grants"));
+  const inquiryGrantSql = inquiryGrantMigration?.sql ?? "";
 
   const tables = [
     "admin_users",
@@ -67,9 +71,27 @@ describe("Phase 04: RLS & Storage Access Policy Verification", () => {
     assert.ok(!/FOR (INSERT|UPDATE|DELETE|ALL) TO anon/.test(sql.replace(/FOR INSERT TO anon, authenticated\s+WITH CHECK \(status = 'pending'\)/, "")));
   });
 
+  it("should restrict editor data access to active editors and super admins", () => {
+    assert.ok(roleMigration, "Role access migration must exist");
+    assert.match(roleSql, /role IN \('super_admin', 'editor'\)/);
+    assert.match(roleSql, /is_active = true/);
+    assert.doesNotMatch(roleSql, /role\s*=\s*'viewer'/);
+  });
+
   it("should allow anonymous inquiry insert only as pending and no anonymous read", () => {
     assert.ok(/inquiries_public_insert[\s\S]*?WITH CHECK \(status = 'pending'\)/.test(sql));
     assert.ok(!/GRANT SELECT[^;]*inquiries[^;]*TO anon/.test(sql));
+    assert.ok(inquiryGrantMigration, "Inquiry grants migration must exist");
+    assert.match(inquiryGrantSql, /GRANT INSERT ON TABLE public\.inquiries TO anon/);
+    assert.match(
+      inquiryGrantSql,
+      /GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public\.inquiries TO authenticated/
+    );
+    assert.doesNotMatch(
+      inquiryGrantSql,
+      /GRANT (?:SELECT|UPDATE|DELETE|ALL)[^;]* ON TABLE public\.inquiries TO anon/gi,
+      "anonymous clients must not receive inquiry read/update/delete grants"
+    );
   });
 
   it("should keep audit logs read-only for admins (writes via definer triggers)", () => {
