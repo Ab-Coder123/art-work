@@ -73,7 +73,44 @@ async function main() {
     }
 
     case "reset": {
-      console.log("Resetting database schema & replaying canonical migrations...");
+      console.log("Validating safety guardrails before destructive reset...");
+
+      if (process.env.NODE_ENV === "production" || env.NODE_ENV === "production") {
+        console.error("❌ Refusing to reset database in production environment (NODE_ENV=production). Operation aborted.");
+        process.exit(1);
+      }
+
+      let dbHost = "";
+      try {
+        const parsedUrl = new URL(env.DATABASE_URL);
+        dbHost = parsedUrl.hostname;
+      } catch {
+        // ignore URL parse errors
+      }
+
+      const isLocal =
+        dbHost === "localhost" ||
+        dbHost === "127.0.0.1" ||
+        dbHost === "::1" ||
+        dbHost === "host.docker.internal" ||
+        dbHost === "";
+
+      const forceDropFlag = args.includes("--force-drop-local-only");
+
+      if (!isLocal || !forceDropFlag) {
+        console.error("❌ Destructive reset guardrail triggered!");
+        console.error(`Target DB Host: ${dbHost || "unknown"}`);
+        if (!isLocal) {
+          console.error("   Reason: Target database is NOT local. Destructive DROP SCHEMA is strictly forbidden on remote/hosted databases.");
+        }
+        if (!forceDropFlag) {
+          console.error("   Reason: Missing required explicit safety confirmation flag: '--force-drop-local-only'");
+        }
+        console.error("Operation aborted safely to prevent accidental data loss.");
+        process.exit(1);
+      }
+
+      console.log(`Resetting local database schema on host '${dbHost}' & replaying canonical migrations...`);
       const client = new Client({ connectionString: env.DATABASE_URL });
       try {
         await client.connect();

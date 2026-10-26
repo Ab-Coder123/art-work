@@ -35,16 +35,22 @@ export async function POST(
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
 
-    // Trigger on-demand cache revalidation on the public website (fire-and-forget)
+    // Trigger on-demand cache revalidation on the public website (fire-and-forget, header-only)
     const publicAppUrl =
       process.env.NEXT_PUBLIC_SITE_URL ||
       process.env.PUBLIC_APP_URL ||
       "https://artwork-agency.vercel.app";
-    const revalidateSecret =
-      process.env.REVALIDATION_SECRET || "art-work-secret-revalidate-key";
-    fetch(`${publicAppUrl}/api/revalidate?secret=${revalidateSecret}&tag=site-content`, {
-      method: "POST",
-    }).catch(() => {});
+    const revalidateSecret = process.env.REVALIDATION_SECRET;
+    if (revalidateSecret) {
+      fetch(`${publicAppUrl}/api/revalidate`, {
+        method: "POST",
+        headers: {
+          "x-revalidate-secret": revalidateSecret,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tag: "site-content" }),
+      }).catch(() => {});
+    }
 
     return NextResponse.json(result.data, { status: 200 });
   } catch (err: unknown) {

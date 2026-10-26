@@ -145,12 +145,6 @@ export default function WhyUsPage() {
             >
               Home
             </Link>
-            <Link
-              href="/company"
-              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-            >
-              Partner&apos;s
-            </Link>
             {/* Active Link: Why Us */}
             <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
               Why Us
@@ -770,7 +764,6 @@ export default function WhyUsPage() {
           </div>
           <nav className="flex items-center gap-6">
             <Link className="text-black/60 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors duration-150" href="/#stage-01">Home</Link>
-            <Link className="text-black/60 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors duration-150" href="/company">Partner&apos;s</Link>
             <Link className="text-black dark:text-yellow-400 underline decoration-yellow-400 font-bold transition-colors duration-150" href="/why-us">
               Why Us
             </Link>

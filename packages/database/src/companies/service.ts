@@ -170,16 +170,20 @@ export async function createCompany(
         .select()
         .single();
 
-      if (!error && data) {
-        const record = mapDbCompanyToRecord(data as DbCompanyRecord);
-        inMemoryCompanies.push(record);
-        return { ok: true, data: record };
+      if (error || !data) {
+        return { ok: false, error: error?.message || "Failed to persist company in database" };
       }
-    } catch {
-      // Fallback to memory
+
+      const record = mapDbCompanyToRecord(data as DbCompanyRecord);
+      inMemoryCompanies.push(record);
+      return { ok: true, data: record };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Database company creation failed";
+      return { ok: false, error: msg };
     }
   }
 
+  // Purely in-memory mode when no Supabase client is provided (e.g. unit tests)
   inMemoryCompanies.push(newRecord);
   return { ok: true, data: newRecord };
 }
@@ -217,16 +221,23 @@ export async function updateCompany(
         .select()
         .maybeSingle();
 
-      if (!error && data) {
-        const updated = mapDbCompanyToRecord(data as DbCompanyRecord);
-        inMemoryCompanies = inMemoryCompanies.map((c) => (c.id === id ? updated : c));
-        return { ok: true, data: updated };
+      if (error) {
+        return { ok: false, error: error.message };
       }
-    } catch {
-      // Fallback to memory
+      if (!data) {
+        return { ok: false, error: "Company not found in database" };
+      }
+
+      const updated = mapDbCompanyToRecord(data as DbCompanyRecord);
+      inMemoryCompanies = inMemoryCompanies.map((c) => (c.id === id ? updated : c));
+      return { ok: true, data: updated };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Database company update failed";
+      return { ok: false, error: msg };
     }
   }
 
+  // Purely in-memory mode when no Supabase client is provided (e.g. unit tests)
   const idx = inMemoryCompanies.findIndex((c) => c.id === id || c.slug === id);
   if (idx === -1) {
     return { ok: false, error: "Company not found" };
@@ -262,8 +273,11 @@ export async function deleteCompany(
       if (error) {
         return { ok: false, error: error.message };
       }
-    } catch {
-      // Fallback
+      inMemoryCompanies = inMemoryCompanies.filter((c) => c.id !== id && c.slug !== id);
+      return { ok: true };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Database delete failed";
+      return { ok: false, error: msg };
     }
   }
 

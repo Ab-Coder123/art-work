@@ -48,20 +48,8 @@ CREATE POLICY "Admins can manage companies"
 ON public.companies
 FOR ALL
 TO authenticated
-USING (
-    EXISTS (
-        SELECT 1 FROM public.admin_users
-        WHERE admin_users.user_id = auth.uid()
-        AND admin_users.is_active = true
-    )
-)
-WITH CHECK (
-    EXISTS (
-        SELECT 1 FROM public.admin_users
-        WHERE admin_users.user_id = auth.uid()
-        AND admin_users.is_active = true
-    )
-);
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
 
 -- Seed Initial High-Profile Partners
 INSERT INTO public.companies (slug, name, logo_url, website_url, category, description, highlight, order_index, featured, is_active)

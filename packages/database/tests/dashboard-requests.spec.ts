@@ -25,6 +25,9 @@ import {
   parseYouTubeInput,
   buildYouTubeEmbedUrl,
   canWriteAdminData,
+  createCompany,
+  updateCompany,
+  deleteCompany,
 } from "../src/index";
 
 describe("Dashboard & Public App Full Request Integration Suite", () => {
@@ -360,19 +363,20 @@ describe("Dashboard & Public App Full Request Integration Suite", () => {
   // 5. Cross-Service Communication (Admin Dashboard -> Public App ISR Revalidation)
   // =========================================================================
   describe("5. Admin Dashboard to Public App ISR Cache Revalidation", () => {
-    it("should validate revalidation secret and payload parameters", () => {
-      const correctSecret = "art-work-secret-revalidate-key";
-      const incomingSecret = "art-work-secret-revalidate-key";
+    it("should validate revalidation secret via header and payload parameters", () => {
+      const correctSecret = "super-secret-revalidate-key-2026";
+      const incomingSecret = "super-secret-revalidate-key-2026";
       assert.equal(incomingSecret === correctSecret, true, "Secret authorization check");
 
       const wrongSecret = "unauthorized-intruder";
       assert.notEqual(wrongSecret, correctSecret, "Unauthorized secret rejected");
 
-      const publicAppUrl = "https://artwork-agency.vercel.app";
-      const revalidateUrl = `${publicAppUrl}/api/revalidate?secret=${correctSecret}&tag=site-content`;
-      const parsed = new URL(revalidateUrl);
-      assert.equal(parsed.pathname, "/api/revalidate");
-      assert.equal(parsed.searchParams.get("tag"), "site-content");
+      const headers = { "x-revalidate-secret": incomingSecret };
+      assert.equal(headers["x-revalidate-secret"], correctSecret, "Header-based secret authorization");
+
+      const allowedTags = new Set(["content", "site-content", "site_content", "projects", "companies"]);
+      assert.equal(allowedTags.has("site-content"), true, "Valid tag is allowlisted");
+      assert.equal(allowedTags.has("malicious-tag"), false, "Unregistered tag is disallowed");
     });
   });
 
@@ -389,6 +393,58 @@ describe("Dashboard & Public App Full Request Integration Suite", () => {
         assert.ok(content.data.whyUsPage.roiBadge, "WhyUs ROI badge must exist");
         assert.ok(content.data.contact.email, "Contact email must exist");
       }
+    });
+  });
+
+  // =========================================================================
+  // 7. Companies Authorization & Persistence Guarantees
+  // =========================================================================
+  describe("7. Company Showcase Mutation Authorization & Persistence", () => {
+    it("should enforce editor and super_admin write boundaries", () => {
+      assert.equal(canWriteAdminData("super_admin"), true);
+      assert.equal(canWriteAdminData("editor"), true);
+      assert.equal(canWriteAdminData("viewer"), false);
+    });
+
+    it("should fail closed and not report success when database client encounters error", async () => {
+      const mockFailingSupabase = {
+        from: () => ({
+          insert: () => ({
+            select: () => ({
+              single: async () => ({ data: null, error: { message: "Database connection refused" } }),
+            }),
+          }),
+          update: () => ({
+            eq: () => ({
+              select: () => ({
+                maybeSingle: async () => ({ data: null, error: { message: "Permission denied for schema public" } }),
+              }),
+            }),
+          }),
+          delete: () => ({
+            eq: async () => ({ error: { message: "Violates foreign key constraint" } }),
+          }),
+        }),
+      } as any;
+
+      const createRes = await createCompany(
+        {
+          name: "Test Corp",
+          slug: "test-corp",
+          logo_url: "https://example.com/logo.png",
+          category: "tech",
+          description: "Test description for company failure test",
+        },
+        mockFailingSupabase
+      );
+      assert.equal(createRes.ok, false, "Must return ok: false on database failure");
+      assert.ok(createRes.error?.includes("Database connection refused"));
+
+      const updateRes = await updateCompany("comp-test", { name: "New Name" }, mockFailingSupabase);
+      assert.equal(updateRes.ok, false, "Must return ok: false on database failure");
+
+      const deleteRes = await deleteCompany("comp-test", mockFailingSupabase);
+      assert.equal(deleteRes.ok, false, "Must return ok: false on database failure");
     });
   });
 });

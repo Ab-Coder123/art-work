@@ -42,6 +42,8 @@ import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content
 import {
   type ContactSectionContent,
   type ProjectRecord,
+  type CompanyRecord,
+  DEFAULT_COMPANIES,
   resolveSafeYouTubeEmbed,
   getProjectThumbnailUrl,
 } from "@art-work/types";
@@ -73,11 +75,111 @@ interface ManifestoContentProps {
     introParagraph: string;
     metrics: Array<{ num: string; label: string }>;
   };
+  companies?: CompanyRecord[];
+}
+
+/* =========================================================================
+   SCENE // 01.B: PARTNERS & CLIENT NETWORK TICKER REEL
+   ========================================================================= */
+function PartnersMarqueeSection({
+  companies = DEFAULT_COMPANIES,
+}: {
+  companies?: CompanyRecord[];
+}) {
+  const activeCompanies = companies.filter((c) => c.isActive !== false);
+  const marqueeRow1 = [...activeCompanies, ...activeCompanies];
+  const marqueeRow2 = [...activeCompanies.slice().reverse(), ...activeCompanies.slice().reverse()];
+
+  return (
+    <div className="w-full mt-8 sm:mt-10 pt-6 sm:pt-8 border-t-2 border-black/10 dark:border-zinc-800">
+      {/* Section Definition & Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4 sm:mb-5">
+        <div>
+          <div className="inline-flex items-center gap-2 border-2 border-black bg-yellow-300 dark:bg-yellow-400 text-black px-3 py-1 rounded-full comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider -rotate-1 mb-2">
+            <Sparkles className="w-3.5 h-3.5 fill-current" />
+            <span>PARTNERS // TRUSTED ECOSYSTEM</span>
+          </div>
+          <h2 className="font-headline font-black text-lg sm:text-2xl lg:text-3xl text-black dark:text-white uppercase tracking-tight">
+            TRUSTED BY <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-lg border-2 border-black comic-shadow-sm inline-block -rotate-1">CULTURAL TITANS</span> &amp; INDUSTRY LEADERS
+          </h2>
+          <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 max-w-2xl leading-relaxed mt-1">
+            From landmark corporate gatherings to international festival arenas, we collaborate with leading global enterprises and visionary brands to create arena-scale kinetic scenography.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-black/60 dark:text-zinc-400 shrink-0">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span className="text-[10px] sm:text-[11px] font-bold">60 FPS KINETIC REEL</span>
+        </div>
+      </div>
+
+      {/* Dual Row Infinite Marquee Reel */}
+      <div className="relative overflow-hidden rounded-xl border-2 border-black dark:border-zinc-700 bg-zinc-50/70 dark:bg-[#12121A]/70 py-3.5 backdrop-blur-sm">
+        {/* Row 1: Left */}
+        <div className="flex w-max gap-3.5 py-1 animate-marquee-left">
+          {marqueeRow1.map((comp, idx) => (
+            <div
+              key={`${comp.id}-row1-${idx}`}
+              className="flex items-center gap-3 bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 px-3.5 py-2 rounded-xl comic-shadow-sm hover:scale-105 hover:-rotate-1 transition-transform cursor-pointer shrink-0"
+            >
+              <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/10 overflow-hidden flex items-center justify-center p-1 border border-black/20 relative">
+                <Image
+                  src={comp.logo}
+                  alt={comp.name}
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-cover rounded"
+                  unoptimized
+                />
+              </div>
+              <div className="text-left">
+                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider">
+                  {comp.name}
+                </div>
+                <div className="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 uppercase">
+                  {comp.category}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Row 2: Right */}
+        <div className="flex w-max gap-3.5 py-1 mt-2 animate-marquee-right">
+          {marqueeRow2.map((comp, idx) => (
+            <div
+              key={`${comp.id}-row2-${idx}`}
+              className="flex items-center gap-3 bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 px-3.5 py-2 rounded-xl comic-shadow-sm hover:scale-105 hover:rotate-1 transition-transform cursor-pointer shrink-0"
+            >
+              <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/10 overflow-hidden flex items-center justify-center p-1 border border-black/20 relative">
+                <Image
+                  src={comp.logo}
+                  alt={comp.name}
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-cover rounded"
+                  unoptimized
+                />
+              </div>
+              <div className="text-left">
+                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider">
+                  {comp.name}
+                </div>
+                <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase">
+                  {comp.highlight || comp.category}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function ManifestoContent({
   onViewCapabilities,
   content = DEFAULT_HERO_CONTENT,
+  companies = DEFAULT_COMPANIES,
 }: ManifestoContentProps) {
   return (
     <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
@@ -260,6 +362,9 @@ function ManifestoContent({
           </div>
         </motion.div>
       </div>
+
+      {/* SECTION 02: PARTNERS & CLIENT NETWORK TICKER */}
+      <PartnersMarqueeSection companies={companies} />
     </div>
   );
 }
@@ -985,9 +1090,6 @@ function StudioFooter({ scrollToStage }: { scrollToStage: (s: StageId) => void }
           <button onClick={() => scrollToStage("stage-01")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
             HOME
           </button>
-          <Link href="/company" className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
-            PARTNER&apos;S
-          </Link>
           <button onClick={() => scrollToStage("stage-02")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
             WHY US
           </button>
@@ -1014,6 +1116,7 @@ export default function Home() {
   const [heroContent, setHeroContent] = useState(DEFAULT_HERO_CONTENT);
   const [whyUsContent, setWhyUsContent] = useState(DEFAULT_WHY_US_CONTENT);
   const [contactContent, setContactContent] = useState(DEFAULT_SITE_CONTENT.contact);
+  const [companies, setCompanies] = useState<CompanyRecord[]>(DEFAULT_COMPANIES);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
   const trackRef = useRef<HTMLDivElement>(null);
   const theaterRef = useRef<HTMLDivElement>(null);
@@ -1069,6 +1172,15 @@ export default function Home() {
           introParagraph: String(manifesto.introParagraph || manifesto.subheadline || DEFAULT_HERO_CONTENT.introParagraph),
           metrics: metrics.length ? metrics.slice(0, 3) : DEFAULT_HERO_CONTENT.metrics,
         });
+      })
+      .catch(() => { });
+
+    fetch("/api/companies")
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((json: { ok?: boolean; data?: CompanyRecord[] }) => {
+        if (mounted && json?.ok && Array.isArray(json.data) && json.data.length > 0) {
+          setCompanies(json.data);
+        }
       })
       .catch(() => { });
     return () => {
@@ -1423,12 +1535,6 @@ export default function Home() {
             >
               Home
             </button>
-            <Link
-              href="/company"
-              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-            >
-              Partner&apos;s
-            </Link>
             <button
               onClick={() => scrollToStage("stage-02")}
               className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-02"
@@ -1513,12 +1619,6 @@ export default function Home() {
           >
             Home
           </button>
-          <Link
-            href="/company"
-            className="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5"
-          >
-            Partner&apos;s
-          </Link>
           <button
             onClick={() => scrollToStage("stage-02")}
             className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-02"
@@ -1570,6 +1670,7 @@ export default function Home() {
           >
             <ManifestoContent
               content={heroContent}
+              companies={companies}
               onExploreShowreel={() => scrollToStage("stage-gallery")}
               onViewCapabilities={() => scrollToStage("stage-03")}
             />
@@ -1726,6 +1827,7 @@ export default function Home() {
                 >
                   <ManifestoContent
                     content={heroContent}
+                    companies={companies}
                     onExploreShowreel={() => scrollToStage("stage-gallery")}
                     onViewCapabilities={() => scrollToStage("stage-03")}
                   />
