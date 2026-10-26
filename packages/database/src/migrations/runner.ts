@@ -14,9 +14,11 @@ export interface MigrationFile {
 
 export interface MigrationResult {
   filename: string;
-  status: "applied" | "already_applied" | "skipped" | "failed";
+  status: "applied" | "already_applied" | "skipped" | "failed" | "drift_detected";
   durationMs?: number;
   error?: string;
+  expectedHash?: string;
+  recordedHash?: string;
 }
 
 /**
@@ -89,6 +91,7 @@ export async function runMigrations(options?: {
   connectionString?: string;
   migrationsDir?: string;
   dryRun?: boolean;
+  strictDriftCheck?: boolean;
 }): Promise<MigrationResult[]> {
   const env = parseDatabaseEnv();
   const connString = options?.connectionString || env.DATABASE_URL;
@@ -101,13 +104,29 @@ export async function runMigrations(options?: {
     await client.connect();
     await ensureMigrationsTable(client);
 
-    const appliedQuery = await client.query<{ filename: string }>(
-      "SELECT filename FROM public._art_work_migrations ORDER BY id ASC;"
+    const appliedQuery = await client.query<{ filename: string; hash?: string }>(
+      "SELECT filename, hash FROM public._art_work_migrations ORDER BY id ASC;"
     );
-    const appliedSet = new Set(appliedQuery.rows.map((r) => r.filename));
+    const appliedMap = new Map(appliedQuery.rows.map((r) => [r.filename, r.hash]));
 
     for (const migration of migrations) {
-      if (appliedSet.has(migration.filename)) {
+      if (appliedMap.has(migration.filename)) {
+        const recordedHash = appliedMap.get(migration.filename);
+        if (recordedHash && recordedHash !== migration.hash) {
+          const driftErr = `Migration hash drift detected for '${migration.filename}'. Recorded hash: '${recordedHash}', but source file hash is '${migration.hash}'. Migration files must be immutable once applied.`;
+          results.push({
+            filename: migration.filename,
+            status: "drift_detected",
+            error: driftErr,
+            expectedHash: migration.hash,
+            recordedHash,
+          });
+          if (options?.strictDriftCheck) {
+            throw new Error(driftErr);
+          }
+          continue;
+        }
+
         results.push({
           filename: migration.filename,
           status: "already_applied",

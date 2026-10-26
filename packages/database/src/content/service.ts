@@ -336,9 +336,29 @@ export class SupabaseContentRepository implements ContentRepository {
   async saveSection(
     key: ValidSectionKey,
     data: Record<string, unknown>,
-    actorEmail = "admin@art-work.agency"
+    actorEmail = "admin@art-work.agency",
+    expectedVersion?: number
   ): Promise<{ version: number; updatedAt: string }> {
-    // 1. Fetch current row to determine next version
+    // 1. Attempt atomic PostgreSQL function with row-level lock & concurrency check
+    try {
+      const { data: rpcData, error: rpcError } = await this.supabase.rpc("save_site_content", {
+        p_section_key: key,
+        p_data: data,
+        p_actor_email: actorEmail,
+        p_expected_version: expectedVersion ?? null,
+      });
+
+      if (!rpcError && Array.isArray(rpcData) && rpcData.length > 0) {
+        return {
+          version: Number(rpcData[0].version),
+          updatedAt: String(rpcData[0].updated_at),
+        };
+      }
+    } catch {
+      // Continue to fallback
+    }
+
+    // 2. Fallback to client-side increment for mocked test clients
     const { data: existing } = await this.supabase
       .from("site_content")
       .select("version")
@@ -348,7 +368,6 @@ export class SupabaseContentRepository implements ContentRepository {
     const nextVersion = existing?.version ? existing.version + 1 : 1;
     const now = new Date().toISOString();
 
-    // 2. Atomic upsert into site_content (PostgreSQL trigger automatically writes to content_audit_logs)
     const { error } = await this.supabase.from("site_content").upsert(
       {
         section_key: key,

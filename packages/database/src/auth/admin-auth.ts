@@ -166,17 +166,65 @@ export async function verifyAdminSessionFromCookies(
 > {
   const cookies = await cookieStore.getAll();
   const accessToken = cookies.find((c) => c.name === AUTH_COOKIES.ACCESS_TOKEN)?.value;
+  const refreshToken = cookies.find((c) => c.name === AUTH_COOKIES.REFRESH_TOKEN)?.value;
   const supabase = createServerClient({
     getAll: () => cookies,
     setAll: cookieStore.setAll,
   });
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser(accessToken);
+  let authenticatedUser = null;
 
-  if (error || !user) {
+  if (accessToken) {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(accessToken);
+    if (!error && user) {
+      authenticatedUser = user;
+    }
+  }
+
+  // Auto-refresh lifecycle: If access token expired/missing and refresh token exists
+  if (!authenticatedUser && refreshToken) {
+    try {
+      const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession({
+        refresh_token: refreshToken,
+      });
+      if (!refreshError && refreshData.session && refreshData.user) {
+        authenticatedUser = refreshData.user;
+        if (cookieStore.setAll) {
+          cookieStore.setAll([
+            {
+              name: AUTH_COOKIES.ACCESS_TOKEN,
+              value: refreshData.session.access_token,
+              options: {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                maxAge: 3600, // 1 hour
+              },
+            },
+            {
+              name: AUTH_COOKIES.REFRESH_TOKEN,
+              value: refreshData.session.refresh_token,
+              options: {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                maxAge: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          ]);
+        }
+      }
+    } catch {
+      // Refresh failed, proceed to 401
+    }
+  }
+
+  if (!authenticatedUser) {
     return {
       ok: false,
       status: 401,
@@ -184,7 +232,7 @@ export async function verifyAdminSessionFromCookies(
     };
   }
 
-  const membership = await verifyAdminMembership(supabase, user.id);
+  const membership = await verifyAdminMembership(supabase, authenticatedUser.id);
   if (!membership.isAuthorized || !membership.adminUser) {
     return {
       ok: false,

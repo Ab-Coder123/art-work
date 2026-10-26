@@ -63,7 +63,13 @@ async function main() {
       const results = await runMigrations();
       for (const res of results) {
         const icon =
-          res.status === "applied" ? "✅" : res.status === "already_applied" ? "⏹️" : "❌";
+          res.status === "applied"
+            ? "✅"
+            : res.status === "already_applied"
+            ? "⏹️"
+            : res.status === "drift_detected"
+            ? "⚠️"
+            : "❌";
         console.log(`  ${icon} [${res.status.toUpperCase()}] ${res.filename} ${res.durationMs ? `(${res.durationMs}ms)` : ""}`);
         if (res.error) {
           console.error(`     Error: ${res.error}`);

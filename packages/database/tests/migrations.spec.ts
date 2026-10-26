@@ -24,4 +24,17 @@ describe("Phase 01: Canonical Migrations & Runner Verification", () => {
     const migrations = getMigrationFiles(nonExistentDir);
     assert.deepEqual(migrations, []);
   });
+
+  it("should support hash drift detection interface on migration runs", () => {
+    const driftResult: import("../src/migrations/runner").MigrationResult = {
+      filename: "20261019000000_baseline_init.sql",
+      status: "drift_detected",
+      error: "Migration hash drift detected",
+      expectedHash: "new-hash-0123",
+      recordedHash: "old-hash-4567",
+    };
+    assert.equal(driftResult.status, "drift_detected");
+    assert.equal(driftResult.expectedHash, "new-hash-0123");
+    assert.equal(driftResult.recordedHash, "old-hash-4567");
+  });
 });

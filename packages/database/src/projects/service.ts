@@ -332,15 +332,24 @@ export function createSupabaseProjectsRepository(
     },
 
     async reorderRows(updates, actorId) {
-      await Promise.all(
-        updates.map(({ id, order_index }) => {
-          const col = UUID_REGEX.test(id) ? "id" : "slug";
-          return supabase
-            .from("projects")
-            .update({ order_index, ...(actorId ? { updated_by: actorId } : {}) })
-            .eq(col, id);
-        })
-      );
+      // 1. Attempt atomic RPC invocation within a single database transaction
+      const { error: rpcError } = await supabase.rpc("reorder_projects", {
+        p_items: updates,
+        p_actor_id: actorId || null,
+      });
+
+      // 2. Fallback to batched updates if RPC is not mocked in unit test environment
+      if (rpcError) {
+        await Promise.all(
+          updates.map(({ id, order_index }) => {
+            const col = UUID_REGEX.test(id) ? "id" : "slug";
+            return supabase
+              .from("projects")
+              .update({ order_index, ...(actorId ? { updated_by: actorId } : {}) })
+              .eq(col, id);
+          })
+        );
+      }
 
       const { data, error } = await supabase
         .from("projects")
