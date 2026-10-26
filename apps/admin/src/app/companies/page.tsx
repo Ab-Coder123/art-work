@@ -17,6 +17,9 @@ import {
   Loader2,
   Save,
   Sparkles,
+  UploadCloud,
+  Link2,
+  RefreshCw,
 } from "lucide-react";
 import { type CompanyRecord, type CompanyCategorySlug, DEFAULT_COMPANIES } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
@@ -53,6 +56,75 @@ export default function AdminCompaniesPage() {
     featured: false,
     is_active: true,
   });
+
+  // Logo Upload & Drag-and-Drop State
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [showManualUrl, setShowManualUrl] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const handleUploadFile = async (file: File) => {
+    if (!file) return;
+
+    const validMimes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/svg+xml",
+      "image/gif",
+    ];
+    if (!validMimes.includes(file.type)) {
+      showNotification("error", "Unsupported file format. Please use PNG, SVG, WebP, or JPG.");
+      return;
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      showNotification("error", "File size exceeds 8MB limit.");
+      return;
+    }
+
+    setIsUploadingLogo(true);
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", file);
+      uploadFormData.append("folder", "logos");
+
+      const res = await apiFetchWithCsrf("/api/upload", {
+        method: "POST",
+        body: uploadFormData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setFormData((prev) => ({ ...prev, logo_url: data.url }));
+        showNotification("success", "Logo uploaded to CDN successfully!");
+      } else {
+        showNotification("error", data.error || "Failed to upload logo");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Upload failed";
+      showNotification("error", msg);
+    } finally {
+      setIsUploadingLogo(false);
+      setIsDragging(false);
+    }
+  };
+
+  const handleDropFile = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleUploadFile(file);
+    }
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleUploadFile(file);
+    }
+  };
 
   const fetchCompanies = async () => {
     try {
@@ -92,6 +164,9 @@ export default function AdminCompaniesPage() {
 
   const handleOpenAdd = () => {
     setEditingCompany(null);
+    setShowManualUrl(false);
+    setIsDragging(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
     setFormData({
       name: "",
       slug: "",
@@ -109,6 +184,9 @@ export default function AdminCompaniesPage() {
 
   const handleOpenEdit = (comp: CompanyRecord) => {
     setEditingCompany(comp);
+    setShowManualUrl(false);
+    setIsDragging(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
     setFormData({
       name: comp.name,
       slug: comp.slug,
@@ -126,6 +204,10 @@ export default function AdminCompaniesPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.logo_url) {
+      showNotification("error", "Please upload or provide a company logo.");
+      return;
+    }
     setIsSaving(true);
     try {
       const url = editingCompany
@@ -550,15 +632,130 @@ export default function AdminCompaniesPage() {
               </div>
 
               <div>
-                <label className="block text-zinc-400 font-mono uppercase mb-1">Logo URL *</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-zinc-400 font-mono uppercase text-[11px]">
+                    Company Logo *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowManualUrl(!showManualUrl)}
+                    className="text-[10px] text-zinc-500 hover:text-yellow-400 font-mono underline cursor-pointer transition-colors flex items-center gap-1"
+                  >
+                    <Link2 className="w-3 h-3" />
+                    <span>{showManualUrl ? "Hide URL input" : "Or paste image URL"}</span>
+                  </button>
+                </div>
+
+                {/* Hidden File Input */}
                 <input
-                  type="text"
-                  required
-                  value={formData.logo_url}
-                  onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                  placeholder="https://... or /assets/images/..."
-                  className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-mono text-[11px]"
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileInputChange}
+                  accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif"
+                  className="hidden"
                 />
+
+                {/* Drag and Drop Zone or Preview */}
+                {formData.logo_url ? (
+                  <div className="relative bg-[#0e0e14] border-2 border-[#2a2a3c] rounded-xl p-3 flex items-center gap-3">
+                    {/* Visual Preview */}
+                    <div className="w-16 h-16 rounded-lg bg-[#1a1a26] border border-[#2a2a3c] flex items-center justify-center p-2 shrink-0 overflow-hidden relative">
+                      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:6px_6px]" />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={formData.logo_url}
+                        alt="Logo preview"
+                        className="max-h-full max-w-full object-contain relative z-10"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://placehold.co/100x100/1e1e2d/ffd700?text=Logo";
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 text-emerald-400 text-[11px] font-mono mb-1">
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Logo Attached</span>
+                      </div>
+                      <p className="text-[10px] text-zinc-500 font-mono truncate" title={formData.logo_url}>
+                        {formData.logo_url}
+                      </p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={isUploadingLogo}
+                          className="px-2.5 py-1 text-[10px] font-mono bg-[#1a1a26] hover:bg-yellow-400 hover:text-black text-zinc-300 rounded-md border border-[#2a2a3c] transition-colors cursor-pointer flex items-center gap-1"
+                        >
+                          <RefreshCw className={`w-3 h-3 ${isUploadingLogo ? "animate-spin" : ""}`} />
+                          <span>Replace</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData((prev) => ({ ...prev, logo_url: "" }))}
+                          className="px-2.5 py-1 text-[10px] font-mono bg-[#1a1a26] hover:bg-rose-500 hover:text-white text-zinc-400 rounded-md border border-[#2a2a3c] transition-colors cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={handleDropFile}
+                    onClick={() => !isUploadingLogo && fileInputRef.current?.click()}
+                    className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 ${
+                      isDragging
+                        ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
+                        : "border-[#2a2a3c] bg-[#0e0e14] hover:border-yellow-400/60 hover:bg-[#12121c]"
+                    }`}
+                  >
+                    {isUploadingLogo ? (
+                      <div className="py-2 flex flex-col items-center gap-2">
+                        <Loader2 className="w-6 h-6 text-yellow-400 animate-spin" />
+                        <span className="font-mono text-zinc-400 text-[11px]">
+                          Uploading logo to Supabase CDN...
+                        </span>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="w-10 h-10 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center text-yellow-400">
+                          <UploadCloud className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <p className="text-white font-mono text-[11px] font-bold">
+                            Drag & drop company logo here, or <span className="text-yellow-400 underline">browse</span>
+                          </p>
+                          <p className="text-[10px] text-zinc-500 font-mono mt-0.5">
+                            PNG (transparent), SVG, WebP, JPG (max 8MB)
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {/* Collapsible Manual URL Input */}
+                {showManualUrl && (
+                  <div className="mt-2.5">
+                    <label className="block text-zinc-500 font-mono uppercase text-[10px] mb-1">
+                      Direct Image URL
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.logo_url}
+                      onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
+                      placeholder="https://... or /assets/images/..."
+                      className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-mono text-[11px]"
+                    />
+                  </div>
+                )}
               </div>
 
               <div>
