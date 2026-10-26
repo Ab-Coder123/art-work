@@ -4,8 +4,7 @@ import path from "node:path";
 import { getMigrationFiles } from "../src/migrations/runner";
 
 describe("Phase 02: DDL Migration & Schema Integrity Verification", () => {
-  const migrationsDir = path.resolve(process.cwd(), "..", "..", "supabase", "migrations");
-  const migrations = getMigrationFiles(migrationsDir);
+  const migrations = getMigrationFiles();
   const coreSchemaMigration = migrations.find((m) =>
     m.filename.includes("core_schemas")
   );

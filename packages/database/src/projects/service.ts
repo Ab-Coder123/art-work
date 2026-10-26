@@ -245,7 +245,7 @@ export function normalizeProjectInput(
     return {
       ok: false,
       status: 400,
-      error: parsed.error.errors[0]?.message || "Invalid project payload",
+      error: (parsed.error.issues || (parsed.error as unknown as { errors?: Array<{ message: string }> }).errors)?.[0]?.message || "Invalid project payload",
     };
   }
 
@@ -479,7 +479,7 @@ export async function listPublicProjects(
     return {
       ok: false,
       status: 400,
-      error: parsedQuery.error.errors[0]?.message || "Invalid query parameters",
+      error: (parsedQuery.error.issues || (parsedQuery.error as unknown as { errors?: Array<{ message: string }> }).errors)?.[0]?.message || "Invalid query parameters",
     };
   }
 
@@ -504,7 +504,7 @@ export async function listAdminProjects(
     return {
       ok: false,
       status: 400,
-      error: parsedQuery.error.errors[0]?.message || "Invalid query parameters",
+      error: (parsedQuery.error.issues || (parsedQuery.error as unknown as { errors?: Array<{ message: string }> }).errors)?.[0]?.message || "Invalid query parameters",
     };
   }
 
@@ -654,7 +654,7 @@ export async function reorderProjects(
     return {
       ok: false,
       status: 400,
-      error: parsed.error.errors[0]?.message || "Invalid reorder payload",
+      error: (parsed.error.issues || (parsed.error as unknown as { errors?: Array<{ message: string }> }).errors)?.[0]?.message || "Invalid reorder payload",
     };
   }
 

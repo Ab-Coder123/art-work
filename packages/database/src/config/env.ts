@@ -51,7 +51,8 @@ export type DatabaseEnv = z.infer<typeof DatabaseEnvSchema>;
 export function parseDatabaseEnv(env: Record<string, string | undefined> = process.env): DatabaseEnv {
   const result = DatabaseEnvSchema.safeParse(env);
   if (!result.success) {
-    const errorDetails = result.error.errors
+    const issues = result.error.issues || (result.error as unknown as { errors: Array<{ path: string[]; message: string }> }).errors || [];
+    const errorDetails = issues
       .map((err) => `  • [${err.path.join(".")}]: ${err.message}`)
       .join("\n");
     throw new Error(`[DatabaseEnv] Environment validation failed:\n${errorDetails}`);

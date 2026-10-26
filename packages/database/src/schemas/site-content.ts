@@ -79,7 +79,7 @@ export const SiteContentDataSchema = z.union([
   WhyUsSectionDataSchema,
   ScrollytellingSectionDataSchema,
   ContactSectionDataSchema,
-  z.record(z.any()), // Fallback for customized CMS dynamic blocks
+  z.record(z.string(), z.any()), // Fallback for customized CMS dynamic blocks
 ]);
 
 /**

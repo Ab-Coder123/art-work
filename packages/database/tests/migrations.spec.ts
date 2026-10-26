@@ -5,8 +5,7 @@ import { getMigrationFiles, runMigrations } from "../src/migrations/runner";
 
 describe("Phase 01: Canonical Migrations & Runner Verification", () => {
   it("should locate and parse canonical baseline migration files in supabase/migrations", () => {
-    const migrationsDir = path.resolve(process.cwd(), "..", "..", "supabase", "migrations");
-    const migrations = getMigrationFiles(migrationsDir);
+    const migrations = getMigrationFiles();
 
     assert.ok(migrations.length >= 1, "At least one migration file should exist");
     const baseline = migrations[0];

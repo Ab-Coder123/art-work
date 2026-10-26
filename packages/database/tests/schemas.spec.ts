@@ -190,7 +190,7 @@ describe("Phase 02: Relational Schemas & Zod Constraints", () => {
   describe("Admin User Membership Schema", () => {
     it("should validate administrator records", () => {
       const validAdmin = {
-        user_id: "00000000-0000-0000-0000-000000000001",
+        user_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
         email: "superadmin@artwork.stage",
         full_name: "Chief Studio Architect",
         role: "super_admin" as const,
@@ -220,7 +220,7 @@ describe("Phase 02: Relational Schemas & Zod Constraints", () => {
         entity_type: "project" as const,
         entity_id: "neon-horizon-stage",
         action: "update" as const,
-        actor_id: "00000000-0000-0000-0000-000000000001",
+        actor_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
         actor_email: "editor@artwork.stage",
         before_state: { status: "draft" },
         after_state: { status: "published" },

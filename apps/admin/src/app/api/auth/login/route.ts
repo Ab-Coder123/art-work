@@ -14,8 +14,9 @@ export async function POST(request: NextRequest) {
     const validation = LoginCredentialsSchema.safeParse(body);
 
     if (!validation.success) {
+      const errorMessage = validation.error.issues?.[0]?.message || (validation.error as unknown as { errors?: Array<{ message: string }> }).errors?.[0]?.message || "Invalid credentials format";
       return NextResponse.json(
-        { error: validation.error.errors[0]?.message || "Invalid credentials format" },
+        { error: errorMessage },
         { status: 400 }
       );
     }

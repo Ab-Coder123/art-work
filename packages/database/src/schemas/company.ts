@@ -41,5 +41,5 @@ export const CreateCompanySchema = CompanyRecordSchema.omit({ id: true });
 export const UpdateCompanySchema = CompanyRecordSchema.partial().omit({ id: true });
 
 export type CompanySchemaType = z.infer<typeof CompanyRecordSchema>;
-export type CreateCompanyInput = z.infer<typeof CreateCompanySchema>;
-export type UpdateCompanyInput = z.infer<typeof UpdateCompanySchema>;
+export type CreateCompanyInput = z.input<typeof CreateCompanySchema>;
+export type UpdateCompanyInput = z.input<typeof UpdateCompanySchema>;

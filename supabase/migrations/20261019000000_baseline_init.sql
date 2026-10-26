@@ -8,6 +8,30 @@
 CREATE SCHEMA IF NOT EXISTS extensions;
 CREATE SCHEMA IF NOT EXISTS auth;
 
+-- Ensure Supabase-compatible roles exist for local/CI PostgreSQL test environments
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'anon') THEN
+    CREATE ROLE anon NOLOGIN;
+  END IF;
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'authenticated') THEN
+    CREATE ROLE authenticated NOLOGIN;
+  END IF;
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'service_role') THEN
+    CREATE ROLE service_role NOLOGIN;
+  END IF;
+END
+$$;
+
+-- Ensure auth.uid() function mock exists for RLS evaluation in standard PostgreSQL
+CREATE OR REPLACE FUNCTION auth.uid()
+RETURNS uuid
+LANGUAGE sql
+STABLE
+AS $$
+  SELECT nullif(current_setting('request.jwt.claim.sub', true), '')::uuid;
+$$;
+
 -- Enable Core Cryptographic and UUID Extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
 CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA extensions;

@@ -99,7 +99,7 @@ export async function authenticateAdmin(
     return {
       ok: false,
       status: 400,
-      error: parseResult.error.errors[0]?.message || "Invalid credentials format",
+      error: parseResult.error.issues?.[0]?.message || (parseResult.error as unknown as { errors?: Array<{ message: string }> }).errors?.[0]?.message || "Invalid credentials format",
     };
   }
 

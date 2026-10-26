@@ -18,8 +18,8 @@ export const ContentAuditLogSchema = z.object({
   action: AuditActionEnum,
   actor_id: z.string().uuid().nullable().optional(),
   actor_email: z.string().email(),
-  before_state: z.record(z.any()).nullable().optional(),
-  after_state: z.record(z.any()).nullable().optional(),
+  before_state: z.record(z.string(), z.any()).nullable().optional(),
+  after_state: z.record(z.string(), z.any()).nullable().optional(),
 });
 
 export type ContentAuditLogInput = z.infer<typeof ContentAuditLogSchema>;
