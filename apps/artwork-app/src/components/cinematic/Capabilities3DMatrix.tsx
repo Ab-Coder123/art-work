@@ -227,7 +227,7 @@ const TiltCard: React.FC<{
           transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
           transition: "transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
-        className="relative border-2 border-black dark:border-zinc-700 p-2.5 sm:p-3 rounded-lg bg-white dark:bg-[#15151F] comic-shadow dark:shadow-[4px_4px_0px_#000000] hover:comic-shadow-yellow hover:bg-yellow-50 dark:hover:bg-[#1D1D2B] transition-colors duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1"
+        className="relative border-2 sm:border-3 border-black dark:border-zinc-700 p-4 sm:p-5 rounded-xl bg-white dark:bg-[#15151F] comic-shadow dark:shadow-[5px_5px_0px_#000000] hover:comic-shadow-yellow hover:bg-yellow-50 dark:hover:bg-[#1D1D2B] transition-colors duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1 min-h-[300px] xl:min-h-[330px]"
       >
         {/* Dynamic Specular Glare Overlay */}
         <div
@@ -239,27 +239,27 @@ const TiltCard: React.FC<{
         />
 
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-1">
-            <span className="font-headline font-black text-[9px] text-black/50 dark:text-zinc-400">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-headline font-black text-[11px] sm:text-xs text-black/60 dark:text-zinc-400 tracking-wider">
               {discipline.tag}
             </span>
-            <span className="w-4 h-4 rounded-full bg-black text-yellow-400 font-mono text-[8px] font-black flex items-center justify-center">
+            <span className="w-5 h-5 rounded-full bg-black text-yellow-400 font-mono text-[10px] font-black flex items-center justify-center">
               {discipline.number}
             </span>
           </div>
 
-          <div className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-1 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
+          <div className="font-headline font-black text-sm sm:text-base lg:text-[15px] xl:text-base text-black dark:text-white mb-2 leading-snug group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors uppercase">
             {discipline.title}
           </div>
 
-          <ul className="text-[10px] font-body text-black/80 dark:text-zinc-300 space-y-0.5 list-disc list-inside">
+          <ul className="text-xs sm:text-[13px] font-body text-black/85 dark:text-zinc-300 space-y-1.5 list-disc list-inside leading-relaxed">
             {discipline.specs.map((spec, i) => (
               <li key={i}>{spec}</li>
             ))}
           </ul>
         </div>
 
-        <div className="relative z-10 mt-2 pt-1.5 border-t border-black/20 dark:border-zinc-700 font-headline font-black text-[9px] text-black dark:text-zinc-200 flex items-center justify-between">
+        <div className="relative z-10 mt-3 pt-2.5 border-t-2 border-black/20 dark:border-zinc-700 font-headline font-black text-[10px] sm:text-[11px] text-black dark:text-zinc-200 flex items-center justify-between tracking-wider">
           <span className="group-hover:underline decoration-yellow-400 decoration-2">
             ENGAGE TOOLKIT
           </span>
@@ -281,25 +281,25 @@ export const Capabilities3DMatrix: React.FC = () => {
   );
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-1 relative" id="stage-03">
+    <section className="w-full max-w-[1540px] mx-auto px-2 sm:px-4 lg:px-6 py-2 sm:py-3 relative" id="stage-03">
       {/* Section Header */}
-      <ScrollReveal direction="up" distance={15} className="text-center max-w-2xl mx-auto mb-2">
-        <div className="inline-block bg-yellow-400 text-black px-2.5 py-0.5 border border-black comic-shadow-sm font-headline text-[9px] font-black uppercase mb-1 -rotate-1">
+      <ScrollReveal direction="up" distance={15} className="text-center max-w-3xl mx-auto mb-3">
+        <div className="inline-block bg-yellow-400 text-black px-3 py-1 border-2 border-black comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase mb-1.5 -rotate-1">
           03 CAPABILITIES &amp; 3D MATRIX
         </div>
-        <h2 className="font-headline font-black text-xl sm:text-2xl text-black dark:text-white tracking-tight mb-0.5 uppercase">
+        <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-black dark:text-white tracking-tight mb-1 uppercase">
           Interactive Discipline{" "}
-          <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.2}>
+          <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
             Roster.
           </KineticBrushWord>
         </h2>
-        <p className="font-body text-[11px] text-black/70 dark:text-zinc-400">
+        <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-400 max-w-xl mx-auto">
           Tilt in 3D or click any discipline card below to inspect technical delivery specs and arena toolkits.
         </p>
       </ScrollReveal>
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap items-center justify-center gap-1.5 mb-2.5">
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
         {(
           [
             { key: "all", label: "ALL DISCIPLINES" },
@@ -312,7 +312,7 @@ export const Capabilities3DMatrix: React.FC = () => {
           <button
             key={tab.key}
             onClick={() => setActiveFilter(tab.key)}
-            className={`px-2.5 py-0.5 rounded-full font-headline text-[9px] font-bold uppercase tracking-wider border border-black dark:border-zinc-700 transition-all cursor-pointer ${
+            className={`px-3.5 py-1 rounded-full font-headline text-[10px] sm:text-xs font-bold uppercase tracking-wider border-2 border-black dark:border-zinc-700 transition-all cursor-pointer ${
               activeFilter === tab.key
                 ? "bg-yellow-400 text-black comic-shadow-sm scale-105 font-black"
                 : "bg-white dark:bg-[#15151F] text-black/70 dark:text-zinc-300 hover:bg-yellow-100 dark:hover:bg-[#1E1E2C]"
@@ -323,8 +323,8 @@ export const Capabilities3DMatrix: React.FC = () => {
         ))}
       </div>
 
-      {/* 3D Tilt Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+      {/* 3D Tilt Cards Grid - All on the exact same line on desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 xl:gap-4.5 mb-4">
         {filteredDisciplines.map((d, index) => (
           <TiltCard
             key={d.id}

@@ -78,7 +78,7 @@ function ManifestoContent({
   content = DEFAULT_HERO_CONTENT,
 }: ManifestoContentProps) {
   return (
-    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-7xl mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
       {/* Top Energy Badge & Comic Stickers */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4">
         <div className="inline-flex items-center gap-1.5 border-2 border-black bg-white dark:bg-[#151520] text-black dark:text-zinc-200 px-3 sm:px-4 py-1 rounded-full comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
@@ -214,7 +214,7 @@ function ManifestoContent({
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-lg border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] aspect-[16/10] min-h-[200px] sm:min-h-[250px] lg:min-h-[280px] xl:min-h-[310px] flex items-center justify-center">
+            <div className="relative overflow-hidden rounded-lg border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] aspect-[16/10] min-h-[220px] sm:min-h-[270px] lg:min-h-[320px] xl:min-h-[360px] flex items-center justify-center">
               <Image
                 src="/assets/images/hero_studio_collective.webp"
                 alt="Art Work Creative Marketing Studio Collective"
@@ -236,7 +236,7 @@ function ManifestoContent({
    ========================================================================= */
 function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof DEFAULT_WHY_US_CONTENT }) {
   return (
-    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-7xl mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-3 pb-2 border-b-2 border-black dark:border-zinc-700">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1.5">
@@ -260,13 +260,13 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
       </div>
 
       {/* 3 Bento Cards (Expanded) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4 mb-4 sm:mb-5">
         <motion.div
           initial={{ opacity: 0, y: 22, scale: 0.97 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[160px]"
+          className="border-2 border-black dark:border-zinc-700 p-4 sm:p-5 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[190px] sm:min-h-[210px]"
         >
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -275,14 +275,14 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
               </span>
               <Layers className="w-5 h-5 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
+            <h3 className="font-headline font-black text-base sm:text-lg text-black dark:text-white mb-1.5 uppercase">
               {content.bentoCards[0].title}
             </h3>
-            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
+            <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 leading-relaxed">
               {content.bentoCards[0].description}
             </p>
           </div>
-          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] sm:text-xs font-headline font-bold">
             <span className="bg-black text-white px-2 py-0.5 rounded">{content.bentoCards[0].badge}</span>
             <CheckCircle2 className="w-4 h-4 text-black dark:text-yellow-400" />
           </div>
@@ -293,7 +293,7 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-yellow-50 dark:bg-[#1B1B28] comic-shadow flex flex-col justify-between min-h-[160px]"
+          className="border-2 border-black dark:border-zinc-700 p-4 sm:p-5 rounded-xl bg-yellow-50 dark:bg-[#1B1B28] comic-shadow flex flex-col justify-between min-h-[190px] sm:min-h-[210px]"
         >
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -302,14 +302,14 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
               </span>
               <Sparkles className="w-5 h-5 text-black dark:text-yellow-400 fill-yellow-400" />
             </div>
-            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
+            <h3 className="font-headline font-black text-base sm:text-lg text-black dark:text-white mb-1.5 uppercase">
               {content.bentoCards[1].title}
             </h3>
-            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
+            <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 leading-relaxed">
               {content.bentoCards[1].description}
             </p>
           </div>
-          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] sm:text-xs font-headline font-bold">
             <span className="bg-yellow-400 text-black border border-black px-2 py-0.5 rounded">
               {content.bentoCards[1].badge}
             </span>
@@ -322,7 +322,7 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[160px]"
+          className="border-2 border-black dark:border-zinc-700 p-4 sm:p-5 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[190px] sm:min-h-[210px]"
         >
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -331,14 +331,14 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
               </span>
               <Palette className="w-5 h-5 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
+            <h3 className="font-headline font-black text-base sm:text-lg text-black dark:text-white mb-1.5 uppercase">
               {content.bentoCards[2].title}
             </h3>
-            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
+            <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 leading-relaxed">
               {content.bentoCards[2].description}
             </p>
           </div>
-          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] sm:text-xs font-headline font-bold">
             <span className="bg-black text-white px-2 py-0.5 rounded">{content.bentoCards[2].badge}</span>
             <Paintbrush className="w-4 h-4 text-black dark:text-yellow-400" />
           </div>
@@ -347,21 +347,21 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
 
       {/* Blueprint Showcase Card */}
       <ScrollReveal direction="up" distance={20}>
-        <div className="border-2 sm:border-3 border-black dark:border-zinc-700 rounded-xl p-3.5 sm:p-4 bg-white dark:bg-[#151520] comic-shadow relative">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-            <div className="lg:col-span-6 space-y-1.5">
-              <div className="inline-flex items-center gap-1.5 text-[10px] font-headline font-black uppercase text-black bg-yellow-300 px-2 py-0.5 rounded border border-black">
+        <div className="border-2 sm:border-3 border-black dark:border-zinc-700 rounded-xl p-4 sm:p-6 bg-white dark:bg-[#151520] comic-shadow relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+            <div className="lg:col-span-6 space-y-2">
+              <div className="inline-flex items-center gap-1.5 text-xs font-headline font-black uppercase text-black bg-yellow-300 px-2.5 py-0.5 rounded border border-black">
                 <Compass className="w-3.5 h-3.5 text-black" />
                 <span>{content.blueprint.badge}</span>
               </div>
-              <h3 className="font-headline font-black text-base sm:text-lg text-black dark:text-white">
+              <h3 className="font-headline font-black text-lg sm:text-xl text-black dark:text-white">
                 {content.blueprint.title}
               </h3>
               <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed">
                 {content.blueprint.description}
               </p>
             </div>
-            <div className="lg:col-span-6 border-2 border-black dark:border-zinc-700 rounded-lg overflow-hidden aspect-[16/9] min-h-[140px] sm:min-h-[170px] lg:min-h-[190px] bg-white dark:bg-[#0E0E14] relative">
+            <div className="lg:col-span-6 border-2 border-black dark:border-zinc-700 rounded-lg overflow-hidden aspect-[16/9] min-h-[180px] sm:min-h-[220px] lg:min-h-[260px] bg-white dark:bg-[#0E0E14] relative">
               <Image
                 src={content.blueprint.image}
                 alt={content.blueprint.altText}
@@ -382,7 +382,7 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
    ========================================================================= */
 function ServicesContent() {
   return (
-    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-[1560px] mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
       <Capabilities3DMatrix />
     </div>
   );
@@ -419,7 +419,7 @@ function GalleryShowcaseContent() {
   const featured = projectsList.slice(0, 3);
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-7xl mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
       {/* Comic Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-3 sm:mb-4 pb-2 border-b-2 border-black dark:border-zinc-700">
         <div>
@@ -693,8 +693,8 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
-      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-4 sm:p-6 lg:p-7 comic-shadow relative mt-2.5">
+    <div className="w-full max-w-7xl mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
+      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-5 sm:p-7 lg:p-8 comic-shadow relative mt-2.5">
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border-2 border-black px-4 py-1 font-headline font-black text-[10px] sm:text-xs uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           {content.stageTag}
         </div>
@@ -715,7 +715,7 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
             </p>
 
             <div className="border-2 border-black dark:border-zinc-700 rounded-xl p-2 bg-yellow-50 dark:bg-[#1C1C28] relative">
-              <div className="aspect-[16/9] min-h-[140px] sm:min-h-[170px] lg:min-h-[190px] rounded-lg overflow-hidden border border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] relative">
+              <div className="aspect-[16/9] min-h-[170px] sm:min-h-[200px] lg:min-h-[220px] rounded-lg overflow-hidden border border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] relative">
                 <Image
                   src={content.intakeImage}
                   alt={content.intakeImageAlt}
@@ -895,19 +895,19 @@ function StudioFooter({ scrollToStage }: { scrollToStage: (s: StageId) => void }
         <div>© 2026 Art Work - Marketing Solutions. Pinned Kinetic Stage Engine.</div>
         <div className="flex items-center gap-3 font-headline font-bold flex-wrap justify-center">
           <button onClick={() => scrollToStage("stage-01")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
-            01 MANIFESTO
+            HOME
           </button>
           <button onClick={() => scrollToStage("stage-02")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
-            02 WHY US
+            WHY US
           </button>
           <button onClick={() => scrollToStage("stage-03")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
-            03 SERVICES
+            SERVICES
           </button>
           <button onClick={() => scrollToStage("stage-gallery")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer text-yellow-600 dark:text-yellow-400 font-black">
-            ★ 04 GALLERY
+            ★ GALLERY
           </button>
           <button onClick={() => scrollToStage("stage-04")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
-            05 CONTACT
+            CONTACT
           </button>
         </div>
       </div>
@@ -925,6 +925,16 @@ export default function Home() {
   const [contactContent, setContactContent] = useState(DEFAULT_SITE_CONTENT.contact);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
   const trackRef = useRef<HTMLDivElement>(null);
+  const theaterRef = useRef<HTMLDivElement>(null);
+  const mainContainerRef = useRef<HTMLElement>(null);
+  const isTransitioningRef = useRef(false);
+  const accumulatedDeltaRef = useRef(0);
+  const boundaryReachedTimeRef = useRef(0);
+  const activeStageRef = useRef<StageId>(activeStage);
+
+  useEffect(() => {
+    activeStageRef.current = activeStage;
+  }, [activeStage]);
 
   // Activate Lenis luxury 60-120 FPS momentum smooth virtual scrolling
   useSmoothScroll();
@@ -1043,28 +1053,6 @@ export default function Home() {
         }
 
         setActiveStage((prev) => (prev === nextStage ? prev : nextStage));
-      } else {
-        // Desktop: Calculate progress within pinned scrollytelling track
-        if (!trackRef.current) return;
-        const scrollY = window.scrollY;
-        const maxScroll = trackRef.current.scrollHeight - window.innerHeight;
-        if (maxScroll <= 0) return;
-
-        const progress = Math.min(1, Math.max(0, scrollY / maxScroll));
-        let nextStage: StageId = "stage-01";
-        if (progress < 0.22) {
-          nextStage = "stage-01";
-        } else if (progress < 0.45) {
-          nextStage = "stage-02";
-        } else if (progress < 0.68) {
-          nextStage = "stage-03";
-        } else if (progress < 0.88) {
-          nextStage = "stage-gallery";
-        } else {
-          nextStage = "stage-04";
-        }
-
-        setActiveStage((prev) => (prev === nextStage ? prev : nextStage));
       }
     };
 
@@ -1114,15 +1102,21 @@ export default function Home() {
       }
     }
 
-    // Desktop: Scroll to appropriate track percentage
+    // Desktop: Update active stage & reset internal component scroll
+    setActiveStage(stage);
+    if (mainContainerRef.current) {
+      mainContainerRef.current.scrollTop = 0;
+    }
+
+    // Sync 3D background / parallax track position
     if (!trackRef.current) return;
     const maxScroll = trackRef.current.scrollHeight - window.innerHeight;
     let target = 0;
     if (stage === "stage-01") target = 0;
-    if (stage === "stage-02") target = maxScroll * 0.30;
-    if (stage === "stage-03") target = maxScroll * 0.55;
-    if (stage === "stage-gallery") target = maxScroll * 0.78;
-    if (stage === "stage-04") target = maxScroll * 0.98;
+    if (stage === "stage-02") target = maxScroll * 0.25;
+    if (stage === "stage-03") target = maxScroll * 0.50;
+    if (stage === "stage-gallery") target = maxScroll * 0.75;
+    if (stage === "stage-04") target = maxScroll * 1.0;
 
     if (window.__lenis) {
       window.__lenis.scrollTo(target);
@@ -1130,6 +1124,115 @@ export default function Home() {
       window.scrollTo({ top: target, behavior: "smooth" });
     }
   }, []);
+
+  // DESKTOP INTERNAL SCROLL-Y COMPLETION & PROGRESSION ENGINE:
+  // Requires the active component's internal scroll Y to scroll completely to its end
+  // before transitioning to the next (or previous) stage.
+  useEffect(() => {
+    const theater = theaterRef.current;
+    if (!theater) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (window.innerWidth < 768) return;
+
+      const main = mainContainerRef.current;
+      if (!main) return;
+
+      // Lock during stage transitions to prevent skipping stages
+      if (isTransitioningRef.current) {
+        e.preventDefault();
+        return;
+      }
+
+      const { scrollTop, scrollHeight, clientHeight } = main;
+      const maxScroll = Math.max(0, scrollHeight - clientHeight);
+      const isAtBottom = scrollTop >= maxScroll - 6;
+      const isAtTop = scrollTop <= 6;
+      const now = Date.now();
+
+      // SCROLLING DOWNWARDS
+      if (e.deltaY > 0) {
+        if (!isAtBottom) {
+          // Internal scroll down in progress: let component scroll naturally
+          accumulatedDeltaRef.current = 0;
+          boundaryReachedTimeRef.current = 0;
+          return;
+        }
+
+        // At bottom of component: contain scroll and intercept continuation
+        e.preventDefault();
+
+        if (boundaryReachedTimeRef.current === 0) {
+          boundaryReachedTimeRef.current = now;
+          accumulatedDeltaRef.current = 0;
+          return;
+        }
+
+        // Require brief settle pause if component had scrollable content
+        if (maxScroll > 15 && now - boundaryReachedTimeRef.current < 160) {
+          return;
+        }
+
+        accumulatedDeltaRef.current += e.deltaY;
+        if (accumulatedDeltaRef.current >= 45) {
+          const currentIndex = STAGE_ORDER.indexOf(activeStageRef.current);
+          if (currentIndex < STAGE_ORDER.length - 1) {
+            isTransitioningRef.current = true;
+            accumulatedDeltaRef.current = 0;
+            boundaryReachedTimeRef.current = 0;
+            const nextStage = STAGE_ORDER[currentIndex + 1];
+            scrollToStage(nextStage);
+            setTimeout(() => {
+              isTransitioningRef.current = false;
+            }, 600);
+          }
+        }
+      }
+      // SCROLLING UPWARDS
+      else if (e.deltaY < 0) {
+        if (!isAtTop) {
+          // Internal scroll up in progress: let component scroll naturally
+          accumulatedDeltaRef.current = 0;
+          boundaryReachedTimeRef.current = 0;
+          return;
+        }
+
+        // At top of component: contain scroll and intercept continuation
+        e.preventDefault();
+
+        if (boundaryReachedTimeRef.current === 0) {
+          boundaryReachedTimeRef.current = now;
+          accumulatedDeltaRef.current = 0;
+          return;
+        }
+
+        // Require brief settle pause if component had scrollable content
+        if (maxScroll > 15 && now - boundaryReachedTimeRef.current < 160) {
+          return;
+        }
+
+        accumulatedDeltaRef.current += e.deltaY;
+        if (accumulatedDeltaRef.current <= -45) {
+          const currentIndex = STAGE_ORDER.indexOf(activeStageRef.current);
+          if (currentIndex > 0) {
+            isTransitioningRef.current = true;
+            accumulatedDeltaRef.current = 0;
+            boundaryReachedTimeRef.current = 0;
+            const prevStage = STAGE_ORDER[currentIndex - 1];
+            scrollToStage(prevStage);
+            setTimeout(() => {
+              isTransitioningRef.current = false;
+            }, 600);
+          }
+        }
+      }
+    };
+
+    theater.addEventListener("wheel", handleWheel, { passive: false });
+    return () => {
+      theater.removeEventListener("wheel", handleWheel);
+    };
+  }, [scrollToStage]);
 
   const triggerInkBurst = (e: React.MouseEvent<HTMLButtonElement>) => {
     soundFX.playPop();
@@ -1218,61 +1321,35 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 font-headline text-xs sm:text-sm uppercase tracking-wider font-bold">
-            <button
-              onClick={() => scrollToStage("stage-01")}
-              className={`${
-                activeStage === "stage-01"
-                  ? "text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5"
-                  : "text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5"
-              } transition-all cursor-pointer`}
-            >
-              01 Manifesto
-            </button>
-            <button
-              onClick={() => scrollToStage("stage-02")}
-              className={`${
-                activeStage === "stage-02"
-                  ? "text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5"
-                  : "text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5"
-              } transition-all cursor-pointer`}
-            >
-              02 Why Us
-            </button>
-            <button
-              onClick={() => scrollToStage("stage-03")}
-              className={`${
-                activeStage === "stage-03"
-                  ? "text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5"
-                  : "text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5"
-              } transition-all cursor-pointer`}
-            >
-              03 Services
-            </button>
-            <button
-              onClick={() => scrollToStage("stage-gallery")}
-              className={`${
-                activeStage === "stage-gallery"
-                  ? "text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5"
-                  : "text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5"
-              } transition-all cursor-pointer`}
-            >
-              04 Gallery
-            </button>
-            <button
-              onClick={() => scrollToStage("stage-04")}
-              className={`${
-                activeStage === "stage-04"
-                  ? "text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5"
-                  : "text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5"
-              } transition-all cursor-pointer`}
-            >
-              05 Contact
-            </button>
+          {/* Desktop Navigation Links (Sticker Buttons) */}
+          <nav className="hidden md:flex items-center gap-2 font-headline text-xs uppercase tracking-wider font-bold">
+            {(
+              [
+                { id: "stage-01", label: "Home", tilt: "-rotate-1" },
+                { id: "stage-02", label: "Why Us", tilt: "rotate-1" },
+                { id: "stage-03", label: "Services", tilt: "-rotate-1" },
+                { id: "stage-gallery", label: "Gallery", tilt: "rotate-1" },
+                { id: "stage-04", label: "Contact", tilt: "-rotate-1" },
+              ] as const
+            ).map((item) => {
+              const isActive = activeStage === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToStage(item.id as StageId)}
+                  className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+                    isActive
+                      ? `bg-yellow-400 text-black border-black comic-shadow-sm ${item.tilt} scale-105 z-10`
+                      : `bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 ${item.tilt}`
+                  }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
             <Link
               href="/gallery"
-              className="text-black font-headline font-black text-xs uppercase px-2 py-0.5 rounded bg-yellow-300 dark:bg-yellow-400 border border-black comic-shadow-sm hover:bg-yellow-400 transition-all ml-1"
+              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 py-1.5 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:-rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ml-1 cursor-pointer"
             >
               ★ Full Vault ↗
             </Link>
@@ -1307,29 +1384,32 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Mobile Stage Navigation Pill Strip (With Direct Gallery Link) */}
-        <div className="md:hidden flex items-center justify-start gap-1.5 px-3 py-1.5 bg-yellow-50/95 dark:bg-[#12121A]/95 border-t border-black/10 dark:border-white/10 overflow-x-auto no-scrollbar">
+        {/* Mobile Stage Navigation Pill Strip (Sticker Buttons) */}
+        <div className="md:hidden flex items-center justify-start gap-2 px-3 py-2 bg-yellow-50/95 dark:bg-[#12121A]/95 border-t border-black/10 dark:border-white/10 overflow-x-auto no-scrollbar">
           {(
             [
-              { id: "stage-01", label: "01 Manifesto" },
-              { id: "stage-02", label: "02 Why Us" },
-              { id: "stage-03", label: "03 Services" },
-              { id: "stage-gallery", label: "★ 04 Gallery" },
-              { id: "stage-04", label: "05 Contact" },
+              { id: "stage-01", label: "Home", tilt: "-rotate-1" },
+              { id: "stage-02", label: "Why Us", tilt: "rotate-1" },
+              { id: "stage-03", label: "Services", tilt: "-rotate-1" },
+              { id: "stage-gallery", label: "Gallery", tilt: "rotate-1" },
+              { id: "stage-04", label: "Contact", tilt: "-rotate-1" },
             ] as const
-          ).map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollToStage(item.id as StageId)}
-              className={`px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-                activeStage === item.id
-                  ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black"
-                  : "bg-white dark:bg-[#181824] text-black/60 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 hover:text-black dark:hover:text-white"
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+          ).map((item) => {
+            const isActive = activeStage === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => scrollToStage(item.id as StageId)}
+                className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+                  isActive
+                    ? `bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black ${item.tilt}`
+                    : `bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white`
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </div>
       </header>
 
@@ -1404,7 +1484,10 @@ export default function Home() {
         id="pinned-stage-track"
       >
         {/* STICKY FIXED VIEWPORT THEATER */}
-        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[84px] pb-2">
+        <div
+          ref={theaterRef}
+          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[84px] pb-2"
+        >
           {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
           <aside className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
             <button
@@ -1485,7 +1568,12 @@ export default function Home() {
           </aside>
 
           {/* MAIN DYNAMIC SCENE CANVAS (Desktop Pinned & Morphing with AnimatePresence) */}
-          <main className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 py-2 sm:py-4 custom-scrollbar">
+          <main
+            ref={mainContainerRef}
+            data-lenis-prevent="true"
+            style={{ overscrollBehaviorY: "contain" }}
+            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 py-3 sm:py-5 custom-scrollbar"
+          >
             <AnimatePresence mode="wait">
               {activeStage === "stage-01" && (
                 <motion.div
