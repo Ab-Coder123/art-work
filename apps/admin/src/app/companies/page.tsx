@@ -70,11 +70,9 @@ export default function AdminCompaniesPage() {
       "image/jpeg",
       "image/png",
       "image/webp",
-      "image/svg+xml",
-      "image/gif",
     ];
     if (!validMimes.includes(file.type)) {
-      showNotification("error", "Unsupported file format. Please use PNG, SVG, WebP, or JPG.");
+      showNotification("error", "Unsupported file format. Please use PNG, WebP, or JPG.");
       return;
     }
 
@@ -651,7 +649,7 @@ export default function AdminCompaniesPage() {
                   type="file"
                   ref={fileInputRef}
                   onChange={handleFileInputChange}
-                  accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif"
+                  accept="image/png,image/jpeg,image/webp"
                   className="hidden"
                 />
 
@@ -733,7 +731,7 @@ export default function AdminCompaniesPage() {
                             Drag & drop company logo here, or <span className="text-yellow-400 underline">browse</span>
                           </p>
                           <p className="text-[10px] text-zinc-500 font-mono mt-0.5">
-                            PNG (transparent), SVG, WebP, JPG (max 8MB)
+                            PNG (transparent), WebP, JPG (max 8MB)
                           </p>
                         </div>
                       </>

@@ -167,7 +167,7 @@ BEGIN
     INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
     VALUES (
       'artwork-media', 'artwork-media', true, 8388608,
-      ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif']
+      ARRAY['image/jpeg', 'image/png', 'image/webp']
     )
     ON CONFLICT (id) DO UPDATE
       SET public = EXCLUDED.public,

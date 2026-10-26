@@ -5,8 +5,6 @@ const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
   "image/png",
   "image/webp",
-  "image/svg+xml",
-  "image/gif",
 ]);
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
@@ -33,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     if (!ALLOWED_MIME_TYPES.has(file.type)) {
       return NextResponse.json(
-        { error: `Unsupported file type: ${file.type}. Allowed: PNG, JPG, WebP, SVG, GIF` },
+        { error: `Unsupported file type: ${file.type}. Allowed: PNG, JPG, WebP` },
         { status: 400 }
       );
     }
