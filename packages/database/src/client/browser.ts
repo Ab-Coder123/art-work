@@ -30,9 +30,6 @@ export function createBrowserClient(customUrl?: string, customAnonKey?: string) 
         autoRefreshToken: false,
         detectSessionInUrl: false,
       },
-      ...(typeof globalThis.WebSocket === "undefined"
-        ? { realtime: { createClient: false } }
-        : {}),
     });
   }
 

@@ -34,8 +34,5 @@ export function createAdminClient(customServiceKey?: string): SupabaseClient {
       autoRefreshToken: false,
       persistSession: false,
     },
-    ...(typeof globalThis.WebSocket === "undefined"
-      ? { realtime: { createClient: false } }
-      : {}),
   });
 }
