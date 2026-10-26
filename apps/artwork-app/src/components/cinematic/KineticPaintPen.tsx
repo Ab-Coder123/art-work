@@ -82,7 +82,7 @@ export const KineticPaintPen: React.FC = () => {
           {/* Yellow brush stroke tucked neatly under nib */}
           <motion.path
             d="M 10 45 C 30 50, 60 38, 85 36"
-            stroke="#facc15"
+            stroke="var(--color-primary-yellow, #facc15)"
             strokeWidth="8"
             strokeLinecap="round"
             initial={{ pathLength: 0.3 }}
@@ -124,7 +124,7 @@ export const KineticPaintPen: React.FC = () => {
             {/* Pen Barrel Body (Iconic Canary Yellow) */}
             <path
               d="M 28 20 L 42 20 L 40 80 L 30 80 Z"
-              fill="#facc15"
+              fill="var(--color-primary-yellow, #facc15)"
               stroke="#111111"
               strokeWidth="2.2"
               strokeLinejoin="round"
@@ -185,7 +185,7 @@ export const KineticPaintPen: React.FC = () => {
             {/* Metallic Nib */}
             <path
               d="M 32 96 L 38 96 L 35 112 Z"
-              fill="#facc15"
+              fill="var(--color-primary-yellow, #facc15)"
               stroke="#111111"
               strokeWidth="1.8"
               strokeLinejoin="round"

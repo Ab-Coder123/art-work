@@ -84,7 +84,7 @@ export const WhyUsStage: React.FC = () => {
                 strokeWidth="2.5"
                 viewBox="0 0 54 44"
               >
-                <path d="M 4,36 L 50,36 L 46,14 L 32,24 L 27,6 L 22,24 L 8,14 Z" fill="#FACC15"></path>
+                <path d="M 4,36 L 50,36 L 46,14 L 32,24 L 27,6 L 22,24 L 8,14 Z" fill="var(--color-primary-yellow, #dcb858)"></path>
                 <circle cx="27" cy="6" fill="#111" r="3"></circle>
                 <circle cx="8" cy="14" fill="#111" r="3"></circle>
                 <circle cx="46" cy="14" fill="#111" r="3"></circle>
@@ -133,7 +133,7 @@ export const WhyUsStage: React.FC = () => {
             {/* Sticker: CONTENT STRATEGY */}
             <motion.div
               whileHover={{ scale: 1.05, rotate: 0 }}
-              className="relative bg-white text-black border-2 border-dashed border-black font-headline text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded rotate-[1.5deg] shadow-[2px_2px_0px_#FACC15] cursor-pointer"
+              className="relative bg-white text-black border-2 border-dashed border-black font-headline text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded rotate-[1.5deg] shadow-[2px_2px_0px_var(--color-primary-yellow,#dcb858)] cursor-pointer"
             >
               CONTENT STRATEGY // 360°
             </motion.div>

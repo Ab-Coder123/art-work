@@ -216,7 +216,7 @@ export default function GalleryPage() {
               href="/company"
               className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              Company
+              Partner&apos;s
             </Link>
             <Link
               href="/why-us"
@@ -914,7 +914,7 @@ export default function GalleryPage() {
               HOME
             </Link>
             <Link href="/company" className="hover:text-black dark:hover:text-white hover:underline">
-              COMPANY
+              PARTNER&apos;S
             </Link>
             <Link href="/why-us" className="hover:text-black dark:hover:text-white hover:underline">
               WHY US

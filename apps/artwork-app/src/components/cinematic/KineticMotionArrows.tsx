@@ -28,7 +28,7 @@ export const KineticMotionArrows: React.FC = () => {
           {/* Subtle Canary Glow Underlay */}
           <path
             d="M 20 25 C 70 15, 125 45, 130 115"
-            stroke="#facc15"
+            stroke="var(--color-primary-yellow, #facc15)"
             strokeWidth="4"
             strokeLinecap="round"
           />
@@ -48,7 +48,7 @@ export const KineticMotionArrows: React.FC = () => {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            fill="#facc15"
+            fill="var(--color-primary-yellow, #facc15)"
           />
         </svg>
       </motion.div>
@@ -66,7 +66,7 @@ export const KineticMotionArrows: React.FC = () => {
           {/* Delicate Stroke S-Curve */}
           <path
             d="M 60 10 C 15 50, 75 90, 30 145"
-            stroke="#facc15"
+            stroke="var(--color-primary-yellow, #facc15)"
             strokeWidth="4"
             strokeLinecap="round"
           />
@@ -85,7 +85,7 @@ export const KineticMotionArrows: React.FC = () => {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            fill="#facc15"
+            fill="var(--color-primary-yellow, #facc15)"
           />
         </svg>
       </motion.div>
@@ -117,7 +117,7 @@ export const KineticMotionArrows: React.FC = () => {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            fill="#facc15"
+            fill="var(--color-primary-yellow, #facc15)"
           />
         </svg>
       </motion.div>

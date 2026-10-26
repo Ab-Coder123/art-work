@@ -27,7 +27,7 @@ export interface KineticBrushStrokeProps {
  */
 export const KineticBrushStroke: React.FC<KineticBrushStrokeProps> = ({
   variant = "wave",
-  color = "#dcb858",
+  color = "var(--color-primary-yellow, #dcb858)",
   strokeWidth = 3,
   delay = 0.15,
   duration = 0.85,
@@ -255,7 +255,7 @@ export interface KineticBrushWordProps {
 export const KineticBrushWord: React.FC<KineticBrushWordProps> = ({
   children,
   variant = "wave",
-  color = "#dcb858",
+  color = "var(--color-primary-yellow, #dcb858)",
   strokeWidth = 3,
   delay = 0.15,
   duration = 0.85,

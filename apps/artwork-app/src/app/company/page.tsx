@@ -93,9 +93,9 @@ export default function CompanyPage() {
               Home
             </Link>
 
-            {/* Active Link: Company */}
+            {/* Active Link: Partners */}
             <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
-              Company
+              Partner&apos;s
             </span>
 
             <Link
@@ -160,7 +160,7 @@ export default function CompanyPage() {
             Home
           </Link>
           <span className="px-3 py-1.5 rounded-lg text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm -rotate-1 whitespace-nowrap">
-            Company
+            Partner&apos;s
           </span>
           <Link
             href="/why-us"
@@ -496,13 +496,13 @@ export default function CompanyPage() {
       {/* ================= STUDIO FOOTER ================= */}
       <footer className="w-full py-4 bg-white/95 dark:bg-[#0D0D12]/95 text-black dark:text-white border-t border-black/10 dark:border-white/10 z-30 transition-colors duration-200">
         <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-7xl mx-auto text-[10px] text-black/70 dark:text-zinc-400 font-mono gap-2 sm:gap-0">
-          <div>© 2026 Art Work - Marketing Solutions. Client Network &amp; Company Showcase.</div>
+          <div>© 2026 Art Work - Marketing Solutions. Client Network &amp; Partners Showcase.</div>
           <div className="flex items-center gap-4 font-headline font-bold flex-wrap justify-center">
             <Link href="/" className="hover:text-black dark:hover:text-yellow-400 hover:underline">
               HOME
             </Link>
             <Link href="/company" className="text-yellow-600 dark:text-yellow-400 underline decoration-yellow-400 font-black">
-              COMPANY
+              PARTNER&apos;S
             </Link>
             <Link href="/why-us" className="hover:text-black dark:hover:text-yellow-400 hover:underline">
               WHY US

@@ -233,7 +233,7 @@ export const InteractiveDoodleCanvas: React.FC = () => {
               {/* Pen Barrel Body (Iconic Canary Yellow) */}
               <path
                 d="M 28 20 L 42 20 L 40 80 L 30 80 Z"
-                fill="#facc15"
+                fill="var(--color-primary-yellow, #dcb858)"
                 stroke="#111111"
                 strokeWidth="2.5"
                 strokeLinejoin="round"
@@ -248,10 +248,10 @@ export const InteractiveDoodleCanvas: React.FC = () => {
               {/* Grip */}
               <path d="M 30 80 L 40 80 L 38 96 L 32 96 Z" fill="#111111" stroke="#111111" strokeWidth="2" />
               {/* Nib */}
-              <path d="M 32 96 L 38 96 L 35 112 Z" fill="#dcb858" stroke="#111111" strokeWidth="2" strokeLinejoin="round" />
+              <path d="M 32 96 L 38 96 L 35 112 Z" fill="var(--color-primary-yellow, #dcb858)" stroke="#111111" strokeWidth="2" strokeLinejoin="round" />
               <circle cx="35" cy="102" r="1.2" fill="#111111" />
               {/* Nib Fresh Ink */}
-              <circle cx="35" cy="113" r="2.5" fill="#dcb858" stroke="#111111" strokeWidth="1" />
+              <circle cx="35" cy="113" r="2.5" fill="var(--color-primary-yellow, #dcb858)" stroke="#111111" strokeWidth="1" />
             </svg>
           </div>
         </div>

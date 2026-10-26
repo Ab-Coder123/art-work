@@ -135,7 +135,7 @@ function ManifestoContent({
       {/* Hero Typography Section */}
       <div className="relative mb-3 sm:mb-4 max-w-5xl">
         <h1 className="font-headline font-black text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[54px] xl:text-[64px] tracking-tight leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
-          <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4} delay={0.1}>
+          <KineticBrushWord variant="wave" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4} delay={0.1}>
             {content.headlinePart1}
           </KineticBrushWord> <br />
           <span className="relative inline-block mt-1 sm:mt-2">
@@ -290,7 +290,7 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
             <span>{content.eyebrow}</span>
           </div>
           <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black dark:text-white tracking-tight">
-            <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
+            <KineticBrushWord variant="double" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4}>
               {content.headline}
             </KineticBrushWord>
           </h2>
@@ -503,7 +503,7 @@ function GalleryShowcaseContent() {
           </div>
           <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black dark:text-white tracking-tight">
             CRAFTED IN INK.{" "}
-            <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
+            <KineticBrushWord variant="double" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4}>
               EXECUTED IN ARENAS.
             </KineticBrushWord>
           </h2>
@@ -986,7 +986,7 @@ function StudioFooter({ scrollToStage }: { scrollToStage: (s: StageId) => void }
             HOME
           </button>
           <Link href="/company" className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
-            COMPANY
+            PARTNER&apos;S
           </Link>
           <button onClick={() => scrollToStage("stage-02")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
             WHY US
@@ -1517,7 +1517,7 @@ export default function Home() {
             href="/company"
             className="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5"
           >
-            Company
+            Partner&apos;s
           </Link>
           <button
             onClick={() => scrollToStage("stage-02")}
