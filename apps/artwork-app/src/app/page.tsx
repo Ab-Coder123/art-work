@@ -38,7 +38,12 @@ import {
 
 import rawProjects from "@/data/projects.json";
 import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
-import { type ContactSectionContent, type ProjectRecord, resolveSafeYouTubeEmbed } from "@art-work/types";
+import {
+  type ContactSectionContent,
+  type ProjectRecord,
+  resolveSafeYouTubeEmbed,
+  getProjectThumbnailUrl,
+} from "@art-work/types";
 
 type StageId = "stage-01" | "stage-02" | "stage-03" | "stage-gallery" | "stage-04";
 const DEFAULT_HERO_CONTENT = {
@@ -73,21 +78,21 @@ function ManifestoContent({
   content = DEFAULT_HERO_CONTENT,
 }: ManifestoContentProps) {
   return (
-    <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
       {/* Top Energy Badge & Comic Stickers */}
-      <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 mb-2 sm:mb-2.5">
-        <div className="inline-flex items-center gap-1.5 border border-black bg-white dark:bg-[#151520] text-black dark:text-zinc-200 px-2.5 sm:px-3 py-0.5 rounded-full comic-shadow-sm font-headline text-[9px] sm:text-[10px] font-black uppercase tracking-wider">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4">
+        <div className="inline-flex items-center gap-1.5 border-2 border-black bg-white dark:bg-[#151520] text-black dark:text-zinc-200 px-3 sm:px-4 py-1 rounded-full comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
           <span className="text-yellow-500 font-black">★</span>
           <span>{content.announcementBadge}</span>
-          <span className="bg-yellow-400 text-black px-1.5 py-0.2 rounded-full font-bold ml-0.5 sm:ml-1 text-[8px] sm:text-[9px]">
+          <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-full font-bold ml-1 text-[9px] sm:text-[10px]">
             {content.editionBadge}
           </span>
         </div>
 
-        {/* Sticky Note Callout 01 (Clean on mobile) */}
+        {/* Sticky Note Callout 01 */}
         <div className="hidden xs:block relative -rotate-2 hover:rotate-0 transition-transform duration-200">
-          <div className="bg-yellow-200 border border-black px-2.5 py-0.5 text-[9px] sm:text-[10px] font-headline font-bold text-black comic-shadow-sm flex items-center gap-1.5">
-            <Lightbulb className="w-3.5 h-3.5 text-black stroke-[2]" />
+          <div className="bg-yellow-200 border-2 border-black px-3 py-1 text-[10px] sm:text-xs font-headline font-bold text-black comic-shadow-sm flex items-center gap-1.5">
+            <Lightbulb className="w-4 h-4 text-black stroke-[2]" />
             <span>STICKY_NOTE_01.CAD: &quot;Zero cookie-cutter templates.&quot;</span>
           </div>
           <div className="absolute -top-1.5 left-4 w-6 h-2 bg-white/70 border border-black/40 rotate-2"></div>
@@ -95,37 +100,37 @@ function ManifestoContent({
       </div>
 
       {/* Hero Typography Section */}
-      <div className="relative mb-2.5 sm:mb-3 max-w-4xl">
-        <h1 className="font-headline font-black text-[27px] xs:text-[32px] sm:text-4xl md:text-5xl lg:text-[44px] xl:text-[48px] tracking-tight leading-[1.05] sm:leading-[1.02] text-black dark:text-white">
+      <div className="relative mb-3 sm:mb-4 max-w-5xl">
+        <h1 className="font-headline font-black text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[54px] xl:text-[64px] tracking-tight leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
           <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4} delay={0.1}>
             {content.headlinePart1}
           </KineticBrushWord> <br />
-          <span className="relative inline-block mt-1 sm:mt-1.5">
+          <span className="relative inline-block mt-1 sm:mt-2">
             {/* Canary Yellow Ink Splash Backdrop */}
             <motion.span
               initial={{ scaleX: 0, originX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-              className="absolute -inset-1 sm:-inset-1.5 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"
+              className="absolute -inset-1 sm:-inset-2 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"
             ></motion.span>
-            <span className="text-black relative z-10 px-1.5 sm:px-2">{content.headlinePart2}</span>
+            <span className="text-black relative z-10 px-2 sm:px-3">{content.headlinePart2}</span>
             {/* Slender Hand-drawn Paintbrush Stroke */}
             <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.2} delay={0.35} />
           </span>
         </h1>
 
         {/* Comic Starburst / POW Badge */}
-        <div className="absolute -top-2 right-0 sm:right-6 hidden sm:block animate-star-pulse">
-          <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center">
+        <div className="absolute -top-3 right-0 sm:right-6 hidden sm:block animate-star-pulse">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
             <svg
               className="w-full h-full fill-yellow-400 stroke-black stroke-2 drop-shadow-md"
               viewBox="0 0 100 100"
             >
               <polygon points="50,0 63,28 95,20 78,48 100,70 69,76 65,100 45,82 18,95 24,68 0,55 25,36 15,10 44,22"></polygon>
             </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-1 text-black font-headline font-black text-[7px] uppercase leading-tight -rotate-6">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-1 text-black font-headline font-black text-[8px] sm:text-[9px] uppercase leading-tight -rotate-6">
               <span>100% RAW</span>
-              <span className="bg-black text-white px-1 py-0.2 rounded-sm text-[6px]">UNAPOLOGETIC</span>
+              <span className="bg-black text-white px-1 py-0.2 rounded-sm text-[7px]">UNAPOLOGETIC</span>
               <span>CREATIVE</span>
             </div>
           </div>
@@ -133,35 +138,35 @@ function ManifestoContent({
       </div>
 
       {/* Action Cluster & Team Collective Art with Magnetic Buttons */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
-        <div className="lg:col-span-5 space-y-2 sm:space-y-2.5">
-          <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 max-w-sm leading-relaxed">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-center">
+        <div className="lg:col-span-5 space-y-3 sm:space-y-4">
+          <p className="font-body text-sm sm:text-base text-black/85 dark:text-zinc-200 max-w-md leading-relaxed">
             {content.introParagraph}
           </p>
 
           {/* Primary Action Buttons: Gallery + Capabilities */}
-          <div className="flex flex-wrap items-center gap-2 pt-0.5">
+          <div className="flex flex-wrap items-center gap-2.5 pt-1">
             <Link
               href="/gallery"
-              className="relative group inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs px-3.5 sm:px-4 py-2 rounded-DEFAULT border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 cursor-pointer"
+              className="relative group inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 sm:py-3 rounded-DEFAULT border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 cursor-pointer"
             >
               <span>★ EXPLORE GALLERY</span>
-              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </Link>
 
             <MagneticButton soundType="click">
               <button
                 onClick={onViewCapabilities}
-                className="inline-flex items-center gap-1 bg-white dark:bg-[#161622] text-black dark:text-white hover:bg-black dark:hover:bg-yellow-400 hover:text-white dark:hover:text-black font-headline font-bold text-xs px-3 sm:px-3.5 py-2 rounded-DEFAULT border-2 border-black dark:border-zinc-600 comic-shadow-sm transition-all duration-150 cursor-pointer"
+                className="inline-flex items-center gap-1.5 bg-white dark:bg-[#161622] text-black dark:text-white hover:bg-black dark:hover:bg-yellow-400 hover:text-white dark:hover:text-black font-headline font-bold text-xs sm:text-sm px-4 sm:px-4.5 py-2.5 sm:py-3 rounded-DEFAULT border-2 border-black dark:border-zinc-600 comic-shadow-sm transition-all duration-150 cursor-pointer"
               >
                 <span>OUR DISCIPLINES</span>
-                <ArrowDown className="w-3.5 h-3.5 stroke-[2.5]" />
+                <ArrowDown className="w-4 h-4 stroke-[2.5]" />
               </button>
             </MagneticButton>
           </div>
 
           {/* Milestone Badges */}
-          <div className="grid grid-cols-3 gap-1.5 pt-0.5 max-w-sm">
+          <div className="grid grid-cols-3 gap-2 pt-1 max-w-md">
             {content.metrics.map((badge, idx) => (
               <motion.div
                 key={badge.label}
@@ -169,10 +174,12 @@ function ManifestoContent({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.4, delay: 0.1 + idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="border border-black dark:border-zinc-700 bg-white dark:bg-[#151520] p-1.5 rounded-DEFAULT comic-shadow-sm text-center"
+                className="border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] p-2 sm:p-2.5 rounded-DEFAULT comic-shadow-sm text-center"
               >
-                <div className="font-headline font-black text-xs sm:text-sm md:text-base text-black dark:text-white">{badge.num}</div>
-                <div className="text-[7.5px] sm:text-[8px] font-headline font-bold text-black/70 dark:text-zinc-400 uppercase">
+                <div className="font-headline font-black text-sm sm:text-base md:text-lg text-black dark:text-white">
+                  {badge.num}
+                </div>
+                <div className="text-[8px] sm:text-[9px] font-headline font-bold text-black/70 dark:text-zinc-400 uppercase mt-0.5">
                   {badge.label}
                 </div>
               </motion.div>
@@ -188,26 +195,26 @@ function ManifestoContent({
           transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="lg:col-span-7 relative w-full"
         >
-          <div className="border-2 sm:border-3 border-black dark:border-zinc-600 bg-white dark:bg-[#151520] rounded-lg p-2 comic-shadow relative group">
-            <div className="absolute -top-2 left-6 w-10 h-4 bg-yellow-300/80 border border-black/30 -rotate-3 z-30"></div>
-            <div className="absolute -top-2 right-6 w-10 h-4 bg-yellow-300/80 border border-black/30 rotate-2 z-30"></div>
+          <div className="border-2 sm:border-3 border-black dark:border-zinc-600 bg-white dark:bg-[#151520] rounded-xl p-2.5 sm:p-3 comic-shadow relative group">
+            <div className="absolute -top-2.5 left-6 w-12 h-5 bg-yellow-300/80 border border-black/30 -rotate-3 z-30"></div>
+            <div className="absolute -top-2.5 right-6 w-12 h-5 bg-yellow-300/80 border border-black/30 rotate-2 z-30"></div>
 
-            <div className="flex items-center justify-between pb-1 mb-1 border-b border-black/10 dark:border-white/10 text-[10px] font-headline font-bold text-black dark:text-white">
-              <div className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-red-500 border border-black"></span>
-                <span className="w-2 h-2 rounded-full bg-yellow-400 border border-black"></span>
-                <span className="w-2 h-2 rounded-full bg-green-500 border border-black"></span>
-                <span className="ml-1 text-black/60 dark:text-zinc-400 font-mono text-[9px] sm:text-[10px]">
+            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-black/10 dark:border-white/10 text-xs font-headline font-bold text-black dark:text-white">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500 border border-black"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-black"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-green-500 border border-black"></span>
+                <span className="ml-1 text-black/60 dark:text-zinc-400 font-mono text-[10px] sm:text-xs">
                   STUDIO_COLLECTIVE_CANVAS.V4
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-[9px] sm:text-[10px]">
-                <Paintbrush className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-black dark:text-yellow-400" />
+              <div className="flex items-center gap-1 text-[10px] sm:text-xs">
+                <Paintbrush className="w-3.5 h-3.5 text-black dark:text-yellow-400" />
                 <span className="dark:text-yellow-400">INK_LAYER_ACTIVE</span>
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded border border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] aspect-[16/9] max-h-[190px] sm:max-h-[220px] lg:max-h-[180px] xl:max-h-[210px] flex items-center justify-center">
+            <div className="relative overflow-hidden rounded-lg border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] aspect-[16/10] min-h-[200px] sm:min-h-[250px] lg:min-h-[280px] xl:min-h-[310px] flex items-center justify-center">
               <Image
                 src="/assets/images/hero_studio_collective.webp"
                 alt="Art Work Creative Marketing Studio Collective"
@@ -229,13 +236,13 @@ function ManifestoContent({
    ========================================================================= */
 function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof DEFAULT_WHY_US_CONTENT }) {
   return (
-    <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-2 pb-1.5 border-b-2 border-black dark:border-zinc-700">
+    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-3 pb-2 border-b-2 border-black dark:border-zinc-700">
         <div>
-          <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-2.5 py-0.5 border border-black comic-shadow-sm text-[10px] font-headline font-black uppercase mb-1">
+          <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1.5">
             <span>{content.eyebrow}</span>
           </div>
-          <h2 className="font-headline font-black text-lg sm:text-xl lg:text-2xl text-black dark:text-white tracking-tight">
+          <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black dark:text-white tracking-tight">
             <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
               {content.headline}
             </KineticBrushWord>
@@ -244,40 +251,40 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
         <div className="flex items-center gap-2">
           <a
             href="/why-us"
-            className="inline-flex items-center gap-1.5 font-headline font-black text-[11px] uppercase bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black px-3 py-1.5 rounded border border-black comic-shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 font-headline font-black text-xs uppercase bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black px-4 py-2 rounded border border-black comic-shadow-sm transition-all"
           >
             <span>{content.exploreCtaText}</span>
-            <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+            <ArrowRight className="w-4 h-4 stroke-[2.5]" />
           </a>
         </div>
       </div>
 
-      {/* 3 Bento Cards (Compact) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 mb-2.5">
+      {/* 3 Bento Cards (Expanded) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
         <motion.div
           initial={{ opacity: 0, y: 22, scale: 0.97 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-2.5 sm:p-3 rounded-lg bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between"
+          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[160px]"
         >
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
                 {content.bentoCards[0].number}
               </span>
-              <Layers className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
+              <Layers className="w-5 h-5 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-0.5 uppercase">
+            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
               {content.bentoCards[0].title}
             </h3>
-            <p className="font-body text-[10px] text-black/75 dark:text-zinc-300 leading-snug">
+            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
               {content.bentoCards[0].description}
             </p>
           </div>
-          <div className="pt-1.5 mt-1.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[9px] font-headline font-bold">
-            <span className="bg-black text-white px-1.5 py-0.2 rounded">{content.bentoCards[0].badge}</span>
-            <CheckCircle2 className="w-3 h-3 text-black dark:text-yellow-400" />
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
+            <span className="bg-black text-white px-2 py-0.5 rounded">{content.bentoCards[0].badge}</span>
+            <CheckCircle2 className="w-4 h-4 text-black dark:text-yellow-400" />
           </div>
         </motion.div>
 
@@ -286,27 +293,27 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-2.5 sm:p-3 rounded-lg bg-yellow-50 dark:bg-[#1B1B28] comic-shadow flex flex-col justify-between"
+          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-yellow-50 dark:bg-[#1B1B28] comic-shadow flex flex-col justify-between min-h-[160px]"
         >
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
                 {content.bentoCards[1].number}
               </span>
-              <Sparkles className="w-4 h-4 text-black dark:text-yellow-400 fill-yellow-400" />
+              <Sparkles className="w-5 h-5 text-black dark:text-yellow-400 fill-yellow-400" />
             </div>
-            <h3 className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-0.5 uppercase">
+            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
               {content.bentoCards[1].title}
             </h3>
-            <p className="font-body text-[10px] text-black/75 dark:text-zinc-300 leading-snug">
+            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
               {content.bentoCards[1].description}
             </p>
           </div>
-          <div className="pt-1.5 mt-1.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[9px] font-headline font-bold">
-            <span className="bg-yellow-400 text-black border border-black px-1.5 py-0.2 rounded">
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
+            <span className="bg-yellow-400 text-black border border-black px-2 py-0.5 rounded">
               {content.bentoCards[1].badge}
             </span>
-            <Zap className="w-3 h-3 text-black dark:text-yellow-400 fill-yellow-400" />
+            <Zap className="w-4 h-4 text-black dark:text-yellow-400 fill-yellow-400" />
           </div>
         </motion.div>
 
@@ -315,46 +322,46 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-2.5 sm:p-3 rounded-lg bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between"
+          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[160px]"
         >
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
                 {content.bentoCards[2].number}
               </span>
-              <Palette className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
+              <Palette className="w-5 h-5 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-xs sm:text-sm text-black dark:text-white mb-0.5 uppercase">
+            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
               {content.bentoCards[2].title}
             </h3>
-            <p className="font-body text-[10px] text-black/75 dark:text-zinc-300 leading-snug">
+            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
               {content.bentoCards[2].description}
             </p>
           </div>
-          <div className="pt-1.5 mt-1.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[9px] font-headline font-bold">
-            <span className="bg-black text-white px-1.5 py-0.2 rounded">{content.bentoCards[2].badge}</span>
-            <Paintbrush className="w-3 h-3 text-black dark:text-yellow-400" />
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
+            <span className="bg-black text-white px-2 py-0.5 rounded">{content.bentoCards[2].badge}</span>
+            <Paintbrush className="w-4 h-4 text-black dark:text-yellow-400" />
           </div>
         </motion.div>
       </div>
 
       {/* Blueprint Showcase Card */}
       <ScrollReveal direction="up" distance={20}>
-        <div className="border-2 sm:border-3 border-black dark:border-zinc-700 rounded-lg p-2.5 sm:p-3 bg-white dark:bg-[#151520] comic-shadow relative">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
-            <div className="lg:col-span-6 space-y-1">
-              <div className="inline-flex items-center gap-1 text-[9px] font-headline font-black uppercase text-black bg-yellow-300 px-1.5 py-0.2 rounded border border-black">
-                <Compass className="w-3 h-3 text-black" />
+        <div className="border-2 sm:border-3 border-black dark:border-zinc-700 rounded-xl p-3.5 sm:p-4 bg-white dark:bg-[#151520] comic-shadow relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+            <div className="lg:col-span-6 space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 text-[10px] font-headline font-black uppercase text-black bg-yellow-300 px-2 py-0.5 rounded border border-black">
+                <Compass className="w-3.5 h-3.5 text-black" />
                 <span>{content.blueprint.badge}</span>
               </div>
-              <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white">
+              <h3 className="font-headline font-black text-base sm:text-lg text-black dark:text-white">
                 {content.blueprint.title}
               </h3>
-              <p className="font-body text-[10px] sm:text-[11px] text-black/80 dark:text-zinc-300">
+              <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed">
                 {content.blueprint.description}
               </p>
             </div>
-            <div className="lg:col-span-6 border border-black dark:border-zinc-700 rounded overflow-hidden aspect-[16/9] max-h-[120px] lg:max-h-[135px] bg-white dark:bg-[#0E0E14] relative">
+            <div className="lg:col-span-6 border-2 border-black dark:border-zinc-700 rounded-lg overflow-hidden aspect-[16/9] min-h-[140px] sm:min-h-[170px] lg:min-h-[190px] bg-white dark:bg-[#0E0E14] relative">
               <Image
                 src={content.blueprint.image}
                 alt={content.blueprint.altText}
@@ -375,7 +382,7 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
    ========================================================================= */
 function ServicesContent() {
   return (
-    <div className="w-full max-w-6xl mx-auto py-1 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
       <Capabilities3DMatrix />
     </div>
   );
@@ -412,11 +419,11 @@ function GalleryShowcaseContent() {
   const featured = projectsList.slice(0, 3);
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-2 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
       {/* Comic Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-3 pb-2 border-b-2 border-black dark:border-zinc-700">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-3 sm:mb-4 pb-2 border-b-2 border-black dark:border-zinc-700">
         <div>
-          <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-2.5 py-0.5 border border-black comic-shadow-sm text-[10px] font-headline font-black uppercase mb-1">
+          <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1.5">
             <span>★ 04 PROJECT ARCHIVE &amp; GALLERY</span>
           </div>
           <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black dark:text-white tracking-tight">
@@ -425,17 +432,17 @@ function GalleryShowcaseContent() {
               EXECUTED IN ARENAS.
             </KineticBrushWord>
           </h2>
-          <p className="font-body text-xs text-black/75 dark:text-zinc-300 mt-0.5">
+          <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 mt-1">
             Volumetric 8K LED walls, parametric stage trusses, and dynamic lighting rigs.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Link
             href="/gallery"
-            className="inline-flex items-center gap-1.5 font-headline font-black text-xs uppercase bg-yellow-400 hover:bg-yellow-300 text-black px-3.5 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 font-headline font-black text-xs uppercase bg-yellow-400 hover:bg-yellow-300 text-black px-4 py-2 rounded border-2 border-black comic-shadow-sm transition-all"
           >
             <span>VIEW ALL PROJECTS ({projectsList.length})</span>
-            <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+            <ArrowRight className="w-4 h-4 stroke-[2.5]" />
           </Link>
         </div>
       </div>
@@ -447,8 +454,8 @@ function GalleryShowcaseContent() {
         if (!yt) return null;
 
         return (
-          <div className="mb-4 p-3.5 sm:p-5 rounded-2xl border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] comic-shadow">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+          <div className="mb-4 sm:mb-5 p-4 sm:p-6 rounded-2xl border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] comic-shadow">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
               {/* Responsive Embedded YouTube Player */}
               <div className="lg:col-span-7">
                 <div className="relative aspect-video rounded-xl overflow-hidden border-2 border-black bg-black comic-shadow-sm">
@@ -464,39 +471,39 @@ function GalleryShowcaseContent() {
               </div>
 
               {/* Video Info & Metadata */}
-              <div className="lg:col-span-5 flex flex-col justify-between space-y-2.5">
+              <div className="lg:col-span-5 flex flex-col justify-between space-y-3">
                 <div>
-                  <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-                    <span className="bg-yellow-400 text-black text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm">
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
                       {primary.stamp}
                     </span>
-                    <span className="bg-red-600 text-white text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm">
+                    <span className="bg-red-600 text-white text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
                       ▶ OFFICIAL SHOWREEL
                     </span>
-                    <span className="text-[10px] font-mono text-black/60 dark:text-zinc-400 uppercase">
+                    <span className="text-xs font-mono text-black/60 dark:text-zinc-400 uppercase">
                       {primary.client}
                     </span>
                   </div>
 
-                  <h3 className="font-headline font-black text-lg sm:text-xl text-black dark:text-white tracking-tight mb-1">
+                  <h3 className="font-headline font-black text-xl sm:text-2xl text-black dark:text-white tracking-tight mb-1.5">
                     {primary.title}
                   </h3>
 
                   {primary.youtubeTitle && primary.youtubeTitle !== primary.title && (
-                    <div className="text-xs font-headline font-extrabold text-red-600 dark:text-red-400 mb-1">
+                    <div className="text-xs sm:text-sm font-headline font-extrabold text-red-600 dark:text-red-400 mb-1.5">
                       🎬 {primary.youtubeTitle}
                     </div>
                   )}
 
-                  <p className="font-body text-xs text-black/80 dark:text-zinc-300 leading-relaxed line-clamp-4 mb-2.5">
+                  <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed line-clamp-4 mb-3">
                     {primary.youtubeDescription || primary.description}
                   </p>
 
-                  <div className="flex flex-wrap gap-1 mb-2">
+                  <div className="flex flex-wrap gap-1.5 mb-3">
                     {primary.tags.map((tag, i) => (
                       <span
                         key={i}
-                        className="text-[9px] font-headline font-bold uppercase bg-yellow-100 dark:bg-zinc-800 border border-black/30 dark:border-zinc-700 text-black dark:text-zinc-200 px-2 py-0.5 rounded"
+                        className="text-[10px] font-headline font-bold uppercase bg-yellow-100 dark:bg-zinc-800 border border-black/30 dark:border-zinc-700 text-black dark:text-zinc-200 px-2.5 py-0.5 rounded"
                       >
                         {tag}
                       </span>
@@ -504,26 +511,26 @@ function GalleryShowcaseContent() {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between flex-wrap gap-2">
-                  <span className="font-headline font-black text-xs text-black dark:text-yellow-400">
+                <div className="pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between flex-wrap gap-2">
+                  <span className="font-headline font-black text-xs sm:text-sm text-black dark:text-yellow-400">
                     {primary.stats}
                   </span>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     <a
                       href={yt.canonicalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-headline font-black px-3 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
+                      className="inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-headline font-black px-3.5 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
                     >
                       <span>YOUTUBE</span>
                       <span className="text-[10px]">↗</span>
                     </a>
                     <Link
                       href="/gallery"
-                      className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-headline font-black px-3.5 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
+                      className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-headline font-black px-4 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
                     >
                       <span>EXPLORE GALLERY</span>
-                      <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                     </Link>
                   </div>
                 </div>
@@ -533,51 +540,52 @@ function GalleryShowcaseContent() {
         );
       })()}
 
-      {/* Additional Project Cards Grid (if more than 1) */}
+      {/* Additional Project Cards Grid */}
       {featured.length > 1 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-3">
           {featured.slice(1).map((p) => {
             const ytEmbed = resolveSafeYouTubeEmbed(p);
+            const cardThumb = getProjectThumbnailUrl(p);
             return (
               <Link
                 key={p.id}
                 href="/gallery"
-                className="group border-2 border-black dark:border-zinc-700 p-2.5 rounded-lg bg-white dark:bg-[#151520] comic-shadow hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all flex flex-col justify-between"
+                className="group border-2 border-black dark:border-zinc-700 p-3 sm:p-3.5 rounded-xl bg-white dark:bg-[#151520] comic-shadow hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative aspect-[16/10] rounded overflow-hidden border border-black mb-2 bg-black">
+                  <div className="relative aspect-video rounded-lg overflow-hidden border border-black mb-2.5 bg-black">
                     <Image
-                      src={p.image}
+                      src={cardThumb}
                       alt={p.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <span className="absolute top-1.5 left-1.5 bg-yellow-400 text-black text-[9px] font-headline font-black px-1.5 py-0.5 rounded border border-black comic-shadow-sm">
+                    <span className="absolute top-2 left-2 bg-yellow-400 text-black text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm">
                       {p.stamp}
                     </span>
                     {ytEmbed && (
-                      <span className="absolute bottom-1.5 right-1.5 bg-red-600 text-white text-[9px] font-headline font-black px-1.5 py-0.5 rounded border border-black comic-shadow-sm">
+                      <span className="absolute bottom-2 right-2 bg-red-600 text-white text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm">
                         {ytEmbed.isShort ? "▶ 9:16 REEL" : "▶ VIDEO"}
                       </span>
                     )}
                   </div>
-                  <div className="text-[10px] font-mono text-black/60 dark:text-zinc-400 mb-0.5 uppercase">
+                  <div className="text-[10px] sm:text-xs font-mono text-black/60 dark:text-zinc-400 mb-1 uppercase">
                     {p.client}
                   </div>
-                  <h3 className="font-headline font-black text-sm text-black dark:text-white group-hover:text-yellow-500 transition-colors mb-1 line-clamp-1">
+                  <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white group-hover:text-yellow-500 transition-colors mb-1 line-clamp-1">
                     {p.title}
                   </h3>
                   {p.youtubeTitle && (
-                    <div className="text-[10px] font-headline font-bold text-red-700 dark:text-red-300 line-clamp-1 mb-0.5">
+                    <div className="text-[11px] font-headline font-bold text-red-700 dark:text-red-300 line-clamp-1 mb-1">
                       🎬 {p.youtubeTitle}
                     </div>
                   )}
-                  <p className="font-body text-[11px] text-black/70 dark:text-zinc-300 line-clamp-2 leading-relaxed mb-2">
+                  <p className="font-body text-xs text-black/70 dark:text-zinc-300 line-clamp-2 leading-relaxed mb-2.5">
                     {p.description}
                   </p>
                 </div>
-                <div className="pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold text-black dark:text-yellow-400">
+                <div className="pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-xs font-headline font-bold text-black dark:text-yellow-400">
                   <span>{p.stats}</span>
                   <span className="group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                     EXPLORE ➔
@@ -685,29 +693,29 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-1 sm:py-2 flex flex-col justify-center my-auto">
-      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-lg p-3 sm:p-4 comic-shadow relative mt-2.5">
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border border-black px-3 py-0.5 font-headline font-black text-[9px] uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
+    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 flex flex-col justify-center my-auto">
+      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-4 sm:p-6 lg:p-7 comic-shadow relative mt-2.5">
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border-2 border-black px-4 py-1 font-headline font-black text-[10px] sm:text-xs uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           {content.stageTag}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start pt-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start pt-2">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-5 space-y-2"
+            className="lg:col-span-5 space-y-3"
           >
-            <h2 className="font-headline font-black text-lg sm:text-xl text-black dark:text-white tracking-tight leading-none">
+            <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black dark:text-white tracking-tight leading-tight">
               {content.headline}
             </h2>
-            <p className="font-body text-xs text-black/80 dark:text-zinc-300">
+            <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed">
               {content.description}
             </p>
 
-            <div className="border border-black dark:border-zinc-700 rounded p-1.5 bg-yellow-50 dark:bg-[#1C1C28] relative">
-              <div className="aspect-[16/9] max-h-[110px] lg:max-h-[125px] rounded overflow-hidden border border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] relative">
+            <div className="border-2 border-black dark:border-zinc-700 rounded-xl p-2 bg-yellow-50 dark:bg-[#1C1C28] relative">
+              <div className="aspect-[16/9] min-h-[140px] sm:min-h-[170px] lg:min-h-[190px] rounded-lg overflow-hidden border border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] relative">
                 <Image
                   src={content.intakeImage}
                   alt={content.intakeImageAlt}
@@ -716,20 +724,20 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
                   className="object-cover object-center"
                 />
               </div>
-              <div className="mt-1 text-center text-[9px] font-headline font-bold text-black/70 dark:text-zinc-400">
+              <div className="mt-1.5 text-center text-[10px] sm:text-xs font-headline font-bold text-black/70 dark:text-zinc-400">
                 {content.intakeLabel}
               </div>
             </div>
 
-            <div className="space-y-1 text-[10px] font-headline font-bold text-black dark:text-zinc-200">
-              <div className="flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[9px]">
+            <div className="space-y-1.5 text-xs font-headline font-bold text-black dark:text-zinc-200">
+              <div className="flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
                   @
                 </span>
-                <a href={`mailto:${content.email}`}>{content.email}</a>
+                <a href={`mailto:${content.email}`} className="hover:underline">{content.email}</a>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[9px]">
+              <div className="flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
                   📍
                 </span>
                 <span>{content.studioLocations}</span>
@@ -742,7 +750,7 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7 bg-white dark:bg-[#181824] border border-black dark:border-zinc-700 rounded-lg p-3 comic-shadow-sm"
+            className="lg:col-span-7 bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 rounded-xl p-4 sm:p-5 comic-shadow-sm"
           >
             {submitStatus.type === "success" && (
               <div className="mb-2.5 p-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500 rounded text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2">
@@ -780,13 +788,13 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black dark:text-zinc-300">
+                  <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
                     Your Name / Title
                   </label>
                   <input
-                    className="w-full border border-black dark:border-zinc-700 rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
+                    className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
                     placeholder="Alex Mercer, Head of Brand"
                     required
                     type="text"
@@ -795,11 +803,11 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
                   />
                 </div>
                 <div>
-                  <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black dark:text-zinc-300">
+                  <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
                     Email Address
                   </label>
                   <input
-                    className="w-full border border-black dark:border-zinc-700 rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
+                    className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
                     placeholder="alex@company.com"
                     required
                     type="email"
@@ -810,18 +818,18 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
               </div>
 
               <div>
-                <label className="block font-headline font-bold text-[10px] uppercase mb-1 text-black dark:text-zinc-300">
+                <label className="block font-headline font-bold text-xs uppercase mb-1.5 text-black dark:text-zinc-300">
                   Target Service
                 </label>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1.5">
                   {serviceOptions.map((opt) => (
                     <button
                       key={opt}
                       type="button"
                       onClick={() => setFormData({ ...formData, serviceType: opt })}
-                      className={`text-[9px] font-headline font-bold px-2 py-0.5 rounded border transition-all ${
+                      className={`text-[10px] sm:text-xs font-headline font-bold px-3 py-1 rounded-lg border transition-all cursor-pointer ${
                         formData.serviceType === opt
-                          ? "bg-yellow-400 text-black border-black shadow-[1px_1px_0px_#000]"
+                          ? "bg-yellow-400 text-black border-black shadow-[2px_2px_0px_#000]"
                           : "bg-zinc-100 dark:bg-zinc-800 text-black/70 dark:text-zinc-300 border-zinc-300 dark:border-zinc-700 hover:border-black dark:hover:border-white"
                       }`}
                     >
@@ -832,38 +840,38 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
               </div>
 
               <div>
-                <label className="block font-headline font-bold text-[10px] uppercase mb-0.5 text-black dark:text-zinc-300">
+                <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
                   The Core Brief / Vision Constraints
                 </label>
                 <textarea
-                  className="w-full border border-black dark:border-zinc-700 rounded p-1.5 font-body text-xs focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
+                  className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
                   placeholder="Describe your arena, product launch, or brand evolution requirements (min 10 characters)..."
                   required
-                  rows={2}
+                  rows={3}
                   value={formData.brief}
                   onChange={(e) => setFormData({ ...formData, brief: e.target.value })}
                 ></textarea>
               </div>
 
-              <div className="flex items-center justify-between pt-0.5">
-                <span className="text-[9px] font-body text-black/60 dark:text-zinc-400">
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-[10px] sm:text-xs font-body text-black/60 dark:text-zinc-400">
                   ⚡ 24h rapid response standard
                 </span>
                 <MagneticButton soundType="pop">
                   <button
-                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black font-headline font-black text-xs px-3.5 py-1.5 rounded border border-black comic-shadow-sm active:scale-95 transition-all cursor-pointer disabled:opacity-50"
+                    className="inline-flex items-center gap-2 bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black font-headline font-black text-xs sm:text-sm px-5 py-2.5 rounded-xl border-2 border-black comic-shadow-sm active:scale-95 transition-all cursor-pointer disabled:opacity-50"
                     type="submit"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <Loader2 className="w-4 h-4 animate-spin" />
                         <span>DISPATCHING...</span>
                       </>
                     ) : (
                       <>
-                    <span>{content.submitButtonText}</span>
-                        <Send className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span>{content.submitButtonText}</span>
+                        <Send className="w-4 h-4 stroke-[2.5]" />
                       </>
                     )}
                   </button>
@@ -1396,7 +1404,7 @@ export default function Home() {
         id="pinned-stage-track"
       >
         {/* STICKY FIXED VIEWPORT THEATER */}
-        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[90px] pb-1">
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[84px] pb-2">
           {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
           <aside className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
             <button
@@ -1477,7 +1485,7 @@ export default function Home() {
           </aside>
 
           {/* MAIN DYNAMIC SCENE CANVAS (Desktop Pinned & Morphing with AnimatePresence) */}
-          <main className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 py-1">
+          <main className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 py-2 sm:py-4 custom-scrollbar">
             <AnimatePresence mode="wait">
               {activeStage === "stage-01" && (
                 <motion.div

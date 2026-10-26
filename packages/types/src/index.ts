@@ -86,10 +86,55 @@ export interface DbProjectRecord {
   updated_at?: string;
 }
 
+const DEFAULT_PLACEHOLDER_COVER = "/assets/images/gallery/project_01_neon_horizon.jpg";
+
+/**
+ * Resolves the display thumbnail image for a project.
+ * If a project has a YouTube video and its current cover image is empty or the generic
+ * static placeholder, automatically extracts and uses the YouTube video thumbnail.
+ */
+export function getProjectThumbnailUrl(project: {
+  image?: string | null;
+  cover_image_url?: string | null;
+  youtubeVideoId?: string | null;
+  youtubeUrl?: string | null;
+  youtube_video_id?: string | null;
+  youtube_url?: string | null;
+}): string {
+  const currentImg = (project.image || project.cover_image_url || "").trim();
+  const isGeneric = !currentImg || currentImg === DEFAULT_PLACEHOLDER_COVER || currentImg.includes("project_01_neon_horizon.jpg");
+
+  const ytInput =
+    project.youtubeVideoId ||
+    project.youtubeUrl ||
+    project.youtube_video_id ||
+    project.youtube_url;
+
+  if (ytInput) {
+    const parsed = resolveSafeYouTubeEmbed(ytInput);
+    if (parsed?.videoId && isGeneric) {
+      return `https://img.youtube.com/vi/${parsed.videoId}/hqdefault.jpg`;
+    }
+  }
+
+  return currentImg || DEFAULT_PLACEHOLDER_COVER;
+}
+
 /**
  * Maps a PostgreSQL `public.projects` row into the unified `ProjectRecord` contract.
  */
 export function mapDbProjectToRecord(row: DbProjectRecord): ProjectRecord {
+  const parsedYt = resolveSafeYouTubeEmbed({
+    youtubeUrl: row.youtube_url,
+    youtubeVideoId: row.youtube_video_id,
+    isShort: Boolean(row.youtube_is_short),
+  });
+  const resolvedImage = getProjectThumbnailUrl({
+    image: row.cover_image_url,
+    youtubeVideoId: row.youtube_video_id,
+    youtubeUrl: row.youtube_url,
+  });
+
   return {
     id: row.slug || row.id,
     slug: row.slug,
@@ -102,7 +147,7 @@ export function mapDbProjectToRecord(row: DbProjectRecord): ProjectRecord {
     stamp: row.stamp,
     metaBadge: row.meta_badge,
     cadId: row.cad_id,
-    image: row.cover_image_url,
+    image: resolvedImage,
     altText: row.cover_image_alt,
     stats: row.stats_primary,
     statsSub: row.stats_secondary,
@@ -110,11 +155,11 @@ export function mapDbProjectToRecord(row: DbProjectRecord): ProjectRecord {
     status: row.status,
     order: row.order_index,
     featured: row.featured,
-    youtubeVideoId: row.youtube_video_id ?? null,
-    youtubeUrl: row.youtube_url ?? null,
+    youtubeVideoId: row.youtube_video_id ?? parsedYt?.videoId ?? null,
+    youtubeUrl: row.youtube_url ?? parsedYt?.canonicalUrl ?? null,
     youtubeTitle: row.youtube_title ?? null,
     youtubeDescription: row.youtube_description ?? null,
-    isShort: Boolean(row.youtube_is_short),
+    isShort: Boolean(row.youtube_is_short ?? parsedYt?.isShort),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -126,7 +171,17 @@ export function mapDbProjectToRecord(row: DbProjectRecord): ProjectRecord {
 export function mapRecordToDbProject(
   record: ProjectRecord
 ): Omit<DbProjectRecord, "id" | "created_at" | "updated_at"> {
-  const parsedYt = resolveSafeYouTubeEmbed(record.youtubeVideoId || record.youtubeUrl);
+  const parsedYt = resolveSafeYouTubeEmbed({
+    youtubeUrl: record.youtubeUrl,
+    youtubeVideoId: record.youtubeVideoId,
+    isShort: record.isShort,
+  });
+  const resolvedCoverImage = getProjectThumbnailUrl({
+    image: record.image,
+    youtubeVideoId: parsedYt?.videoId,
+    youtubeUrl: parsedYt?.canonicalUrl,
+  });
+
   return {
     slug: record.slug || record.id,
     title: record.title,
@@ -138,7 +193,7 @@ export function mapRecordToDbProject(
     stamp: record.stamp,
     meta_badge: record.metaBadge,
     cad_id: record.cadId,
-    cover_image_url: record.image,
+    cover_image_url: resolvedCoverImage,
     cover_image_alt: record.altText || record.title,
     stats_primary: record.stats,
     stats_secondary: record.statsSub,

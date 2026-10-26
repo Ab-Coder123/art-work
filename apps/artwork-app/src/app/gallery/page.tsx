@@ -34,6 +34,7 @@ import {
   ProjectCategory,
   ProjectRecord,
   resolveSafeYouTubeEmbed,
+  getProjectThumbnailUrl,
 } from "@art-work/types";
 import { SEED_PROJECTS } from "@/data/seedContent";
 
@@ -467,7 +468,7 @@ export default function GalleryPage() {
                     {/* Hand-inked framed image */}
                     <div className="relative overflow-hidden rounded-lg border-2 border-black dark:border-zinc-700 mb-4 bg-neutral-100 dark:bg-zinc-800 aspect-[16/10]">
                       <Image
-                        src={project.image}
+                        src={getProjectThumbnailUrl(project)}
                         alt={project.altText || project.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

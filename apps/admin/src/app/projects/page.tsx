@@ -195,11 +195,18 @@ export default function GalleryProjectsManager() {
     setYtStatusMessage(null);
     const resolved = resolveSafeYouTubeEmbed(rawInput);
     if (resolved) {
+      const isGeneric =
+        !editingProject.image ||
+        editingProject.image.includes("project_01_neon_horizon.jpg") ||
+        editingProject.image.includes("placeholder");
+      const ytThumbnail = `https://img.youtube.com/vi/${resolved.videoId}/hqdefault.jpg`;
+
       setEditingProject({
         ...editingProject,
         youtubeUrl: rawInput,
         youtubeVideoId: resolved.videoId,
         isShort: resolved.isShort,
+        image: isGeneric ? ytThumbnail : editingProject.image,
       });
     } else {
       setEditingProject({
@@ -229,6 +236,11 @@ export default function GalleryProjectsManager() {
 
       if (res.ok) {
         const data = await res.json();
+        const posterUrl =
+          data.thumbnailUrl ||
+          (data.posterCandidates && data.posterCandidates[0]) ||
+          `https://img.youtube.com/vi/${data.videoId}/hqdefault.jpg`;
+
         setEditingProject((prev) =>
           prev
             ? {
@@ -239,13 +251,15 @@ export default function GalleryProjectsManager() {
                 youtubeDescription:
                   data.paragraph || prev.youtubeDescription || prev.description,
                 isShort: Boolean(data.isShort),
+                image: posterUrl || prev.image,
               }
             : null
         );
-        setYtStatusMessage("✓ Extracted video headline & paragraph from YouTube");
+        setYtStatusMessage("✓ Extracted video thumbnail, headline & paragraph from YouTube");
       } else {
         const parsed = resolveSafeYouTubeEmbed(editingProject.youtubeUrl);
         if (parsed) {
+          const fallbackThumb = `https://img.youtube.com/vi/${parsed.videoId}/hqdefault.jpg`;
           setEditingProject((prev) =>
             prev
               ? {
@@ -256,10 +270,14 @@ export default function GalleryProjectsManager() {
                   youtubeTitle: prev.youtubeTitle || `${prev.title} — Official Showreel`,
                   youtubeDescription:
                     prev.youtubeDescription || prev.description,
+                  image:
+                    !prev.image || prev.image.includes("project_01_neon_horizon.jpg")
+                      ? fallbackThumb
+                      : prev.image,
                 }
               : null
           );
-          setYtStatusMessage("✓ Validated YouTube ID & populated default metadata");
+          setYtStatusMessage("✓ Validated YouTube ID & synced video thumbnail");
         } else {
           setYtStatusMessage("Invalid YouTube link. Raw <iframe> HTML is prohibited.");
         }
@@ -564,23 +582,39 @@ export default function GalleryProjectsManager() {
 
         {/* Edit / Create Drawer Modal */}
         {editingProject && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-[#151520] border border-[#262638] rounded-2xl max-w-2xl w-full p-6 space-y-5 my-8 shadow-2xl">
-              <div className="flex items-center justify-between pb-4 border-b border-[#262638]">
-                <h3 className="text-base font-bold text-white font-mono uppercase">
-                  {editingProject.id.startsWith("project-")
-                    ? "New Showcase Project"
-                    : "Edit Project Record"}
-                </h3>
+          <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+            <form
+              onSubmit={handleSaveEdit}
+              className="bg-[#151520] border border-[#2b2b3d] rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden"
+            >
+              {/* Sticky Top Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#262638] bg-[#171724] shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-yellow-400 text-black flex items-center justify-center font-black text-xs shadow-[2px_2px_0px_#ffffff]">
+                    AW
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white font-mono uppercase">
+                      {editingProject.id.startsWith("project-")
+                        ? "New Showcase Project"
+                        : "Edit Project Record"}
+                    </h3>
+                    <p className="text-[10px] text-zinc-400 font-mono">
+                      Scroll Y active • Configuring media, copy & YouTube synchronization
+                    </p>
+                  </div>
+                </div>
                 <button
+                  type="button"
                   onClick={() => setEditingProject(null)}
-                  className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-[#20202e] cursor-pointer"
+                  className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-[#20202e] cursor-pointer transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <form onSubmit={handleSaveEdit} className="space-y-4 text-xs font-mono">
+              {/* Scrollable Form Body (Dedicated Scroll Y) */}
+              <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5 text-xs font-mono overscroll-contain">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-zinc-400 mb-1">Project Display Title</label>
@@ -696,6 +730,58 @@ export default function GalleryProjectsManager() {
                   />
                 </div>
 
+                {/* Cover & Card Thumbnail Image */}
+                <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <label className="text-zinc-200 font-bold flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-yellow-400" />
+                      <span>Card Thumbnail & Cover Image (Main Website)</span>
+                    </label>
+                    {editingProject.youtubeVideoId && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const ytThumb = `https://img.youtube.com/vi/${editingProject.youtubeVideoId}/hqdefault.jpg`;
+                          setEditingProject({ ...editingProject, image: ytThumb });
+                          setYtStatusMessage("✓ Synced thumbnail directly from YouTube video");
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 text-[10px] font-bold border border-yellow-400/30 cursor-pointer transition-colors"
+                      >
+                        Sync Thumbnail from YouTube
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center gap-3">
+                    <div className="w-32 h-20 rounded-xl overflow-hidden border border-[#2b2b3d] bg-black shrink-0 relative flex items-center justify-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={editingProject.image || "/assets/images/gallery/project_01_neon_horizon.jpg"}
+                        alt="Project Card Thumbnail"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src =
+                            "/assets/images/gallery/project_01_neon_horizon.jpg";
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1 w-full space-y-1">
+                      <input
+                        type="text"
+                        value={editingProject.image || ""}
+                        onChange={(e) =>
+                          setEditingProject({ ...editingProject, image: e.target.value })
+                        }
+                        placeholder="https://img.youtube.com/vi/... or /assets/images/..."
+                        className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                      />
+                      <p className="text-[10px] text-zinc-400">
+                        When a YouTube video is linked, its thumbnail is automatically extracted and displayed on the card.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* YouTube Video & Reel/Shorts Engine (Safe ID & Headline/Paragraph Extractor) */}
                 <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -727,7 +813,7 @@ export default function GalleryProjectsManager() {
                       ) : (
                         <Sparkles className="w-3.5 h-3.5" />
                       )}
-                      <span>Fetch Headline &amp; Paragraph</span>
+                      <span>Fetch Thumbnail, Headline &amp; Copy</span>
                     </button>
                   </div>
 
@@ -853,45 +939,51 @@ export default function GalleryProjectsManager() {
                     </p>
                   ) : null}
                 </div>
+              </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-[#262638]">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="statusCheck"
-                      checked={editingProject.status === "published"}
-                      onChange={(e) =>
-                        setEditingProject({
-                          ...editingProject,
-                          status: e.target.checked ? "published" : "draft",
-                        })
-                      }
-                      className="w-4 h-4 rounded bg-[#0d0d12] border-[#2b2b3d] text-yellow-400 focus:ring-0"
-                    />
-                    <label htmlFor="statusCheck" className="text-zinc-300">
-                      Publish to live /gallery view
-                    </label>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setEditingProject(null)}
-                      className="px-4 py-2 rounded-xl text-zinc-400 hover:text-white border border-[#2b2b3d] cursor-pointer"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex items-center gap-2 px-5 py-2 bg-yellow-400 hover:bg-yellow-300 text-black font-bold rounded-xl cursor-pointer"
-                    >
-                      <Save className="w-3.5 h-3.5" />
-                      <span>Save Project</span>
-                    </button>
-                  </div>
+              {/* Sticky Bottom Actions Footer */}
+              <div className="px-6 py-3.5 border-t border-[#262638] bg-[#12121a] flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="statusCheck"
+                    checked={editingProject.status === "published"}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        status: e.target.checked ? "published" : "draft",
+                      })
+                    }
+                    className="w-4 h-4 rounded bg-[#0d0d12] border-[#2b2b3d] text-yellow-400 focus:ring-0 cursor-pointer"
+                  />
+                  <label htmlFor="statusCheck" className="text-zinc-300 cursor-pointer select-none">
+                    Publish to live /gallery view
+                  </label>
                 </div>
-              </form>
-            </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setEditingProject(null)}
+                    className="px-4 py-2 rounded-xl text-zinc-400 hover:text-white border border-[#2b2b3d] hover:bg-[#20202e] cursor-pointer transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="flex items-center gap-2 px-5 py-2 bg-yellow-400 hover:bg-yellow-300 text-black font-bold rounded-xl cursor-pointer transition-all shadow-[2px_2px_0px_#ffffff] disabled:opacity-50"
+                  >
+                    {isSaving ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Save className="w-3.5 h-3.5" />
+                    )}
+                    <span>Save Project</span>
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
         )}
       </main>
