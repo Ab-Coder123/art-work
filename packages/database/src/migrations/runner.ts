@@ -150,6 +150,13 @@ export async function runMigrations(options?: {
         break;
       }
     }
+    if (results.some((r) => r.status === "applied")) {
+      try {
+        await client.query("NOTIFY pgrst, 'reload schema';");
+      } catch {
+        // Safe fallback if NOTIFY is unsupported
+      }
+    }
   } finally {
     await client.end().catch(() => {});
   }
