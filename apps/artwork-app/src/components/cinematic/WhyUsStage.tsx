@@ -511,7 +511,7 @@ export const WhyUsStage: React.FC = () => {
           href="/#stage-01"
         >
           <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span>PREV: 01 MANIFESTO</span>
+          <span>PREV: HOME</span>
         </Link>
         <div className="text-xs font-mono font-bold uppercase bg-yellow-400 px-3 py-1 rounded border border-black">
           SCENE 2 // ACTIVE
@@ -520,7 +520,7 @@ export const WhyUsStage: React.FC = () => {
           className="inline-flex items-center gap-2 font-headline text-xs font-black uppercase tracking-wider text-black hover:text-yellow-600 transition-colors"
           href="/#stage-03"
         >
-          <span>NEXT: 03 SERVICES</span>
+          <span>NEXT: SERVICES</span>
           <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
         </Link>
       </div>

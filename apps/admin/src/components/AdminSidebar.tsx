@@ -10,6 +10,7 @@ import {
   ExternalLink,
   ShieldCheck,
   Mail,
+  Building2,
 } from "lucide-react";
 
 export function AdminSidebar() {
@@ -42,6 +43,13 @@ export function AdminSidebar() {
       icon: FolderKanban,
       active: pathname.startsWith("/projects"),
       badge: "6 Items",
+    },
+    {
+      label: "Client Companies",
+      href: "/companies",
+      icon: Building2,
+      active: pathname.startsWith("/companies"),
+      badge: "Partners",
     },
   ];
 

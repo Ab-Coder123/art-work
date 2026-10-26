@@ -137,34 +137,41 @@ export default function WhyUsPage() {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-8 font-headline text-sm uppercase tracking-wider font-bold">
+          {/* Desktop Navigation Links (Sticker Buttons) */}
+          <nav className="hidden md:flex items-center gap-2 font-headline text-xs uppercase tracking-wider font-bold">
             <Link
               href="/#stage-01"
-              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-1 transition-opacity duration-150 active:scale-95"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              01 Manifesto
+              Home
             </Link>
-            <span className="text-black dark:text-yellow-400 border-b-2 border-yellow-400 font-bold pb-1">
-              02 Why Us
+            <Link
+              href="/company"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            >
+              Company
+            </Link>
+            {/* Active Link: Why Us */}
+            <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
+              Why Us
             </span>
             <Link
               href="/#stage-03"
-              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-1 transition-opacity duration-150 active:scale-95"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              03 Services
+              Services
             </Link>
             <Link
               href="/gallery"
-              className="text-black hover:text-black font-headline font-black text-xs uppercase px-2 py-0.5 rounded bg-yellow-300 border border-black comic-shadow-sm hover:bg-yellow-400 transition-all active:scale-95"
+              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 py-1.5 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
             >
               ★ Gallery
             </Link>
             <Link
               href="/#stage-04"
-              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-1 transition-opacity duration-150 active:scale-95"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              05 Contact
+              Contact
             </Link>
           </nav>
 
@@ -190,7 +197,7 @@ export default function WhyUsPage() {
         </div>
         <Link className="group flex items-center justify-end w-28 gap-2" href="/#stage-01" title="Scene 01">
           <span className="opacity-0 group-hover:opacity-100 transition-opacity font-headline text-[10px] font-extrabold tracking-wider uppercase text-black/60 dark:text-zinc-400">
-            01 MANIFESTO
+            HOME
           </span>
           <span className="w-7 h-7 rounded-full bg-white dark:bg-[#151520] border border-black/30 dark:border-zinc-700 flex items-center justify-center text-[10px] font-black text-black/60 dark:text-zinc-400 group-hover:border-black dark:group-hover:border-zinc-500">
             01
@@ -199,7 +206,7 @@ export default function WhyUsPage() {
         <div className="w-0.5 h-6 bg-black/20 dark:bg-zinc-700"></div>
         <div className="group flex items-center justify-end w-36 gap-2" title="Scene 02 Active">
           <span className="font-headline text-[10px] font-black tracking-wider uppercase text-black bg-yellow-400 px-2 py-0.5 rounded border border-black">
-            02 WHY US
+            WHY US
           </span>
           <span className="w-9 h-9 rounded-full bg-black dark:bg-[#181824] text-yellow-400 border-2 border-yellow-400 ring-4 ring-yellow-400/40 flex items-center justify-center text-xs font-black shadow-md">
             02
@@ -208,7 +215,7 @@ export default function WhyUsPage() {
         <div className="w-0.5 h-6 bg-black/20 dark:bg-zinc-700"></div>
         <Link className="group flex items-center justify-end w-28 gap-2" href="/#stage-03" title="Scene 03">
           <span className="opacity-0 group-hover:opacity-100 transition-opacity font-headline text-[10px] font-extrabold tracking-wider uppercase text-black/60 dark:text-zinc-400">
-            03 SERVICES
+            SERVICES
           </span>
           <span className="w-7 h-7 rounded-full bg-white dark:bg-[#151520] border border-black/30 dark:border-zinc-700 flex items-center justify-center text-[10px] font-black text-black/60 dark:text-zinc-400 group-hover:border-black dark:group-hover:border-zinc-500">
             03
@@ -217,7 +224,7 @@ export default function WhyUsPage() {
         <div className="w-0.5 h-6 bg-black/20 dark:bg-zinc-700"></div>
         <Link className="group flex items-center justify-end w-28 gap-2" href="/#brief-inquiry" title="Scene 04">
           <span className="opacity-0 group-hover:opacity-100 transition-opacity font-headline text-[10px] font-extrabold tracking-wider uppercase text-black/60 dark:text-zinc-400">
-            04 CONTACT
+            CONTACT
           </span>
           <span className="w-7 h-7 rounded-full bg-white dark:bg-[#151520] border border-black/30 dark:border-zinc-700 flex items-center justify-center text-[10px] font-black text-black/60 dark:text-zinc-400 group-hover:border-black dark:group-hover:border-zinc-500">
             04
@@ -735,7 +742,7 @@ export default function WhyUsPage() {
             href="/#stage-01"
           >
             <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>PREV: 01 MANIFESTO</span>
+            <span>PREV: HOME</span>
           </Link>
           <div className="text-xs font-mono font-bold uppercase bg-yellow-400 text-black px-3 py-1 rounded border border-black">
             SCENE 2 // ACTIVE
@@ -744,7 +751,7 @@ export default function WhyUsPage() {
             className="inline-flex items-center gap-2 font-headline text-xs font-black uppercase tracking-wider text-black dark:text-zinc-200 hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors"
             href="/#stage-03"
           >
-            <span>NEXT: 03 SERVICES</span>
+            <span>NEXT: SERVICES</span>
             <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
           </Link>
         </div>
@@ -762,9 +769,8 @@ export default function WhyUsPage() {
             © 2025 Art Work - Marketing Solutions. Kinetic Stage Edition.
           </div>
           <nav className="flex items-center gap-6">
-            <Link className="text-black/60 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors duration-150" href="/#stage-01">
-              Manifesto
-            </Link>
+            <Link className="text-black/60 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors duration-150" href="/#stage-01">Home</Link>
+            <Link className="text-black/60 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors duration-150" href="/company">Company</Link>
             <Link className="text-black dark:text-yellow-400 underline decoration-yellow-400 font-bold transition-colors duration-150" href="/why-us">
               Why Us
             </Link>

@@ -429,3 +429,175 @@ export interface LeadSubmissionPayload {
   _ts?: number; // Millisecond timestamp when form opened (time-gate)
 }
 
+// ---------------------------------------------------------------------------
+// Company & Partner Client Showcase Types
+// ---------------------------------------------------------------------------
+
+export type CompanyCategorySlug =
+  | "all"
+  | "pharma"
+  | "entertainment"
+  | "tech"
+  | "real_estate"
+  | "festivals"
+  | "corporate";
+
+export interface CompanyRecord {
+  id: string;
+  slug: string;
+  name: string;
+  logo: string;
+  websiteUrl?: string;
+  category: CompanyCategorySlug;
+  description: string;
+  highlight: string;
+  order: number;
+  featured?: boolean;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface DbCompanyRecord {
+  id: string;
+  slug: string;
+  name: string;
+  logo_url: string;
+  website_url?: string | null;
+  category: string;
+  description: string;
+  highlight: string;
+  order_index: number;
+  featured: boolean;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export function mapDbCompanyToRecord(row: DbCompanyRecord): CompanyRecord {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    logo: row.logo_url,
+    websiteUrl: row.website_url || undefined,
+    category: (row.category as CompanyCategorySlug) || "corporate",
+    description: row.description || "",
+    highlight: row.highlight || "",
+    order: row.order_index ?? 0,
+    featured: Boolean(row.featured),
+    isActive: Boolean(row.is_active),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+export const DEFAULT_COMPANIES: CompanyRecord[] = [
+  {
+    id: "comp-rameda",
+    slug: "rameda-pharmaceuticals",
+    name: "Rameda Pharmaceuticals",
+    logo: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=300&auto=format&fit=crop&q=80",
+    websiteUrl: "https://www.rameda.com",
+    category: "pharma",
+    highlight: "Annual Gathering & Production",
+    description: "Annual corporate gathering with custom branded stage, LED choreographies, and arena live broadcast.",
+    order: 1,
+    featured: true,
+    isActive: true,
+  },
+  {
+    id: "comp-redbull",
+    slug: "red-bull",
+    name: "Red Bull",
+    logo: "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=300&auto=format&fit=crop&q=80",
+    websiteUrl: "https://www.redbull.com",
+    category: "entertainment",
+    highlight: "Kinetic Arena Activation",
+    description: "High-voltage brand activations, customized kinetic truss motion, and extreme sporting soundscapes.",
+    order: 2,
+    featured: true,
+    isActive: true,
+  },
+  {
+    id: "comp-mdlbeast",
+    slug: "mdlbeast",
+    name: "MDLBEAST Soundstorm",
+    logo: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&auto=format&fit=crop&q=80",
+    websiteUrl: "https://www.mdlbeast.com",
+    category: "festivals",
+    highlight: "Mega Festival Scenography",
+    description: "Multi-acre festival arenas with synced lasers, kinetic LED kinetic rings, and 120-cue accuracy.",
+    order: 3,
+    featured: true,
+    isActive: true,
+  },
+  {
+    id: "comp-vodafone",
+    slug: "vodafone",
+    name: "Vodafone",
+    logo: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300&auto=format&fit=crop&q=80",
+    websiteUrl: "https://www.vodafone.com",
+    category: "tech",
+    highlight: "Telecom Keynote & Holographic Expo",
+    description: "Ultra-wide panoramic LED displays, interactive experiential booths, and 5G network launch arenas.",
+    order: 4,
+    featured: true,
+    isActive: true,
+  },
+  {
+    id: "comp-emaar",
+    slug: "emaar",
+    name: "Emaar Properties",
+    logo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&auto=format&fit=crop&q=80",
+    websiteUrl: "https://www.emaar.com",
+    category: "real_estate",
+    highlight: "Architectural Projection Mapping",
+    description: "Luxury landmark unveilings with 4K laser projection mapping and synchronized symphonic light show.",
+    order: 5,
+    featured: true,
+    isActive: true,
+  },
+  {
+    id: "comp-spotify",
+    slug: "spotify",
+    name: "Spotify",
+    logo: "https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=300&auto=format&fit=crop&q=80",
+    websiteUrl: "https://www.spotify.com",
+    category: "entertainment",
+    highlight: "Live Fan Soundstage",
+    description: "Custom experiential audio rooms, neon art installations, and creator awards soundstages.",
+    order: 6,
+    featured: true,
+    isActive: true,
+  },
+  {
+    id: "comp-novartis",
+    slug: "novartis",
+    name: "Novartis",
+    logo: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&auto=format&fit=crop&q=80",
+    websiteUrl: "https://www.novartis.com",
+    category: "pharma",
+    highlight: "Medical Innovation Summit",
+    description: "Arena medical conferences with holographic 3D molecular visualization and VIP plenaries.",
+    order: 7,
+    featured: false,
+    isActive: true,
+  },
+  {
+    id: "comp-samsung",
+    slug: "samsung",
+    name: "Samsung",
+    logo: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=300&auto=format&fit=crop&q=80",
+    websiteUrl: "https://www.samsung.com",
+    category: "tech",
+    highlight: "Galaxy Global Unpack Booth",
+    description: "Interactive curved display tunnels, tactile device testing zones, and robotic stage arms.",
+    order: 8,
+    featured: false,
+    isActive: true,
+  },
+];
+
+
+

@@ -9,10 +9,10 @@ interface SceneStep {
 }
 
 export const SCENE_STEPS: SceneStep[] = [
-  { id: "hero", label: "01 MANIFESTO", stepNumber: "01" },
-  { id: "why-us", label: "02 WHY US", stepNumber: "02" },
-  { id: "capabilities", label: "03 SERVICES", stepNumber: "03" },
-  { id: "contact", label: "04 CONTACT", stepNumber: "04" },
+  { id: "hero", label: "HOME", stepNumber: "01" },
+  { id: "why-us", label: "WHY US", stepNumber: "02" },
+  { id: "capabilities", label: "SERVICES", stepNumber: "03" },
+  { id: "contact", label: "CONTACT", stepNumber: "04" },
 ];
 
 interface ScrollytellingState {

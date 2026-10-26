@@ -34,6 +34,7 @@ import {
   Send,
   AlertCircle,
   Loader2,
+  TrendingUp,
 } from "lucide-react";
 
 import rawProjects from "@/data/projects.json";
@@ -46,6 +47,7 @@ import {
 } from "@art-work/types";
 
 type StageId = "stage-01" | "stage-02" | "stage-03" | "stage-gallery" | "stage-04";
+const STAGE_ORDER: StageId[] = ["stage-01", "stage-02", "stage-03", "stage-gallery", "stage-04"];
 const DEFAULT_HERO_CONTENT = {
   announcementBadge: DEFAULT_SITE_CONTENT.manifesto.announcementBadge,
   editionBadge: DEFAULT_SITE_CONTENT.manifesto.editionBadge,
@@ -78,13 +80,44 @@ function ManifestoContent({
   content = DEFAULT_HERO_CONTENT,
 }: ManifestoContentProps) {
   return (
-    <div className="w-full max-w-7xl mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
-      {/* Top Energy Badge & Comic Stickers */}
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4">
-        <div className="inline-flex items-center gap-1.5 border-2 border-black bg-white dark:bg-[#151520] text-black dark:text-zinc-200 px-3 sm:px-4 py-1 rounded-full comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
+    <div className="w-full max-w-7xl mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+      {/* Technical Header Ribbon (Matching Why-Us Scene Architecture & Proportions) */}
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 sm:mb-5 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+        <div className="flex items-center gap-3">
+          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 01</span>
+          <span className="font-bold">CREATIVE MARKETING MANIFESTO &amp; ARENA ARCHITECTURE</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-4">
+          <span>CAD: REV-2026.04</span>
+          <span>•</span>
+          <span>STAGE: PINNED PERSPECTIVE</span>
+          <span>•</span>
+          <span className="text-black dark:text-white font-extrabold">STATUS: 100% UNAPOLOGETIC</span>
+        </div>
+      </div>
+
+      {/* Top Floating Badges (Fluid Flex Alignment with Performance Marketing Badge) */}
+      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: -8, rotate: -3 }}
+          animate={{ opacity: 1, y: 0, rotate: -2 }}
+          transition={{ duration: 0.35, delay: 0.1 }}
+          className="relative bg-white dark:bg-[#151520] border-2 border-black dark:border-zinc-700 px-3 py-1 rounded-lg shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 text-[11px] sm:text-xs font-bold tracking-tight text-black dark:text-zinc-200"
+        >
+          <div className="washi-tape"></div>
+          <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
+          <span>
+            PERFORMANCE MARKETING{" "}
+            <strong className="bg-yellow-300 dark:bg-yellow-400 text-black px-1 rounded font-black">
+              (+340% ROI)
+            </strong>
+          </span>
+        </motion.div>
+
+        <div className="inline-flex items-center gap-1.5 border-2 border-black bg-white dark:bg-[#151520] text-black dark:text-zinc-200 px-3 sm:px-3.5 py-1 rounded-lg comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
           <span className="text-yellow-500 font-black">★</span>
           <span>{content.announcementBadge}</span>
-          <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-full font-bold ml-1 text-[9px] sm:text-[10px]">
+          <span className="bg-yellow-400 text-black px-2 py-0.5 rounded font-bold ml-1 text-[9px] sm:text-[10px]">
             {content.editionBadge}
           </span>
         </div>
@@ -92,7 +125,7 @@ function ManifestoContent({
         {/* Sticky Note Callout 01 */}
         <div className="hidden xs:block relative -rotate-2 hover:rotate-0 transition-transform duration-200">
           <div className="bg-yellow-200 border-2 border-black px-3 py-1 text-[10px] sm:text-xs font-headline font-bold text-black comic-shadow-sm flex items-center gap-1.5">
-            <Lightbulb className="w-4 h-4 text-black stroke-[2]" />
+            <Lightbulb className="w-3.5 h-3.5 text-black stroke-[2]" />
             <span>STICKY_NOTE_01.CAD: &quot;Zero cookie-cutter templates.&quot;</span>
           </div>
           <div className="absolute -top-1.5 left-4 w-6 h-2 bg-white/70 border border-black/40 rotate-2"></div>
@@ -236,7 +269,21 @@ function ManifestoContent({
    ========================================================================= */
 function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof DEFAULT_WHY_US_CONTENT }) {
   return (
-    <div className="w-full max-w-7xl mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-7xl mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+      {/* Technical Header Ribbon */}
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 sm:mb-5 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+        <div className="flex items-center gap-3">
+          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 02</span>
+          <span className="font-bold">AGENCY PROPOSITION &amp; EXPERIENTIAL PROOF</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-4">
+          <span>CAD: REV-2026.04</span>
+          <span>•</span>
+          <span>STAGE: PINNED PERSPECTIVE</span>
+          <span>•</span>
+          <span className="text-black dark:text-white font-extrabold">STATUS: 100% UNAPOLOGETIC</span>
+        </div>
+      </div>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-3 pb-2 border-b-2 border-black dark:border-zinc-700">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1.5">
@@ -382,7 +429,21 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
    ========================================================================= */
 function ServicesContent() {
   return (
-    <div className="w-full max-w-[1560px] mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-[1560px] mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+      {/* Technical Header Ribbon */}
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-3 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+        <div className="flex items-center gap-3">
+          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 03</span>
+          <span className="font-bold">CAPABILITIES &amp; 3D MATRIX DISCIPLINE ROSTER</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-4">
+          <span>CAD: REV-2026.04</span>
+          <span>•</span>
+          <span>STAGE: PINNED PERSPECTIVE</span>
+          <span>•</span>
+          <span className="text-black dark:text-white font-extrabold">STATUS: 100% MODULAR</span>
+        </div>
+      </div>
       <Capabilities3DMatrix />
     </div>
   );
@@ -419,7 +480,21 @@ function GalleryShowcaseContent() {
   const featured = projectsList.slice(0, 3);
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-7xl mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+      {/* Technical Header Ribbon */}
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+        <div className="flex items-center gap-3">
+          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 04</span>
+          <span className="font-bold">PROJECT ARCHIVE &amp; ARENA SHOWREEL VAULT</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-4">
+          <span>CAD: REV-2026.04</span>
+          <span>•</span>
+          <span>STAGE: PINNED PERSPECTIVE</span>
+          <span>•</span>
+          <span className="text-black dark:text-white font-extrabold">STATUS: 100% PRODUCTION READY</span>
+        </div>
+      </div>
       {/* Comic Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-3 sm:mb-4 pb-2 border-b-2 border-black dark:border-zinc-700">
         <div>
@@ -693,7 +768,21 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto py-6 sm:py-8 lg:py-10 flex flex-col justify-center my-auto">
+    <div className="w-full max-w-7xl mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+      {/* Technical Header Ribbon */}
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+        <div className="flex items-center gap-3">
+          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 05</span>
+          <span className="font-bold">CLIENT INTAKE &amp; RAPID BRIEF DISPATCH</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-4">
+          <span>CAD: REV-2026.04</span>
+          <span>•</span>
+          <span>STAGE: PINNED PERSPECTIVE</span>
+          <span>•</span>
+          <span className="text-black dark:text-white font-extrabold">STATUS: 24H RAPID DISPATCH</span>
+        </div>
+      </div>
       <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-5 sm:p-7 lg:p-8 comic-shadow relative mt-2.5">
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border-2 border-black px-4 py-1 font-headline font-black text-[10px] sm:text-xs uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           {content.stageTag}
@@ -827,11 +916,10 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
                       key={opt}
                       type="button"
                       onClick={() => setFormData({ ...formData, serviceType: opt })}
-                      className={`text-[10px] sm:text-xs font-headline font-bold px-3 py-1 rounded-lg border transition-all cursor-pointer ${
-                        formData.serviceType === opt
+                      className={`text-[10px] sm:text-xs font-headline font-bold px-3 py-1 rounded-lg border transition-all cursor-pointer ${formData.serviceType === opt
                           ? "bg-yellow-400 text-black border-black shadow-[2px_2px_0px_#000]"
                           : "bg-zinc-100 dark:bg-zinc-800 text-black/70 dark:text-zinc-300 border-zinc-300 dark:border-zinc-700 hover:border-black dark:hover:border-white"
-                      }`}
+                        }`}
                     >
                       {opt}
                     </button>
@@ -897,6 +985,9 @@ function StudioFooter({ scrollToStage }: { scrollToStage: (s: StageId) => void }
           <button onClick={() => scrollToStage("stage-01")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
             HOME
           </button>
+          <Link href="/company" className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
+            COMPANY
+          </Link>
           <button onClick={() => scrollToStage("stage-02")} className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer">
             WHY US
           </button>
@@ -965,10 +1056,10 @@ export default function Home() {
         if (!manifesto) return;
         const metrics = Array.isArray(manifesto.metrics)
           ? manifesto.metrics
-              .filter((item): item is { num: string; label: string } =>
-                Boolean(item && typeof item === "object" && "num" in item && "label" in item)
-              )
-              .map((item) => ({ num: String(item.num), label: String(item.label) }))
+            .filter((item): item is { num: string; label: string } =>
+              Boolean(item && typeof item === "object" && "num" in item && "label" in item)
+            )
+            .map((item) => ({ num: String(item.num), label: String(item.label) }))
           : DEFAULT_HERO_CONTENT.metrics;
         setHeroContent({
           announcementBadge: String(manifesto.announcementBadge || manifesto.banner_badge || DEFAULT_HERO_CONTENT.announcementBadge),
@@ -979,7 +1070,7 @@ export default function Home() {
           metrics: metrics.length ? metrics.slice(0, 3) : DEFAULT_HERO_CONTENT.metrics,
         });
       })
-      .catch(() => {});
+      .catch(() => { });
     return () => {
       mounted = false;
     };
@@ -1290,7 +1381,7 @@ export default function Home() {
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>
 
       {/* ================= FIXED TOP HEADER (SHARED DESKTOP & MOBILE) ================= */}
-      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 transition-colors duration-200">
+      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md border-b-2 border-black dark:border-zinc-800 transition-colors duration-200">
         <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-1.5 sm:py-2">
           {/* Logo Anchor + Quick Mobile Gallery Link */}
           <div className="flex items-center gap-2">
@@ -1323,30 +1414,57 @@ export default function Home() {
 
           {/* Desktop Navigation Links (Sticker Buttons) */}
           <nav className="hidden md:flex items-center gap-2 font-headline text-xs uppercase tracking-wider font-bold">
-            {(
-              [
-                { id: "stage-01", label: "Home", tilt: "-rotate-1" },
-                { id: "stage-02", label: "Why Us", tilt: "rotate-1" },
-                { id: "stage-03", label: "Services", tilt: "-rotate-1" },
-                { id: "stage-gallery", label: "Gallery", tilt: "rotate-1" },
-                { id: "stage-04", label: "Contact", tilt: "-rotate-1" },
-              ] as const
-            ).map((item) => {
-              const isActive = activeStage === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToStage(item.id as StageId)}
-                  className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
-                    isActive
-                      ? `bg-yellow-400 text-black border-black comic-shadow-sm ${item.tilt} scale-105 z-10`
-                      : `bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 ${item.tilt}`
-                  }`}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
+            <button
+              onClick={() => scrollToStage("stage-01")}
+              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-01"
+                  ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
+                  : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
+                }`}
+            >
+              Home
+            </button>
+            <Link
+              href="/company"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            >
+              Partner&apos;s
+            </Link>
+            <button
+              onClick={() => scrollToStage("stage-02")}
+              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-02"
+                  ? "bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10"
+                  : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1"
+                }`}
+            >
+              Why Us
+            </button>
+            <button
+              onClick={() => scrollToStage("stage-03")}
+              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-03"
+                  ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
+                  : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
+                }`}
+            >
+              Services
+            </button>
+            <button
+              onClick={() => scrollToStage("stage-gallery")}
+              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-gallery"
+                  ? "bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10"
+                  : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1"
+                }`}
+            >
+              Gallery
+            </button>
+            <button
+              onClick={() => scrollToStage("stage-04")}
+              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-04"
+                  ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
+                  : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
+                }`}
+            >
+              Contact
+            </button>
             <Link
               href="/gallery"
               className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 py-1.5 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:-rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ml-1 cursor-pointer"
@@ -1386,30 +1504,57 @@ export default function Home() {
 
         {/* Mobile Stage Navigation Pill Strip (Sticker Buttons) */}
         <div className="md:hidden flex items-center justify-start gap-2 px-3 py-2 bg-yellow-50/95 dark:bg-[#12121A]/95 border-t border-black/10 dark:border-white/10 overflow-x-auto no-scrollbar">
-          {(
-            [
-              { id: "stage-01", label: "Home", tilt: "-rotate-1" },
-              { id: "stage-02", label: "Why Us", tilt: "rotate-1" },
-              { id: "stage-03", label: "Services", tilt: "-rotate-1" },
-              { id: "stage-gallery", label: "Gallery", tilt: "rotate-1" },
-              { id: "stage-04", label: "Contact", tilt: "-rotate-1" },
-            ] as const
-          ).map((item) => {
-            const isActive = activeStage === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => scrollToStage(item.id as StageId)}
-                className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
-                  isActive
-                    ? `bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black ${item.tilt}`
-                    : `bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white`
-                }`}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+          <button
+            onClick={() => scrollToStage("stage-01")}
+            className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-01"
+                ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black -rotate-1"
+                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
+              }`}
+          >
+            Home
+          </button>
+          <Link
+            href="/company"
+            className="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5"
+          >
+            Company
+          </Link>
+          <button
+            onClick={() => scrollToStage("stage-02")}
+            className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-02"
+                ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black rotate-1"
+                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
+              }`}
+          >
+            Why Us
+          </button>
+          <button
+            onClick={() => scrollToStage("stage-03")}
+            className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-03"
+                ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black -rotate-1"
+                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
+              }`}
+          >
+            Services
+          </button>
+          <button
+            onClick={() => scrollToStage("stage-gallery")}
+            className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-gallery"
+                ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black rotate-1"
+                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
+              }`}
+          >
+            Gallery
+          </button>
+          <button
+            onClick={() => scrollToStage("stage-04")}
+            className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-04"
+                ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black -rotate-1"
+                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
+              }`}
+          >
+            Contact
+          </button>
         </div>
       </header>
 
@@ -1486,7 +1631,7 @@ export default function Home() {
         {/* STICKY FIXED VIEWPORT THEATER */}
         <div
           ref={theaterRef}
-          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[84px] pb-2"
+          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[74px] pb-2"
         >
           {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
           <aside className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
@@ -1495,14 +1640,13 @@ export default function Home() {
               className="group flex items-center gap-2.5 text-right cursor-pointer"
             >
               <span className="text-[10px] font-headline font-bold uppercase tracking-wider bg-black text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                01 Manifesto
+                Home
               </span>
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
-                  activeStage === "stage-01"
+                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${activeStage === "stage-01"
                     ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
                     : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"
-                }`}
+                  }`}
               ></div>
             </button>
             <button
@@ -1510,14 +1654,13 @@ export default function Home() {
               className="group flex items-center gap-2.5 text-right cursor-pointer"
             >
               <span className="text-[10px] font-headline font-bold uppercase tracking-wider bg-black text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                02 Why Us
+                Why Us
               </span>
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
-                  activeStage === "stage-02"
+                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${activeStage === "stage-02"
                     ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
                     : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"
-                }`}
+                  }`}
               ></div>
             </button>
             <button
@@ -1525,14 +1668,13 @@ export default function Home() {
               className="group flex items-center gap-2.5 text-right cursor-pointer"
             >
               <span className="text-[10px] font-headline font-bold uppercase tracking-wider bg-black text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                03 Services
+                Services
               </span>
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
-                  activeStage === "stage-03"
+                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${activeStage === "stage-03"
                     ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
                     : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"
-                }`}
+                  }`}
               ></div>
             </button>
             <button
@@ -1540,14 +1682,13 @@ export default function Home() {
               className="group flex items-center gap-2.5 text-right cursor-pointer"
             >
               <span className="text-[10px] font-headline font-bold uppercase tracking-wider bg-black text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                ★ 04 Gallery
+                ★ Gallery
               </span>
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
-                  activeStage === "stage-gallery"
+                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${activeStage === "stage-gallery"
                     ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
                     : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"
-                }`}
+                  }`}
               ></div>
             </button>
             <button
@@ -1555,14 +1696,13 @@ export default function Home() {
               className="group flex items-center gap-2.5 text-right cursor-pointer"
             >
               <span className="text-[10px] font-headline font-bold uppercase tracking-wider bg-black text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                05 Contact
+                Contact
               </span>
               <div
-                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
-                  activeStage === "stage-04"
+                className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${activeStage === "stage-04"
                     ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
                     : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"
-                }`}
+                  }`}
               ></div>
             </button>
           </aside>
@@ -1572,7 +1712,7 @@ export default function Home() {
             ref={mainContainerRef}
             data-lenis-prevent="true"
             style={{ overscrollBehaviorY: "contain" }}
-            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 py-3 sm:py-5 custom-scrollbar"
+            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-3 pb-6 custom-scrollbar"
           >
             <AnimatePresence mode="wait">
               {activeStage === "stage-01" && (
@@ -1582,7 +1722,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-center my-auto"
+                  className="w-full flex-1 flex flex-col items-center justify-start"
                 >
                   <ManifestoContent
                     content={heroContent}
@@ -1599,7 +1739,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-center my-auto"
+                  className="w-full flex-1 flex flex-col items-center justify-start"
                 >
                   <WhyUsContent content={whyUsContent} />
                 </motion.div>
@@ -1612,7 +1752,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-center my-auto"
+                  className="w-full flex-1 flex flex-col items-center justify-start"
                 >
                   <ServicesContent />
                 </motion.div>
@@ -1625,7 +1765,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-center my-auto"
+                  className="w-full flex-1 flex flex-col items-center justify-start"
                 >
                   <GalleryShowcaseContent />
                 </motion.div>
@@ -1638,7 +1778,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-center my-auto"
+                  className="w-full flex-1 flex flex-col items-center justify-start"
                 >
                   <ContactContent content={contactContent} />
                 </motion.div>

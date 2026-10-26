@@ -42,3 +42,8 @@ export * from "./inquiries/notifications";
 export * from "./inquiries/repository";
 export * from "./inquiries/service";
 
+// Companies & Partner Client Showcase
+export * from "./companies/default-companies";
+export * from "./companies/service";
+
+

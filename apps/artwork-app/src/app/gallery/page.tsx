@@ -204,35 +204,41 @@ export default function GalleryPage() {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 font-headline text-xs sm:text-sm uppercase tracking-wider font-bold">
+          {/* Desktop Navigation Links (Sticker Buttons) */}
+          <nav className="hidden md:flex items-center gap-2 font-headline text-xs uppercase tracking-wider font-bold">
             <Link
               href="/#stage-01"
-              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5 transition-all"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              01 Manifesto
+              Home
+            </Link>
+            <Link
+              href="/company"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            >
+              Company
             </Link>
             <Link
               href="/why-us"
-              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5 transition-all"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              02 Why Us
+              Why Us
             </Link>
             <Link
               href="/#stage-03"
-              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5 transition-all"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              03 Services
+              Services
             </Link>
-            {/* Active Link: 04 Gallery */}
-            <span className="text-black dark:text-white border-b-2 border-yellow-400 font-bold pb-0.5">
-              04 Gallery
+            {/* Active Link: Gallery */}
+            <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
+              Gallery
             </span>
             <Link
               href="/#stage-04"
-              className="text-black/60 dark:text-zinc-400 font-medium hover:text-black dark:hover:text-white pb-0.5 transition-all"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              05 Contact
+              Contact
             </Link>
           </nav>
 
@@ -905,28 +911,31 @@ export default function GalleryPage() {
           </div>
           <div className="flex items-center gap-4 font-headline font-bold">
             <Link href="/" className="hover:text-black dark:hover:text-white hover:underline">
-              01 MANIFESTO
+              HOME
+            </Link>
+            <Link href="/company" className="hover:text-black dark:hover:text-white hover:underline">
+              COMPANY
             </Link>
             <Link href="/why-us" className="hover:text-black dark:hover:text-white hover:underline">
-              02 WHY US
+              WHY US
             </Link>
             <Link
               href="/#stage-03"
               className="hover:text-black dark:hover:text-white hover:underline"
             >
-              03 SERVICES
+              SERVICES
             </Link>
             <Link
               href="/gallery"
               className="text-black dark:text-yellow-400 underline decoration-yellow-400"
             >
-              04 GALLERY
+              GALLERY
             </Link>
             <Link
               href="/#stage-04"
               className="hover:text-black dark:hover:text-white hover:underline"
             >
-              05 CONTACT
+              CONTACT
             </Link>
           </div>
         </div>
