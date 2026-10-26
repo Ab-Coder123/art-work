@@ -80,7 +80,7 @@ function ManifestoContent({
   content = DEFAULT_HERO_CONTENT,
 }: ManifestoContentProps) {
   return (
-    <div className="w-full max-w-7xl mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
       {/* Technical Header Ribbon (Matching Why-Us Scene Architecture & Proportions) */}
       <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 sm:mb-5 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
@@ -269,7 +269,7 @@ function ManifestoContent({
    ========================================================================= */
 function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof DEFAULT_WHY_US_CONTENT }) {
   return (
-    <div className="w-full max-w-7xl mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
       {/* Technical Header Ribbon */}
       <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 sm:mb-5 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
@@ -306,32 +306,32 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
         </div>
       </div>
 
-      {/* 3 Bento Cards (Expanded) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4 mb-4 sm:mb-5">
+      {/* 3 Bento Cards (Scaled ~5% for 15-inch Laptops) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-3.5 mb-3.5 sm:mb-4">
         <motion.div
           initial={{ opacity: 0, y: 22, scale: 0.97 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-4 sm:p-5 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[190px] sm:min-h-[210px]"
+          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[175px] sm:min-h-[195px]"
         >
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
                 {content.bentoCards[0].number}
               </span>
-              <Layers className="w-5 h-5 text-black dark:text-yellow-400 stroke-[1.75]" />
+              <Layers className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-base sm:text-lg text-black dark:text-white mb-1.5 uppercase">
+            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
               {content.bentoCards[0].title}
             </h3>
-            <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 leading-relaxed">
+            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
               {content.bentoCards[0].description}
             </p>
           </div>
-          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] sm:text-xs font-headline font-bold">
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
             <span className="bg-black text-white px-2 py-0.5 rounded">{content.bentoCards[0].badge}</span>
-            <CheckCircle2 className="w-4 h-4 text-black dark:text-yellow-400" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-black dark:text-yellow-400" />
           </div>
         </motion.div>
 
@@ -340,27 +340,27 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-4 sm:p-5 rounded-xl bg-yellow-50 dark:bg-[#1B1B28] comic-shadow flex flex-col justify-between min-h-[190px] sm:min-h-[210px]"
+          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-yellow-50 dark:bg-[#1B1B28] comic-shadow flex flex-col justify-between min-h-[175px] sm:min-h-[195px]"
         >
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
                 {content.bentoCards[1].number}
               </span>
-              <Sparkles className="w-5 h-5 text-black dark:text-yellow-400 fill-yellow-400" />
+              <Sparkles className="w-4 h-4 text-black dark:text-yellow-400 fill-yellow-400" />
             </div>
-            <h3 className="font-headline font-black text-base sm:text-lg text-black dark:text-white mb-1.5 uppercase">
+            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
               {content.bentoCards[1].title}
             </h3>
-            <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 leading-relaxed">
+            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
               {content.bentoCards[1].description}
             </p>
           </div>
-          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] sm:text-xs font-headline font-bold">
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
             <span className="bg-yellow-400 text-black border border-black px-2 py-0.5 rounded">
               {content.bentoCards[1].badge}
             </span>
-            <Zap className="w-4 h-4 text-black dark:text-yellow-400 fill-yellow-400" />
+            <Zap className="w-3.5 h-3.5 text-black dark:text-yellow-400 fill-yellow-400" />
           </div>
         </motion.div>
 
@@ -369,46 +369,46 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-4 sm:p-5 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[190px] sm:min-h-[210px]"
+          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[175px] sm:min-h-[195px]"
         >
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="w-6 h-6 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-xs comic-shadow-sm">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
                 {content.bentoCards[2].number}
               </span>
-              <Palette className="w-5 h-5 text-black dark:text-yellow-400 stroke-[1.75]" />
+              <Palette className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
             </div>
-            <h3 className="font-headline font-black text-base sm:text-lg text-black dark:text-white mb-1.5 uppercase">
+            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
               {content.bentoCards[2].title}
             </h3>
-            <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 leading-relaxed">
+            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
               {content.bentoCards[2].description}
             </p>
           </div>
-          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] sm:text-xs font-headline font-bold">
+          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
             <span className="bg-black text-white px-2 py-0.5 rounded">{content.bentoCards[2].badge}</span>
-            <Paintbrush className="w-4 h-4 text-black dark:text-yellow-400" />
+            <Paintbrush className="w-3.5 h-3.5 text-black dark:text-yellow-400" />
           </div>
         </motion.div>
       </div>
 
       {/* Blueprint Showcase Card */}
       <ScrollReveal direction="up" distance={20}>
-        <div className="border-2 sm:border-3 border-black dark:border-zinc-700 rounded-xl p-4 sm:p-6 bg-white dark:bg-[#151520] comic-shadow relative">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-            <div className="lg:col-span-6 space-y-2">
-              <div className="inline-flex items-center gap-1.5 text-xs font-headline font-black uppercase text-black bg-yellow-300 px-2.5 py-0.5 rounded border border-black">
-                <Compass className="w-3.5 h-3.5 text-black" />
+        <div className="border-2 sm:border-3 border-black dark:border-zinc-700 rounded-xl p-3.5 sm:p-5 bg-white dark:bg-[#151520] comic-shadow relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+            <div className="lg:col-span-6 space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-headline font-black uppercase text-black bg-yellow-300 px-2 py-0.5 rounded border border-black">
+                <Compass className="w-3 h-3 text-black" />
                 <span>{content.blueprint.badge}</span>
               </div>
-              <h3 className="font-headline font-black text-lg sm:text-xl text-black dark:text-white">
+              <h3 className="font-headline font-black text-base sm:text-lg text-black dark:text-white">
                 {content.blueprint.title}
               </h3>
-              <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed">
+              <p className="font-body text-xs text-black/80 dark:text-zinc-300 leading-relaxed">
                 {content.blueprint.description}
               </p>
             </div>
-            <div className="lg:col-span-6 border-2 border-black dark:border-zinc-700 rounded-lg overflow-hidden aspect-[16/9] min-h-[180px] sm:min-h-[220px] lg:min-h-[260px] bg-white dark:bg-[#0E0E14] relative">
+            <div className="lg:col-span-6 border-2 border-black dark:border-zinc-700 rounded-lg overflow-hidden aspect-[16/9] min-h-[160px] sm:min-h-[190px] lg:min-h-[220px] bg-white dark:bg-[#0E0E14] relative">
               <Image
                 src={content.blueprint.image}
                 alt={content.blueprint.altText}
@@ -429,7 +429,7 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
    ========================================================================= */
 function ServicesContent() {
   return (
-    <div className="w-full max-w-[1560px] mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+    <div className="w-full max-w-[1500px] mx-auto pt-2 pb-6 flex flex-col justify-start">
       {/* Technical Header Ribbon */}
       <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-3 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
@@ -480,7 +480,7 @@ function GalleryShowcaseContent() {
   const featured = projectsList.slice(0, 3);
 
   return (
-    <div className="w-full max-w-7xl mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
       {/* Technical Header Ribbon */}
       <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
@@ -768,9 +768,9 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto pt-1 pb-8 sm:pt-2 sm:pb-10 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
       {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-3 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
           <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 05</span>
           <span className="font-bold">CLIENT INTAKE &amp; RAPID BRIEF DISPATCH</span>
@@ -783,7 +783,7 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
           <span className="text-black dark:text-white font-extrabold">STATUS: 24H RAPID DISPATCH</span>
         </div>
       </div>
-      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-5 sm:p-7 lg:p-8 comic-shadow relative mt-2.5">
+      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-4 sm:p-5 lg:p-6 comic-shadow relative mt-2">
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border-2 border-black px-4 py-1 font-headline font-black text-[10px] sm:text-xs uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           {content.stageTag}
         </div>
@@ -1628,10 +1628,10 @@ export default function Home() {
         className="hidden md:block relative w-full h-[400vh]"
         id="pinned-stage-track"
       >
-        {/* STICKY FIXED VIEWPORT THEATER */}
+        {/* STICKY FIXED VIEWPORT THEATER (Generous spacing below fixed navbar for 15-inch displays) */}
         <div
           ref={theaterRef}
-          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[74px] pb-2"
+          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[96px] sm:pt-[104px] pb-2"
         >
           {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
           <aside className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
@@ -1712,7 +1712,7 @@ export default function Home() {
             ref={mainContainerRef}
             data-lenis-prevent="true"
             style={{ overscrollBehaviorY: "contain" }}
-            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-3 pb-6 custom-scrollbar"
+            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-8 custom-scrollbar"
           >
             <AnimatePresence mode="wait">
               {activeStage === "stage-01" && (

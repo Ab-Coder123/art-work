@@ -227,7 +227,7 @@ const TiltCard: React.FC<{
           transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
           transition: "transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
-        className="relative border-2 sm:border-3 border-black dark:border-zinc-700 p-4 sm:p-5 rounded-xl bg-white dark:bg-[#15151F] comic-shadow dark:shadow-[5px_5px_0px_#000000] hover:comic-shadow-yellow hover:bg-yellow-50 dark:hover:bg-[#1D1D2B] transition-colors duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1 min-h-[300px] xl:min-h-[330px]"
+        className="relative border-2 sm:border-3 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#15151F] comic-shadow dark:shadow-[5px_5px_0px_#000000] hover:comic-shadow-yellow hover:bg-yellow-50 dark:hover:bg-[#1D1D2B] transition-colors duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1 min-h-[275px] xl:min-h-[300px]"
       >
         {/* Dynamic Specular Glare Overlay */}
         <div
@@ -239,27 +239,27 @@ const TiltCard: React.FC<{
         />
 
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-headline font-black text-[11px] sm:text-xs text-black/60 dark:text-zinc-400 tracking-wider">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="font-headline font-black text-[10px] sm:text-[11px] text-black/60 dark:text-zinc-400 tracking-wider">
               {discipline.tag}
             </span>
-            <span className="w-5 h-5 rounded-full bg-black text-yellow-400 font-mono text-[10px] font-black flex items-center justify-center">
+            <span className="w-5 h-5 rounded-full bg-black text-yellow-400 font-mono text-[9px] font-black flex items-center justify-center">
               {discipline.number}
             </span>
           </div>
 
-          <div className="font-headline font-black text-sm sm:text-base lg:text-[15px] xl:text-base text-black dark:text-white mb-2 leading-snug group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors uppercase">
+          <div className="font-headline font-black text-xs sm:text-sm lg:text-[14px] xl:text-[15px] text-black dark:text-white mb-1.5 leading-snug group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors uppercase">
             {discipline.title}
           </div>
 
-          <ul className="text-xs sm:text-[13px] font-body text-black/85 dark:text-zinc-300 space-y-1.5 list-disc list-inside leading-relaxed">
+          <ul className="text-[11px] sm:text-xs font-body text-black/85 dark:text-zinc-300 space-y-1 list-disc list-inside leading-relaxed">
             {discipline.specs.map((spec, i) => (
               <li key={i}>{spec}</li>
             ))}
           </ul>
         </div>
 
-        <div className="relative z-10 mt-3 pt-2.5 border-t-2 border-black/20 dark:border-zinc-700 font-headline font-black text-[10px] sm:text-[11px] text-black dark:text-zinc-200 flex items-center justify-between tracking-wider">
+        <div className="relative z-10 mt-2.5 pt-2 border-t-2 border-black/20 dark:border-zinc-700 font-headline font-black text-[9px] sm:text-[10px] text-black dark:text-zinc-200 flex items-center justify-between tracking-wider">
           <span className="group-hover:underline decoration-yellow-400 decoration-2">
             ENGAGE TOOLKIT
           </span>
@@ -281,7 +281,7 @@ export const Capabilities3DMatrix: React.FC = () => {
   );
 
   return (
-    <section className="w-full max-w-[1540px] mx-auto px-2 sm:px-4 lg:px-6 py-2 sm:py-3 relative" id="stage-03">
+    <section className="w-full max-w-[1480px] mx-auto px-2 sm:px-4 lg:px-6 py-2 sm:py-3 relative" id="stage-03">
       {/* Section Header */}
       <ScrollReveal direction="up" distance={15} className="text-center max-w-3xl mx-auto mb-3">
         <div className="inline-block bg-yellow-400 text-black px-3 py-1 border-2 border-black comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase mb-1.5 -rotate-1">
