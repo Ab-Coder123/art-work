@@ -182,9 +182,9 @@ function ManifestoContent({
   companies = DEFAULT_COMPANIES,
 }: ManifestoContentProps) {
   return (
-    <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
       {/* Technical Header Ribbon (Matching Why-Us Scene Architecture & Proportions) */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 sm:mb-5 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2.5 sm:mb-3 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
           <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 01</span>
           <span className="font-bold">CREATIVE MARKETING MANIFESTO &amp; ARENA ARCHITECTURE</span>
@@ -199,7 +199,7 @@ function ManifestoContent({
       </div>
 
       {/* Top Floating Badges (Fluid Flex Alignment with Performance Marketing Badge) */}
-      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2 sm:mb-2.5">
         <motion.div
           initial={{ opacity: 0, y: -8, rotate: -3 }}
           animate={{ opacity: 1, y: 0, rotate: -2 }}
@@ -235,22 +235,22 @@ function ManifestoContent({
       </div>
 
       {/* Hero Typography Section */}
-      <div className="relative mb-3 sm:mb-4 max-w-5xl">
-        <h1 className="font-headline font-black text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[54px] xl:text-[64px] tracking-tight leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
+      <div className="relative mb-2 sm:mb-2.5 max-w-5xl">
+        <h1 className="font-headline font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[46px] xl:text-[54px] tracking-tight leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
           <KineticBrushWord variant="wave" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4} delay={0.1}>
             {content.headlinePart1}
           </KineticBrushWord> <br />
-          <span className="relative inline-block mt-1 sm:mt-2">
+          <span className="relative inline-block mt-1 sm:mt-1.5">
             {/* Canary Yellow Ink Splash Backdrop */}
             <motion.span
               initial={{ scaleX: 0, originX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-              className="absolute -inset-1 sm:-inset-2 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"
+              className="absolute -inset-0.5 sm:-inset-1 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"
             ></motion.span>
-            <span className="text-black relative z-10 px-2 sm:px-3">{content.headlinePart2}</span>
+            <span className="text-black relative z-10 px-1.5 sm:px-2.5">{content.headlinePart2}</span>
             {/* Slender Hand-drawn Paintbrush Stroke */}
-            <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.2} delay={0.35} />
+            <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.0} delay={0.35} />
           </span>
         </h1>
 
@@ -273,8 +273,8 @@ function ManifestoContent({
       </div>
 
       {/* Action Cluster & Team Collective Art with Magnetic Buttons */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-center">
-        <div className="lg:col-span-5 space-y-3 sm:space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
+        <div className="lg:col-span-5 space-y-2 sm:space-y-2.5">
           <p className="font-body text-sm sm:text-base text-black/85 dark:text-zinc-200 max-w-md leading-relaxed">
             {content.introParagraph}
           </p>
@@ -374,9 +374,9 @@ function ManifestoContent({
    ========================================================================= */
 function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof DEFAULT_WHY_US_CONTENT }) {
   return (
-    <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
       {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 sm:mb-5 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2.5 sm:mb-3 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
           <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 02</span>
           <span className="font-bold">AGENCY PROPOSITION &amp; EXPERIENTIAL PROOF</span>
@@ -389,9 +389,9 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
           <span className="text-black dark:text-white font-extrabold">STATUS: 100% UNAPOLOGETIC</span>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-3 pb-2 border-b-2 border-black dark:border-zinc-700">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 mb-2.5 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>
-          <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1.5">
+          <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1">
             <span>{content.eyebrow}</span>
           </div>
           <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black dark:text-white tracking-tight">
@@ -412,7 +412,7 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
       </div>
 
       {/* 3 Bento Cards (Scaled ~5% for 15-inch Laptops) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-3.5 mb-3.5 sm:mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 mb-2.5 sm:mb-3">
         <motion.div
           initial={{ opacity: 0, y: 22, scale: 0.97 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -534,9 +534,9 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
    ========================================================================= */
 function ServicesContent() {
   return (
-    <div className="w-full max-w-[1500px] mx-auto pt-2 pb-6 flex flex-col justify-start">
+    <div className="w-full max-w-[1500px] mx-auto pt-1 pb-4 flex flex-col justify-start">
       {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-3 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
           <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 03</span>
           <span className="font-bold">CAPABILITIES &amp; 3D MATRIX DISCIPLINE ROSTER</span>
@@ -587,7 +587,7 @@ function GalleryShowcaseContent() {
   return (
     <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
       {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-4 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2.5 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
           <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 04</span>
           <span className="font-bold">PROJECT ARCHIVE &amp; ARENA SHOWREEL VAULT</span>
@@ -601,7 +601,7 @@ function GalleryShowcaseContent() {
         </div>
       </div>
       {/* Comic Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-3 sm:mb-4 pb-2 border-b-2 border-black dark:border-zinc-700">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 mb-2 sm:mb-2.5 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1.5">
             <span>★ 04 PROJECT ARCHIVE &amp; GALLERY</span>
@@ -873,9 +873,9 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
       {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-2.5 mb-3 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
+      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
         <div className="flex items-center gap-3">
           <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 05</span>
           <span className="font-bold">CLIENT INTAKE &amp; RAPID BRIEF DISPATCH</span>
@@ -888,7 +888,7 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
           <span className="text-black dark:text-white font-extrabold">STATUS: 24H RAPID DISPATCH</span>
         </div>
       </div>
-      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-4 sm:p-5 lg:p-6 comic-shadow relative mt-2">
+      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-3.5 sm:p-4 lg:p-5 comic-shadow relative mt-1.5">
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border-2 border-black px-4 py-1 font-headline font-black text-[10px] sm:text-xs uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           {content.stageTag}
         </div>
@@ -1503,12 +1503,12 @@ export default function Home() {
               title="Art Work — Home"
               aria-label="Art Work — Home"
             >
-              <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-[72px] md:h-[72px] lg:w-20 lg:h-20 hover:rotate-3 transition-transform">
+              <div className="relative w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 lg:w-16 lg:h-16 hover:rotate-3 transition-transform">
                 <Image
                   src="/assets/images/artwork_logo.png"
                   alt="Art Work Logo"
                   fill
-                  sizes="(max-width: 640px) 48px, (max-width: 768px) 64px, 80px"
+                  sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, 64px"
                   priority
                   className="object-contain"
                 />
@@ -1528,7 +1528,7 @@ export default function Home() {
           <nav className="hidden md:flex items-center gap-2 font-headline text-xs uppercase tracking-wider font-bold">
             <button
               onClick={() => scrollToStage("stage-01")}
-              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-01"
+              className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-01"
                   ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
                   : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
                 }`}
@@ -1537,7 +1537,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => scrollToStage("stage-02")}
-              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-02"
+              className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-02"
                   ? "bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10"
                   : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1"
                 }`}
@@ -1546,7 +1546,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => scrollToStage("stage-03")}
-              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-03"
+              className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-03"
                   ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
                   : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
                 }`}
@@ -1555,7 +1555,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => scrollToStage("stage-gallery")}
-              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-gallery"
+              className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-gallery"
                   ? "bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10"
                   : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1"
                 }`}
@@ -1564,7 +1564,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => scrollToStage("stage-04")}
-              className={`inline-flex items-center justify-center px-3 py-1.5 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-04"
+              className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${activeStage === "stage-04"
                   ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
                   : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
                 }`}
@@ -1573,7 +1573,7 @@ export default function Home() {
             </button>
             <Link
               href="/gallery"
-              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 py-1.5 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:-rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ml-1 cursor-pointer"
+              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:-rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ml-1 cursor-pointer"
             >
               ★ Full Vault ↗
             </Link>
@@ -1587,7 +1587,7 @@ export default function Home() {
             <MagneticButton soundType="pop">
               <button
                 onClick={() => scrollToStage("stage-04")}
-                className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-bold text-xs px-2.5 sm:px-3.5 py-1.5 rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150 cursor-pointer"
+                className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-bold text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150 cursor-pointer"
               >
                 <span>Brief Inquiry</span>
                 <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -1600,7 +1600,7 @@ export default function Home() {
                 toggleDoodle();
               }}
               aria-label="Toggle Studio Pen Doodle Mode"
-              className="w-8 h-8 border-2 border-black dark:border-zinc-400 rounded-DEFAULT bg-white dark:bg-[#181824] hover:bg-yellow-100 dark:hover:bg-[#222232] comic-shadow-sm active:scale-90 transition-transform cursor-pointer flex items-center justify-center text-black dark:text-yellow-400"
+              className="w-8 h-8 sm:w-9 sm:h-9 border-2 border-black dark:border-zinc-400 rounded-DEFAULT bg-white dark:bg-[#181824] hover:bg-yellow-100 dark:hover:bg-[#222232] comic-shadow-sm active:scale-90 transition-transform cursor-pointer flex items-center justify-center text-black dark:text-yellow-400"
               title="Toggle Studio Pen Doodle Mode"
             >
               <Pencil className="w-4 h-4" />
@@ -1732,7 +1732,7 @@ export default function Home() {
         {/* STICKY FIXED VIEWPORT THEATER (Generous spacing below fixed navbar for 15-inch displays) */}
         <div
           ref={theaterRef}
-          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[96px] sm:pt-[104px] pb-2"
+          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[74px] sm:pt-[80px] pb-2"
         >
           {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
           <aside className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
@@ -1813,7 +1813,7 @@ export default function Home() {
             ref={mainContainerRef}
             data-lenis-prevent="true"
             style={{ overscrollBehaviorY: "contain" }}
-            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-8 custom-scrollbar"
+            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-1 sm:pt-2 pb-6 custom-scrollbar"
           >
             <AnimatePresence mode="wait">
               {activeStage === "stage-01" && (
