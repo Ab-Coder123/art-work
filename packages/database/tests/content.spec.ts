@@ -47,7 +47,7 @@ describe("Phase 07: Site Content Versioning & Dynamic Content API", () => {
     assert.ok(result.data.whyUsTeaser.bentoCards.length >= 3);
 
     // Assert Contact
-    assert.equal(result.data.contact.email, "studio@artwork-solutions.stage");
+    assert.equal(result.data.contact.email, "ahmed.artwork2026@gmail.com");
     assert.ok(result.data.contact.formFields.length >= 4);
 
     // Assert WhyUs Page

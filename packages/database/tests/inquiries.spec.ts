@@ -245,7 +245,7 @@ describe("Phase 08: Client Lead Intake & Notification Pipeline", () => {
       assert.ok(html.includes("Marcus Aurelius"));
       assert.ok(html.includes("Arena Rigging"));
       assert.ok(html.includes("24-HOUR RAPID RESPONSE STANDARD"));
-      assert.ok(html.includes("studio@artwork-solutions.stage"));
+      assert.ok(html.includes("ahmed.artwork2026@gmail.com"));
     });
 
     it("should retry operations up to 3 times with exponential backoff on transient errors", async () => {

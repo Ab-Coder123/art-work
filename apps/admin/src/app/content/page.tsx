@@ -78,7 +78,7 @@ export default function WebsiteContentEditor() {
     description:
       "Whether you need a dynamic stage package for an arena tour or an unforgettable brand identity, our sketchpad is open.",
     intakeLabel: "DIRECT INTAKE // CREATIVE CHIEF ON-CALL",
-    email: "studio@artwork-solutions.stage",
+    email: "ahmed.artwork2026@gmail.com",
     phone: "+1 (800) ART-WORK // DMX-EXT: 04",
     studioLocations: "BERLIN // NEW YORK // TOKYO",
     submitButtonText: "TRANSMIT BRIEF // LAUNCH STAGE",

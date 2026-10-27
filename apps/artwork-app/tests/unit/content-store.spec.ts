@@ -41,7 +41,7 @@ test.describe('Unit: Content Store & Data Layer (Phase 1)', () => {
     expect(content.whyUsTeaser.blueprint.image).toContain('blueprint_stage_scenography.png');
 
     // Contact assertions
-    expect(content.contact.email).toBe('studio@artwork-solutions.stage');
+    expect(content.contact.email).toBe('ahmed.artwork2026@gmail.com');
     expect(content.contact.formFields.length).toBeGreaterThanOrEqual(4);
 
     // Why Us Page assertions

@@ -96,7 +96,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     intakeLabel: "DIRECT INTAKE // CREATIVE CHIEF ON-CALL",
     intakeImage: SITE_MEDIA.creativeChiefIntake,
     intakeImageAlt: "Art Work Creative Chief On-Call Concept Intake",
-    email: "studio@artwork-solutions.stage",
+    email: "ahmed.artwork2026@gmail.com",
     phone: "+1 (800) ART-WORK // DMX-EXT: 04",
     studioLocations: "BERLIN // NEW YORK // TOKYO",
     submitButtonText: "TRANSMIT BRIEF // LAUNCH STAGE",

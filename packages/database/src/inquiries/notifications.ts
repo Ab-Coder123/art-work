@@ -151,7 +151,7 @@ export function renderClientConfirmationHtml(clientName: string, serviceType: st
         </p>
       </div>
       <p class="p">
-        If you have CAD files, deck links, or immediate schedule adjustments to share, simply reply to this email or reach out to <a href="mailto:studio@artwork-solutions.stage" style="color: #ffe600;">studio@artwork-solutions.stage</a>.
+        If you have CAD files, deck links, or immediate schedule adjustments to share, simply reply to this email or reach out to <a href="mailto:ahmed.artwork2026@gmail.com" style="color: #ffe600;">ahmed.artwork2026@gmail.com</a>.
       </p>
     </div>
     <div class="footer">
@@ -218,8 +218,8 @@ export class EmailAndWebhookNotifier implements NotificationService {
 
   async sendLeadAlert(inquiry: InquiryRecord): Promise<NotificationResult> {
     const apiKey = this.options.resendApiKey || process.env.RESEND_API_KEY;
-    const to = this.options.studioEmail || process.env.STUDIO_NOTIFICATION_EMAIL || "studio@artwork-solutions.stage";
-    const from = this.options.fromEmail || process.env.EMAIL_FROM || "Art Work Leads <leads@artwork-solutions.stage>";
+    const to = this.options.studioEmail || process.env.STUDIO_NOTIFICATION_EMAIL || "ahmed.artwork2026@gmail.com";
+    const from = this.options.fromEmail || process.env.EMAIL_FROM || "Art Work Leads <ahmed.artwork2026@gmail.com>";
 
     if (!apiKey) {
       // Graceful no-op in dev/testing environments without API key
@@ -268,7 +268,7 @@ export class EmailAndWebhookNotifier implements NotificationService {
 
   async sendClientConfirmation(inquiry: InquiryRecord): Promise<NotificationResult> {
     const apiKey = this.options.resendApiKey || process.env.RESEND_API_KEY;
-    const from = this.options.fromEmail || process.env.EMAIL_FROM || "Art Work Agency <studio@artwork-solutions.stage>";
+    const from = this.options.fromEmail || process.env.EMAIL_FROM || "Art Work Agency <ahmed.artwork2026@gmail.com>";
 
     if (!apiKey) {
       return { success: true };

@@ -115,7 +115,7 @@ export const SEED_SITE_CONTENT: SiteContent = {
     intakeLabel: "DIRECT INTAKE // CREATIVE CHIEF ON-CALL",
     intakeImage: "/assets/images/creative_chief_intake.png",
     intakeImageAlt: "Creative Chief on call ready for brief intake",
-    email: "studio@artwork-solutions.stage",
+    email: "ahmed.artwork2026@gmail.com",
     phone: "+1 (800) ART-WORK // DMX-EXT: 04",
     studioLocations: "BERLIN // NEW YORK // TOKYO",
     submitButtonText: "TRANSMIT BRIEF // LAUNCH STAGE",

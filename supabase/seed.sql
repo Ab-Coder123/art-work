@@ -89,7 +89,7 @@ INSERT INTO public.site_content (section_key, data, status, version) VALUES
 (
     'contact',
     jsonb_build_object(
-        'email', 'studio@artwork-solutions.stage',
+        'email', 'ahmed.artwork2026@gmail.com',
         'phone', '+1 (800) ART-WORK // DMX-EXT: 04',
         'address', 'BERLIN // NEW YORK // TOKYO',
         'office_hours', 'Sun - Thu, 09:00 - 18:00 GST'
