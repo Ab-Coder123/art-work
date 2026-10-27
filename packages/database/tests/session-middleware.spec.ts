@@ -64,7 +64,7 @@ describe("Phase 09: Session Middleware & Role Enforcement", () => {
               maybeSingle: async () => ({
                 data: {
                   user_id: "526191ee-4398-4617-ad66-30734ada24d3",
-                  email: "abdulrahmanahm7li@gmail.com",
+                  email: "ahmed.artwork2026@gmail.com",
                   full_name: "Lead Architect",
                   role: "super_admin",
                   is_active: true,
@@ -83,7 +83,7 @@ describe("Phase 09: Session Middleware & Role Enforcement", () => {
     );
     assert.equal(res.isAuthorized, true);
     assert.equal(res.adminUser?.role, "super_admin");
-    assert.equal(res.adminUser?.email, "abdulrahmanahm7li@gmail.com");
+    assert.equal(res.adminUser?.email, "ahmed.artwork2026@gmail.com");
   });
 
   it("should deny access if admin user is not active or missing from table", async () => {

@@ -1510,7 +1510,15 @@ export default function Home() {
                   fill
                   sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, 64px"
                   priority
-                  className="object-contain"
+                  className="object-contain dark:hidden"
+                />
+                <Image
+                  src="/assets/images/artwork_logo_dark.png"
+                  alt="Art Work Logo"
+                  fill
+                  sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, 64px"
+                  priority
+                  className="object-contain hidden dark:block"
                 />
               </div>
             </button>
@@ -1813,7 +1821,7 @@ export default function Home() {
             ref={mainContainerRef}
             data-lenis-prevent="true"
             style={{ overscrollBehaviorY: "contain" }}
-            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-1 sm:pt-2 pb-6 custom-scrollbar"
+            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-1 sm:pt-2 pb-6 no-scrollbar"
           >
             <AnimatePresence mode="wait">
               {activeStage === "stage-01" && (

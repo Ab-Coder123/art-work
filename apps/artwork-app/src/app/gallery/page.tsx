@@ -199,7 +199,15 @@ export default function GalleryPage() {
                 fill
                 sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, 64px"
                 priority
-                className="object-contain"
+                className="object-contain dark:hidden"
+              />
+              <Image
+                src="/assets/images/artwork_logo_dark.png"
+                alt="Art Work Logo"
+                fill
+                sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, 64px"
+                priority
+                className="object-contain hidden dark:block"
               />
             </div>
           </Link>
@@ -321,61 +329,30 @@ export default function GalleryPage() {
             </h1>
           </div>
 
-          {/* Hero Subtitle & Taped Paper Callout Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Statement: Taped Swatch */}
-            <div className="lg:col-span-7 relative p-5 bg-yellow-50 dark:bg-[#161622] rounded-lg border-2 border-dashed border-yellow-500/70 dark:border-yellow-500/40 comic-shadow-sm">
-              {/* Washi Masking Tape Accents */}
-              <div className="washi-tape-yellow absolute -top-3 left-8 w-24 h-5 -rotate-2"></div>
-              <div className="washi-tape-yellow absolute -top-3 right-12 w-20 h-5 rotate-3"></div>
+          {/* Hero Subtitle & Taped Paper Callout */}
+          <div className="relative p-5 sm:p-6 bg-yellow-50 dark:bg-[#161622] rounded-lg border-2 border-dashed border-yellow-500/70 dark:border-yellow-500/40 comic-shadow-sm max-w-4xl">
+            {/* Washi Masking Tape Accents */}
+            <div className="washi-tape-yellow absolute -top-3 left-8 w-24 h-5 -rotate-2"></div>
+            <div className="washi-tape-yellow absolute -top-3 right-12 w-20 h-5 rotate-3"></div>
 
-              <p className="font-body text-sm sm:text-base text-black/90 dark:text-zinc-200 leading-relaxed font-semibold">
-                “From the initial concept to the final execution, we create memorable experiences
-                that bring brands to life. Every stage truss, lighting sequence, and kinetic
-                pavilion begins with wet fountain pen ink on raw grid paper.”
-              </p>
+            <p className="font-body text-sm sm:text-base text-black/90 dark:text-zinc-200 leading-relaxed font-semibold">
+              “From the initial concept to the final execution, we create memorable experiences
+              that bring brands to life. Every stage truss, lighting sequence, and kinetic
+              pavilion begins with wet fountain pen ink on raw grid paper.”
+            </p>
 
-              <div className="mt-4 flex flex-wrap items-center gap-3 pt-3 border-t border-yellow-300 dark:border-zinc-700 font-mono text-xs text-black/70 dark:text-zinc-400">
-                <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
-                  <Compass className="w-3.5 h-3.5 text-yellow-500" /> CAD / SPATIAL DMX
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
-                  <Layers className="w-3.5 h-3.5 text-yellow-500" /> SCENOGRAPHIC ART
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
-                  <Monitor className="w-3.5 h-3.5 text-yellow-500" /> RAPID 72HR FAB
-                </span>
-              </div>
-            </div>
-
-            {/* Right: Technical Telemetry Card */}
-            <div className="lg:col-span-5 bg-black dark:bg-[#12121A] text-white p-4 sm:p-5 rounded-lg border-2 border-black dark:border-zinc-700 comic-shadow">
-              <div className="flex items-center justify-between pb-2.5 border-b border-white/20 text-xs font-mono text-yellow-400">
-                <span>[SYS_TELEMETRY: STAGE_OPS]</span>
-                <span className="animate-pulse">● LIVE RIGGING</span>
-              </div>
-              <div className="mt-3 space-y-2 font-mono text-xs">
-                <div className="flex justify-between">
-                  <span className="text-white/60">INDEX RANGE:</span>
-                  <span className="font-bold text-white">2018 — 2025</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/60">SHOWS DELIVERED:</span>
-                  <span className="font-bold text-yellow-400">450+ STAGES GLOBALLY</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/60">CONTROL PROTOCOL:</span>
-                  <span className="font-bold text-white">ART-NET / DMX512 / SMPTE</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/60">STATUS:</span>
-                  <span className="font-bold text-black bg-yellow-400 px-1.5 py-0.5 rounded text-[11px]">
-                    100% UNAPOLOGETIC CRAFT
-                  </span>
-                </div>
-              </div>
+            <div className="mt-4 flex flex-wrap items-center gap-3 pt-3 border-t border-yellow-300 dark:border-zinc-700 font-mono text-xs text-black/70 dark:text-zinc-400">
+              <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
+                <Compass className="w-3.5 h-3.5 text-yellow-500" /> CAD / SPATIAL DMX
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
+                <Layers className="w-3.5 h-3.5 text-yellow-500" /> SCENOGRAPHIC ART
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
+                <Monitor className="w-3.5 h-3.5 text-yellow-500" /> RAPID 72HR FAB
+              </span>
             </div>
           </div>
 

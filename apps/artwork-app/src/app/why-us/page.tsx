@@ -132,7 +132,15 @@ export default function WhyUsPage() {
                 fill
                 sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, 64px"
                 priority
-                className="object-contain"
+                className="object-contain dark:hidden"
+              />
+              <Image
+                src="/assets/images/artwork_logo_dark.png"
+                alt="Art Work Logo"
+                fill
+                sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, 64px"
+                priority
+                className="object-contain hidden dark:block"
               />
             </div>
           </Link>
