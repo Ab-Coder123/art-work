@@ -236,20 +236,7 @@ export default function WhyUsPage() {
 
       {/* ================= MAIN VIEWPORT STAGE ================= */}
       <main className="relative z-10 pt-24 sm:pt-28 pb-20 max-w-6xl mx-auto px-6 sm:px-8 xl:pr-14">
-        {/* Technical Header Ribbon */}
-        <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-3 mb-8 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
-          <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">{content.sceneBadge}</span>
-            <span className="font-bold">{content.sceneTitle}</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-4">
-            <span>CAD: REV-2025.02</span>
-            <span>•</span>
-            <span>STAGE: PINNED PERSPECTIVE</span>
-            <span>•</span>
-            <span className="text-black dark:text-white font-extrabold">{content.statusBadge}</span>
-          </div>
-        </div>
+        
 
         {/* HERO SECTION: Interactive Sticky Board & Architectural Easel */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start mb-20">

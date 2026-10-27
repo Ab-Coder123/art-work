@@ -62,27 +62,36 @@ describe("Art Work UI Polishing & System Reconfiguration Verification", () => {
     );
   });
 
-  it("4. should verify ribbon header styling and no-scrollbar containment", () => {
+  it("4. should verify complete removal of technical ribbon heads across all scene components", () => {
     const homePage = path.join(artworkAppDir, "src/app/page.tsx");
+    const whyUsPage = path.join(artworkAppDir, "src/app/why-us/page.tsx");
     const globalsCss = path.join(artworkAppDir, "src/app/globals.css");
 
     const homeContent = fs.readFileSync(homePage, "utf-8");
+    const whyUsContent = fs.readFileSync(whyUsPage, "utf-8");
     const cssContent = fs.readFileSync(globalsCss, "utf-8");
 
-    // Ribbon exists
-    assert.ok(
-      homeContent.includes("CREATIVE MARKETING MANIFESTO"),
-      "Scene 01 technical ribbon must be present"
+    // Assert technical ribbon heads are removed from page.tsx
+    assert.equal(
+      homeContent.includes("CAD: REV-2026.04"),
+      false,
+      "Technical header CAD ribbons must be removed from page.tsx"
     );
-    assert.ok(
-      homeContent.includes("SCENE // 01"),
-      "Scene badge must be present in ribbon"
+    assert.equal(
+      homeContent.includes("PROJECT ARCHIVE &amp; ARENA SHOWREEL VAULT"),
+      false,
+      "Scene 04 header ribbon must be removed from page.tsx"
+    );
+    assert.equal(
+      whyUsContent.includes("CAD: REV-2025.02"),
+      false,
+      "Technical header CAD ribbons must be removed from why-us/page.tsx"
     );
 
-    // Scrollbar prevention
+    // Assert main container has no-scrollbar containment
     assert.ok(
       homeContent.includes("no-scrollbar"),
-      "Main scene container must use no-scrollbar to avoid cutting through ribbon"
+      "Main scene container must use no-scrollbar"
     );
     assert.ok(
       cssContent.includes(".no-scrollbar"),

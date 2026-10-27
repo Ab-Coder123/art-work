@@ -183,21 +183,6 @@ function ManifestoContent({
 }: ManifestoContentProps) {
   return (
     <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
-      {/* Technical Header Ribbon (Matching Why-Us Scene Architecture & Proportions) */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2.5 sm:mb-3 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
-        <div className="flex items-center gap-3">
-          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 01</span>
-          <span className="font-bold">CREATIVE MARKETING MANIFESTO &amp; ARENA ARCHITECTURE</span>
-        </div>
-        <div className="hidden sm:flex items-center gap-4">
-          <span>CAD: REV-2026.04</span>
-          <span>•</span>
-          <span>STAGE: PINNED PERSPECTIVE</span>
-          <span>•</span>
-          <span className="text-black dark:text-white font-extrabold">STATUS: 100% UNAPOLOGETIC</span>
-        </div>
-      </div>
-
       {/* Top Floating Badges (Fluid Flex Alignment with Performance Marketing Badge) */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2 sm:mb-2.5">
         <motion.div
@@ -375,20 +360,6 @@ function ManifestoContent({
 function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof DEFAULT_WHY_US_CONTENT }) {
   return (
     <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
-      {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2.5 sm:mb-3 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
-        <div className="flex items-center gap-3">
-          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 02</span>
-          <span className="font-bold">AGENCY PROPOSITION &amp; EXPERIENTIAL PROOF</span>
-        </div>
-        <div className="hidden sm:flex items-center gap-4">
-          <span>CAD: REV-2026.04</span>
-          <span>•</span>
-          <span>STAGE: PINNED PERSPECTIVE</span>
-          <span>•</span>
-          <span className="text-black dark:text-white font-extrabold">STATUS: 100% UNAPOLOGETIC</span>
-        </div>
-      </div>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 mb-2.5 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1">
@@ -535,20 +506,6 @@ function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof D
 function ServicesContent() {
   return (
     <div className="w-full max-w-[1500px] mx-auto pt-1 pb-4 flex flex-col justify-start">
-      {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
-        <div className="flex items-center gap-3">
-          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 03</span>
-          <span className="font-bold">CAPABILITIES &amp; 3D MATRIX DISCIPLINE ROSTER</span>
-        </div>
-        <div className="hidden sm:flex items-center gap-4">
-          <span>CAD: REV-2026.04</span>
-          <span>•</span>
-          <span>STAGE: PINNED PERSPECTIVE</span>
-          <span>•</span>
-          <span className="text-black dark:text-white font-extrabold">STATUS: 100% MODULAR</span>
-        </div>
-      </div>
       <Capabilities3DMatrix />
     </div>
   );
@@ -586,20 +543,6 @@ function GalleryShowcaseContent() {
 
   return (
     <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
-      {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2.5 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
-        <div className="flex items-center gap-3">
-          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 04</span>
-          <span className="font-bold">PROJECT ARCHIVE &amp; ARENA SHOWREEL VAULT</span>
-        </div>
-        <div className="hidden sm:flex items-center gap-4">
-          <span>CAD: REV-2026.04</span>
-          <span>•</span>
-          <span>STAGE: PINNED PERSPECTIVE</span>
-          <span>•</span>
-          <span className="text-black dark:text-white font-extrabold">STATUS: 100% PRODUCTION READY</span>
-        </div>
-      </div>
       {/* Comic Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 mb-2 sm:mb-2.5 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>
@@ -874,20 +817,6 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
 
   return (
     <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
-      {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black dark:border-zinc-800 pb-1.5 mb-2 text-xs font-mono uppercase tracking-widest text-black/70 dark:text-zinc-400">
-        <div className="flex items-center gap-3">
-          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 05</span>
-          <span className="font-bold">CLIENT INTAKE &amp; RAPID BRIEF DISPATCH</span>
-        </div>
-        <div className="hidden sm:flex items-center gap-4">
-          <span>CAD: REV-2026.04</span>
-          <span>•</span>
-          <span>STAGE: PINNED PERSPECTIVE</span>
-          <span>•</span>
-          <span className="text-black dark:text-white font-extrabold">STATUS: 24H RAPID DISPATCH</span>
-        </div>
-      </div>
       <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-3.5 sm:p-4 lg:p-5 comic-shadow relative mt-1.5">
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border-2 border-black px-4 py-1 font-headline font-black text-[10px] sm:text-xs uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           {content.stageTag}

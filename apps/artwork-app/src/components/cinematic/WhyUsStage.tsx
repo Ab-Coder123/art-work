@@ -25,20 +25,7 @@ import {
 export const WhyUsStage: React.FC = () => {
   return (
     <section className="relative w-full max-w-6xl mx-auto px-6 sm:px-8 py-16" id="stage-02">
-      {/* Technical Header Ribbon */}
-      <div className="flex flex-wrap items-center justify-between border-b-2 border-black pb-3 mb-8 text-xs font-mono uppercase tracking-widest text-black/70">
-        <div className="flex items-center gap-3">
-          <span className="px-2 py-0.5 bg-black text-white font-black text-[10px]">SCENE // 02</span>
-          <span className="font-bold">AGENCY PROPOSITION &amp; EXPERIENTIAL PROOF</span>
-        </div>
-        <div className="hidden sm:flex items-center gap-4">
-          <span>CAD: REV-2025.02</span>
-          <span>•</span>
-          <span>STAGE: PINNED PERSPECTIVE</span>
-          <span>•</span>
-          <span className="text-black font-extrabold">STATUS: 100% UNAPOLOGETIC</span>
-        </div>
-      </div>
+      
 
       {/* HERO SECTION: Interactive Sticky Board & Architectural Easel */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start mb-20">
