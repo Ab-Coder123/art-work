@@ -251,35 +251,6 @@ export const WhyUsStage: React.FC = () => {
         </div>
       </div>
 
-      {/* ================= PROOF & METRICS TICKER ================= */}
-      <section className="mb-24 py-6 border-y-2 border-black bg-yellow-400/20 rounded-2xl px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div className="p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#111111]">
-            <div className="font-brush text-3xl md:text-4xl text-black">12</div>
-            <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 mt-1">
-              Service Areas
-            </div>
-          </div>
-          <div className="p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#111111]">
-            <div className="font-brush text-3xl md:text-4xl text-black">1</div>
-            <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 mt-1">
-              Connected Team
-            </div>
-          </div>
-          <div className="p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#111111]">
-            <div className="font-brush text-3xl md:text-4xl text-black">360°</div>
-            <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 mt-1">
-              Concept to Delivery
-            </div>
-          </div>
-          <div className="p-4 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#111111]">
-            <div className="font-brush text-3xl md:text-4xl text-black">0%</div>
-            <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 mt-1">
-              Generic Templates
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ================= SCENE 2 INTERACTIVE CAPABILITIES & EVENT MATRIX (Bento Grid) ================= */}
       <section className="mb-24" id="matrix">

@@ -462,29 +462,6 @@ export default function WhyUsPage() {
           </ScrollReveal>
         </div>
 
-        {/* ================= PROOF & METRICS TICKER ================= */}
-        <section className="mb-24 py-6 border-y-2 border-black dark:border-zinc-800 bg-yellow-400/20 dark:bg-yellow-400/10 rounded-2xl px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {[
-              ...content.metrics,
-              { num: "0%", label: "Generic Templates" },
-            ].slice(0, 4).map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 25, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.45, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="p-4 bg-white dark:bg-[#151520] border-2 border-black dark:border-zinc-700 rounded-xl shadow-[4px_4px_0px_#111111]"
-              >
-                <div className="font-brush text-3xl md:text-4xl text-black dark:text-yellow-400">{stat.num}</div>
-                <div className="font-headline text-xs font-black uppercase tracking-wider text-black/70 dark:text-zinc-400 mt-1">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
 
         {/* ================= SCENE 2 INTERACTIVE CAPABILITIES & EVENT MATRIX (Bento Grid) ================= */}
         <section className="mb-24" id="matrix">
