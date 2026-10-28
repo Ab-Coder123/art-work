@@ -23,34 +23,34 @@ import {
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 
-const renderDisciplineIcon = (icon: string) => {
+const renderDisciplineIcon = (icon: string, className = "w-4 h-4 text-black") => {
   switch (icon) {
     case "brush":
-      return <Paintbrush className="w-4 h-4 text-black" />;
+      return <Paintbrush className={className} />;
     case "compass":
-      return <Compass className="w-4 h-4 text-black" />;
+      return <Compass className={className} />;
     case "architecture":
-      return <Building className="w-4 h-4 text-black" />;
+      return <Building className={className} />;
     case "terminal":
-      return <Layers className="w-4 h-4 text-black" />;
+      return <Layers className={className} />;
     case "bolt":
-      return <Zap className="w-4 h-4 text-black" />;
+      return <Zap className={className} />;
     case "videocam":
-      return <Monitor className="w-4 h-4 text-black" />;
+      return <Monitor className={className} />;
     case "campaign":
-      return <Printer className="w-4 h-4 text-black" />;
+      return <Printer className={className} />;
     case "sparkles":
-      return <Sparkles className="w-4 h-4 text-black" />;
+      return <Sparkles className={className} />;
     case "gift":
-      return <Gift className="w-4 h-4 text-black" />;
+      return <Gift className={className} />;
     case "camera":
-      return <Camera className="w-4 h-4 text-black" />;
+      return <Camera className={className} />;
     case "users":
-      return <Users className="w-4 h-4 text-black" />;
+      return <Users className={className} />;
     case "truck":
-      return <Truck className="w-4 h-4 text-black" />;
+      return <Truck className={className} />;
     default:
-      return <ArrowUpRight className="w-4 h-4 text-black" />;
+      return <ArrowUpRight className={className} />;
   }
 };
 
@@ -419,23 +419,28 @@ const TiltCard: React.FC<TiltCardProps> = ({ discipline, index, onSelect }) => {
           }}
         />
 
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-headline font-black text-[10px] text-black/60 dark:text-zinc-400 tracking-wider">
-              {discipline.tag}
-            </span>
-            <span className="w-5 h-5 rounded-full bg-black text-yellow-400 font-mono text-[9px] font-black flex items-center justify-center">
-              {discipline.number}
-            </span>
+        <div className="relative z-10 flex flex-col flex-1 justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-headline font-black text-[10px] text-black/60 dark:text-zinc-400 tracking-wider">
+                {discipline.tag}
+              </span>
+              <span className="w-5 h-5 rounded-full bg-black text-yellow-400 font-mono text-[9px] font-black flex items-center justify-center">
+                {discipline.number}
+              </span>
+            </div>
+
+            <div className="font-headline font-black text-sm lg:text-[15px] text-black dark:text-white mb-2 leading-snug group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
+              {discipline.title}
+            </div>
           </div>
 
-          <div className="font-headline font-black text-sm lg:text-[15px] text-black dark:text-white mb-2 leading-snug group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
-            {discipline.title}
+          {/* Prominent Discipline Icon Badge */}
+          <div className="my-3 py-3.5 flex items-center justify-center bg-yellow-400/10 dark:bg-yellow-400/5 rounded-xl border border-black/10 dark:border-zinc-800 group-hover:bg-yellow-400/20 group-hover:border-yellow-400/40 transition-all duration-200">
+            <div className="w-12 h-12 rounded-xl bg-yellow-400 text-black border-2 border-black flex items-center justify-center comic-shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-200">
+              {renderDisciplineIcon(discipline.icon, "w-6 h-6 text-black stroke-[2.2]")}
+            </div>
           </div>
-
-          <p className="text-xs font-body text-black/75 dark:text-zinc-300 leading-relaxed mb-3">
-            {discipline.description}
-          </p>
         </div>
 
         <div className="relative z-10 pt-2.5 border-t border-black/15 dark:border-zinc-800 font-headline font-black text-[10px] text-black dark:text-zinc-200 flex items-center justify-between tracking-wider">
@@ -443,7 +448,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ discipline, index, onSelect }) => {
             VIEW DELIVERABLES
           </span>
           <span className="group-hover:translate-x-1 transition-transform text-black dark:text-yellow-400 flex items-center justify-center">
-            {renderDisciplineIcon(discipline.icon)}
+            <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
           </span>
         </div>
       </div>
