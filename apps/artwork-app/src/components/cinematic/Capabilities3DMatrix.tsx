@@ -455,6 +455,19 @@ export const Capabilities3DMatrix: React.FC = () => {
   const [selectedDiscipline, setSelectedDiscipline] = useState<Discipline | null>(null);
   const [activeFilter, setActiveFilter] = useState<ServiceCategory>("all");
 
+  const navigateToBrief = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setSelectedDiscipline(null);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("artwork:navigate-stage", { detail: { stage: "stage-04" } })
+      );
+      if (window.location.hash !== "#stage-04") {
+        window.history.pushState(null, "", "#stage-04");
+      }
+    }
+  };
+
   const filteredDisciplines = DISCIPLINES.filter((d) =>
     activeFilter === "all" ? true : d.category === activeFilter
   );
@@ -577,9 +590,9 @@ export const Capabilities3DMatrix: React.FC = () => {
                   CREATIVE • PLANNING • PRODUCTION • LIVE DELIVERY
                 </span>
                 <a
-                  href="#brief-inquiry"
-                  onClick={() => setSelectedDiscipline(null)}
-                  className="inline-flex items-center gap-2 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black font-headline font-bold text-xs px-5 py-2.5 rounded-lg border-2 border-black comic-shadow-sm transition-all"
+                  href="#stage-04"
+                  onClick={navigateToBrief}
+                  className="inline-flex items-center gap-2 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black font-headline font-bold text-xs px-5 py-2.5 rounded-lg border-2 border-black comic-shadow-sm transition-all cursor-pointer"
                 >
                   <span>Select in Brief</span>
                   <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -610,8 +623,9 @@ export const Capabilities3DMatrix: React.FC = () => {
           </div>
           <div className="relative z-10 flex-shrink-0">
             <a
-              className="inline-flex items-center gap-2 bg-yellow-400 text-black hover:bg-white font-headline font-black text-xs px-5 py-2.5 rounded-xl border-2 border-black comic-shadow-sm active:scale-95 transition-all whitespace-nowrap"
-              href="#brief-inquiry"
+              className="inline-flex items-center gap-2 bg-yellow-400 text-black hover:bg-white font-headline font-black text-xs px-5 py-2.5 rounded-xl border-2 border-black comic-shadow-sm active:scale-95 transition-all whitespace-nowrap cursor-pointer"
+              href="#stage-04"
+              onClick={navigateToBrief}
             >
               <span>PLAN YOUR EVENT</span>
               <Send className="w-3.5 h-3.5 stroke-[2.5]" />

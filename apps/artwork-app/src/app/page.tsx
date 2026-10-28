@@ -49,6 +49,27 @@ import {
 
 type StageId = "stage-01" | "stage-02" | "stage-03" | "stage-gallery" | "stage-04";
 const STAGE_ORDER: StageId[] = ["stage-01", "stage-02", "stage-03", "stage-gallery", "stage-04"];
+
+const resolveHashToStage = (hash: string): StageId | null => {
+  if (!hash) return null;
+  const clean = hash.replace(/^#\/?/, "").toLowerCase().trim();
+  if (clean === "stage-04" || clean === "brief-inquiry" || clean === "contact" || clean === "brief") {
+    return "stage-04";
+  }
+  if (clean === "stage-gallery" || clean === "gallery" || clean === "work") {
+    return "stage-gallery";
+  }
+  if (clean === "stage-03" || clean === "services" || clean === "why-us") {
+    return "stage-03";
+  }
+  if (clean === "stage-02" || clean === "capabilities" || clean === "about") {
+    return "stage-02";
+  }
+  if (clean === "stage-01" || clean === "hero") {
+    return "stage-01";
+  }
+  return null;
+};
 const DEFAULT_HERO_CONTENT = {
   announcementBadge: DEFAULT_SITE_CONTENT.manifesto.announcementBadge,
   editionBadge: DEFAULT_SITE_CONTENT.manifesto.editionBadge,
@@ -181,7 +202,7 @@ function PartnersMarqueeSection({
   return (
     <div className="w-full mt-8 sm:mt-10 pt-6 sm:pt-8 border-t-2 border-black/10 dark:border-zinc-800">
       {/* Section Definition & Header */}
-      <div className="relative flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4 sm:mb-5">
+      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-5">
         <div>
           <div className="inline-flex items-center gap-2 border-2 border-black bg-yellow-300 dark:bg-yellow-400 text-black px-3 py-1 rounded-full comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider -rotate-1 mb-2">
             <Sparkles className="w-3.5 h-3.5 fill-current" />
@@ -190,13 +211,10 @@ function PartnersMarqueeSection({
           <h2 className="font-headline font-black text-lg sm:text-2xl lg:text-3xl text-black dark:text-white uppercase tracking-tight">
             TRUSTED BY <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-lg border-2 border-black comic-shadow-sm inline-block -rotate-1">CULTURAL TITANS</span> &amp; INDUSTRY LEADERS
           </h2>
-          <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 max-w-2xl leading-relaxed mt-1">
-            From corporate conferences and exhibitions to experiential brand activations, we collaborate with leading enterprises and visionary brands to produce memorable live experiences.
-          </p>
         </div>
 
-        {/* Comic Starburst with Scaling Pulse Animation + Interactive Hint */}
-        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+        {/* Comic Starburst with Scaling Pulse Animation */}
+        <div className="flex items-center shrink-0">
           <div className="animate-star-pulse hidden sm:block">
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
               <svg
@@ -211,16 +229,6 @@ function PartnersMarqueeSection({
                 <span>PARTNERS</span>
               </div>
             </div>
-          </div>
-
-          <div className="flex flex-col items-end gap-1 text-xs font-mono uppercase tracking-wider text-black/60 dark:text-zinc-400">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-[10px] sm:text-[11px] font-bold">60 FPS KINETIC REEL</span>
-            </div>
-            <span className="text-[9px] sm:text-[10px] font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-400/15 px-2 py-0.5 rounded border border-yellow-500/30">
-              CLICK OR HOVER TO REVEAL
-            </span>
           </div>
         </div>
       </div>
@@ -1298,7 +1306,10 @@ export default function Home() {
     const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
     if (isMobile) {
-      const targetEl = document.getElementById(`${stage}-mobile`);
+      const targetEl =
+        document.getElementById(`${stage}-mobile`) ||
+        document.getElementById(stage) ||
+        (stage === "stage-04" ? document.getElementById("brief-inquiry") : null);
       if (targetEl) {
         const headerOffset = 104; // Height of fixed header + mobile pill bar
         const elementPosition = targetEl.getBoundingClientRect().top;
@@ -1340,6 +1351,65 @@ export default function Home() {
       window.scrollTo({ top: target, behavior: "smooth" });
     }
   }, []);
+
+  // GLOBAL HASH ROUTER & INTERNAL ANCHOR NAVIGATION SYNCHRONIZER:
+  // Handles incoming URL hashes like /#stage-04 or /#brief-inquiry as well as in-page anchor clicks
+  useEffect(() => {
+    const handleHash = () => {
+      if (typeof window === "undefined") return;
+      const stage = resolveHashToStage(window.location.hash);
+      if (stage) {
+        scrollToStage(stage);
+      }
+    };
+
+    // Immediate check on mount
+    handleHash();
+
+    // Secondary check once DOM layout and Lenis have hydrated
+    const timer = setTimeout(handleHash, 180);
+
+    // Listen for standard hashchange
+    window.addEventListener("hashchange", handleHash);
+
+    // Listen for custom navigation events
+    const handleCustomNav = (e: Event) => {
+      const customEvent = e as CustomEvent<{ stage: StageId }>;
+      if (customEvent.detail?.stage) {
+        scrollToStage(customEvent.detail.stage);
+      }
+    };
+    window.addEventListener("artwork:navigate-stage", handleCustomNav);
+
+    // Global document click delegator for any anchor tags targeting #stage-XX, #brief-inquiry, etc.
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest("a");
+      if (!target) return;
+      const href = target.getAttribute("href");
+      if (!href) return;
+
+      if (href.startsWith("#") || href.startsWith("/#")) {
+        const hash = href.startsWith("/#") ? href.slice(2) : href.slice(1);
+        const stage = resolveHashToStage(hash);
+        if (stage) {
+          e.preventDefault();
+          if (window.location.hash !== `#${hash}`) {
+            window.history.pushState(null, "", `#${hash}`);
+          }
+          scrollToStage(stage);
+        }
+      }
+    };
+
+    document.addEventListener("click", handleAnchorClick);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("hashchange", handleHash);
+      window.removeEventListener("artwork:navigate-stage", handleCustomNav);
+      document.removeEventListener("click", handleAnchorClick);
+    };
+  }, [scrollToStage]);
 
   // DESKTOP INTERNAL SCROLL-Y COMPLETION & PROGRESSION ENGINE:
   // Requires the active component's internal scroll Y to scroll completely to its end
@@ -1734,7 +1804,9 @@ export default function Home() {
             id="stage-04-mobile"
             className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
           >
-            <ContactContent content={contactContent} />
+            <div id="brief-inquiry" className="w-full">
+              <ContactContent content={contactContent} />
+            </div>
           </section>
         </ScrollReveal>
 
@@ -1897,13 +1969,16 @@ export default function Home() {
               {activeStage === "stage-04" && (
                 <motion.div
                   key="scene-04"
+                  id="stage-04"
                   initial={{ opacity: 0, y: 15, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                   className="w-full flex-1 flex flex-col items-center justify-start"
                 >
-                  <ContactContent content={contactContent} />
+                  <div id="brief-inquiry" className="w-full">
+                    <ContactContent content={contactContent} />
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
