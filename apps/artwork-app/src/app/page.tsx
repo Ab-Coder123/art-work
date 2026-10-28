@@ -92,10 +92,10 @@ function PartnersMarqueeSection({
   return (
     <div className="w-full mt-8 sm:mt-10 pt-6 sm:pt-8 border-t-2 border-black/10 dark:border-zinc-800">
       {/* Section Definition & Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4 sm:mb-5">
+      <div className="relative flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4 sm:mb-5">
         <div>
           <div className="inline-flex items-center gap-2 border-2 border-black bg-yellow-300 dark:bg-yellow-400 text-black px-3 py-1 rounded-full comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider -rotate-1 mb-2">
-            <span className="text-black font-black text-xs">★</span>
+            <Sparkles className="w-3.5 h-3.5 fill-current" />
             <span>PARTNERS // TRUSTED ECOSYSTEM</span>
           </div>
           <h2 className="font-headline font-black text-lg sm:text-2xl lg:text-3xl text-black dark:text-white uppercase tracking-tight">
@@ -105,9 +105,29 @@ function PartnersMarqueeSection({
             From corporate conferences and exhibitions to experiential brand activations, we collaborate with leading enterprises and visionary brands to produce memorable live experiences.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-black/60 dark:text-zinc-400 shrink-0">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span className="text-[10px] sm:text-[11px] font-bold">60 FPS KINETIC REEL</span>
+
+        {/* Comic Starburst with Scaling Pulse Animation from Hero */}
+        <div className="flex items-center gap-4 shrink-0">
+          <div className="animate-star-pulse hidden sm:block">
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+              <svg
+                className="w-full h-full fill-yellow-400 stroke-black stroke-2 drop-shadow-md"
+                viewBox="0 0 100 100"
+              >
+                <polygon points="50,0 63,28 95,20 78,48 100,70 69,76 65,100 45,82 18,95 24,68 0,55 25,36 15,10 44,22"></polygon>
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-1 text-black font-headline font-black text-[8px] sm:text-[9px] uppercase leading-tight -rotate-6">
+                <span>TOP TIER</span>
+                <span className="bg-black text-white px-1 py-0.2 rounded-sm text-[7px]">TRUSTED</span>
+                <span>PARTNERS</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-black/60 dark:text-zinc-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="text-[10px] sm:text-[11px] font-bold">60 FPS KINETIC REEL</span>
+          </div>
         </div>
       </div>
 
@@ -131,9 +151,8 @@ function PartnersMarqueeSection({
                 />
               </div>
               <div className="text-left">
-                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider flex items-center gap-1">
-                  <span className="text-yellow-500 dark:text-yellow-400 font-black">★</span>
-                  <span>{comp.name}</span>
+                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider">
+                  {comp.name}
                 </div>
                 <div className="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 uppercase">
                   {comp.category}
@@ -161,9 +180,8 @@ function PartnersMarqueeSection({
                 />
               </div>
               <div className="text-left">
-                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider flex items-center gap-1">
-                  <span className="text-yellow-500 dark:text-yellow-400 font-black">★</span>
-                  <span>{comp.name}</span>
+                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider">
+                  {comp.name}
                 </div>
                 <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase">
                   {comp.highlight || comp.category}
