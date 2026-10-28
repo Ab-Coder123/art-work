@@ -1,150 +1,146 @@
 {
   "version": "1.0.0",
-  "updatedAt": "2026-10-19T10:00:00.000Z",
+  "updatedAt": "2026-10-28T10:00:00.000Z",
   "manifesto": {
-    "announcementBadge": "MARKETING SOLUTIONS FOR KINETIC BRANDS",
-    "editionBadge": "EDITION 2025",
-    "stickyNote": "STICKY_NOTE_01.CAD: \"Zero cookie-cutter templates.\"",
-    "headlinePart1": "CREATIVE IDEAS.",
-    "headlinePart2": "REAL IMPACT.",
+    "announcementBadge": "EVENTS, EXHIBITIONS & BRAND EXPERIENCES",
+    "editionBadge": "CONCEPT TO DELIVERY",
+    "stickyNote": "ONE TEAM FROM FIRST IDEA TO EVENT DAY",
+    "headlinePart1": "WE TURN IDEAS",
+    "headlinePart2": "INTO LIVE EXPERIENCES.",
     "starburstText": {
-      "top": "100% RAW",
-      "middle": "UNAPOLOGETIC",
-      "bottom": "CREATIVE"
+      "top": "LIVE",
+      "middle": "EVENTS",
+      "bottom": "2026"
     },
-    "introParagraph": "We are Art Work: an interdisciplinary marketing and experiential design collective translating bold cultural visions into arena-scale reality.",
-    "primaryCtaText": "EXPLORE SHOWREEL",
-    "secondaryCtaText": "VIEW CAPABILITIES",
+    "introParagraph": "From the initial concept to the final execution, we create memorable experiences that bring brands to life. Our team plans, designs and delivers events with the details, production and coordination needed to make every moment count.",
+    "primaryCtaText": "VIEW OUR PROJECTS",
+    "secondaryCtaText": "EXPLORE OUR SERVICES",
     "metrics": [
       {
-        "num": "450+",
-        "label": "Arena Shows"
+        "num": "12",
+        "label": "Service Areas"
       },
       {
-        "num": "99.4%",
-        "label": "Cue Accuracy"
+        "num": "1",
+        "label": "Connected Team"
       },
       {
-        "num": "1.2M+",
-        "label": "Live Reach"
+        "num": "360°",
+        "label": "Concept to Delivery"
       }
     ],
-    "canvasHeader": "STUDIO_COLLECTIVE_CANVAS.V4",
-    "canvasTag": "INK_LAYER_ACTIVE",
-    "heroImage": "/assets/images/hero_studio_collective.png",
-    "heroImageAlt": "Art Work Creative Marketing Studio Collective"
+    "canvasHeader": "EVENT_PRODUCTION_CANVAS.V4",
+    "canvasTag": "LIVE_DELIVERY_ACTIVE",
+    "heroImage": "/assets/images/hero_studio_collective.webp",
+    "heroImageAlt": "Art Work Event Planning and Production Studio Collective"
   },
   "whyUsTeaser": {
-    "eyebrow": "02 WHY ART WORK",
-    "headline": "ENGINEERED FOR STAGE & SCALE.",
-    "exploreCtaText": "EXPLORE FULL WHY US",
+    "eyebrow": "WHY WORK WITH ART WORK",
+    "headline": "ONE TEAM FROM FIRST IDEA TO FINAL MOMENT.",
+    "exploreCtaText": "HOW WE WORK",
     "bentoCards": [
       {
         "number": "01",
-        "title": "Arena & Stage Scenography",
-        "description": "Stage blueprints, LED mapping rigs, lighting cue choreographies, and large-format structural storytelling.",
-        "badge": "PRODUCTION READY",
+        "title": "Event Planning & Project Management",
+        "description": "Clear plans, schedules and coordination keep the moving parts of your event working together.",
+        "badge": "PLANNED AROUND YOUR BRIEF",
         "iconName": "layers"
       },
       {
         "number": "02",
-        "title": "Dynamic Motion Systems",
-        "description": "Kinetic typography, 3D broadcast packages, real-time reactive shaders, and frame-accurate visual sync.",
-        "badge": "60 FPS FIDELITY",
+        "title": "Creative Design & Brand Experience",
+        "description": "We shape the concept, environment and event branding into an experience that feels connected to your brand.",
+        "badge": "MADE FOR YOUR BRAND",
         "iconName": "sparkles"
       },
       {
         "number": "03",
-        "title": "Brand Architecture",
-        "description": "Custom hand-drawn vector doodle suites, physical merch design, stage passes, and total campaign cohesion.",
-        "badge": "TACTILE & DIGITAL",
+        "title": "Production & On-Site Delivery",
+        "description": "We coordinate event production, suppliers, staffing and logistics through setup, live delivery and close-out.",
+        "badge": "FROM SETUP TO SHOWTIME",
         "iconName": "palette"
       }
     ],
     "blueprint": {
-      "badge": "BLUEPRINT & STAGE PREVIEW",
-      "title": "FROM SKETCHBOARD TO LIVE VENUE IN 72 HOURS.",
-      "description": "We prototype spatial structures, truss configurations, projector lines of sight, and booth flows in real-time.",
-      "image": "/assets/images/blueprint_stage_scenography.png",
-      "altText": "Stage Architecture Blueprints and Scenography"
+      "badge": "OUR APPROACH",
+      "title": "A PLAN THAT TAKES SHAPE.",
+      "description": "We develop the creative direction, production plan and event details with you, then coordinate delivery through the live event.",
+      "image": "/assets/images/blueprint_stage_scenography.webp",
+      "altText": "Art Work Event Planning & Architectural Scenography Blueprint"
     }
   },
   "contact": {
-    "stageTag": "STAGE 04 // LAUNCH YOUR CAMPAIGN",
-    "headline": "LET’S INK SOMETHING HISTORIC.",
-    "description": "Whether you need a dynamic stage package for an arena tour or an unforgettable brand identity, our sketchpad is open.",
-    "intakeLabel": "DIRECT INTAKE // CREATIVE CHIEF ON-CALL",
-    "intakeImage": "/assets/images/creative_chief_intake.png",
-    "intakeImageAlt": "Creative Chief on call ready for brief intake",
+    "stageTag": "TELL US WHAT YOU’RE PLANNING",
+    "headline": "LET’S PLAN YOUR NEXT EVENT.",
+    "description": "Tell us about your event, audience and timing. We’ll follow up to discuss the right creative, planning and production support for your brief.",
+    "intakeLabel": "DIRECT INTAKE // EVENT PRODUCTION BRIEF",
+    "intakeImage": "/assets/images/creative_chief_intake.webp",
+    "intakeImageAlt": "Art Work Event Producer On-Call Intake",
     "email": "ahmed.artwork2026@gmail.com",
-    "phone": "+1 (800) ART-WORK // DMX-EXT: 04",
-    "studioLocations": "BERLIN // NEW YORK // TOKYO",
-    "submitButtonText": "TRANSMIT BRIEF // LAUNCH STAGE",
+    "phone": "+20 (2) 2794-0000",
+    "studioLocations": "CAIRO // REGIONAL EVENT DELIVERY",
+    "submitButtonText": "SEND YOUR EVENT BRIEF",
     "formFields": [
       {
         "name": "fullName",
-        "label": "PRODUCER / LEAD NAME",
-        "placeholder": "Your name or production alias",
+        "label": "YOUR NAME",
+        "placeholder": "e.g. Alex Mercer",
         "type": "text",
         "required": true
       },
       {
         "name": "email",
-        "label": "DIRECT INBOX",
-        "placeholder": "director@brand.com",
+        "label": "WORK EMAIL",
+        "placeholder": "alex@company.com",
         "type": "email",
         "required": true
       },
       {
         "name": "serviceType",
-        "label": "TARGET DISCIPLINE",
-        "placeholder": "Select Discipline",
+        "label": "SERVICE NEEDED",
+        "placeholder": "Select service needed...",
         "type": "select",
         "required": true
       },
       {
         "name": "brief",
-        "label": "STAGE PARAMETERS & VISION",
-        "placeholder": "Brief your stage vision, arena dates, or design needs...",
+        "label": "TELL US ABOUT YOUR EVENT",
+        "placeholder": "Tell us about your event format, audience, objectives, and timing...",
         "type": "textarea",
         "required": true
       }
     ]
   },
   "whyUsPage": {
-    "sceneBadge": "SCENE // 02",
-    "sceneTitle": "AGENCY PROPOSITION & EXPERIENTIAL PROOF",
-    "statusBadge": "STATUS: 100% UNAPOLOGETIC",
-    "heroHeadlineRow1": "WHY",
-    "heroHeadlineRow2": "US?",
-    "roiBadge": "PERFORMANCE MARKETING (+340% ROI)",
-    "contentCreationBadge": "CONTENT CREATION",
+    "sceneBadge": "HOW WE WORK",
+    "sceneTitle": "OUR APPROACH",
+    "statusBadge": "ONE TEAM // LIVE DELIVERY",
+    "heroHeadlineRow1": "ONE TEAM.",
+    "heroHeadlineRow2": "FROM FIRST IDEA TO FINAL MOMENT.",
+    "roiBadge": "CREATIVE DEVELOPMENT & PLANNING",
+    "contentCreationBadge": "ON-SITE EVENT PRODUCTION",
     "doodleStickers": [
-      "★ BRANDING",
-      "CONTENT STRATEGY // 360°",
-      "DESIGNING",
-      "WEB DEV"
+      "CREATIVE",
+      "PLANNING",
+      "PRODUCTION",
+      "LIVE_DELIVERY"
     ],
-    "presentationTitle": "CREATIVE CHIEF ON-CALL // CONCEPT INTAKE",
-    "presentationSubtitle": "From wet fountain pen on raw grid paper to arena execution.",
+    "presentationTitle": "A THOUGHTFUL PROCESS. A WELL-RUN EVENT.",
+    "presentationSubtitle": "We listen to the brief, shape the right experience, coordinate the details and stay close to delivery - so clients know what is happening at every step.",
     "presentationImage": "/assets/images/blueprint_stage_scenography.webp",
-    "presentationImageAlt": "Art Work Creative Director presenting stage CAD schematics",
+    "presentationImageAlt": "Creative Architecture Blueprint",
     "metrics": [
       {
-        "num": "450+",
-        "label": "Arena Shows Executed"
+        "num": "12",
+        "label": "Service Areas"
       },
       {
-        "num": "99.4%",
-        "label": "Live Cue Accuracy"
+        "num": "1",
+        "label": "Connected Team"
       },
       {
-        "num": "1.2M+",
-        "label": "Audience Footprint"
-      },
-      {
-        "num": "72h",
-        "label": "Rapid Spatial Turnaround"
+        "num": "360°",
+        "label": "Live Delivery"
       }
     ]
   }

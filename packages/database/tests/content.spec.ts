@@ -38,12 +38,12 @@ describe("Phase 07: Site Content Versioning & Dynamic Content API", () => {
     assert.equal(typeof result.data.updatedAt, "string");
 
     // Assert Manifesto
-    assert.equal(result.data.manifesto.headlinePart1, "CREATIVE IDEAS.");
-    assert.equal(result.data.manifesto.headlinePart2, "REAL IMPACT.");
+    assert.equal(result.data.manifesto.headlinePart1, DEFAULT_SITE_CONTENT.manifesto.headlinePart1);
+    assert.equal(result.data.manifesto.headlinePart2, DEFAULT_SITE_CONTENT.manifesto.headlinePart2);
     assert.ok(result.data.manifesto.metrics.length >= 3);
 
     // Assert WhyUs Teaser
-    assert.equal(result.data.whyUsTeaser.eyebrow, "02 WHY ART WORK");
+    assert.equal(result.data.whyUsTeaser.eyebrow, DEFAULT_SITE_CONTENT.whyUsTeaser.eyebrow);
     assert.ok(result.data.whyUsTeaser.bentoCards.length >= 3);
 
     // Assert Contact
@@ -51,7 +51,7 @@ describe("Phase 07: Site Content Versioning & Dynamic Content API", () => {
     assert.ok(result.data.contact.formFields.length >= 4);
 
     // Assert WhyUs Page
-    assert.equal(result.data.whyUsPage.sceneTitle, "02 / WHY ART WORK");
+    assert.equal(result.data.whyUsPage.sceneTitle, DEFAULT_SITE_CONTENT.whyUsPage.sceneTitle);
     assert.ok(result.data.whyUsPage.doodleStickers.length >= 4);
   });
 

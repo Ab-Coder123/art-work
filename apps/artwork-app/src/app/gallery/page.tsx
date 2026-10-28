@@ -20,13 +20,8 @@ import {
   ArrowRight,
   Pencil,
   CheckCircle2,
-  Layers,
-  Monitor,
   Send,
-  Download,
   Filter,
-  Phone,
-  Compass,
   Play,
   Smartphone,
 } from "lucide-react";
@@ -303,27 +298,23 @@ export default function GalleryPage() {
       <main className="relative z-10 w-full pt-28 sm:pt-28 md:pt-28 pb-20">
         {/* ================= HERO SECTION ================= */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-10 border-b border-black/10 dark:border-zinc-800">
-          {/* Vault Subtitle Tag */}
+          {/* Subtitle Tag */}
           <div className="flex items-center gap-3 mb-4">
-            <div className="inline-flex items-center gap-2 border border-black dark:border-zinc-700 bg-white dark:bg-[#151520] text-black dark:text-zinc-200 px-3.5 py-1 rounded-full comic-shadow-sm font-headline text-[10px] font-black uppercase tracking-wider">
-              <span className="w-2 h-2 rounded-full bg-yellow-400 animate-ping"></span>
-              <span>{"★ STAGE 04 // PROJECT ARCHIVE & BLUEPRINT VAULT"}</span>
+            <div className="inline-flex items-center gap-2 border border-black dark:border-zinc-700 bg-yellow-400 text-black px-3.5 py-1 rounded-full comic-shadow-sm font-headline text-[10px] font-black uppercase tracking-wider -rotate-1">
+              <span>★ PROJECT GALLERY</span>
             </div>
-            <span className="hidden md:inline font-mono text-[11px] text-black/50 dark:text-zinc-400">
-              LOC: 52°31&apos;N 13°24&apos;E — ARCHIVE REV. 2025.4
-            </span>
           </div>
 
           {/* Monumental Headline */}
           <div className="max-w-5xl mb-6">
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tighter uppercase leading-[0.98] text-black dark:text-white">
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.8} delay={0.1}>
-                CRAFTED IN INK.
+                EVENTS THAT BRING
               </KineticBrushWord>{" "}
               <br />
               <span className="relative inline-block mt-2">
                 <span className="absolute -inset-1.5 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"></span>
-                <span className="text-black relative z-10 px-2">EXECUTED IN ARENAS.</span>
+                <span className="text-black relative z-10 px-2">BRANDS TO LIFE.</span>
                 <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.2} delay={0.35} />
               </span>
             </h1>
@@ -336,23 +327,17 @@ export default function GalleryPage() {
             <div className="washi-tape-yellow absolute -top-3 right-12 w-20 h-5 rotate-3"></div>
 
             <p className="font-body text-sm sm:text-base text-black/90 dark:text-zinc-200 leading-relaxed font-semibold">
-              “From the initial concept to the final execution, we create memorable experiences
-              that bring brands to life. Every stage truss, lighting sequence, and kinetic
-              pavilion begins with wet fountain pen ink on raw grid paper.”
+              Explore conferences, exhibitions and brand experiences created for real audiences and real moments.
             </p>
 
             <div className="mt-4 flex flex-wrap items-center gap-3 pt-3 border-t border-yellow-300 dark:border-zinc-700 font-mono text-xs text-black/70 dark:text-zinc-400">
-              <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
-                <Compass className="w-3.5 h-3.5 text-yellow-500" /> CAD / SPATIAL DMX
-              </span>
+              <span className="font-bold text-black dark:text-zinc-200">EVENTS</span>
               <span>•</span>
-              <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
-                <Layers className="w-3.5 h-3.5 text-yellow-500" /> SCENOGRAPHIC ART
-              </span>
+              <span className="font-bold text-black dark:text-zinc-200">EXHIBITIONS</span>
               <span>•</span>
-              <span className="flex items-center gap-1 font-bold text-black dark:text-zinc-200">
-                <Monitor className="w-3.5 h-3.5 text-yellow-500" /> RAPID 72HR FAB
-              </span>
+              <span className="font-bold text-black dark:text-zinc-200">CONFERENCES</span>
+              <span>•</span>
+              <span className="font-bold text-black dark:text-zinc-200">BRAND EXPERIENCES</span>
             </div>
           </div>
 
@@ -363,13 +348,13 @@ export default function GalleryPage() {
             </span>
 
             {[
-              { key: "all", label: `★ All Masterpieces (${projects.length})` },
-              { key: "stage", label: "Stage & Lighting" },
+              { key: "all", label: `All Projects (${projects.length})` },
+              { key: "conferences", label: "Conferences & Medical Events" },
               { key: "booths", label: "Exhibition Booths" },
-              { key: "conferences", label: "Medical & Conferences" },
+              { key: "stage", label: "Stage, Sound & Lighting" },
               { key: "led", label: "LED & Audiovisual" },
-              { key: "branding", label: "Branding & Merch" },
-              { key: "tech", label: "Interactive Tech" },
+              { key: "branding", label: "Branding & Print" },
+              { key: "tech", label: "Interactive Experiences" },
             ].map((chip) => (
               <button
                 key={chip.key}
@@ -392,16 +377,16 @@ export default function GalleryPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-3">
             <div>
               <div className="font-mono text-xs font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-widest mb-1">
-                {"// SELECTED SCENOGRAPHY FOLIO"}
+                SELECTED PROJECTS
               </div>
               <h2 className="text-2xl md:text-4xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
                 <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
-                  THE TACTILE ARCHIVE
+                  THE WORK, IN THE MOMENTS
                 </KineticBrushWord>
               </h2>
             </div>
-            <p className="font-headline font-bold text-xs md:text-sm text-black/70 dark:text-zinc-400 rotate-1 max-w-sm">
-              ✎ &quot;Real physical installations built by our hands, tested at 120 decibels.&quot;
+            <p className="font-headline font-bold text-xs md:text-sm text-black/70 dark:text-zinc-400 max-w-sm">
+              A look at the events and experiences our team has helped bring to life.
             </p>
           </div>
 
@@ -613,9 +598,9 @@ export default function GalleryPage() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between text-xs font-mono text-black/60 dark:text-zinc-400 px-1">
-                  <span>FIG 1.0: EASEL MASTER SCHEMATIC</span>
+                  <span>FIG 1.0: PRODUCTION WORKFLOW</span>
                   <span className="text-black dark:text-white font-bold">
-                    CLIENT: INTERNATIONAL EXPO GUILD
+                    CONCEPT TO LIVE DELIVERY
                   </span>
                 </div>
               </div>
@@ -624,21 +609,19 @@ export default function GalleryPage() {
               <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-5">
                 <div>
                   <div className="inline-block px-2.5 py-0.5 bg-black text-yellow-400 font-mono text-xs font-bold rounded mb-2">
-                    METHODOLOGY: INK-TO-STEEL
+                    OUR APPROACH
                   </div>
                   <h3 className="text-xl md:text-2xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
-                    FROM NAPKIN SKETCH TO 40-TON SUPERSTRUCTURE.
+                    FROM BRIEF TO LIVE EXPERIENCE.
                   </h3>
 
                   {/* Sticky note quote box */}
                   <div className="my-4 p-3.5 bg-yellow-100 dark:bg-[#1e1e2c] rounded border-2 border-black dark:border-zinc-700 comic-shadow-sm relative">
                     <p className="font-headline font-bold text-xs sm:text-sm text-black dark:text-zinc-100 leading-snug">
-                      &quot;Every millimeter in vector space was first drawn with black ink on paper.
-                      If it doesn&apos;t move people on paper, it won&apos;t move 50,000 fans in an
-                      arena.&quot;
+                      &quot;From the initial concept to the final execution, we create memorable experiences that bring brands to life.&quot;
                     </p>
                     <div className="mt-2 text-right font-mono text-[10px] text-black/70 dark:text-zinc-400 font-bold">
-                      — MARKUS V., SCENOGRAPHIC DIRECTOR
+                      — ART WORK EVENT TEAM
                     </div>
                   </div>
 
@@ -649,8 +632,7 @@ export default function GalleryPage() {
                         1
                       </span>
                       <span>
-                        <strong>Fountain-Pen Ideation:</strong> Preliminary sightlines and audience
-                        flow drafted directly on grid paper.
+                        <strong>Understand:</strong> We learn about your objectives, audience, event format, timing and practical requirements.
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -658,8 +640,7 @@ export default function GalleryPage() {
                         2
                       </span>
                       <span>
-                        <strong>3D Spatial Vectorization:</strong> Hand doodles converted into
-                        structural engineering CAD models.
+                        <strong>Create:</strong> We develop the concept, creative direction and event experience with your team.
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -667,8 +648,15 @@ export default function GalleryPage() {
                         3
                       </span>
                       <span>
-                        <strong>Fabrication &amp; Cueing:</strong> 72-hour rapid build cycles with
-                        continuous DMX rehearsal.
+                        <strong>Plan &amp; Produce:</strong> We coordinate the schedule, suppliers, event branding, equipment and production details.
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-5 h-5 rounded bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
+                        4
+                      </span>
+                      <span>
+                        <strong>Deliver On Site:</strong> We manage event operations and logistics as the experience comes to life.
                       </span>
                     </li>
                   </ul>
@@ -679,8 +667,8 @@ export default function GalleryPage() {
                     href="#brief-inquiry"
                     className="w-full inline-flex items-center justify-center gap-2 py-3 px-6 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-300 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors"
                   >
-                    <Download className="w-4 h-4" />
-                    <span>DOWNLOAD FULL TECHNICAL STAGE RIDER (PDF)</span>
+                    <span>LET’S PLAN YOUR NEXT EVENT</span>
+                    <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>
               </div>
@@ -697,43 +685,41 @@ export default function GalleryPage() {
           >
             <div className="relative z-10 max-w-3xl">
               <span className="px-3 py-0.5 bg-black text-white font-mono text-xs font-bold uppercase rounded inline-block mb-3">
-                {"// FAST CREATIVE DIRECTORY"}
+                TELL US WHAT YOU’RE PLANNING
               </span>
               <h2 className="text-2xl sm:text-4xl font-black font-headline uppercase tracking-tight text-black leading-tight mb-3">
-                GOT A PROJECT IN MIND?{" "}
+                PLANNING AN EVENT OR EXHIBITION?{" "}
                 <KineticBrushWord variant="double" color="#111111" strokeWidth={2.4}>
-                  LET’S SKETCH IT INTO REALITY.
+                  LET’S BRING IT TO LIFE.
                 </KineticBrushWord>
               </h2>
               <p className="font-body text-sm sm:text-base text-black/90 font-medium leading-relaxed mb-6">
-                Send us your event dates, venue specs, or wild ideas. Our creative directors
-                respond with an annotated sketchpad proposal within 24 hours.
+                Tell us about your event format, audience and timing. We’ll follow up to discuss the right creative and production support for your brief.
               </p>
 
               {/* Action Buttons Cluster */}
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href="/#stage-04"
-                  className="px-5 py-3 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm flex items-center gap-2 active:scale-95 transition-transform"
+                  className="px-6 py-3 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm flex items-center gap-2 active:scale-95 transition-transform"
                 >
                   <Send className="w-4 h-4" />
-                  <span>START A BRIEF SPEC</span>
+                  <span>SEND YOUR EVENT BRIEF</span>
                 </Link>
                 <a
-                  href="tel:+18002789675"
-                  className="px-5 py-3 bg-white hover:bg-yellow-100 text-black font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm flex items-center gap-2 active:scale-95 transition-transform"
+                  href="mailto:ahmed.artwork2026@gmail.com"
+                  className="px-6 py-3 bg-white hover:bg-yellow-100 text-black font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm flex items-center gap-2 active:scale-95 transition-transform"
                 >
-                  <Phone className="w-4 h-4" />
-                  <span>CALL DIRECTOR HOTLINE: +1 800 ART-WORK</span>
+                  <span>EMAIL DIRECT: ahmed.artwork2026@gmail.com</span>
                 </a>
               </div>
 
               <div className="mt-6 pt-4 border-t border-black/20 flex flex-wrap items-center gap-4 font-mono text-xs text-black/80">
-                <span>⚡ GUARANTEED 24H SKETCH TURNAROUND</span>
+                <span>★ ONE CONNECTED TEAM</span>
                 <span>•</span>
-                <span>📍 BERLIN • LONDON • NEW YORK</span>
+                <span>📍 CAIRO // REGIONAL EVENT DELIVERY</span>
                 <span>•</span>
-                <span>🔒 NDA COMPLIANT ON INTAKE</span>
+                <span>CREATIVE | PLANNING | PRODUCTION</span>
               </div>
             </div>
           </ScrollReveal>

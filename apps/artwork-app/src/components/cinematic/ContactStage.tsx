@@ -14,25 +14,33 @@ export interface ContactStageProps {
 }
 
 const SERVICE_OPTIONS: string[] = [
-  "Stage Design & Arena Rigging",
-  "Conferences & Keynotes",
-  "Experiential Brand Activation",
-  "Kinetic LED Truss & Automation",
-  "Holographic & 3D Mapping",
+  "Concept Creation & Creative Development",
+  "Event Planning & Project Management",
+  "Exhibition Booth Design & Production",
+  "Conference & Medical Event Management",
+  "Stage, Sound & Lighting Solutions",
+  "LED Screens & Audiovisual Equipment",
+  "Branding, Printing & Event Branding",
+  "Interactive Activities & Engagement Solutions",
+  "Promotional Giveaways & Merchandise",
+  "Photography & Videography",
+  "Registration & Event Staffing",
+  "On-Site Event Management & Logistics",
+  "Not sure yet",
 ];
 
 const DEFAULT_CONTACT_CONTENT: ContactSectionContent = {
-  stageTag: "STAGE 04: EXECUTION // 24H INTAKE",
-  headline: "THE ARENA AWAITS YOUR BRIEF.",
+  stageTag: "TELL US WHAT YOU’RE PLANNING",
+  headline: "LET’S PLAN YOUR NEXT EVENT.",
   description:
-    "Send your technical constraints, venue capacity, and aesthetic vision. Our senior production team dispatches initial schematics in 24 hours.",
-  intakeLabel: "STUDIO_CHIEF_DIRECT_LINE",
+    "Tell us about your event, audience and timing. We’ll follow up to discuss the right creative, planning and production support for your brief.",
+  intakeLabel: "DIRECT INTAKE // EVENT PRODUCTION BRIEF",
   intakeImage: "/assets/images/creative_chief_intake.png",
-  intakeImageAlt: "Art Work Studio Chief Intake",
-  email: "brief@artwork-marketing.com",
-  phone: "+20 (2) 2794-0000",
-  studioLocations: "Cairo • Dubai • Riyadh • London",
-  submitButtonText: "INITIATE STAGE PROTOCOL",
+  intakeImageAlt: "Art Work Event Producer On-Call Intake",
+  email: "ahmed.artwork2026@gmail.com",
+  phone: "",
+  studioLocations: "Cairo // Regional Event Delivery",
+  submitButtonText: "SEND YOUR EVENT BRIEF",
   formFields: [],
 };
 
@@ -128,7 +136,7 @@ export const ContactStage: React.FC<ContactStageProps> = ({
           </span>
         </div>
         <div className="text-[10px] font-mono font-bold uppercase text-black/50 dark:text-zinc-400">
-          TRANSLATE VISION INTO HARDWARE
+          CREATIVE • PLANNING • PRODUCTION • ON-SITE DELIVERY
         </div>
       </div>
 
@@ -218,11 +226,11 @@ export const ContactStage: React.FC<ContactStageProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block font-headline font-bold text-xs uppercase mb-1.5 text-black dark:text-zinc-300">
-                  Full Name / Organization *
+                  Your Name *
                 </label>
                 <input
                   className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
-                  placeholder="e.g. Alex Vance, Production Director"
+                  placeholder="e.g. Alex Mercer"
                   required
                   type="text"
                   value={formData.fullName}
@@ -231,7 +239,7 @@ export const ContactStage: React.FC<ContactStageProps> = ({
               </div>
               <div>
                 <label className="block font-headline font-bold text-xs uppercase mb-1.5 text-black dark:text-zinc-300">
-                  Official Email Address *
+                  Work Email *
                 </label>
                 <input
                   className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
@@ -246,7 +254,7 @@ export const ContactStage: React.FC<ContactStageProps> = ({
 
             <div>
               <label className="block font-headline font-bold text-xs uppercase mb-1.5 text-black dark:text-zinc-300">
-                Target Stage / Service Solution
+                Service Needed
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {SERVICE_OPTIONS.map((opt: string) => (
@@ -268,11 +276,11 @@ export const ContactStage: React.FC<ContactStageProps> = ({
 
             <div>
               <label className="block font-headline font-bold text-xs uppercase mb-1.5 text-black dark:text-zinc-300">
-                The Core Brief / Vision Constraints *
+                Tell Us About Your Event *
               </label>
               <textarea
                 className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
-                placeholder="Describe your arena, product launch, or brand evolution requirements (min 10 characters)..."
+                placeholder="Tell us about your event format, audience, objectives, and timing (min 10 characters)..."
                 required
                 rows={3}
                 value={formData.brief}
@@ -282,7 +290,7 @@ export const ContactStage: React.FC<ContactStageProps> = ({
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
               <span className="text-[10px] sm:text-xs font-body font-mono text-black/60 dark:text-zinc-400">
-                ⚡ 24h rapid response standard • Direct technical intake
+                We’ll review your brief and get back to you using the details you provide.
               </span>
               <MagneticButton soundType="pop">
                 <button

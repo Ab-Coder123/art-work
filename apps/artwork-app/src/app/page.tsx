@@ -23,7 +23,6 @@ import {
   ArrowRight,
   ArrowDown,
   Pencil,
-  Lightbulb,
   Paintbrush,
   Layers,
   CheckCircle2,
@@ -201,21 +200,9 @@ function ManifestoContent({
           </span>
         </motion.div>
 
-        <div className="inline-flex items-center gap-1.5 border-2 border-black bg-white dark:bg-[#151520] text-black dark:text-zinc-200 px-3 sm:px-3.5 py-1 rounded-lg comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
-          <span className="text-yellow-500 font-black">★</span>
+        <div className="inline-flex items-center gap-1.5 border-2 border-black bg-yellow-400 text-black px-3.5 py-1 rounded-xl comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider -rotate-1">
+          <span>★</span>
           <span>{content.announcementBadge}</span>
-          <span className="bg-yellow-400 text-black px-2 py-0.5 rounded font-bold ml-1 text-[9px] sm:text-[10px]">
-            {content.editionBadge}
-          </span>
-        </div>
-
-        {/* Sticky Note Callout 01 */}
-        <div className="hidden xs:block relative -rotate-2 hover:rotate-0 transition-transform duration-200">
-          <div className="bg-yellow-200 border-2 border-black px-3 py-1 text-[10px] sm:text-xs font-headline font-bold text-black comic-shadow-sm flex items-center gap-1.5">
-            <Lightbulb className="w-3.5 h-3.5 text-black stroke-[2]" />
-            <span>STICKY_NOTE_01.CAD: &quot;Zero cookie-cutter templates.&quot;</span>
-          </div>
-          <div className="absolute -top-1.5 left-4 w-6 h-2 bg-white/70 border border-black/40 rotate-2"></div>
         </div>
       </div>
 
@@ -238,23 +225,6 @@ function ManifestoContent({
             <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.0} delay={0.35} />
           </span>
         </h1>
-
-        {/* Comic Starburst / POW Badge */}
-        <div className="absolute -top-3 right-0 sm:right-6 hidden sm:block animate-star-pulse">
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
-            <svg
-              className="w-full h-full fill-yellow-400 stroke-black stroke-2 drop-shadow-md"
-              viewBox="0 0 100 100"
-            >
-              <polygon points="50,0 63,28 95,20 78,48 100,70 69,76 65,100 45,82 18,95 24,68 0,55 25,36 15,10 44,22"></polygon>
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-1 text-black font-headline font-black text-[8px] sm:text-[9px] uppercase leading-tight -rotate-6">
-              <span>100% RAW</span>
-              <span className="bg-black text-white px-1 py-0.2 rounded-sm text-[7px]">UNAPOLOGETIC</span>
-              <span>CREATIVE</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Action Cluster & Team Collective Art with Magnetic Buttons */}
@@ -264,25 +234,30 @@ function ManifestoContent({
             {content.introParagraph}
           </p>
 
-          {/* Primary Action Buttons: Gallery + Capabilities */}
+          {/* Primary Action Buttons: View Projects + Explore Services */}
           <div className="flex flex-wrap items-center gap-2.5 pt-1">
             <Link
               href="/gallery"
-              className="relative group inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 sm:py-3 rounded-DEFAULT border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 cursor-pointer"
+              className="relative group inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 cursor-pointer"
             >
-              <span>★ EXPLORE GALLERY</span>
+              <span>VIEW OUR PROJECTS</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </Link>
 
             <MagneticButton soundType="click">
               <button
                 onClick={onViewCapabilities}
-                className="inline-flex items-center gap-1.5 bg-white dark:bg-[#161622] text-black dark:text-white hover:bg-black dark:hover:bg-yellow-400 hover:text-white dark:hover:text-black font-headline font-bold text-xs sm:text-sm px-4 sm:px-4.5 py-2.5 sm:py-3 rounded-DEFAULT border-2 border-black dark:border-zinc-600 comic-shadow-sm transition-all duration-150 cursor-pointer"
+                className="inline-flex items-center gap-1.5 bg-white dark:bg-[#161622] text-black dark:text-white hover:bg-black dark:hover:bg-yellow-400 hover:text-white dark:hover:text-black font-headline font-bold text-xs sm:text-sm px-4 sm:px-4.5 py-2.5 sm:py-3 rounded-xl border-2 border-black dark:border-zinc-600 comic-shadow-sm transition-all duration-150 cursor-pointer"
               >
-                <span>OUR DISCIPLINES</span>
+                <span>EXPLORE OUR SERVICES</span>
                 <ArrowDown className="w-4 h-4 stroke-[2.5]" />
               </button>
             </MagneticButton>
+          </div>
+
+          {/* Safe Proof Tagline */}
+          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/60 dark:text-zinc-400 pt-0.5">
+            CREATIVE | PLANNING | PRODUCTION | ON-SITE DELIVERY
           </div>
 
           {/* Milestone Badges */}
@@ -546,17 +521,17 @@ function GalleryShowcaseContent() {
       {/* Comic Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 mb-2 sm:mb-2.5 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>
-          <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1.5">
-            <span>★ 04 PROJECT ARCHIVE &amp; GALLERY</span>
+          <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1.5 -rotate-1">
+            <span>★ SELECTED PROJECTS</span>
           </div>
-          <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black dark:text-white tracking-tight">
-            CRAFTED IN INK.{" "}
+          <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black dark:text-white tracking-tight uppercase">
+            EVENTS THAT BRING{" "}
             <KineticBrushWord variant="double" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4}>
-              EXECUTED IN ARENAS.
+              BRANDS TO LIFE.
             </KineticBrushWord>
           </h2>
           <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 mt-1">
-            Volumetric 8K LED walls, parametric stage trusses, and dynamic lighting rigs.
+            Explore events and experiences delivered by our team, from creative development to on-site coordination.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -600,8 +575,8 @@ function GalleryShowcaseContent() {
                     <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
                       {primary.stamp}
                     </span>
-                    <span className="bg-red-600 text-white text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
-                      ▶ OFFICIAL SHOWREEL
+                    <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
+                      ★ FEATURED EVENT
                     </span>
                     <span className="text-xs font-mono text-black/60 dark:text-zinc-400 uppercase">
                       {primary.client}

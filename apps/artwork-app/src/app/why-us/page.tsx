@@ -370,14 +370,14 @@ export default function WhyUsPage() {
                 className="inline-flex items-center gap-2.5 px-6 py-3 bg-yellow-400 hover:bg-yellow-300 text-black font-headline text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black hover-brutal-lift active:scale-95 transition-all shadow-[3px_3px_0px_#111111]"
                 href="#matrix"
               >
-                <span>Explore Our Proposition</span>
+                <span>EXPLORE OUR SERVICES</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </a>
               <a
                 className="inline-flex items-center gap-2 px-5 py-3 bg-white dark:bg-[#181824] hover:bg-black hover:text-white dark:hover:bg-yellow-400 dark:hover:text-black text-black dark:text-white font-headline text-sm font-bold uppercase tracking-wider rounded-xl border-2 border-black dark:border-zinc-700 hover-brutal-clean active:scale-95 transition-all shadow-[2px_2px_0px_#111111]"
-                href="#matrix"
+                href="/gallery"
               >
-                <span>View Live Capabilities</span>
+                <span>VIEW SELECTED PROJECTS</span>
                 <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
               </a>
             </div>
@@ -386,10 +386,12 @@ export default function WhyUsPage() {
             <div className="mt-8 pt-5 border-t border-black/10 dark:border-zinc-800 flex items-center gap-6 text-xs font-mono text-black/60 dark:text-zinc-400">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-green-500"></span>
-                <span>450+ ARENA STAGES STAGED</span>
+                <span>12 SERVICE AREAS</span>
               </div>
               <div>•</div>
-              <div>99.4% DMX CUE ACCURACY</div>
+              <div>ONE CONNECTED TEAM</div>
+              <div>•</div>
+              <div>CONCEPT TO ON-SITE DELIVERY</div>
             </div>
           </div>
 
@@ -436,16 +438,16 @@ export default function WhyUsPage() {
               {/* Lower Drafting Specs Grid */}
               <div className="mt-4 pt-3 border-t border-black/15 dark:border-zinc-800 grid grid-cols-2 gap-2 text-[10px] font-mono uppercase text-black/70 dark:text-zinc-400">
                 <div>
-                  RIGGING TOLERANCE: <strong className="text-black dark:text-white font-black">0.05 MM</strong>
+                  PLANNING: <strong className="text-black dark:text-white font-black">COMPREHENSIVE</strong>
                 </div>
                 <div>
-                  CNC FABRICATION: <strong className="text-black dark:text-white font-black">GERMAN SPEC</strong>
+                  PRODUCTION: <strong className="text-black dark:text-white font-black">ON-SITE DELIVERY</strong>
                 </div>
                 <div>
-                  COLOR ACCURACY: <strong className="text-black dark:text-white font-black">PANTONE 100%</strong>
+                  BRANDING: <strong className="text-black dark:text-white font-black">CUSTOM ALIGNED</strong>
                 </div>
                 <div>
-                  STATUS: <strong className="text-black dark:text-white font-black">READY FOR CUE</strong>
+                  COLLABORATION: <strong className="text-black dark:text-white font-black">ONE TEAM</strong>
                 </div>
               </div>
             </div>
@@ -500,8 +502,7 @@ export default function WhyUsPage() {
               </h3>
             </div>
             <p className="font-body text-sm text-black/70 dark:text-zinc-300 max-w-md">
-              Every discipline is owned in-house. From acoustic calculations to millimetric CNC stage
-              craft, we merge brutal strategic clarity with theater-grade engineering.
+              We bring creative development, event planning and production together under one coordinated approach, keeping your brand and audience at the center of every experience.
             </p>
           </ScrollReveal>
 
@@ -691,17 +692,16 @@ export default function WhyUsPage() {
             <div className="relative z-10 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 sm:gap-8">
               <div className="flex-1 max-w-2xl text-left">
                 <div className="font-brush text-sm tracking-wider uppercase text-black mb-2">
-                  Ready to blow your competition out of the water?
+                  TELL US WHAT YOU’RE PLANNING
                 </div>
                 <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black text-black uppercase tracking-tight leading-none mb-3">
                   LET&apos;S DRAFT YOUR{" "}
                   <KineticBrushWord variant="double" color="#111111" strokeWidth={2.4}>
-                    MASTERSTAGE BRIEF.
+                    NEXT EVENT.
                   </KineticBrushWord>
                 </h3>
                 <p className="font-body text-sm sm:text-base font-semibold text-black/80 max-w-xl leading-relaxed">
-                  Tell us your target milestone, space dimensions, or commercial goals. We return with a
-                  fully costed 3D structural preview within 72 hours.
+                  Tell us about your event format, audience and timing. We’ll follow up to discuss the right creative, planning and production support.
                 </p>
               </div>
               <div className="flex flex-wrap sm:flex-nowrap items-center gap-3.5 shrink-0 w-full sm:w-auto">
@@ -709,14 +709,14 @@ export default function WhyUsPage() {
                   className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-black text-white hover:bg-white hover:text-black font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black shadow-[4px_4px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_#111111] active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
                   href="/#brief-inquiry"
                 >
-                  <span>SUBMIT BRIEF SPEC</span>
+                  <span>SEND YOUR EVENT BRIEF</span>
                   <Send className="w-4 h-4 stroke-[2.5]" />
                 </Link>
                 <Link
                   className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-white text-black hover:bg-black hover:text-white font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black shadow-[4px_4px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_#111111] active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
                   href="/#stage-01"
                 >
-                  <span>VIEW SHOWREEL</span>
+                  <span>EXPLORE SERVICES</span>
                   <Play className="w-4 h-4 fill-current" />
                 </Link>
               </div>
