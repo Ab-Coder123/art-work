@@ -230,6 +230,29 @@ export function normalizeProjectInput(
           : null
         : existing?.youtube_description ?? null,
     youtube_is_short,
+    images: Array.isArray(rawInput.images)
+      ? rawInput.images.map((img) => String(img).trim()).filter(Boolean)
+      : existing?.images ?? [],
+    pdf_url:
+      rawInput.pdfUrl !== undefined
+        ? rawInput.pdfUrl
+          ? String(rawInput.pdfUrl).trim()
+          : null
+        : rawInput.pdf_url !== undefined
+        ? rawInput.pdf_url
+          ? String(rawInput.pdf_url).trim()
+          : null
+        : existing?.pdf_url ?? null,
+    pdf_title:
+      rawInput.pdfTitle !== undefined
+        ? rawInput.pdfTitle
+          ? String(rawInput.pdfTitle).trim()
+          : null
+        : rawInput.pdf_title !== undefined
+        ? rawInput.pdf_title
+          ? String(rawInput.pdf_title).trim()
+          : null
+        : existing?.pdf_title ?? null,
     status: rawInput.status ?? existing?.status ?? "draft",
     order_index: Number(
       rawInput.order_index ?? rawInput.order ?? existing?.order_index ?? 1

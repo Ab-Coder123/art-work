@@ -32,14 +32,14 @@ export async function POST(request: NextRequest) {
 
     if (!ALLOWED_MIME_TYPES.has(file.type)) {
       return NextResponse.json(
-        { error: `Unsupported file type: ${file.type}. Allowed: PNG, JPG, WebP` },
+        { error: `Unsupported file type: ${file.type}. Allowed: PNG, JPG, WebP, PDF` },
         { status: 400 }
       );
     }
 
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: `File size exceeds 8MB limit (${(file.size / 1024 / 1024).toFixed(1)}MB)` },
+        { error: `File size exceeds 25MB limit (${(file.size / 1024 / 1024).toFixed(1)}MB)` },
         { status: 400 }
       );
     }

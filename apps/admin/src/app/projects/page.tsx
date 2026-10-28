@@ -1237,7 +1237,7 @@ export default function GalleryProjectsManager() {
 
                       {/* Attached PDF Preview Card */}
                       {editingProject.pdfUrl ? (
-                        <div className="p-3 bg-red-950/20 border border-red-500/30 rounded-xl flex items-center justify-between gap-3">
+                        <div className="p-3 bg-red-950/20 border border-red-500/30 rounded-xl flex flex-wrap items-center justify-between gap-3">
                           <div className="flex items-center gap-2.5 min-w-0">
                             <div className="w-9 h-9 rounded-lg bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center shrink-0">
                               <FileText className="w-5 h-5" />
@@ -1249,27 +1249,31 @@ export default function GalleryProjectsManager() {
                               <div className="text-[10px] text-zinc-400 font-mono truncate">{editingProject.pdfUrl}</div>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex items-center gap-2 shrink-0 ml-auto">
                             <a
                               href={editingProject.pdfUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="px-2.5 py-1 text-[10px] bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-lg flex items-center gap-1 font-bold"
+                              className="px-2.5 py-1 text-[11px] bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-lg flex items-center gap-1 font-bold"
                             >
                               <span>View PDF ↗</span>
                             </a>
                             <button
                               type="button"
-                              onClick={() => setEditingProject({ ...editingProject, pdfUrl: null, pdfTitle: null })}
-                              className="p-1 text-zinc-400 hover:text-red-400 rounded-lg hover:bg-red-950/40 cursor-pointer"
-                              title="Remove PDF"
+                              onClick={() => {
+                                setEditingProject({ ...editingProject, pdfUrl: null, pdfTitle: null });
+                                if (boothPdfInputRef.current) boothPdfInputRef.current.value = "";
+                              }}
+                              className="px-2.5 py-1 text-[11px] bg-red-600/20 hover:bg-red-600/40 text-red-300 border border-red-500/40 rounded-lg flex items-center gap-1 font-bold cursor-pointer transition-colors"
+                              title="Delete Attached PDF"
                             >
-                              <X className="w-3.5 h-3.5" />
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span>Remove PDF</span>
                             </button>
                           </div>
                         </div>
                       ) : (
-                        <p className="text-[11px] text-zinc-500 italic">No PDF attached yet. Click the button above to upload a PDF.</p>
+                        <p className="text-[11px] text-zinc-500 italic">No PDF attached yet. Click or drag &amp; drop a PDF above.</p>
                       )}
                     </div>
 

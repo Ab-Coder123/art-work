@@ -408,7 +408,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ discipline, index, onSelect }) => {
           transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
           transition: "transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
-        className="relative border-2 border-black dark:border-zinc-700 p-4 rounded-xl bg-white dark:bg-[#15151F] comic-shadow-sm hover:comic-shadow-yellow hover:bg-yellow-50 dark:hover:bg-[#1D1D2B] transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1 min-h-[220px]"
+        className="relative border-2 border-black dark:border-zinc-700 p-4 rounded-xl bg-white dark:bg-[#15151F] comic-shadow-sm hover:comic-shadow-yellow hover:bg-yellow-50 dark:hover:bg-[#1D1D2B] transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1 min-h-[165px] sm:min-h-[175px]"
       >
         {/* Dynamic Specular Glare Overlay */}
         <div
@@ -421,7 +421,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ discipline, index, onSelect }) => {
 
         <div className="relative z-10 flex flex-col flex-1 justify-between">
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <span className="font-headline font-black text-[10px] text-black/60 dark:text-zinc-400 tracking-wider">
                 {discipline.tag}
               </span>
@@ -430,15 +430,14 @@ const TiltCard: React.FC<TiltCardProps> = ({ discipline, index, onSelect }) => {
               </span>
             </div>
 
-            <div className="font-headline font-black text-sm lg:text-[15px] text-black dark:text-white mb-2 leading-snug group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
-              {discipline.title}
-            </div>
-          </div>
-
-          {/* Prominent Discipline Icon Badge */}
-          <div className="my-3 py-3.5 flex items-center justify-center bg-yellow-400/10 dark:bg-yellow-400/5 rounded-xl border border-black/10 dark:border-zinc-800 group-hover:bg-yellow-400/20 group-hover:border-yellow-400/40 transition-all duration-200">
-            <div className="w-12 h-12 rounded-xl bg-yellow-400 text-black border-2 border-black flex items-center justify-center comic-shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-200">
-              {renderDisciplineIcon(discipline.icon, "w-6 h-6 text-black stroke-[2.2]")}
+            {/* Headline Title with Icon side by side */}
+            <div className="flex items-start gap-3 my-1">
+              <div className="w-10 h-10 rounded-xl bg-yellow-400 text-black border-2 border-black flex items-center justify-center comic-shadow-sm shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-200 mt-0.5">
+                {renderDisciplineIcon(discipline.icon, "w-5 h-5 text-black stroke-[2.2]")}
+              </div>
+              <h3 className="font-headline font-black text-sm lg:text-[15px] text-black dark:text-white leading-snug group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors pt-0.5">
+                {discipline.title}
+              </h3>
             </div>
           </div>
         </div>
