@@ -80,14 +80,88 @@ interface ManifestoContentProps {
 /* =========================================================================
    SCENE // 01.B: PARTNERS & CLIENT NETWORK TICKER REEL
    ========================================================================= */
+function PartnerLogoCard({
+  company,
+  isSelected,
+  onToggle,
+  tiltDirection = "left",
+}: {
+  company: CompanyRecord;
+  isSelected: boolean;
+  onToggle: () => void;
+  tiltDirection?: "left" | "right";
+}) {
+  const hoverTilt = tiltDirection === "left" ? "hover:-rotate-1" : "hover:rotate-1";
+
+  return (
+    <div
+      onClick={onToggle}
+      className={`group relative flex items-center bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 p-2 sm:p-2.5 rounded-2xl comic-shadow-sm transition-all duration-300 cursor-pointer shrink-0 select-none ${hoverTilt} ${
+        isSelected
+          ? "scale-105 -rotate-1 bg-yellow-50 dark:bg-[#222234] ring-2 ring-yellow-400 border-black dark:border-yellow-400 comic-shadow"
+          : "hover:scale-105"
+      }`}
+    >
+      {/* Tape decoration on selected / hover */}
+      <div
+        className={`absolute -top-2 left-3 w-8 h-3.5 bg-yellow-300/80 border border-black/30 -rotate-6 transition-opacity duration-200 pointer-events-none ${
+          isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+        }`}
+      ></div>
+
+      {/* High-Impact Large Logo Box */}
+      <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-white dark:bg-[#101018] overflow-hidden flex items-center justify-center p-2 border border-black/15 dark:border-white/10 shrink-0 shadow-inner">
+        <Image
+          src={company.logo}
+          alt={company.name}
+          width={80}
+          height={80}
+          className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110"
+          unoptimized
+        />
+      </div>
+
+      {/* Hidden by default -> Revealed smoothly on hover or click */}
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-out flex flex-col justify-center ${
+          isSelected
+            ? "max-w-[260px] opacity-100 ml-3 sm:ml-3.5 pr-2"
+            : "max-w-0 opacity-0 group-hover:max-w-[260px] group-hover:opacity-100 group-hover:ml-3 sm:group-hover:ml-3.5 group-hover:pr-2"
+        }`}
+      >
+        <div className="whitespace-nowrap">
+          <div className="font-headline font-black text-xs sm:text-sm text-black dark:text-white uppercase tracking-wider">
+            {company.name}
+          </div>
+          <div className="flex items-center gap-1.5 mt-1">
+            <span className="inline-block bg-yellow-400 text-black text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm uppercase">
+              {company.category}
+            </span>
+            {company.highlight && (
+              <span className="text-[10px] font-mono text-black/60 dark:text-zinc-400 uppercase hidden sm:inline-block">
+                • {company.highlight}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PartnersMarqueeSection({
   companies = DEFAULT_COMPANIES,
 }: {
   companies?: CompanyRecord[];
 }) {
+  const [activeCompanyId, setActiveCompanyId] = useState<string | null>(null);
   const activeCompanies = companies.filter((c) => c.isActive !== false);
   const marqueeRow1 = [...activeCompanies, ...activeCompanies];
   const marqueeRow2 = [...activeCompanies.slice().reverse(), ...activeCompanies.slice().reverse()];
+
+  const handleToggle = (id: string) => {
+    setActiveCompanyId((prev) => (prev === id ? null : id));
+  };
 
   return (
     <div className="w-full mt-8 sm:mt-10 pt-6 sm:pt-8 border-t-2 border-black/10 dark:border-zinc-800">
@@ -106,8 +180,8 @@ function PartnersMarqueeSection({
           </p>
         </div>
 
-        {/* Comic Starburst with Scaling Pulse Animation from Hero */}
-        <div className="flex items-center gap-4 shrink-0">
+        {/* Comic Starburst with Scaling Pulse Animation + Interactive Hint */}
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
           <div className="animate-star-pulse hidden sm:block">
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
               <svg
@@ -124,70 +198,43 @@ function PartnersMarqueeSection({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-black/60 dark:text-zinc-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="text-[10px] sm:text-[11px] font-bold">60 FPS KINETIC REEL</span>
+          <div className="flex flex-col items-end gap-1 text-xs font-mono uppercase tracking-wider text-black/60 dark:text-zinc-400">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-[10px] sm:text-[11px] font-bold">60 FPS KINETIC REEL</span>
+            </div>
+            <span className="text-[9px] sm:text-[10px] font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-400/15 px-2 py-0.5 rounded border border-yellow-500/30">
+              CLICK OR HOVER TO REVEAL
+            </span>
           </div>
         </div>
       </div>
 
       {/* Dual Row Infinite Marquee Reel */}
-      <div className="relative overflow-hidden rounded-xl border-2 border-black dark:border-zinc-700 bg-zinc-50/70 dark:bg-[#12121A]/70 py-3.5 backdrop-blur-sm">
+      <div className="relative overflow-hidden rounded-2xl border-2 border-black dark:border-zinc-700 bg-zinc-50/70 dark:bg-[#12121A]/70 py-4 sm:py-5 backdrop-blur-sm">
         {/* Row 1: Left */}
-        <div className="flex w-max gap-3.5 py-1 animate-marquee-left">
+        <div className="flex w-max gap-4 sm:gap-5 py-1 animate-marquee-left">
           {marqueeRow1.map((comp, idx) => (
-            <div
+            <PartnerLogoCard
               key={`${comp.id}-row1-${idx}`}
-              className="flex items-center gap-3 bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 px-3.5 py-2 rounded-xl comic-shadow-sm hover:scale-105 hover:-rotate-1 transition-transform cursor-pointer shrink-0"
-            >
-              <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/10 overflow-hidden flex items-center justify-center p-1 border border-black/20 relative">
-                <Image
-                  src={comp.logo}
-                  alt={comp.name}
-                  width={32}
-                  height={32}
-                  className="w-full h-full object-cover rounded"
-                  unoptimized
-                />
-              </div>
-              <div className="text-left">
-                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider">
-                  {comp.name}
-                </div>
-                <div className="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 uppercase">
-                  {comp.category}
-                </div>
-              </div>
-            </div>
+              company={comp}
+              isSelected={activeCompanyId === comp.id}
+              onToggle={() => handleToggle(comp.id)}
+              tiltDirection="left"
+            />
           ))}
         </div>
 
         {/* Row 2: Right */}
-        <div className="flex w-max gap-3.5 py-1 mt-2 animate-marquee-right">
+        <div className="flex w-max gap-4 sm:gap-5 py-1 mt-3 sm:mt-4 animate-marquee-right">
           {marqueeRow2.map((comp, idx) => (
-            <div
+            <PartnerLogoCard
               key={`${comp.id}-row2-${idx}`}
-              className="flex items-center gap-3 bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 px-3.5 py-2 rounded-xl comic-shadow-sm hover:scale-105 hover:rotate-1 transition-transform cursor-pointer shrink-0"
-            >
-              <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/10 overflow-hidden flex items-center justify-center p-1 border border-black/20 relative">
-                <Image
-                  src={comp.logo}
-                  alt={comp.name}
-                  width={32}
-                  height={32}
-                  className="w-full h-full object-cover rounded"
-                  unoptimized
-                />
-              </div>
-              <div className="text-left">
-                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider">
-                  {comp.name}
-                </div>
-                <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase">
-                  {comp.highlight || comp.category}
-                </div>
-              </div>
-            </div>
+              company={comp}
+              isSelected={activeCompanyId === comp.id}
+              onToggle={() => handleToggle(comp.id)}
+              tiltDirection="right"
+            />
           ))}
         </div>
       </div>
