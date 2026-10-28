@@ -41,10 +41,7 @@ export const WhyUsStage: React.FC = () => {
             >
               <div className="washi-tape"></div>
               <TrendingUp className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
-              <span>
-                PERFORMANCE MARKETING{" "}
-                <strong className="bg-yellow-300 px-1 rounded">(+340% ROI)</strong>
-              </span>
+              <span>PERFORMANCE MARKETING</span>
             </motion.div>
 
             <motion.div

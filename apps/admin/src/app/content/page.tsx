@@ -89,7 +89,7 @@ export default function WebsiteContentEditor() {
     heroHeadlineRow2: "US?",
     sceneBadge: "SCENE // 02",
     statusBadge: "STATUS: 100% UNAPOLOGETIC",
-    roiBadge: "PERFORMANCE MARKETING (+340% ROI)",
+    roiBadge: "PERFORMANCE MARKETING",
     presentationTitle: "CREATIVE CHIEF ON-CALL // CONCEPT INTAKE",
     presentationSubtitle:
       "From wet fountain pen on raw grid paper to arena execution.",

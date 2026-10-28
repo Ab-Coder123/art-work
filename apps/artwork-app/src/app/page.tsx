@@ -95,14 +95,14 @@ function PartnersMarqueeSection({
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4 sm:mb-5">
         <div>
           <div className="inline-flex items-center gap-2 border-2 border-black bg-yellow-300 dark:bg-yellow-400 text-black px-3 py-1 rounded-full comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider -rotate-1 mb-2">
-            <Sparkles className="w-3.5 h-3.5 fill-current" />
+            <span className="text-black font-black text-xs">★</span>
             <span>PARTNERS // TRUSTED ECOSYSTEM</span>
           </div>
           <h2 className="font-headline font-black text-lg sm:text-2xl lg:text-3xl text-black dark:text-white uppercase tracking-tight">
             TRUSTED BY <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-lg border-2 border-black comic-shadow-sm inline-block -rotate-1">CULTURAL TITANS</span> &amp; INDUSTRY LEADERS
           </h2>
           <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-300 max-w-2xl leading-relaxed mt-1">
-            From landmark corporate gatherings to international festival arenas, we collaborate with leading global enterprises and visionary brands to create arena-scale kinetic scenography.
+            From corporate conferences and exhibitions to experiential brand activations, we collaborate with leading enterprises and visionary brands to produce memorable live experiences.
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-black/60 dark:text-zinc-400 shrink-0">
@@ -131,8 +131,9 @@ function PartnersMarqueeSection({
                 />
               </div>
               <div className="text-left">
-                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider">
-                  {comp.name}
+                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-yellow-500 dark:text-yellow-400 font-black">★</span>
+                  <span>{comp.name}</span>
                 </div>
                 <div className="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 uppercase">
                   {comp.category}
@@ -160,8 +161,9 @@ function PartnersMarqueeSection({
                 />
               </div>
               <div className="text-left">
-                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider">
-                  {comp.name}
+                <div className="font-headline font-black text-xs text-black dark:text-white uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-yellow-500 dark:text-yellow-400 font-black">★</span>
+                  <span>{comp.name}</span>
                 </div>
                 <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase">
                   {comp.highlight || comp.category}
@@ -182,113 +184,112 @@ function ManifestoContent({
 }: ManifestoContentProps) {
   return (
     <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
-      {/* Top Floating Badges (Fluid Flex Alignment with Performance Marketing Badge) */}
-      <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2 sm:mb-2.5">
-        <motion.div
-          initial={{ opacity: 0, y: -8, rotate: -3 }}
-          animate={{ opacity: 1, y: 0, rotate: -2 }}
-          transition={{ duration: 0.35, delay: 0.1 }}
-          className="relative bg-white dark:bg-[#151520] border-2 border-black dark:border-zinc-700 px-3 py-1 rounded-lg shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 text-[11px] sm:text-xs font-bold tracking-tight text-black dark:text-zinc-200"
-        >
-          <div className="washi-tape"></div>
-          <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
-          <span>
-            PERFORMANCE MARKETING{" "}
-            <strong className="bg-yellow-300 dark:bg-yellow-400 text-black px-1 rounded font-black">
-              (+340% ROI)
-            </strong>
-          </span>
-        </motion.div>
-
-        <div className="inline-flex items-center gap-1.5 border-2 border-black bg-yellow-400 text-black px-3.5 py-1 rounded-xl comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider -rotate-1">
-          <span>★</span>
-          <span>{content.announcementBadge}</span>
-        </div>
-      </div>
-
-      {/* Hero Typography Section */}
-      <div className="relative mb-2 sm:mb-2.5 max-w-5xl">
-        <h1 className="font-headline font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[46px] xl:text-[54px] tracking-tight leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
-          <KineticBrushWord variant="wave" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4} delay={0.1}>
-            {content.headlinePart1}
-          </KineticBrushWord> <br />
-          <span className="relative inline-block mt-1 sm:mt-1.5">
-            {/* Canary Yellow Ink Splash Backdrop */}
-            <motion.span
-              initial={{ scaleX: 0, originX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-              className="absolute -inset-0.5 sm:-inset-1 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"
-            ></motion.span>
-            <span className="text-black relative z-10 px-1.5 sm:px-2.5">{content.headlinePart2}</span>
-            {/* Slender Hand-drawn Paintbrush Stroke */}
-            <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.0} delay={0.35} />
-          </span>
-        </h1>
-      </div>
-
-      {/* Action Cluster & Team Collective Art with Magnetic Buttons */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
-        <div className="lg:col-span-5 space-y-2 sm:space-y-2.5">
-          <p className="font-body text-sm sm:text-base text-black/85 dark:text-zinc-200 max-w-md leading-relaxed">
-            {content.introParagraph}
-          </p>
-
-          {/* Primary Action Buttons: View Projects + Explore Services */}
-          <div className="flex flex-wrap items-center gap-2.5 pt-1">
-            <Link
-              href="/gallery"
-              className="relative group inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 cursor-pointer"
+      {/* 2-Column Responsive Hero Grid (Level & Aligned with Studio Canvas) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7 items-start">
+        {/* Left Column: Badges, Headline, Paragraph, Actions & Metrics */}
+        <div className="lg:col-span-6 flex flex-col justify-start">
+          {/* Top Floating Badges (Level & Even Alignment) */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2.5 sm:mb-3">
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.1 }}
+              className="relative bg-white dark:bg-[#151520] border-2 border-black dark:border-zinc-700 px-3 py-1 rounded-lg shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 text-[11px] sm:text-xs font-bold tracking-tight text-black dark:text-zinc-200"
             >
-              <span>VIEW OUR PROJECTS</span>
-              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-            </Link>
+              <div className="washi-tape"></div>
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
+              <span>PERFORMANCE MARKETING</span>
+            </motion.div>
 
-            <MagneticButton soundType="click">
-              <button
-                onClick={onViewCapabilities}
-                className="inline-flex items-center gap-1.5 bg-white dark:bg-[#161622] text-black dark:text-white hover:bg-black dark:hover:bg-yellow-400 hover:text-white dark:hover:text-black font-headline font-bold text-xs sm:text-sm px-4 sm:px-4.5 py-2.5 sm:py-3 rounded-xl border-2 border-black dark:border-zinc-600 comic-shadow-sm transition-all duration-150 cursor-pointer"
-              >
-                <span>EXPLORE OUR SERVICES</span>
-                <ArrowDown className="w-4 h-4 stroke-[2.5]" />
-              </button>
-            </MagneticButton>
+            <div className="inline-flex items-center gap-1.5 border-2 border-black bg-yellow-400 text-black px-3.5 py-1 rounded-lg comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
+              <span>{content.announcementBadge}</span>
+            </div>
           </div>
 
-          {/* Safe Proof Tagline */}
-          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/60 dark:text-zinc-400 pt-0.5">
-            CREATIVE | PLANNING | PRODUCTION | ON-SITE DELIVERY
+          {/* Hero Typography Section */}
+          <div className="relative mb-2 sm:mb-2.5 max-w-xl">
+            <h1 className="font-headline font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] xl:text-[46px] tracking-tight leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
+              <KineticBrushWord variant="wave" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4} delay={0.1}>
+                {content.headlinePart1}
+              </KineticBrushWord>{" "}
+              <br />
+              <span className="relative inline-block mt-1 sm:mt-1.5">
+                {/* Canary Yellow Ink Splash Backdrop */}
+                <motion.span
+                  initial={{ scaleX: 0, originX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+                  className="absolute -inset-0.5 sm:-inset-1 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"
+                ></motion.span>
+                <span className="text-black relative z-10 px-1.5 sm:px-2.5">{content.headlinePart2}</span>
+                {/* Slender Hand-drawn Paintbrush Stroke */}
+                <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.0} delay={0.35} />
+              </span>
+            </h1>
           </div>
 
-          {/* Milestone Badges */}
-          <div className="grid grid-cols-3 gap-2 pt-1 max-w-md">
-            {content.metrics.map((badge, idx) => (
-              <motion.div
-                key={badge.label}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.4, delay: 0.1 + idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] p-2 sm:p-2.5 rounded-DEFAULT comic-shadow-sm text-center"
+          {/* Action Cluster & Info */}
+          <div className="space-y-2 sm:space-y-2.5 max-w-lg">
+            <p className="font-body text-sm sm:text-base text-black/85 dark:text-zinc-200 leading-relaxed">
+              {content.introParagraph}
+            </p>
+
+            {/* Primary Action Buttons: View Projects + Explore Services */}
+            <div className="flex flex-wrap items-center gap-2.5 pt-1">
+              <Link
+                href="/gallery"
+                className="relative group inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 cursor-pointer"
               >
-                <div className="font-headline font-black text-sm sm:text-base md:text-lg text-black dark:text-white">
-                  {badge.num}
-                </div>
-                <div className="text-[8px] sm:text-[9px] font-headline font-bold text-black/70 dark:text-zinc-400 uppercase mt-0.5">
-                  {badge.label}
-                </div>
-              </motion.div>
-            ))}
+                <span>VIEW OUR PROJECTS</span>
+                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              </Link>
+
+              <MagneticButton soundType="click">
+                <button
+                  onClick={onViewCapabilities}
+                  className="inline-flex items-center gap-1.5 bg-white dark:bg-[#161622] text-black dark:text-white hover:bg-black dark:hover:bg-yellow-400 hover:text-white dark:hover:text-black font-headline font-bold text-xs sm:text-sm px-4 sm:px-4.5 py-2.5 sm:py-3 rounded-xl border-2 border-black dark:border-zinc-600 comic-shadow-sm transition-all duration-150 cursor-pointer"
+                >
+                  <span>EXPLORE OUR SERVICES</span>
+                  <ArrowDown className="w-4 h-4 stroke-[2.5]" />
+                </button>
+              </MagneticButton>
+            </div>
+
+            {/* Safe Proof Tagline */}
+            <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/60 dark:text-zinc-400 pt-0.5">
+              CREATIVE | PLANNING | PRODUCTION | ON-SITE DELIVERY
+            </div>
+
+            {/* Milestone Badges */}
+            <div className="grid grid-cols-3 gap-2 pt-1 max-w-md">
+              {content.metrics.map((badge, idx) => (
+                <motion.div
+                  key={badge.label}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.4, delay: 0.1 + idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  className="border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] p-2 sm:p-2.5 rounded-DEFAULT comic-shadow-sm text-center"
+                >
+                  <div className="font-headline font-black text-sm sm:text-base md:text-lg text-black dark:text-white">
+                    {badge.num}
+                  </div>
+                  <div className="text-[8px] sm:text-[9px] font-headline font-bold text-black/70 dark:text-zinc-400 uppercase mt-0.5">
+                    {badge.label}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Right Visual: Collective Canvas */}
+        {/* Right Visual: Collective Canvas (Level with Top of Left Column) */}
         <motion.div
           initial={{ opacity: 0, x: 25, scale: 0.98 }}
           whileInView={{ opacity: 1, x: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="lg:col-span-7 relative w-full"
+          className="lg:col-span-6 relative w-full pt-1"
         >
           <div className="border-2 sm:border-3 border-black dark:border-zinc-600 bg-white dark:bg-[#151520] rounded-xl p-2.5 sm:p-3 comic-shadow relative group">
             <div className="absolute -top-2.5 left-6 w-12 h-5 bg-yellow-300/80 border border-black/30 -rotate-3 z-30"></div>

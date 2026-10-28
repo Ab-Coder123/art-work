@@ -156,7 +156,7 @@ export const SEED_SITE_CONTENT: SiteContent = {
     statusBadge: "STATUS: 100% UNAPOLOGETIC",
     heroHeadlineRow1: "WHY",
     heroHeadlineRow2: "US?",
-    roiBadge: "PERFORMANCE MARKETING (+340% ROI)",
+    roiBadge: "PERFORMANCE MARKETING",
     contentCreationBadge: "CONTENT CREATION",
     doodleStickers: [
       "★ BRANDING",
