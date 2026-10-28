@@ -321,4 +321,43 @@ describe("Phase 06: Gallery Projects CRUD, Filtering & Reorder Service", () => {
       assert.equal(delAgain.status, 404);
     }
   });
+
+  it("should filter exhibition booth projects and return 200 with booth items from repository", async () => {
+    const boothRow: DbProjectRecord = {
+      id: "44444444-4444-4444-8444-444444444444",
+      slug: "nova-medtech-booth",
+      title: "Nova MedTech Custom Pavilion",
+      client: "Nova MedTech Innovations",
+      category: "booths",
+      year: 2025,
+      description: "Turnkey custom exhibition booth with 3D spatial design, CNC woodwork, and integrated touch kiosks.",
+      tags: ["Exhibition Booth", "Custom Fabrication", "3D Spatial Design"],
+      stamp: "BOOTH_PASS: MED_EXPO_25",
+      meta_badge: "36M² CUSTOM BUILD",
+      cad_id: "CAD_ID: BOOTH_NOVA_V3",
+      cover_image_url: "/assets/images/gallery/project_06_sensory_expo.jpg",
+      cover_image_alt: "Nova MedTech Custom Exhibition Booth",
+      stats_primary: "🏛️ 36m² Island Stand",
+      stats_secondary: "Custom CNC Woodwork • Integrated LED Kiosks",
+      specs: ["Precision CNC Joinery", "Interactive Kiosks"],
+      status: "published",
+      order_index: 1,
+      featured: true,
+      created_at: "2026-10-19T13:00:00.000Z",
+      updated_at: "2026-10-19T13:00:00.000Z",
+    };
+
+    const repo = createInMemoryProjectsRepository([boothRow]);
+    const res = await listPublicProjects({ category: "booths" }, repo);
+
+    assert.equal(res.ok, true);
+    if (res.ok) {
+      assert.equal(res.data.total, 1);
+      assert.equal(res.data.items.length, 1);
+      assert.equal(res.data.items[0].id, "nova-medtech-booth");
+      assert.equal(res.data.items[0].category, "booths");
+      assert.equal(res.data.items[0].status, "published");
+      assert.ok(res.data.items[0].specs.includes("Precision CNC Joinery"));
+    }
+  });
 });

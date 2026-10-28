@@ -558,6 +558,180 @@ export default function GalleryPage() {
           </div>
         </section>
 
+        {/* ================= EXHIBITION BOOTHS & CUSTOM FABRICATION SHOWCASE ================= */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t-2 border-black dark:border-zinc-800">
+          <ScrollReveal direction="up" distance={25} className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-3">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-3.5 h-3.5 bg-yellow-400 border border-black inline-block -rotate-6"></span>
+                <span className="font-mono text-xs font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-widest">
+                  PRODUCTION WORKSHOP • BOOTH ARCHITECTURE
+                </span>
+              </div>
+              <h2 className="text-2xl md:text-4xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
+                <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
+                  EXHIBITION BOOTHS
+                </KineticBrushWord>{" "}
+                <span className="relative inline-block">
+                  <span className="text-black dark:text-yellow-400">&amp; TURNKEY FABRICATION</span>
+                </span>
+              </h2>
+            </div>
+            <p className="font-headline font-bold text-xs md:text-sm text-black/70 dark:text-zinc-400 max-w-md">
+              From 3D spatial engineering and CNC carpentry to on-site assembly, AV integration, and post-expo teardown.
+            </p>
+          </ScrollReveal>
+
+          {/* Featured Booth Fabrication Highlight Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Left Blueprint Card */}
+            <ScrollReveal
+              direction="pop"
+              distance={30}
+              delay={0.1}
+              className="lg:col-span-7 bg-white dark:bg-[#151520] rounded-2xl border-3 border-black dark:border-zinc-700 p-6 md:p-8 comic-shadow relative overflow-hidden flex flex-col justify-between"
+            >
+              <div className="washi-tape-yellow absolute -top-3 left-10 w-28 h-5 -rotate-2 z-10"></div>
+
+              <div>
+                <div className="flex items-center justify-between pb-3 mb-4 border-b-2 border-dashed border-black/10 dark:border-zinc-800 font-mono text-xs text-black/70 dark:text-zinc-400">
+                  <span className="bg-yellow-400 text-black px-2 py-0.5 font-bold border border-black rounded-sm">
+                    SPEC_SHEET: BOOTH_FABRICATION_V2
+                  </span>
+                  <span>CUSTOM FIT &amp; MODULAR SYSTEMS</span>
+                </div>
+
+                <div className="relative border-2 border-black dark:border-zinc-700 rounded-xl overflow-hidden comic-shadow-sm aspect-[16/10] mb-5 bg-neutral-100 dark:bg-zinc-800">
+                  <Image
+                    src="/assets/images/gallery/project_06_sensory_expo.jpg"
+                    alt="Exhibition Booth Custom Architecture and Turnkey Build"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 58vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute bottom-2 left-2 bg-black/90 text-white font-mono text-[10px] px-2.5 py-1 rounded border border-white/20">
+                    3D_RENDER_TO_PHYSICAL_STAND: 100% CAD CONGRUENCE
+                  </div>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-black font-headline uppercase tracking-tight text-black dark:text-white mb-2">
+                  ENGINEERED TO DOMINATE THE EXPO FLOOR.
+                </h3>
+                <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed mb-4">
+                  Whether creating high-traffic pharmaceutical island stands, tech pavilion discovery hubs, or double-decker VIP lounges, our in-house production team translates brand identity into structural physical presence.
+                </p>
+              </div>
+
+              {/* Spec Badges Row */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-4 border-t border-dashed border-black/20 dark:border-zinc-700 font-mono text-[11px]">
+                <div className="p-2 bg-yellow-50 dark:bg-[#1c1c28] rounded border border-black/10 dark:border-zinc-700">
+                  <div className="font-bold text-black dark:text-yellow-400">CNC WOODWORK</div>
+                  <div className="text-black/60 dark:text-zinc-400 text-[10px]">Precision Joinery</div>
+                </div>
+                <div className="p-2 bg-yellow-50 dark:bg-[#1c1c28] rounded border border-black/10 dark:border-zinc-700">
+                  <div className="font-bold text-black dark:text-yellow-400">METAL &amp; TRUSS</div>
+                  <div className="text-black/60 dark:text-zinc-400 text-[10px]">Certified Rigging</div>
+                </div>
+                <div className="p-2 bg-yellow-50 dark:bg-[#1c1c28] rounded border border-black/10 dark:border-zinc-700">
+                  <div className="font-bold text-black dark:text-yellow-400">TOUCH KIOSKS</div>
+                  <div className="text-black/60 dark:text-zinc-400 text-[10px]">Interactive Tech</div>
+                </div>
+                <div className="p-2 bg-yellow-50 dark:bg-[#1c1c28] rounded border border-black/10 dark:border-zinc-700">
+                  <div className="font-bold text-black dark:text-yellow-400">TURNKEY BUILD</div>
+                  <div className="text-black/60 dark:text-zinc-400 text-[10px]">Setup &amp; Dismantle</div>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* Right Column: 4 Key Pillars of Booth Production */}
+            <div className="lg:col-span-5 flex flex-col justify-between gap-4">
+              <ScrollReveal
+                direction="left"
+                distance={25}
+                delay={0.15}
+                className="bg-white dark:bg-[#151520] rounded-xl border-2 border-black dark:border-zinc-700 p-5 comic-shadow-sm flex items-start gap-4"
+              >
+                <div className="w-10 h-10 rounded-lg bg-yellow-400 text-black border-2 border-black flex items-center justify-center flex-shrink-0 font-headline font-black text-sm comic-shadow-sm">
+                  01
+                </div>
+                <div>
+                  <h4 className="font-headline font-black text-sm uppercase text-black dark:text-white mb-1">
+                    3D Spatial Architecture &amp; Renders
+                  </h4>
+                  <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
+                    Photorealistic 3D visualizations, sightline analysis, and human traffic flow planning before a single timber is cut.
+                  </p>
+                </div>
+              </ScrollReveal>
+
+              <ScrollReveal
+                direction="left"
+                distance={25}
+                delay={0.2}
+                className="bg-white dark:bg-[#151520] rounded-xl border-2 border-black dark:border-zinc-700 p-5 comic-shadow-sm flex items-start gap-4"
+              >
+                <div className="w-10 h-10 rounded-lg bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black border-2 border-black flex items-center justify-center flex-shrink-0 font-headline font-black text-sm comic-shadow-sm">
+                  02
+                </div>
+                <div>
+                  <h4 className="font-headline font-black text-sm uppercase text-black dark:text-white mb-1">
+                    Custom Carpentry &amp; Finishes
+                  </h4>
+                  <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
+                    Custom lacquer finishes, acrylic lightboxes, 3D backlit lettering, reception counters, and acoustic meeting pods.
+                  </p>
+                </div>
+              </ScrollReveal>
+
+              <ScrollReveal
+                direction="left"
+                distance={25}
+                delay={0.25}
+                className="bg-white dark:bg-[#151520] rounded-xl border-2 border-black dark:border-zinc-700 p-5 comic-shadow-sm flex items-start gap-4"
+              >
+                <div className="w-10 h-10 rounded-lg bg-yellow-400 text-black border-2 border-black flex items-center justify-center flex-shrink-0 font-headline font-black text-sm comic-shadow-sm">
+                  03
+                </div>
+                <div>
+                  <h4 className="font-headline font-black text-sm uppercase text-black dark:text-white mb-1">
+                    Integrated LED &amp; Digital AV
+                  </h4>
+                  <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
+                    Seamless fine-pitch LED video ribbons, interactive touch kiosks, perimeter accent lighting, and integrated sound.
+                  </p>
+                </div>
+              </ScrollReveal>
+
+              <ScrollReveal
+                direction="left"
+                distance={25}
+                delay={0.3}
+                className="bg-white dark:bg-[#151520] rounded-xl border-2 border-black dark:border-zinc-700 p-5 comic-shadow-sm flex items-start gap-4"
+              >
+                <div className="w-10 h-10 rounded-lg bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black border-2 border-black flex items-center justify-center flex-shrink-0 font-headline font-black text-sm comic-shadow-sm">
+                  04
+                </div>
+                <div>
+                  <h4 className="font-headline font-black text-sm uppercase text-black dark:text-white mb-1">
+                    Venue Logistics &amp; 24/7 Handover
+                  </h4>
+                  <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
+                    Complete expo authority approvals, electrical safety clearance, overnight installation, on-site stand support, and teardown.
+                  </p>
+                </div>
+              </ScrollReveal>
+
+              <button
+                onClick={() => handleFilterClick("booths")}
+                className="w-full py-3 px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer mt-1"
+              >
+                <span>FILTER EXHIBITION BOOTH PROJECTS IN VAULT</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* ================= SPOTLIGHT: THE BLUEPRINT TO REALITY ================= */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 border-t-2 border-black dark:border-zinc-800">
           <ScrollReveal direction="up" distance={25} className="flex items-center gap-3 mb-6">
