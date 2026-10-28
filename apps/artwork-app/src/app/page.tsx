@@ -156,8 +156,23 @@ function PartnersMarqueeSection({
 }) {
   const [activeCompanyId, setActiveCompanyId] = useState<string | null>(null);
   const activeCompanies = companies.filter((c) => c.isActive !== false);
-  const marqueeRow1 = [...activeCompanies, ...activeCompanies];
-  const marqueeRow2 = [...activeCompanies.slice().reverse(), ...activeCompanies.slice().reverse()];
+
+  // Divide companies between Row 1 and Row 2 so each row displays completely distinct partners
+  const row1Base = activeCompanies.filter((_, idx) => idx % 2 === 0);
+  const row2Base = activeCompanies.filter((_, idx) => idx % 2 !== 0);
+
+  const r1 = row1Base.length > 0 ? row1Base : activeCompanies;
+  const r2 = row2Base.length > 0 ? row2Base : activeCompanies;
+
+  // Seamless duplication so each row infinitely loops smoothly without gaps
+  const rep1 = Math.max(2, Math.ceil(8 / Math.max(1, r1.length)));
+  const rep2 = Math.max(2, Math.ceil(8 / Math.max(1, r2.length)));
+
+  const row1Half = Array.from({ length: rep1 }, () => r1).flat();
+  const row2Half = Array.from({ length: rep2 }, () => r2).flat();
+
+  const marqueeRow1 = [...row1Half, ...row1Half];
+  const marqueeRow2 = [...row2Half, ...row2Half];
 
   const handleToggle = (id: string) => {
     setActiveCompanyId((prev) => (prev === id ? null : id));
