@@ -17,8 +17,8 @@ import {
   Loader2,
   Smartphone,
   FileText,
-  Upload,
   Paperclip,
+  UploadCloud,
 } from "lucide-react";
 import {
   ProjectRecord,
@@ -171,6 +171,43 @@ export default function GalleryProjectsManager() {
   const [isUploadingImages, setIsUploadingImages] = useState(false);
   const [isUploadingPdf, setIsUploadingPdf] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [isCoverDragging, setIsCoverDragging] = useState(false);
+  const [isBoothImagesDragging, setIsBoothImagesDragging] = useState(false);
+  const [isBoothPdfDragging, setIsBoothPdfDragging] = useState(false);
+  const coverInputRef = React.useRef<HTMLInputElement | null>(null);
+  const boothImagesInputRef = React.useRef<HTMLInputElement | null>(null);
+  const boothPdfInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const handleUploadCoverFile = async (file: File) => {
+    if (!file || !editingProject) return;
+    setIsUploadingCover(true);
+    setUploadError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "covers");
+
+      const res = await apiFetchWithCsrf("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setEditingProject((prev) => (prev ? { ...prev, image: data.url } : null));
+      } else {
+        setUploadError(data.error || "Failed to upload cover image");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Upload failed";
+      setUploadError(msg);
+    } finally {
+      setIsUploadingCover(false);
+      setIsCoverDragging(false);
+    }
+  };
 
   const handleUploadImages = async (files: FileList | null) => {
     if (!files || files.length === 0 || !editingProject) return;
@@ -1008,32 +1045,59 @@ export default function GalleryProjectsManager() {
                         </span>
                       </div>
 
-                      {/* Direct File Attach Button */}
-                      <div>
-                        <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer transition-all active:scale-95 shadow">
-                          {isUploadingImages ? (
-                            <>
-                              <Loader2 className="w-4 h-4 animate-spin text-black" />
-                              <span>Uploading Images...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Upload className="w-4 h-4 stroke-[2.5]" />
-                              <span>Attach Images from Device</span>
-                            </>
-                          )}
-                          <input
-                            type="file"
-                            accept="image/png, image/jpeg, image/webp"
-                            multiple
-                            disabled={isUploadingImages}
-                            onChange={(e) => {
-                              handleUploadImages(e.target.files);
-                              e.target.value = "";
-                            }}
-                            className="hidden"
-                          />
-                        </label>
+                      {/* Drag & Drop Booth Images Zone */}
+                      <div
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          setIsBoothImagesDragging(true);
+                        }}
+                        onDragLeave={() => setIsBoothImagesDragging(false)}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          setIsBoothImagesDragging(false);
+                          if (e.dataTransfer.files) handleUploadImages(e.dataTransfer.files);
+                        }}
+                        onClick={() => !isUploadingImages && boothImagesInputRef.current?.click()}
+                        className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 ${
+                          isBoothImagesDragging
+                            ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
+                            : "border-[#2b2b3d] bg-[#12121c] hover:border-yellow-400/60 hover:bg-[#151522]"
+                        }`}
+                      >
+                        <input
+                          ref={boothImagesInputRef}
+                          type="file"
+                          accept="image/png, image/jpeg, image/webp"
+                          multiple
+                          disabled={isUploadingImages}
+                          onChange={(e) => {
+                            handleUploadImages(e.target.files);
+                            e.target.value = "";
+                          }}
+                          className="hidden"
+                        />
+                        {isUploadingImages ? (
+                          <div className="py-2 flex flex-col items-center gap-2">
+                            <Loader2 className="w-5 h-5 text-yellow-400 animate-spin" />
+                            <span className="font-mono text-zinc-400 text-[11px]">
+                              Uploading images...
+                            </span>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="w-8 h-8 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center text-yellow-400">
+                              <UploadCloud className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <p className="text-white text-xs font-bold">
+                                Drag &amp; drop booth images here, or <span className="text-yellow-400 underline">browse</span>
+                              </p>
+                              <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
+                                Select single or multiple images (PNG, JPG, WebP)
+                              </p>
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       {/* Images Previews Grid */}
@@ -1115,32 +1179,60 @@ export default function GalleryProjectsManager() {
                         </span>
                       </div>
 
-                      {/* Direct File Attach PDF Button */}
-                      <div>
-                        <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/40 font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition-all active:scale-95 shadow">
-                          {isUploadingPdf ? (
-                            <>
-                              <Loader2 className="w-4 h-4 animate-spin text-red-400" />
-                              <span>Uploading PDF...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Paperclip className="w-4 h-4 text-red-400 stroke-[2.5]" />
-                              <span>Attach PDF from Device</span>
-                            </>
-                          )}
-                          <input
-                            type="file"
-                            accept="application/pdf,.pdf"
-                            disabled={isUploadingPdf}
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) handleUploadPdf(file);
-                              e.target.value = "";
-                            }}
-                            className="hidden"
-                          />
-                        </label>
+                      {/* Drag & Drop Booth PDF Zone */}
+                      <div
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          setIsBoothPdfDragging(true);
+                        }}
+                        onDragLeave={() => setIsBoothPdfDragging(false)}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          setIsBoothPdfDragging(false);
+                          const file = e.dataTransfer.files?.[0];
+                          if (file) handleUploadPdf(file);
+                        }}
+                        onClick={() => !isUploadingPdf && boothPdfInputRef.current?.click()}
+                        className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 ${
+                          isBoothPdfDragging
+                            ? "border-red-400 bg-red-400/10 scale-[1.01]"
+                            : "border-[#2b2b3d] bg-[#12121c] hover:border-red-400/60 hover:bg-[#151522]"
+                        }`}
+                      >
+                        <input
+                          ref={boothPdfInputRef}
+                          type="file"
+                          accept="application/pdf,.pdf"
+                          disabled={isUploadingPdf}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleUploadPdf(file);
+                            e.target.value = "";
+                          }}
+                          className="hidden"
+                        />
+                        {isUploadingPdf ? (
+                          <div className="py-2 flex flex-col items-center gap-2">
+                            <Loader2 className="w-5 h-5 text-red-400 animate-spin" />
+                            <span className="font-mono text-zinc-400 text-[11px]">
+                              Uploading PDF Blueprint...
+                            </span>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="w-8 h-8 rounded-lg bg-red-600/10 border border-red-500/20 flex items-center justify-center text-red-400">
+                              <Paperclip className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <p className="text-white text-xs font-bold">
+                                Drag &amp; drop architectural PDF here, or <span className="text-red-400 underline">browse</span>
+                              </p>
+                              <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
+                                PDF blueprints, floor plans &amp; 3D spec sheets (up to 25MB)
+                              </p>
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       {/* Attached PDF Preview Card */}
@@ -1211,54 +1303,121 @@ export default function GalleryProjectsManager() {
                 ) : (
                   /* STANDARD STAGE & CONFERENCES YOUTUBE ENGINE */
                   <div className="space-y-4">
-                    {/* Cover & Card Thumbnail Image */}
+                    {/* Cover & Card Thumbnail Image with Drag & Drop */}
                     <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <label className="text-zinc-200 font-bold flex items-center gap-2">
                           <Sparkles className="w-4 h-4 text-yellow-400" />
                           <span>Card Thumbnail &amp; Cover Image (Main Website)</span>
                         </label>
-                        {editingProject.youtubeVideoId && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const ytThumb = `https://img.youtube.com/vi/${editingProject.youtubeVideoId}/hqdefault.jpg`;
-                              setEditingProject({ ...editingProject, image: ytThumb });
-                              setYtStatusMessage("✓ Synced thumbnail directly from YouTube video");
-                            }}
-                            className="px-2.5 py-1 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 text-[10px] font-bold border border-yellow-400/30 cursor-pointer transition-colors"
-                          >
-                            Sync Thumbnail from YouTube
-                          </button>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {editingProject.youtubeVideoId && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const ytThumb = `https://img.youtube.com/vi/${editingProject.youtubeVideoId}/hqdefault.jpg`;
+                                setEditingProject({ ...editingProject, image: ytThumb });
+                                setYtStatusMessage("✓ Synced thumbnail directly from YouTube video");
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 text-[10px] font-bold border border-yellow-400/30 cursor-pointer transition-colors"
+                            >
+                              Sync Thumbnail from YouTube
+                            </button>
+                          )}
+                          {editingProject.image && (
+                            <button
+                              type="button"
+                              onClick={() => setEditingProject({ ...editingProject, image: "" })}
+                              className="px-2 py-1 text-[10px] text-zinc-400 hover:text-red-400 cursor-pointer transition-colors"
+                            >
+                              Clear
+                            </button>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row items-center gap-3">
-                        <div className="w-32 h-20 rounded-xl overflow-hidden border border-[#2b2b3d] bg-black shrink-0 relative flex items-center justify-center">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={editingProject.image || "/assets/images/gallery/project_01_neon_horizon.jpg"}
-                            alt="Project Card Thumbnail"
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src =
-                                "/assets/images/gallery/project_01_neon_horizon.jpg";
-                            }}
-                          />
+                      {/* Drag & Drop Upload Zone + Preview */}
+                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-stretch">
+                        {/* Thumbnail Preview (Left) */}
+                        <div className="sm:col-span-4 aspect-[16/10] sm:aspect-auto sm:h-28 rounded-xl overflow-hidden border border-[#2b2b3d] bg-black relative flex items-center justify-center">
+                          {editingProject.image ? (
+                            <>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={editingProject.image}
+                                alt="Project Card Thumbnail"
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLImageElement).src =
+                                    "/assets/images/gallery/project_01_neon_horizon.jpg";
+                                }}
+                              />
+                              <div className="absolute top-1 left-1 bg-yellow-400 text-black font-black text-[9px] uppercase px-1.5 py-0.5 rounded shadow">
+                                Active Cover
+                              </div>
+                            </>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center text-zinc-600 gap-1 p-2 text-center">
+                              <Sparkles className="w-5 h-5 text-zinc-700" />
+                              <span className="text-[10px] font-mono">No Cover Image</span>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex-1 w-full space-y-1">
+
+                        {/* Drag and Drop Zone (Right) */}
+                        <div
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            setIsCoverDragging(true);
+                          }}
+                          onDragLeave={() => setIsCoverDragging(false)}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            setIsCoverDragging(false);
+                            const file = e.dataTransfer.files?.[0];
+                            if (file) handleUploadCoverFile(file);
+                          }}
+                          onClick={() => !isUploadingCover && coverInputRef.current?.click()}
+                          className={`sm:col-span-8 border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 ${
+                            isCoverDragging
+                              ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
+                              : "border-[#2b2b3d] bg-[#12121c] hover:border-yellow-400/60 hover:bg-[#151522]"
+                          }`}
+                        >
                           <input
-                            type="text"
-                            value={editingProject.image || ""}
-                            onChange={(e) =>
-                              setEditingProject({ ...editingProject, image: e.target.value })
-                            }
-                            placeholder="https://img.youtube.com/vi/... or /assets/images/..."
-                            className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                            ref={coverInputRef}
+                            type="file"
+                            accept="image/png, image/jpeg, image/webp"
+                            disabled={isUploadingCover}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleUploadCoverFile(file);
+                              e.target.value = "";
+                            }}
+                            className="hidden"
                           />
-                          <p className="text-[10px] text-zinc-400">
-                            When a YouTube video is linked, its thumbnail is automatically extracted and displayed on the card.
-                          </p>
+                          {isUploadingCover ? (
+                            <div className="py-2 flex flex-col items-center gap-2">
+                              <Loader2 className="w-5 h-5 text-yellow-400 animate-spin" />
+                              <span className="font-mono text-zinc-400 text-[11px]">
+                                Uploading image...
+                              </span>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="w-8 h-8 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center text-yellow-400">
+                                <UploadCloud className="w-4 h-4" />
+                              </div>
+                              <div>
+                                <p className="text-white text-xs font-bold">
+                                  Drag &amp; drop cover image here, or <span className="text-yellow-400 underline">browse</span>
+                                </p>
+                                <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
+                                  PNG, JPG, WebP (drag from desktop or click to upload)
+                                </p>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
