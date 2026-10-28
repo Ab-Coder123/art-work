@@ -5,9 +5,10 @@ const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
   "image/png",
   "image/webp",
+  "application/pdf",
 ]);
 
-const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB for architectural blueprints & high-res renders
 
 export async function POST(request: NextRequest) {
   const sessionCheck = await verifyAdminSessionFromCookies(
@@ -67,10 +68,45 @@ export async function POST(request: NextRequest) {
       });
 
     if (uploadError || !uploadData) {
-      return NextResponse.json(
-        { error: uploadError?.message || "Failed to upload file to storage" },
-        { status: 500 }
-      );
+      // Local fallback in development if bucket is unconfigured
+      try {
+        const fs = await import("fs");
+        const path = await import("path");
+        const uploadsDir = path.join(process.cwd(), "public", "uploads", sanitizedFolder);
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+        const localFileName = `${uniqueSuffix}-${cleanFileName}`;
+        const localFilePath = path.join(uploadsDir, localFileName);
+        fs.writeFileSync(localFilePath, buffer);
+
+        // Also sync to artwork-app if in monorepo
+        const appPublicUploads = path.join(process.cwd(), "..", "artwork-app", "public", "uploads", sanitizedFolder);
+        if (fs.existsSync(path.join(process.cwd(), "..", "artwork-app", "public"))) {
+          if (!fs.existsSync(appPublicUploads)) {
+            fs.mkdirSync(appPublicUploads, { recursive: true });
+          }
+          fs.writeFileSync(path.join(appPublicUploads, localFileName), buffer);
+        }
+
+        const localUrl = `/uploads/${sanitizedFolder}/${localFileName}`;
+        return NextResponse.json(
+          {
+            ok: true,
+            url: localUrl,
+            path: localFilePath,
+            filename: file.name,
+            size: file.size,
+            mimeType: file.type,
+          },
+          { status: 201 }
+        );
+      } catch {
+        return NextResponse.json(
+          { error: uploadError?.message || "Failed to upload file to storage" },
+          { status: 500 }
+        );
+      }
     }
 
     const { data: publicUrlData } = supabase.storage

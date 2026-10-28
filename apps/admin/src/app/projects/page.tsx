@@ -17,6 +17,8 @@ import {
   Loader2,
   Smartphone,
   FileText,
+  Upload,
+  Paperclip,
 } from "lucide-react";
 import {
   ProjectRecord,
@@ -165,8 +167,95 @@ export default function GalleryProjectsManager() {
   const [ytStatusMessage, setYtStatusMessage] = useState<string | null>(null);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [newBoothImageUrl, setNewBoothImageUrl] = useState("");
   const [showBoothYouTube, setShowBoothYouTube] = useState(false);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [isUploadingPdf, setIsUploadingPdf] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const handleUploadImages = async (files: FileList | null) => {
+    if (!files || files.length === 0 || !editingProject) return;
+    setIsUploadingImages(true);
+    setUploadError(null);
+
+    const uploadedUrls: string[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("folder", "booths");
+
+        const res = await apiFetchWithCsrf("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (res.ok && data.url) {
+          uploadedUrls.push(data.url);
+        } else {
+          setUploadError(data.error || `Failed to upload ${file.name}`);
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "Upload failed";
+        setUploadError(msg);
+      }
+    }
+
+    if (uploadedUrls.length > 0) {
+      setEditingProject((prev) => {
+        if (!prev) return null;
+        const currentImages = prev.images || (prev.image ? [prev.image] : []);
+        const merged = [...currentImages, ...uploadedUrls.filter((u) => !currentImages.includes(u))];
+        return {
+          ...prev,
+          images: merged,
+          image: prev.image || merged[0] || "",
+        };
+      });
+    }
+
+    setIsUploadingImages(false);
+  };
+
+  const handleUploadPdf = async (file: File | undefined) => {
+    if (!file || !editingProject) return;
+    setIsUploadingPdf(true);
+    setUploadError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "blueprints");
+
+      const res = await apiFetchWithCsrf("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.url) {
+        const autoTitle = file.name.replace(/\.pdf$/i, "").replace(/[-_]/g, " ");
+        setEditingProject((prev) =>
+          prev
+            ? {
+                ...prev,
+                pdfUrl: data.url,
+                pdfTitle: prev.pdfTitle || autoTitle,
+              }
+            : null
+        );
+      } else {
+        setUploadError(data.error || "Failed to upload PDF");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "PDF upload failed";
+      setUploadError(msg);
+    } finally {
+      setIsUploadingPdf(false);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -898,7 +987,16 @@ export default function GalleryProjectsManager() {
                 {/* 5. MEDIA ENGINE: DYNAMIC BASED ON BOOTH VS STANDARD */}
                 {editingProject.category === "booths" ? (
                   <div className="space-y-4">
-                    {/* A. ATTACH IMAGES (3D Spatial Renders & Photos) */}
+                    {uploadError && (
+                      <div className="p-3 bg-red-950/40 border border-red-500/50 rounded-xl text-red-300 text-xs flex items-center justify-between gap-2">
+                        <span>{uploadError}</span>
+                        <button type="button" onClick={() => setUploadError(null)} className="text-red-400 hover:text-white cursor-pointer">
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+
+                    {/* A. ATTACH BOOTH IMAGES */}
                     <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <label className="text-zinc-200 font-bold flex items-center gap-2">
@@ -906,69 +1004,36 @@ export default function GalleryProjectsManager() {
                           <span>Attach Booth Images &amp; 3D Spatial Renders</span>
                         </label>
                         <span className="text-[10px] text-zinc-400 font-mono">
-                          Multiple 3D perspectives, elevation sketches &amp; built photos
+                          Upload 3D perspectives, elevation sketches &amp; photos from device
                         </span>
                       </div>
 
-                      {/* Add image input row */}
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={newBoothImageUrl}
-                          onChange={(e) => setNewBoothImageUrl(e.target.value)}
-                          placeholder="Paste image URL (e.g. /assets/images/gallery/... or https://...)"
-                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const trimmed = newBoothImageUrl.trim();
-                            if (!trimmed) return;
-                            const currentImages = editingProject.images || (editingProject.image ? [editingProject.image] : []);
-                            if (!currentImages.includes(trimmed)) {
-                              const updated = [...currentImages, trimmed];
-                              setEditingProject({
-                                ...editingProject,
-                                images: updated,
-                                image: editingProject.image || trimmed,
-                              });
-                            }
-                            setNewBoothImageUrl("");
-                          }}
-                          disabled={!newBoothImageUrl.trim()}
-                          className="px-4 py-2 bg-yellow-400 hover:bg-yellow-300 disabled:opacity-40 text-black font-bold text-xs rounded-xl cursor-pointer transition-colors"
-                        >
-                          + Add Image
-                        </button>
-                      </div>
-
-                      {/* Quick Presets */}
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        <span className="text-[10px] text-zinc-500 self-center mr-1">Quick Presets:</span>
-                        {[
-                          { label: "+ 3D Sensory Expo", url: "/assets/images/gallery/project_06_sensory_expo.jpg" },
-                          { label: "+ CyberTruss Pavilion", url: "/assets/images/gallery/project_03_cybertruss.jpg" },
-                          { label: "+ Blueprint Easel", url: "/assets/images/gallery/spotlight_blueprint_easel.jpg" },
-                        ].map((preset) => (
-                          <button
-                            key={preset.url}
-                            type="button"
-                            onClick={() => {
-                              const currentImages = editingProject.images || (editingProject.image ? [editingProject.image] : []);
-                              if (!currentImages.includes(preset.url)) {
-                                const updated = [...currentImages, preset.url];
-                                setEditingProject({
-                                  ...editingProject,
-                                  images: updated,
-                                  image: editingProject.image || preset.url,
-                                });
-                              }
+                      {/* Direct File Attach Button */}
+                      <div>
+                        <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-xl cursor-pointer transition-all active:scale-95 shadow">
+                          {isUploadingImages ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin text-black" />
+                              <span>Uploading Images...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="w-4 h-4 stroke-[2.5]" />
+                              <span>Attach Images from Device</span>
+                            </>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/png, image/jpeg, image/webp"
+                            multiple
+                            disabled={isUploadingImages}
+                            onChange={(e) => {
+                              handleUploadImages(e.target.files);
+                              e.target.value = "";
                             }}
-                            className="text-[10px] px-2 py-1 rounded bg-[#181826] hover:bg-[#222236] text-zinc-300 border border-[#2b2b3d] cursor-pointer"
-                          >
-                            {preset.label}
-                          </button>
-                        ))}
+                            className="hidden"
+                          />
+                        </label>
                       </div>
 
                       {/* Images Previews Grid */}
@@ -1004,12 +1069,12 @@ export default function GalleryProjectsManager() {
                                       <button
                                         type="button"
                                         onClick={() => setEditingProject({ ...editingProject, image: img })}
-                                        className="text-yellow-400 hover:underline cursor-pointer"
+                                        className="text-yellow-400 hover:underline cursor-pointer font-bold"
                                       >
                                         Set as Cover
                                       </button>
                                     ) : (
-                                      <span className="text-zinc-400">Primary Cover</span>
+                                      <span className="text-zinc-400 font-bold">Primary Cover</span>
                                     )}
                                     <button
                                       type="button"
@@ -1033,7 +1098,7 @@ export default function GalleryProjectsManager() {
                             })}
                           </div>
                         ) : (
-                          <p className="text-[11px] text-zinc-500 italic">No images attached yet.</p>
+                          <p className="text-[11px] text-zinc-500 italic">No images attached yet. Click the button above to upload.</p>
                         );
                       })()}
                     </div>
@@ -1050,58 +1115,40 @@ export default function GalleryProjectsManager() {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-[10px] text-zinc-400 mb-1">PDF File URL or Path</label>
+                      {/* Direct File Attach PDF Button */}
+                      <div>
+                        <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/40 font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition-all active:scale-95 shadow">
+                          {isUploadingPdf ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin text-red-400" />
+                              <span>Uploading PDF...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Paperclip className="w-4 h-4 text-red-400 stroke-[2.5]" />
+                              <span>Attach PDF from Device</span>
+                            </>
+                          )}
                           <input
-                            type="text"
-                            value={editingProject.pdfUrl || ""}
-                            onChange={(e) =>
-                              setEditingProject({ ...editingProject, pdfUrl: e.target.value })
-                            }
-                            placeholder="e.g. /assets/docs/booth_spec_proposal.pdf or https://..."
-                            className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                            type="file"
+                            accept="application/pdf,.pdf"
+                            disabled={isUploadingPdf}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleUploadPdf(file);
+                              e.target.value = "";
+                            }}
+                            className="hidden"
                           />
-                        </div>
-
-                        <div>
-                          <label className="block text-[10px] text-zinc-400 mb-1">Document Display Title (Label)</label>
-                          <input
-                            type="text"
-                            value={editingProject.pdfTitle || ""}
-                            onChange={(e) =>
-                              setEditingProject({ ...editingProject, pdfTitle: e.target.value })
-                            }
-                            placeholder="e.g. Architectural CAD Blueprint & 3D Spec Sheet (PDF)"
-                            className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Quick PDF Preset */}
-                      <div className="flex items-center gap-2 pt-1">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setEditingProject({
-                              ...editingProject,
-                              pdfUrl: "/assets/docs/booth_spec_proposal.pdf",
-                              pdfTitle: `${editingProject.title || "Exhibition Booth"} — Architectural Blueprint & 3D Specs (PDF)`,
-                            })
-                          }
-                          className="text-[10px] px-2.5 py-1 rounded bg-[#181826] hover:bg-[#222236] text-yellow-300 border border-yellow-400/30 cursor-pointer flex items-center gap-1"
-                        >
-                          <FileText className="w-3 h-3 text-yellow-400" />
-                          <span>+ Attach Sample Architectural Spec Sheet PDF</span>
-                        </button>
+                        </label>
                       </div>
 
                       {/* Attached PDF Preview Card */}
-                      {editingProject.pdfUrl && (
-                        <div className="p-3 bg-red-950/20 border border-red-500/30 rounded-xl flex items-center justify-between gap-3 mt-2">
+                      {editingProject.pdfUrl ? (
+                        <div className="p-3 bg-red-950/20 border border-red-500/30 rounded-xl flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="w-8 h-8 rounded-lg bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center shrink-0">
-                              <FileText className="w-4 h-4" />
+                            <div className="w-9 h-9 rounded-lg bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center shrink-0">
+                              <FileText className="w-5 h-5" />
                             </div>
                             <div className="min-w-0">
                               <div className="font-bold text-white text-xs truncate">
@@ -1115,9 +1162,9 @@ export default function GalleryProjectsManager() {
                               href={editingProject.pdfUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="px-2.5 py-1 text-[10px] bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-lg flex items-center gap-1"
+                              className="px-2.5 py-1 text-[10px] bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-lg flex items-center gap-1 font-bold"
                             >
-                              <span>Test Link ↗</span>
+                              <span>View PDF ↗</span>
                             </a>
                             <button
                               type="button"
@@ -1129,6 +1176,8 @@ export default function GalleryProjectsManager() {
                             </button>
                           </div>
                         </div>
+                      ) : (
+                        <p className="text-[11px] text-zinc-500 italic">No PDF attached yet. Click the button above to upload a PDF.</p>
                       )}
                     </div>
 
