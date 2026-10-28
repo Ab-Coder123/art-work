@@ -158,11 +158,11 @@ export const SceneHero: React.FC = () => {
             {/* Team Artwork Showcase */}
             <div className="relative overflow-hidden rounded-xl border-2 border-black bg-white aspect-[16/10] flex items-center justify-center">
               <Image
-                src="/assets/images/team_collective.jpg"
+                src="/assets/images/hero_studio_collective.jpg"
                 alt="Art Work Creative Collective: Graphic Designer, Motion Designer, Art Director, Copywriter, and Project Manager"
                 fill
                 priority
-                className="object-contain p-2"
+                className="object-cover"
               />
               {/* Overlay Sticky Note */}
               <div className="absolute bottom-3 right-3 bg-yellow-300 border-2 border-black p-2 rounded shadow-[2px_2px_0px_0px_#111111] rotate-1 text-[11px] font-mono font-bold text-black max-w-[210px] z-20">

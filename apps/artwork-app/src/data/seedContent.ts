@@ -147,7 +147,7 @@ export const SEED_SITE_CONTENT: SiteContent = {
     ],
     canvasHeader: "STUDIO_COLLECTIVE_CANVAS.V4",
     canvasTag: "INK_LAYER_ACTIVE",
-    heroImage: "/assets/images/hero_studio_collective.png",
+    heroImage: "/assets/images/hero_studio_collective.jpg",
     heroImageAlt: "Art Work Creative Marketing Studio Collective",
   },
   whyUsTeaser: {

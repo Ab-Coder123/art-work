@@ -400,7 +400,7 @@ function ManifestoContent({
 
             <div className="relative overflow-hidden rounded-lg border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] aspect-[16/10] min-h-[220px] sm:min-h-[270px] lg:min-h-[320px] xl:min-h-[360px] flex items-center justify-center">
               <Image
-                src="/assets/images/hero_studio_collective.webp"
+                src="/assets/images/hero_studio_collective.jpg"
                 alt="Art Work Creative Marketing Studio Collective"
                 fill
                 priority
