@@ -16,6 +16,7 @@ import {
   Sparkles,
   Loader2,
   Smartphone,
+  FileText,
 } from "lucide-react";
 import {
   ProjectRecord,
@@ -69,6 +70,88 @@ const INITIAL_PROJECTS: ProjectRecord[] = [
       "A day filled with unforgettable moments, positive energy, and team spirit! 🎉\n\nRelive the highlights of Rameda’s Annual Company Gathering, bringing together our amazing team for a special day of celebration, connection, and shared achievements.\n\nFrom memorable moments to the smiles and energy of our people, this event reflects the strong culture, teamwork, and passion that drive us forward every day.",
     isShort: false,
   },
+  {
+    id: "nova-medtech-booth",
+    title: "Nova MedTech Custom Pavilion",
+    stamp: "BOOTH_PASS: MED_EXPO_25",
+    metaBadge: "36M² CUSTOM BUILD",
+    cadId: "CAD_ID: BOOTH_NOVA_V3",
+    image: "/assets/images/gallery/project_06_sensory_expo.jpg",
+    altText: "Nova MedTech Custom Exhibition Booth & Pavilion Fabrication",
+    category: "booths",
+    tags: [
+      "Exhibition Booth",
+      "Custom Fabrication",
+      "3D Spatial Design",
+      "On-Site Build",
+    ],
+    stats: "🏛️ 36m² Island Stand",
+    statsSub: "Custom CNC Woodwork • Integrated LED Kiosks",
+    description:
+      "Turnkey custom exhibition booth featuring architectural archways, integrated interactive touchscreens, and bespoke backlit brand displays for medical expo showcase.",
+    client: "Nova MedTech Innovations",
+    specs: [
+      "Precision CNC Curved Woodwork & Matte Lacquer",
+      "Integrated 65-inch Interactive Product Kiosks",
+      "Engineered Overhead Hanging Signage & Truss Rigging",
+      "Complete 48-Hour On-Site Assembly & Handover",
+    ],
+    status: "published",
+    order: 2,
+    featured: true,
+    images: [
+      "/assets/images/gallery/project_06_sensory_expo.jpg",
+      "/assets/images/gallery/spotlight_blueprint_easel.jpg",
+    ],
+    pdfUrl: "/assets/docs/booth_spec_proposal.pdf",
+    pdfTitle: "Nova MedTech 36m² Architectural Blueprint & 3D Spec Sheet (PDF)",
+    youtubeVideoId: null,
+    youtubeUrl: null,
+    youtubeTitle: null,
+    youtubeDescription: null,
+    isShort: false,
+  },
+  {
+    id: "pharmapack-expo-booth",
+    title: "Pharmapack Discovery Stand",
+    stamp: "BOOTH_PASS: PHARMA_02",
+    metaBadge: "54M² ISLAND BOOTH",
+    cadId: "CAD_ID: BOOTH_PHARMA_V2",
+    image: "/assets/images/gallery/project_03_cybertruss.jpg",
+    altText: "Pharmapack Discovery Stand Exhibition Booth Design & Build",
+    category: "booths",
+    tags: [
+      "Exhibition Booth",
+      "Modular Truss",
+      "Brand Experience",
+      "Turnkey Production",
+    ],
+    stats: "📐 54m² Double-Frontage",
+    statsSub: "Modular Aluminum Core • Ambient Edge Lighting",
+    description:
+      "High-impact exhibition stand engineered for maximum visitor engagement, featuring private meeting lounges, elevated branding banners, and seamless logistics.",
+    client: "Pharmapack Regional Group",
+    specs: [
+      "Modular Aluminum Structure with Seamless Fabric Graphics",
+      "Private Glass-Partitioned VIP Meeting Lounge",
+      "Dynamic Ambient LED Floor Perimeter Illumination",
+      "Full Dismantling, Packing & Storage Logistics",
+    ],
+    status: "published",
+    order: 3,
+    featured: true,
+    images: [
+      "/assets/images/gallery/project_03_cybertruss.jpg",
+      "/assets/images/gallery/project_06_sensory_expo.jpg",
+    ],
+    pdfUrl: "/assets/docs/booth_spec_proposal.pdf",
+    pdfTitle: "Pharmapack 54m² Modular Structural Elevation & Floorplan (PDF)",
+    youtubeVideoId: null,
+    youtubeUrl: null,
+    youtubeTitle: null,
+    youtubeDescription: null,
+    isShort: false,
+  },
 ];
 
 export default function GalleryProjectsManager() {
@@ -82,6 +165,8 @@ export default function GalleryProjectsManager() {
   const [ytStatusMessage, setYtStatusMessage] = useState<string | null>(null);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [newBoothImageUrl, setNewBoothImageUrl] = useState("");
+  const [showBoothYouTube, setShowBoothYouTube] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -615,12 +700,31 @@ export default function GalleryProjectsManager() {
 
               {/* Scrollable Form Body (Dedicated Scroll Y) */}
               <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5 text-xs font-mono overscroll-contain">
+                {/* Mode Indicator Banner */}
+                {editingProject.category === "booths" ? (
+                  <div className="p-3 bg-yellow-400/10 border border-yellow-400/30 rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-yellow-300">
+                      <FileText className="w-4 h-4" />
+                      <span className="font-bold uppercase tracking-wider text-[11px]">
+                        Exhibition Booth &amp; Pavilion Production Mode
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-zinc-400 font-mono">
+                      Headline • Description • 3D Renders • PDF Blueprints
+                    </span>
+                  </div>
+                ) : null}
+
+                {/* 1. Headline & Client */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-zinc-400 mb-1">Project Display Title</label>
+                    <label className="block text-zinc-400 mb-1">
+                      {editingProject.category === "booths" ? "Booth / Pavilion Headline" : "Project Display Title"}
+                    </label>
                     <input
                       type="text"
                       required
+                      placeholder={editingProject.category === "booths" ? "e.g. Nova MedTech 36m² Custom Pavilion" : "e.g. Neon Horizon Tour"}
                       value={editingProject.title}
                       onChange={(e) =>
                         setEditingProject({ ...editingProject, title: e.target.value })
@@ -630,10 +734,13 @@ export default function GalleryProjectsManager() {
                   </div>
 
                   <div>
-                    <label className="block text-zinc-400 mb-1">Client Name</label>
+                    <label className="block text-zinc-400 mb-1">
+                      {editingProject.category === "booths" ? "Exhibitor / Client Name" : "Client Name"}
+                    </label>
                     <input
                       type="text"
                       required
+                      placeholder={editingProject.category === "booths" ? "e.g. Nova MedTech Innovations" : "e.g. Global Music Group"}
                       value={editingProject.client}
                       onChange={(e) =>
                         setEditingProject({ ...editingProject, client: e.target.value })
@@ -643,17 +750,54 @@ export default function GalleryProjectsManager() {
                   </div>
                 </div>
 
+                {/* 2. Category, Stamp Pass, and CAD ID */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-zinc-400 mb-1">Category</label>
                     <select
                       value={editingProject.category}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const newCat = e.target.value as ProjectRecord["category"];
+                        const isNowBooth = newCat === "booths";
                         setEditingProject({
                           ...editingProject,
-                          category: e.target.value as ProjectRecord["category"],
-                        })
-                      }
+                          category: newCat,
+                          stamp:
+                            isNowBooth &&
+                            (!editingProject.stamp ||
+                              editingProject.stamp.includes("STAGE") ||
+                              editingProject.stamp.includes("EVENT"))
+                              ? "BOOTH_PASS: EXPO_25"
+                              : editingProject.stamp,
+                          cadId:
+                            isNowBooth &&
+                            (!editingProject.cadId ||
+                              editingProject.cadId.includes("STAGE") ||
+                              editingProject.cadId.includes("EVENT"))
+                              ? "CAD_ID: BOOTH_V2"
+                              : editingProject.cadId,
+                          stats:
+                            isNowBooth &&
+                            (!editingProject.stats ||
+                              editingProject.stats.includes("Fans") ||
+                              editingProject.stats.includes("Guests"))
+                              ? "🏛️ 36m² Island Stand"
+                              : editingProject.stats,
+                          statsSub:
+                            isNowBooth &&
+                            (!editingProject.statsSub ||
+                              editingProject.statsSub.includes("Rig") ||
+                              editingProject.statsSub.includes("Stage"))
+                              ? "Custom CNC Woodwork • Integrated LED Kiosks"
+                              : editingProject.statsSub,
+                          image:
+                            isNowBooth &&
+                            (!editingProject.image ||
+                              editingProject.image.includes("neon_horizon"))
+                              ? "/assets/images/gallery/project_06_sensory_expo.jpg"
+                              : editingProject.image,
+                        });
+                      }}
                       className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
                     >
                       <option value="stage">Stage & Lighting</option>
@@ -666,9 +810,12 @@ export default function GalleryProjectsManager() {
                   </div>
 
                   <div>
-                    <label className="block text-zinc-400 mb-1">Stamp Pass Label</label>
+                    <label className="block text-zinc-400 mb-1">
+                      {editingProject.category === "booths" ? "Exhibition / Stamp Pass" : "Stamp Pass Label"}
+                    </label>
                     <input
                       type="text"
+                      placeholder={editingProject.category === "booths" ? "BOOTH_PASS: MED_EXPO_25" : "STAMP_PASS: ARENA_01"}
                       value={editingProject.stamp}
                       onChange={(e) =>
                         setEditingProject({ ...editingProject, stamp: e.target.value })
@@ -678,9 +825,12 @@ export default function GalleryProjectsManager() {
                   </div>
 
                   <div>
-                    <label className="block text-zinc-400 mb-1">CAD Blueprint ID</label>
+                    <label className="block text-zinc-400 mb-1">
+                      {editingProject.category === "booths" ? "CAD / Blueprint ID" : "CAD Blueprint ID"}
+                    </label>
                     <input
                       type="text"
+                      placeholder={editingProject.category === "booths" ? "CAD_ID: BOOTH_NOVA_V3" : "CAD_ID: STAGE_01"}
                       value={editingProject.cadId}
                       onChange={(e) =>
                         setEditingProject({ ...editingProject, cadId: e.target.value })
@@ -690,11 +840,15 @@ export default function GalleryProjectsManager() {
                   </div>
                 </div>
 
+                {/* 3. Stats & Metrics */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-zinc-400 mb-1">Primary Stat</label>
+                    <label className="block text-zinc-400 mb-1">
+                      {editingProject.category === "booths" ? "Booth Footprint / Area Metric" : "Primary Stat"}
+                    </label>
                     <input
                       type="text"
+                      placeholder={editingProject.category === "booths" ? "e.g. 🏛️ 36m² Island Stand" : "e.g. ⚡ 52,000 Fans / Night"}
                       value={editingProject.stats}
                       onChange={(e) =>
                         setEditingProject({ ...editingProject, stats: e.target.value })
@@ -704,9 +858,12 @@ export default function GalleryProjectsManager() {
                   </div>
 
                   <div>
-                    <label className="block text-zinc-400 mb-1">Supporting Metric</label>
+                    <label className="block text-zinc-400 mb-1">
+                      {editingProject.category === "booths" ? "Fabrication & Finish Highlight" : "Supporting Metric"}
+                    </label>
                     <input
                       type="text"
+                      placeholder={editingProject.category === "booths" ? "e.g. Custom CNC Woodwork • Integrated LED Kiosks" : "e.g. 0.0s DMX Latency"}
                       value={editingProject.statsSub}
                       onChange={(e) =>
                         setEditingProject({ ...editingProject, statsSub: e.target.value })
@@ -716,12 +873,20 @@ export default function GalleryProjectsManager() {
                   </div>
                 </div>
 
+                {/* 4. Description */}
                 <div>
                   <label className="block text-zinc-400 mb-1">
-                    Description & Scenography Narrative
+                    {editingProject.category === "booths"
+                      ? "Booth Description & Spatial Concept"
+                      : "Description & Scenography Narrative"}
                   </label>
                   <textarea
                     rows={3}
+                    placeholder={
+                      editingProject.category === "booths"
+                        ? "Describe the booth layout, spatial architecture, visitor journey, finishes (matte lacquer, acrylic, CNC joinery), and integrated audio-visual..."
+                        : "Describe project scenography..."
+                    }
                     value={editingProject.description}
                     onChange={(e) =>
                       setEditingProject({ ...editingProject, description: e.target.value })
@@ -730,215 +895,484 @@ export default function GalleryProjectsManager() {
                   />
                 </div>
 
-                {/* Cover & Card Thumbnail Image */}
-                <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <label className="text-zinc-200 font-bold flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-yellow-400" />
-                      <span>Card Thumbnail & Cover Image (Main Website)</span>
-                    </label>
-                    {editingProject.youtubeVideoId && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const ytThumb = `https://img.youtube.com/vi/${editingProject.youtubeVideoId}/hqdefault.jpg`;
-                          setEditingProject({ ...editingProject, image: ytThumb });
-                          setYtStatusMessage("✓ Synced thumbnail directly from YouTube video");
-                        }}
-                        className="px-2.5 py-1 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 text-[10px] font-bold border border-yellow-400/30 cursor-pointer transition-colors"
-                      >
-                        Sync Thumbnail from YouTube
-                      </button>
-                    )}
-                  </div>
+                {/* 5. MEDIA ENGINE: DYNAMIC BASED ON BOOTH VS STANDARD */}
+                {editingProject.category === "booths" ? (
+                  <div className="space-y-4">
+                    {/* A. ATTACH IMAGES (3D Spatial Renders & Photos) */}
+                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <label className="text-zinc-200 font-bold flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-yellow-400" />
+                          <span>Attach Booth Images &amp; 3D Spatial Renders</span>
+                        </label>
+                        <span className="text-[10px] text-zinc-400 font-mono">
+                          Multiple 3D perspectives, elevation sketches &amp; built photos
+                        </span>
+                      </div>
 
-                  <div className="flex flex-col sm:flex-row items-center gap-3">
-                    <div className="w-32 h-20 rounded-xl overflow-hidden border border-[#2b2b3d] bg-black shrink-0 relative flex items-center justify-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={editingProject.image || "/assets/images/gallery/project_01_neon_horizon.jpg"}
-                        alt="Project Card Thumbnail"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src =
-                            "/assets/images/gallery/project_01_neon_horizon.jpg";
-                        }}
-                      />
-                    </div>
-                    <div className="flex-1 w-full space-y-1">
-                      <input
-                        type="text"
-                        value={editingProject.image || ""}
-                        onChange={(e) =>
-                          setEditingProject({ ...editingProject, image: e.target.value })
-                        }
-                        placeholder="https://img.youtube.com/vi/... or /assets/images/..."
-                        className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
-                      />
-                      <p className="text-[10px] text-zinc-400">
-                        When a YouTube video is linked, its thumbnail is automatically extracted and displayed on the card.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* YouTube Video & Reel/Shorts Engine (Safe ID & Headline/Paragraph Extractor) */}
-                <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <label className="text-zinc-200 font-bold flex items-center gap-2">
-                      <YouTubeIcon className="w-4 h-4 text-red-500" />
-                      <span>YouTube Video / Reel (Shorts) Link</span>
-                    </label>
-                    <span className="text-[10px] text-zinc-400">
-                      Supports youtube.com/watch, youtu.be, and youtube.com/shorts
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      type="text"
-                      placeholder="https://www.youtube.com/watch?v=... or https://www.youtube.com/shorts/..."
-                      value={editingProject.youtubeUrl || ""}
-                      onChange={(e) => handleYouTubeInputChange(e.target.value)}
-                      className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleFetchYouTubeMetadata}
-                      disabled={!editingProject.youtubeUrl || resolvingYt}
-                      className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-yellow-400/15 hover:bg-yellow-400/25 text-yellow-300 border border-yellow-400/30 font-bold text-[11px] disabled:opacity-40 cursor-pointer whitespace-nowrap"
-                    >
-                      {resolvingYt ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      ) : (
-                        <Sparkles className="w-3.5 h-3.5" />
-                      )}
-                      <span>Fetch Thumbnail, Headline &amp; Copy</span>
-                    </button>
-                  </div>
-
-                  {ytStatusMessage && (
-                    <div className="text-[11px] text-emerald-400 font-mono">{ytStatusMessage}</div>
-                  )}
-
-                  {resolvedPreview ? (
-                    <div className="space-y-3 pt-2 border-t border-[#222232]">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-[10px] text-zinc-400 mb-1">
-                            Video / Reel Headline (Displayed on Website)
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="Headline of the YouTube Video or Reel..."
-                            value={editingProject.youtubeTitle || ""}
-                            onChange={(e) =>
+                      {/* Add image input row */}
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newBoothImageUrl}
+                          onChange={(e) => setNewBoothImageUrl(e.target.value)}
+                          placeholder="Paste image URL (e.g. /assets/images/gallery/... or https://...)"
+                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const trimmed = newBoothImageUrl.trim();
+                            if (!trimmed) return;
+                            const currentImages = editingProject.images || (editingProject.image ? [editingProject.image] : []);
+                            if (!currentImages.includes(trimmed)) {
+                              const updated = [...currentImages, trimmed];
                               setEditingProject({
                                 ...editingProject,
-                                youtubeTitle: e.target.value,
-                              })
+                                images: updated,
+                                image: editingProject.image || trimmed,
+                              });
                             }
-                            className="w-full bg-[#151520] border border-[#2b2b3d] rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-yellow-400"
+                            setNewBoothImageUrl("");
+                          }}
+                          disabled={!newBoothImageUrl.trim()}
+                          className="px-4 py-2 bg-yellow-400 hover:bg-yellow-300 disabled:opacity-40 text-black font-bold text-xs rounded-xl cursor-pointer transition-colors"
+                        >
+                          + Add Image
+                        </button>
+                      </div>
+
+                      {/* Quick Presets */}
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        <span className="text-[10px] text-zinc-500 self-center mr-1">Quick Presets:</span>
+                        {[
+                          { label: "+ 3D Sensory Expo", url: "/assets/images/gallery/project_06_sensory_expo.jpg" },
+                          { label: "+ CyberTruss Pavilion", url: "/assets/images/gallery/project_03_cybertruss.jpg" },
+                          { label: "+ Blueprint Easel", url: "/assets/images/gallery/spotlight_blueprint_easel.jpg" },
+                        ].map((preset) => (
+                          <button
+                            key={preset.url}
+                            type="button"
+                            onClick={() => {
+                              const currentImages = editingProject.images || (editingProject.image ? [editingProject.image] : []);
+                              if (!currentImages.includes(preset.url)) {
+                                const updated = [...currentImages, preset.url];
+                                setEditingProject({
+                                  ...editingProject,
+                                  images: updated,
+                                  image: editingProject.image || preset.url,
+                                });
+                              }
+                            }}
+                            className="text-[10px] px-2 py-1 rounded bg-[#181826] hover:bg-[#222236] text-zinc-300 border border-[#2b2b3d] cursor-pointer"
+                          >
+                            {preset.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Images Previews Grid */}
+                      {(() => {
+                        const imagesList =
+                          editingProject.images && editingProject.images.length > 0
+                            ? editingProject.images
+                            : editingProject.image
+                            ? [editingProject.image]
+                            : [];
+                        return imagesList.length > 0 ? (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                            {imagesList.map((img, idx) => {
+                              const isCover = img === editingProject.image;
+                              return (
+                                <div
+                                  key={idx}
+                                  className={`relative rounded-xl border p-1.5 bg-[#151520] flex flex-col gap-1.5 ${
+                                    isCover ? "border-yellow-400 ring-1 ring-yellow-400" : "border-[#2b2b3d]"
+                                  }`}
+                                >
+                                  <div className="relative aspect-[16/10] rounded-lg overflow-hidden bg-black">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={img} alt={`Booth preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                    {isCover && (
+                                      <span className="absolute top-1 left-1 bg-yellow-400 text-black font-black text-[9px] uppercase px-1.5 py-0.5 rounded shadow">
+                                        ★ Cover
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center justify-between gap-1 text-[10px]">
+                                    {!isCover ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditingProject({ ...editingProject, image: img })}
+                                        className="text-yellow-400 hover:underline cursor-pointer"
+                                      >
+                                        Set as Cover
+                                      </button>
+                                    ) : (
+                                      <span className="text-zinc-400">Primary Cover</span>
+                                    )}
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const filtered = imagesList.filter((_, i) => i !== idx);
+                                        const nextCover = isCover ? filtered[0] || "" : editingProject.image;
+                                        setEditingProject({
+                                          ...editingProject,
+                                          images: filtered,
+                                          image: nextCover,
+                                        });
+                                      }}
+                                      className="text-red-400 hover:text-red-300 cursor-pointer p-0.5"
+                                      title="Remove image"
+                                    >
+                                      <X className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <p className="text-[11px] text-zinc-500 italic">No images attached yet.</p>
+                        );
+                      })()}
+                    </div>
+
+                    {/* B. ATTACH ARCHITECTURAL PDF BLUEPRINT / SPEC SHEET */}
+                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <label className="text-zinc-200 font-bold flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-yellow-400" />
+                          <span>Attach Architectural PDF Blueprint / Spec Sheet</span>
+                        </label>
+                        <span className="text-[10px] text-zinc-400 font-mono">
+                          PDF floor plans, 3D technical drawings &amp; spec sheets
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] text-zinc-400 mb-1">PDF File URL or Path</label>
+                          <input
+                            type="text"
+                            value={editingProject.pdfUrl || ""}
+                            onChange={(e) =>
+                              setEditingProject({ ...editingProject, pdfUrl: e.target.value })
+                            }
+                            placeholder="e.g. /assets/docs/booth_spec_proposal.pdf or https://..."
+                            className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
                           />
                         </div>
 
-                        <div className="flex flex-col justify-between">
-                          <label className="block text-[10px] text-zinc-400 mb-1">
-                            Format &amp; Quick Sync
-                          </label>
-                          <div className="flex items-center gap-2">
-                            <label className="inline-flex items-center gap-1.5 text-[11px] text-zinc-300 bg-[#151520] border border-[#2b2b3d] px-2.5 py-1.5 rounded-lg cursor-pointer">
+                        <div>
+                          <label className="block text-[10px] text-zinc-400 mb-1">Document Display Title (Label)</label>
+                          <input
+                            type="text"
+                            value={editingProject.pdfTitle || ""}
+                            onChange={(e) =>
+                              setEditingProject({ ...editingProject, pdfTitle: e.target.value })
+                            }
+                            placeholder="e.g. Architectural CAD Blueprint & 3D Spec Sheet (PDF)"
+                            className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Quick PDF Preset */}
+                      <div className="flex items-center gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEditingProject({
+                              ...editingProject,
+                              pdfUrl: "/assets/docs/booth_spec_proposal.pdf",
+                              pdfTitle: `${editingProject.title || "Exhibition Booth"} — Architectural Blueprint & 3D Specs (PDF)`,
+                            })
+                          }
+                          className="text-[10px] px-2.5 py-1 rounded bg-[#181826] hover:bg-[#222236] text-yellow-300 border border-yellow-400/30 cursor-pointer flex items-center gap-1"
+                        >
+                          <FileText className="w-3 h-3 text-yellow-400" />
+                          <span>+ Attach Sample Architectural Spec Sheet PDF</span>
+                        </button>
+                      </div>
+
+                      {/* Attached PDF Preview Card */}
+                      {editingProject.pdfUrl && (
+                        <div className="p-3 bg-red-950/20 border border-red-500/30 rounded-xl flex items-center justify-between gap-3 mt-2">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-lg bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center shrink-0">
+                              <FileText className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-bold text-white text-xs truncate">
+                                {editingProject.pdfTitle || "Architectural Blueprint (PDF)"}
+                              </div>
+                              <div className="text-[10px] text-zinc-400 font-mono truncate">{editingProject.pdfUrl}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <a
+                              href={editingProject.pdfUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-2.5 py-1 text-[10px] bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-lg flex items-center gap-1"
+                            >
+                              <span>Test Link ↗</span>
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => setEditingProject({ ...editingProject, pdfUrl: null, pdfTitle: null })}
+                              className="p-1 text-zinc-400 hover:text-red-400 rounded-lg hover:bg-red-950/40 cursor-pointer"
+                              title="Remove PDF"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Optional YouTube Video toggle for booths */}
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={() => setShowBoothYouTube(!showBoothYouTube)}
+                        className="text-[10px] text-zinc-400 hover:text-yellow-400 flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>{showBoothYouTube ? "▾ Hide" : "▸ Show"} Optional YouTube Walkthrough Video</span>
+                      </button>
+                    </div>
+
+                    {showBoothYouTube && (
+                      <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                        <label className="text-zinc-200 font-bold flex items-center gap-2">
+                          <YouTubeIcon className="w-4 h-4 text-red-500" />
+                          <span>Optional YouTube Walkthrough Link</span>
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="https://www.youtube.com/watch?v=..."
+                          value={editingProject.youtubeUrl || ""}
+                          onChange={(e) => handleYouTubeInputChange(e.target.value)}
+                          className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* STANDARD STAGE & CONFERENCES YOUTUBE ENGINE */
+                  <div className="space-y-4">
+                    {/* Cover & Card Thumbnail Image */}
+                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <label className="text-zinc-200 font-bold flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-yellow-400" />
+                          <span>Card Thumbnail &amp; Cover Image (Main Website)</span>
+                        </label>
+                        {editingProject.youtubeVideoId && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const ytThumb = `https://img.youtube.com/vi/${editingProject.youtubeVideoId}/hqdefault.jpg`;
+                              setEditingProject({ ...editingProject, image: ytThumb });
+                              setYtStatusMessage("✓ Synced thumbnail directly from YouTube video");
+                            }}
+                            className="px-2.5 py-1 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 text-[10px] font-bold border border-yellow-400/30 cursor-pointer transition-colors"
+                          >
+                            Sync Thumbnail from YouTube
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row items-center gap-3">
+                        <div className="w-32 h-20 rounded-xl overflow-hidden border border-[#2b2b3d] bg-black shrink-0 relative flex items-center justify-center">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={editingProject.image || "/assets/images/gallery/project_01_neon_horizon.jpg"}
+                            alt="Project Card Thumbnail"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src =
+                                "/assets/images/gallery/project_01_neon_horizon.jpg";
+                            }}
+                          />
+                        </div>
+                        <div className="flex-1 w-full space-y-1">
+                          <input
+                            type="text"
+                            value={editingProject.image || ""}
+                            onChange={(e) =>
+                              setEditingProject({ ...editingProject, image: e.target.value })
+                            }
+                            placeholder="https://img.youtube.com/vi/... or /assets/images/..."
+                            className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                          />
+                          <p className="text-[10px] text-zinc-400">
+                            When a YouTube video is linked, its thumbnail is automatically extracted and displayed on the card.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* YouTube Video & Reel/Shorts Engine */}
+                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <label className="text-zinc-200 font-bold flex items-center gap-2">
+                          <YouTubeIcon className="w-4 h-4 text-red-500" />
+                          <span>YouTube Video / Reel (Shorts) Link</span>
+                        </label>
+                        <span className="text-[10px] text-zinc-400">
+                          Supports youtube.com/watch, youtu.be, and youtube.com/shorts
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          placeholder="https://www.youtube.com/watch?v=... or https://www.youtube.com/shorts/..."
+                          value={editingProject.youtubeUrl || ""}
+                          onChange={(e) => handleYouTubeInputChange(e.target.value)}
+                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleFetchYouTubeMetadata}
+                          disabled={!editingProject.youtubeUrl || resolvingYt}
+                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-yellow-400/15 hover:bg-yellow-400/25 text-yellow-300 border border-yellow-400/30 font-bold text-[11px] disabled:opacity-40 cursor-pointer whitespace-nowrap"
+                        >
+                          {resolvingYt ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-3.5 h-3.5" />
+                          )}
+                          <span>Fetch Thumbnail, Headline &amp; Copy</span>
+                        </button>
+                      </div>
+
+                      {ytStatusMessage && (
+                        <div className="text-[11px] text-emerald-400 font-mono">{ytStatusMessage}</div>
+                      )}
+
+                      {resolvedPreview ? (
+                        <div className="space-y-3 pt-2 border-t border-[#222232]">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-[10px] text-zinc-400 mb-1">
+                                Video / Reel Headline (Displayed on Website)
+                              </label>
                               <input
-                                type="checkbox"
-                                checked={Boolean(editingProject.isShort)}
+                                type="text"
+                                placeholder="Headline of the YouTube Video or Reel..."
+                                value={editingProject.youtubeTitle || ""}
                                 onChange={(e) =>
                                   setEditingProject({
                                     ...editingProject,
-                                    isShort: e.target.checked,
+                                    youtubeTitle: e.target.value,
                                   })
                                 }
-                                className="rounded text-yellow-400"
+                                className="w-full bg-[#151520] border border-[#2b2b3d] rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-yellow-400"
                               />
-                              <Smartphone className="w-3 h-3 text-yellow-400" />
-                              <span>9:16 Vertical Reel</span>
-                            </label>
+                            </div>
 
-                            {editingProject.youtubeTitle && (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setEditingProject({
-                                    ...editingProject,
-                                    title: editingProject.youtubeTitle || editingProject.title,
-                                    description:
-                                      editingProject.youtubeDescription ||
-                                      editingProject.description,
-                                  })
-                                }
-                                className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[10px] border border-zinc-700 cursor-pointer"
-                              >
-                                Sync to Card Copy
-                              </button>
-                            )}
+                            <div className="flex flex-col justify-between">
+                              <label className="block text-[10px] text-zinc-400 mb-1">
+                                Format &amp; Quick Sync
+                              </label>
+                              <div className="flex items-center gap-2">
+                                <label className="inline-flex items-center gap-1.5 text-[11px] text-zinc-300 bg-[#151520] border border-[#2b2b3d] px-2.5 py-1.5 rounded-lg cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={Boolean(editingProject.isShort)}
+                                    onChange={(e) =>
+                                      setEditingProject({
+                                        ...editingProject,
+                                        isShort: e.target.checked,
+                                      })
+                                    }
+                                    className="rounded text-yellow-400"
+                                  />
+                                  <Smartphone className="w-3 h-3 text-yellow-400" />
+                                  <span>9:16 Vertical Reel</span>
+                                </label>
+
+                                {editingProject.youtubeTitle && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setEditingProject({
+                                        ...editingProject,
+                                        title: editingProject.youtubeTitle || editingProject.title,
+                                        description:
+                                          editingProject.youtubeDescription ||
+                                          editingProject.description,
+                                      })
+                                    }
+                                    className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[10px] border border-zinc-700 cursor-pointer"
+                                  >
+                                    Sync to Card Copy
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-zinc-400 mb-1">
+                              Video / Reel Paragraph (Narrative Summary)
+                            </label>
+                            <textarea
+                              rows={2}
+                              placeholder="Paragraph describing the YouTube video or Reel..."
+                              value={editingProject.youtubeDescription || ""}
+                              onChange={(e) =>
+                                setEditingProject({
+                                  ...editingProject,
+                                  youtubeDescription: e.target.value,
+                                })
+                              }
+                              className="w-full bg-[#151520] border border-[#2b2b3d] rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-yellow-400 font-sans"
+                            />
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <div className="text-[10px] font-mono text-emerald-400 flex items-center justify-between">
+                              <span className="flex items-center gap-1">
+                                <Video className="w-3 h-3" />
+                                <span>
+                                  Sanitized Embed Preview (ID: {resolvedPreview.videoId})
+                                </span>
+                              </span>
+                              <span>
+                                {editingProject.isShort ? "9:16 REEL / SHORT" : "16:9 SHOWREEL"}
+                              </span>
+                            </div>
+                            <div
+                              className={`${
+                                editingProject.isShort
+                                  ? "aspect-[9/16] max-w-[240px] mx-auto"
+                                  : "aspect-video w-full"
+                              } rounded-lg overflow-hidden border border-[#262638] bg-black`}
+                            >
+                              <iframe
+                                src={resolvedPreview.embedUrl}
+                                title={editingProject.youtubeTitle || "YouTube Video Preview"}
+                                className="w-full h-full"
+                                sandbox="allow-scripts allow-same-origin allow-presentation"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] text-zinc-400 mb-1">
-                          Video / Reel Paragraph (Narrative Summary)
-                        </label>
-                        <textarea
-                          rows={2}
-                          placeholder="Paragraph describing the YouTube video or Reel..."
-                          value={editingProject.youtubeDescription || ""}
-                          onChange={(e) =>
-                            setEditingProject({
-                              ...editingProject,
-                              youtubeDescription: e.target.value,
-                            })
-                          }
-                          className="w-full bg-[#151520] border border-[#2b2b3d] rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-yellow-400 font-sans"
-                        />
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <div className="text-[10px] font-mono text-emerald-400 flex items-center justify-between">
-                          <span className="flex items-center gap-1">
-                            <Video className="w-3 h-3" />
-                            <span>
-                              Sanitized Embed Preview (ID: {resolvedPreview.videoId})
-                            </span>
-                          </span>
-                          <span>
-                            {editingProject.isShort ? "9:16 REEL / SHORT" : "16:9 SHOWREEL"}
-                          </span>
-                        </div>
-                        <div
-                          className={`${
-                            editingProject.isShort
-                              ? "aspect-[9/16] max-w-[240px] mx-auto"
-                              : "aspect-video w-full"
-                          } rounded-lg overflow-hidden border border-[#262638] bg-black`}
-                        >
-                          <iframe
-                            src={resolvedPreview.embedUrl}
-                            title={editingProject.youtubeTitle || "YouTube Video Preview"}
-                            className="w-full h-full"
-                            sandbox="allow-scripts allow-same-origin allow-presentation"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                          />
-                        </div>
-                      </div>
+                      ) : editingProject.youtubeUrl ? (
+                        <p className="text-[10px] text-amber-400/90 font-mono">
+                          * Enter a valid YouTube watch, share, or shorts URL (raw &lt;iframe&gt; HTML is
+                          blocked for security).
+                        </p>
+                      ) : null}
                     </div>
-                  ) : editingProject.youtubeUrl ? (
-                    <p className="text-[10px] text-amber-400/90 font-mono">
-                      * Enter a valid YouTube watch, share, or shorts URL (raw &lt;iframe&gt; HTML is
-                      blocked for security).
-                    </p>
-                  ) : null}
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Sticky Bottom Actions Footer */}

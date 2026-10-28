@@ -48,6 +48,12 @@ export interface ProjectRecord {
   youtubeDescription?: string | null;
   /** True when the YouTube media is a vertical 9:16 Reel / Short */
   isShort?: boolean;
+  /** Attached showcase images / 3D spatial renders (especially for booth builds) */
+  images?: string[];
+  /** Attached architectural drawing, floorplan, or spec sheet PDF link */
+  pdfUrl?: string | null;
+  /** Display label for PDF document (e.g. "Architectural Plan & Specs PDF") */
+  pdfTitle?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -77,6 +83,9 @@ export interface DbProjectRecord {
   youtube_title?: string | null;
   youtube_description?: string | null;
   youtube_is_short?: boolean;
+  images?: string[];
+  pdf_url?: string | null;
+  pdf_title?: string | null;
   status: PublicationStatus;
   order_index: number;
   featured: boolean;
@@ -160,6 +169,9 @@ export function mapDbProjectToRecord(row: DbProjectRecord): ProjectRecord {
     youtubeTitle: row.youtube_title ?? null,
     youtubeDescription: row.youtube_description ?? null,
     isShort: Boolean(row.youtube_is_short ?? parsedYt?.isShort),
+    images: row.images || (resolvedImage ? [resolvedImage] : []),
+    pdfUrl: row.pdf_url ?? null,
+    pdfTitle: row.pdf_title ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -203,6 +215,9 @@ export function mapRecordToDbProject(
     youtube_title: record.youtubeTitle ?? null,
     youtube_description: record.youtubeDescription ?? null,
     youtube_is_short: record.isShort ?? Boolean(parsedYt?.isShort),
+    images: record.images || (record.image ? [record.image] : []),
+    pdf_url: record.pdfUrl ?? null,
+    pdf_title: record.pdfTitle ?? null,
     status: record.status,
     order_index: record.order,
     featured: Boolean(record.featured),

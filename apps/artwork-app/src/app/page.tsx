@@ -799,6 +799,7 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
     email: "",
     serviceType: "Stage Design & Arena Rigging",
     brief: "",
+    attachmentUrl: "",
     _hp: "",
   });
   const formLoadedAtRef = useRef<number | null>(null);
@@ -827,6 +828,10 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
     setSubmitStatus({ type: null, message: "" });
 
     try {
+      const finalBrief = formData.attachmentUrl
+        ? `${formData.brief}\n\n[Attached Booth Reference / PDF / Image]: ${formData.attachmentUrl}`
+        : formData.brief;
+
       const response = await fetch("/api/contact/brief", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -834,7 +839,7 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
           fullName: formData.fullName,
           email: formData.email,
           serviceType: formData.serviceType,
-          brief: formData.brief,
+          brief: finalBrief,
           _hp: formData._hp,
           _ts: formLoadedAtRef.current,
         }),
@@ -857,6 +862,7 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
           email: "",
           serviceType: "Stage Design & Arena Rigging",
           brief: "",
+          attachmentUrl: "",
           _hp: "",
         });
         formLoadedAtRef.current = Date.now();
@@ -1019,17 +1025,39 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
 
               <div>
                 <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
-                  The Core Brief / Vision Constraints
+                  {formData.serviceType === "Exhibition Booths"
+                    ? "Booth Space Dimensions, Design Brief & Spatial Vision"
+                    : "The Core Brief / Vision Constraints"}
                 </label>
                 <textarea
                   className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
-                  placeholder="Describe your arena, product launch, or brand evolution requirements (min 10 characters)..."
+                  placeholder={
+                    formData.serviceType === "Exhibition Booths"
+                      ? "Specify stand dimensions (e.g. 6x6m island), height limits, custom CNC woodwork, and 3D render needs (min 10 characters)..."
+                      : "Describe your arena, product launch, or brand evolution requirements (min 10 characters)..."
+                  }
                   required
                   rows={3}
                   value={formData.brief}
                   onChange={(e) => setFormData({ ...formData, brief: e.target.value })}
                 ></textarea>
               </div>
+
+              {formData.serviceType === "Exhibition Booths" && (
+                <div>
+                  <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300 flex items-center justify-between">
+                    <span>Attach Floorplan / 3D Reference (PDF or Image URL)</span>
+                    <span className="text-[10px] text-black/50 dark:text-zinc-500 font-normal lowercase">(optional)</span>
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://... (Link to your booth floorplan PDF, Google Drive, or render image)"
+                    value={formData.attachmentUrl}
+                    onChange={(e) => setFormData({ ...formData, attachmentUrl: e.target.value })}
+                    className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
+                  />
+                </div>
+              )}
 
               <div className="flex items-center justify-between pt-1">
                 <span className="text-[10px] sm:text-xs font-body text-black/60 dark:text-zinc-400">

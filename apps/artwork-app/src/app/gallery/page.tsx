@@ -24,6 +24,7 @@ import {
   Filter,
   Play,
   Smartphone,
+  FileText,
 } from "lucide-react";
 import {
   ProjectCategory,
@@ -37,6 +38,7 @@ export default function GalleryPage() {
   const [projects, setProjects] = useState<ProjectRecord[]>(SEED_PROJECTS);
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
+  const [activeModalImage, setActiveModalImage] = useState<string | null>(null);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
 
   // Activate Lenis luxury virtual smooth scroll
@@ -117,6 +119,7 @@ export default function GalleryPage() {
   const handleInspectClick = (project: ProjectRecord) => {
     soundFX.playPop();
     setSelectedProject(project);
+    setActiveModalImage(project.image);
   };
 
   const triggerInkBurst = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -440,7 +443,7 @@ export default function GalleryPage() {
                         {project.cadId}
                       </div>
 
-                      {ytMedia && (
+                      {ytMedia ? (
                         <button
                           type="button"
                           onClick={() => handleInspectClick(project)}
@@ -458,7 +461,16 @@ export default function GalleryPage() {
                             </>
                           )}
                         </button>
-                      )}
+                      ) : project.pdfUrl || project.category === "booths" ? (
+                        <button
+                          type="button"
+                          onClick={() => handleInspectClick(project)}
+                          className="absolute top-2 right-2 inline-flex items-center gap-1 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-[10px] uppercase px-2 py-1 rounded border border-black comic-shadow-sm cursor-pointer"
+                        >
+                          <FileText className="w-3 h-3" />
+                          <span>3D &amp; PDF BLUEPRINT</span>
+                        </button>
+                      ) : null}
                     </div>
 
                     {/* Project Title */}
@@ -530,6 +542,11 @@ export default function GalleryPage() {
                             ? "WATCH REEL & BLUEPRINT ↗"
                             : "WATCH SHOWREEL & BLUEPRINT ↗"}
                         </span>
+                      </>
+                    ) : project.pdfUrl ? (
+                      <>
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>VIEW 3D &amp; PDF BLUEPRINT ↗</span>
                       </>
                     ) : (
                       <>
@@ -994,13 +1011,74 @@ export default function GalleryPage() {
                   </div>
                 </div>
               ) : (
-                <div className="relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 aspect-[16/9] mb-4">
-                  <Image
-                    src={selectedProject.image}
-                    alt={selectedProject.altText || selectedProject.title}
-                    fill
-                    className="object-cover"
-                  />
+                <div className="space-y-3 mb-4">
+                  {/* Main Display Image */}
+                  <div className="relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 aspect-[16/9] bg-neutral-100 dark:bg-zinc-800">
+                    <Image
+                      src={activeModalImage || selectedProject.image}
+                      alt={selectedProject.altText || selectedProject.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+
+                  {/* Multiple Gallery Images Selector (if any) */}
+                  {selectedProject.images && selectedProject.images.length > 1 && (
+                    <div className="space-y-1">
+                      <span className="font-mono text-[10px] uppercase font-bold text-black/60 dark:text-zinc-400">
+                        3D RENDERS &amp; BUILD ELEVATIONS ({selectedProject.images.length})
+                      </span>
+                      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+                        {selectedProject.images.map((imgUrl, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setActiveModalImage(imgUrl)}
+                            className={`relative w-20 h-14 rounded-md overflow-hidden border-2 shrink-0 transition-all cursor-pointer ${
+                              (activeModalImage || selectedProject.image) === imgUrl
+                                ? "border-yellow-400 scale-105 comic-shadow-sm"
+                                : "border-black/30 dark:border-zinc-700 opacity-70 hover:opacity-100"
+                            }`}
+                          >
+                            <Image
+                              src={imgUrl}
+                              alt={`Render ${idx + 1}`}
+                              fill
+                              className="object-cover"
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Architectural PDF Blueprint Download Banner */}
+                  {selectedProject.pdfUrl && (
+                    <div className="p-3.5 bg-yellow-400 text-black rounded-xl border-2 border-black comic-shadow-sm flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-9 h-9 rounded-lg bg-black text-yellow-400 border border-black flex items-center justify-center font-bold shrink-0">
+                          <FileText className="w-5 h-5" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="font-headline font-black text-xs uppercase truncate">
+                            {selectedProject.pdfTitle || "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET"}
+                          </div>
+                          <div className="font-mono text-[10px] text-black/70">
+                            Downloadable PDF • 100% CAD Specs
+                          </div>
+                        </div>
+                      </div>
+                      <a
+                        href={selectedProject.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border border-black flex items-center gap-1.5 active:scale-95 transition-transform shrink-0"
+                      >
+                        <span>VIEW PDF</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  )}
                 </div>
               )}
 

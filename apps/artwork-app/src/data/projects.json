@@ -61,6 +61,12 @@
     "status": "published",
     "order": 2,
     "featured": true,
+    "images": [
+      "/assets/images/gallery/project_06_sensory_expo.jpg",
+      "/assets/images/gallery/spotlight_blueprint_easel.jpg"
+    ],
+    "pdfUrl": "/assets/docs/booth_spec_proposal.pdf",
+    "pdfTitle": "Nova MedTech 36m² Architectural Blueprint & 3D Spec Sheet (PDF)",
     "youtubeVideoId": null,
     "youtubeUrl": null,
     "youtubeTitle": null,
@@ -95,6 +101,12 @@
     "status": "published",
     "order": 3,
     "featured": true,
+    "images": [
+      "/assets/images/gallery/project_03_cybertruss.jpg",
+      "/assets/images/gallery/project_06_sensory_expo.jpg"
+    ],
+    "pdfUrl": "/assets/docs/booth_spec_proposal.pdf",
+    "pdfTitle": "Pharmapack 54m² Modular Structural Elevation & Floorplan (PDF)",
     "youtubeVideoId": null,
     "youtubeUrl": null,
     "youtubeTitle": null,
