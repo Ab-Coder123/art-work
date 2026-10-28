@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { ArrowRight, ArrowUpRight, Lightbulb, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Lightbulb } from "lucide-react";
 
 export const SceneHero: React.FC = () => {
   return (
@@ -128,47 +128,16 @@ export const SceneHero: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Studio Sketchpad & Team Artwork */}
+        {/* Right Column: Studio Sketchpad & Team Artwork (Clean, Borderless, No Frame) */}
         <div className="lg:col-span-6 relative">
-          {/* Floating Lightbulb badge */}
-          <div className="absolute -top-6 right-6 z-20 flex items-center gap-1 bg-white border-2 border-black px-3 py-1 rounded-full shadow-[2px_2px_0px_0px_#111111]">
-            <Sparkles className="w-4 h-4 text-yellow-500" />
-            <span className="font-mono font-bold text-xs uppercase">IDEA SURGE</span>
-          </div>
-
-          {/* Main Draft Frame */}
-          <div className="border-4 border-black bg-white rounded-2xl p-3 sm:p-4 shadow-[6px_6px_0px_0px_#111111] relative group">
-            {/* Washi Tape Stickers */}
-            <div className="absolute -top-3.5 left-10 w-16 h-5 bg-yellow-300/90 border border-black/30 -rotate-3 z-30"></div>
-            <div className="absolute -top-3.5 right-10 w-16 h-5 bg-yellow-300/90 border border-black/30 rotate-2 z-30"></div>
-
-            {/* Stage Bar Header */}
-            <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-black/10">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500 border border-black"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-black"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500 border border-black"></span>
-                <span className="font-mono text-xs font-bold text-black/60 ml-2">STUDIO_COLLECTIVE_CANVAS.V4</span>
-              </div>
-              <span className="font-mono text-[10px] font-bold uppercase bg-yellow-400 px-2 py-0.5 rounded border border-black">
-                INK_LAYER_ACTIVE
-              </span>
-            </div>
-
-            {/* Team Artwork Showcase */}
-            <div className="relative overflow-hidden rounded-xl border-2 border-black bg-white aspect-[16/10] flex items-center justify-center">
-              <Image
-                src="/assets/images/hero_studio_collective.jpg"
-                alt="Art Work Creative Collective: Graphic Designer, Motion Designer, Art Director, Copywriter, and Project Manager"
-                fill
-                priority
-                className="object-cover"
-              />
-              {/* Overlay Sticky Note */}
-              <div className="absolute bottom-3 right-3 bg-yellow-300 border-2 border-black p-2 rounded shadow-[2px_2px_0px_0px_#111111] rotate-1 text-[11px] font-mono font-bold text-black max-w-[210px] z-20">
-                ⚡ &quot;Actual humans at work. Zero cookie-cutter templates.&quot;
-              </div>
-            </div>
+          <div className="relative overflow-hidden rounded-2xl aspect-[16/10] flex items-center justify-center shadow-2xl">
+            <Image
+              src="/assets/images/hero_studio_collective.jpg"
+              alt="Art Work Creative Collective"
+              fill
+              priority
+              className="object-cover rounded-2xl"
+            />
           </div>
         </div>
       </div>

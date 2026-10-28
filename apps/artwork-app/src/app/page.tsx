@@ -59,10 +59,10 @@ const resolveHashToStage = (hash: string): StageId | null => {
   if (clean === "stage-gallery" || clean === "gallery" || clean === "work") {
     return "stage-gallery";
   }
-  if (clean === "stage-03" || clean === "services" || clean === "why-us") {
+  if (clean === "stage-03" || clean === "services" || clean === "capabilities") {
     return "stage-03";
   }
-  if (clean === "stage-02" || clean === "capabilities" || clean === "about") {
+  if (clean === "stage-02" || clean === "why-us" || clean === "about") {
     return "stage-02";
   }
   if (clean === "stage-01" || clean === "hero") {
@@ -372,6 +372,7 @@ function ManifestoContent({
         </div>
 
         {/* Right Visual: Collective Canvas (Level with Top of Left Column) */}
+        {/* Right Visual: Clean, Modern Edge-to-Edge Artwork (No borders, no window frame) */}
         <motion.div
           initial={{ opacity: 0, x: 25, scale: 0.98 }}
           whileInView={{ opacity: 1, x: 0, scale: 1 }}
@@ -379,35 +380,15 @@ function ManifestoContent({
           transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="lg:col-span-6 relative w-full pt-1"
         >
-          <div className="border-2 sm:border-3 border-black dark:border-zinc-600 bg-white dark:bg-[#151520] rounded-xl p-2.5 sm:p-3 comic-shadow relative group">
-            <div className="absolute -top-2.5 left-6 w-12 h-5 bg-yellow-300/80 border border-black/30 -rotate-3 z-30"></div>
-            <div className="absolute -top-2.5 right-6 w-12 h-5 bg-yellow-300/80 border border-black/30 rotate-2 z-30"></div>
-
-            <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-black/10 dark:border-white/10 text-xs font-headline font-bold text-black dark:text-white">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-500 border border-black"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-black"></span>
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500 border border-black"></span>
-                <span className="ml-1 text-black/60 dark:text-zinc-400 font-mono text-[10px] sm:text-xs">
-                  STUDIO_COLLECTIVE_CANVAS.V4
-                </span>
-              </div>
-              <div className="flex items-center gap-1 text-[10px] sm:text-xs">
-                <Paintbrush className="w-3.5 h-3.5 text-black dark:text-yellow-400" />
-                <span className="dark:text-yellow-400">INK_LAYER_ACTIVE</span>
-              </div>
-            </div>
-
-            <div className="relative overflow-hidden rounded-lg border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] aspect-[16/10] min-h-[220px] sm:min-h-[270px] lg:min-h-[320px] xl:min-h-[360px] flex items-center justify-center">
-              <Image
-                src="/assets/images/hero_studio_collective.jpg"
-                alt="Art Work Creative Marketing Studio Collective"
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 45vw"
-                className="object-cover"
-              />
-            </div>
+          <div className="relative overflow-hidden rounded-2xl aspect-[16/10] min-h-[220px] sm:min-h-[270px] lg:min-h-[320px] xl:min-h-[360px] flex items-center justify-center shadow-2xl">
+            <Image
+              src="/assets/images/hero_studio_collective.jpg"
+              alt="Art Work Creative Marketing Studio Collective"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 45vw"
+              className="object-cover rounded-2xl"
+            />
           </div>
         </motion.div>
       </div>
