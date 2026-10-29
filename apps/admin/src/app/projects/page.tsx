@@ -532,43 +532,49 @@ export default function GalleryProjectsManager() {
           (data.posterCandidates && data.posterCandidates[0]) ||
           `https://img.youtube.com/vi/${data.videoId}/hqdefault.jpg`;
 
-        setEditingProject((prev) =>
-          prev
-            ? {
-                ...prev,
-                youtubeVideoId: data.videoId,
-                youtubeUrl: data.canonicalUrl,
-                youtubeTitle: data.headline || prev.youtubeTitle || prev.title,
-                youtubeDescription:
-                  data.paragraph || prev.youtubeDescription || prev.description,
-                isShort: Boolean(data.isShort),
-                image: posterUrl || prev.image,
-              }
-            : null
-        );
-        setYtStatusMessage("✓ تم استخراج صورة الغلاف وعنوان ووصف الفيديو من YouTube بنجاح");
+        setEditingProject((prev) => {
+          if (!prev) return null;
+          const ytTitle = data.headline || prev.youtubeTitle || prev.title;
+          const ytDesc = data.paragraph || prev.youtubeDescription || prev.description;
+
+          return {
+            ...prev,
+            title: (!prev.title || prev.title === "New Project") && ytTitle ? ytTitle : prev.title,
+            description: (!prev.description || prev.description.trim().length < 10) && ytDesc ? ytDesc : prev.description,
+            youtubeVideoId: data.videoId,
+            youtubeUrl: data.canonicalUrl,
+            youtubeTitle: ytTitle,
+            youtubeDescription: ytDesc,
+            isShort: Boolean(data.isShort),
+            image: posterUrl || prev.image,
+          };
+        });
+        setYtStatusMessage("✓ تم استخراج صورة الغلاف وعنوان ووصف الفيديو من YouTube وتعبئتها بنجاح");
       } else {
         const parsed = resolveSafeYouTubeEmbed(editingProject.youtubeUrl);
         if (parsed) {
           const fallbackThumb = `https://img.youtube.com/vi/${parsed.videoId}/hqdefault.jpg`;
-          setEditingProject((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  youtubeVideoId: parsed.videoId,
-                  youtubeUrl: parsed.canonicalUrl,
-                  isShort: parsed.isShort,
-                  youtubeTitle: prev.youtubeTitle || `${prev.title} — Official Showreel`,
-                  youtubeDescription:
-                    prev.youtubeDescription || prev.description,
-                  image:
-                    !prev.image || prev.image.includes("project_01_neon_horizon.jpg")
-                      ? fallbackThumb
-                      : prev.image,
-                }
-              : null
-          );
-          setYtStatusMessage("✓ تم التحقق من رابط YouTube وسحب صورة الغلاف بنجاح");
+          setEditingProject((prev) => {
+            if (!prev) return null;
+            const fallbackTitle = prev.youtubeTitle || `${prev.title || "Project"} — Official Showreel`;
+            const fallbackDesc = prev.youtubeDescription || prev.description;
+
+            return {
+              ...prev,
+              title: (!prev.title || prev.title === "New Project") && fallbackTitle ? fallbackTitle : prev.title,
+              description: (!prev.description || prev.description.trim().length < 10) && fallbackDesc ? fallbackDesc : prev.description,
+              youtubeVideoId: parsed.videoId,
+              youtubeUrl: parsed.canonicalUrl,
+              isShort: parsed.isShort,
+              youtubeTitle: fallbackTitle,
+              youtubeDescription: fallbackDesc,
+              image:
+                !prev.image || prev.image.includes("project_01_neon_horizon.jpg")
+                  ? fallbackThumb
+                  : prev.image,
+            };
+          });
+          setYtStatusMessage("✓ تم التحقق من رابط YouTube وسحب صورة الغلاف وتجهيز البيانات بنجاح");
         } else {
           setYtStatusMessage("⚠️ رابط YouTube غير صالح. يرجى وضع رابط الفيديو مباشرة (بدون كود iframe)");
         }
@@ -1705,9 +1711,10 @@ export default function GalleryProjectsManager() {
                                           editingProject.description,
                                       })
                                     }
-                                    className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[10px] border border-zinc-700 cursor-pointer"
+                                    title="نسخ عنوان ووصف اليوتيوب إلى الحقول الأساسية للمشروع"
+                                    className="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-yellow-400 hover:text-black text-zinc-200 text-[10px] font-sans border border-zinc-700 transition-colors cursor-pointer"
                                   >
-                                    Sync to Card Copy
+                                    نسخ للكارد الرئيسي (Apply to Card)
                                   </button>
                                 )}
                               </div>

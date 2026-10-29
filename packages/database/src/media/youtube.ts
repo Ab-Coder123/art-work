@@ -181,21 +181,35 @@ export function extractDescriptionFromHtml(html: string): string | null {
     try {
       const parsed = JSON.parse(`"${shortDescMatch[1]}"`);
       if (typeof parsed === "string" && parsed.trim().length > 0) {
-        return parsed.trim().slice(0, 500);
+        return parsed.trim().slice(0, 1000);
       }
     } catch {
       // Fallback to regex meta below
     }
   }
 
-  // 2. Try <meta name="description" content="..."> or <meta property="og:description" content="...">
+  // 1.5. Try simpleText inside description renderer (ytInitialData)
+  const simpleTextMatch = html.match(/"description":\s*\{\s*"simpleText":\s*"((?:[^"\\]|\\.)*)"/);
+  if (simpleTextMatch && simpleTextMatch[1]) {
+    try {
+      const parsed = JSON.parse(`"${simpleTextMatch[1]}"`);
+      if (typeof parsed === "string" && parsed.trim().length > 0) {
+        return parsed.trim().slice(0, 1000);
+      }
+    } catch {
+      // Fallback to regex meta below
+    }
+  }
+
+  // 2. Try <meta property="og:description" content="..."> or <meta name="description" content="..."> or <meta itemprop="description" content="...">
   const metaMatch =
+    html.match(/<meta\s+property=["']og:description["']\s+content=["']([^"']+)["']/i) ||
     html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i) ||
-    html.match(/<meta\s+property=["']og:description["']\s+content=["']([^"']+)["']/i);
+    html.match(/<meta\s+itemprop=["']description["']\s+content=["']([^"']+)["']/i);
   if (metaMatch && metaMatch[1]) {
     const cleaned = decodeHtmlEntities(metaMatch[1]);
     if (cleaned.length > 0) {
-      return cleaned.slice(0, 500);
+      return cleaned.slice(0, 1000);
     }
   }
 
@@ -226,7 +240,7 @@ export async function fetchYouTubeMetadata(
 
   if (typeof fetchImpl === "function") {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 4500);
+    const timer = setTimeout(() => controller.abort(), 7500);
 
     try {
       const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(canonicalUrl)}&format=json`;
@@ -266,7 +280,10 @@ export async function fetchYouTubeMetadata(
         const pageRes = await fetchImpl(canonicalUrl, {
           signal: controller.signal,
           headers: {
-            "Accept-Language": "en-US,en;q=0.9",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9,ar;q=0.8",
+            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
           },
         });
         if (pageRes.ok) {
