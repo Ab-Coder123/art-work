@@ -480,22 +480,6 @@ export default function GalleryPage() {
                     <h3 className="text-lg sm:text-xl font-black font-headline uppercase tracking-tight text-black dark:text-white mb-2.5 group-hover:text-yellow-500 transition-colors">
                       {project.title}
                     </h3>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5 mb-4 font-headline text-[10px] font-bold uppercase">
-                      {project.tags.map((tag, i) => (
-                        <span
-                          key={i}
-                          className={`px-2.5 py-0.5 rounded-full border transition-colors ${
-                            i === 0
-                              ? "bg-yellow-400/20 border-yellow-400/40 text-black dark:text-yellow-300 font-extrabold"
-                              : "bg-neutral-100 dark:bg-zinc-800/80 border-black/10 dark:border-zinc-700 text-black/70 dark:text-zinc-300"
-                          }`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
                   </div>
 
                   {/* Action Button: Inspect Blueprint */}

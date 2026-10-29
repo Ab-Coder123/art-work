@@ -670,17 +670,6 @@ function GalleryShowcaseContent() {
                   <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed line-clamp-4 mb-3">
                     {primary.youtubeDescription || primary.description}
                   </p>
-
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {primary.tags.map((tag, i) => (
-                      <span
-                        key={i}
-                        className="text-[10px] font-headline font-bold uppercase bg-yellow-100 dark:bg-zinc-800 border border-black/30 dark:border-zinc-700 text-black dark:text-zinc-200 px-2.5 py-0.5 rounded"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
                 </div>
 
                 <div className="pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-end flex-wrap gap-2">
