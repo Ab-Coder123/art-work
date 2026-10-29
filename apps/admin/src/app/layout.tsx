@@ -5,6 +5,13 @@ import { AdminSidebar } from "@/components/AdminSidebar";
 export const metadata: Metadata = {
   title: "Art Work // Studio Control Center",
   description: "Standalone administrative dashboard for Art Work Marketing Solutions",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({
