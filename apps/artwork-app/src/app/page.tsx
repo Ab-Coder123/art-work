@@ -679,10 +679,7 @@ function GalleryShowcaseContent() {
                   </div>
                 </div>
 
-                <div className="pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between flex-wrap gap-2">
-                  <span className="font-headline font-black text-xs sm:text-sm text-black dark:text-yellow-400">
-                    {primary.stats}
-                  </span>
+                <div className="pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-end flex-wrap gap-2">
                   <div className="flex items-center gap-2.5">
                     <a
                       href={yt.canonicalUrl}
@@ -753,8 +750,7 @@ function GalleryShowcaseContent() {
                     {p.description}
                   </p>
                 </div>
-                <div className="pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-xs font-headline font-bold text-black dark:text-yellow-400">
-                  <span>{p.stats}</span>
+                <div className="pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-end text-xs font-headline font-bold text-black dark:text-yellow-400">
                   <span className="group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                     EXPLORE ➔
                   </span>
