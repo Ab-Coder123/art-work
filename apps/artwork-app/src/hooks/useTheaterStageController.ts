@@ -93,52 +93,6 @@ export function useTheaterStageController(): TheaterStageControllerResult {
     }
   }, []);
 
-  // Mouse sparkle trail physics (bypassed if prefers-reduced-motion is active)
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-
-    const createSparkle = (x: number, y: number) => {
-      const p = document.createElement("div");
-      p.className = "cursor-particle";
-      p.style.left = `${x}px`;
-      p.style.top = `${y}px`;
-      const size = Math.floor(Math.random() * 8) + 4;
-      p.style.width = `${size}px`;
-      p.style.height = `${size}px`;
-
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 25 + 5;
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-
-      document.body.appendChild(p);
-
-      requestAnimationFrame(() => {
-        p.style.transform = `translate(${vx}px, ${vy}px) scale(0)`;
-        p.style.opacity = "0";
-      });
-
-      setTimeout(() => {
-        if (p.parentNode) p.parentNode.removeChild(p);
-      }, 450);
-    };
-
-    let lastMove = 0;
-    const handleMouseMove = (e: MouseEvent) => {
-      const now = Date.now();
-      if (now - lastMove > 110) {
-        createSparkle(e.clientX, e.clientY);
-        lastMove = now;
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
-
   // GLOBAL HASH ROUTER & INTERNAL ANCHOR NAVIGATION SYNCHRONIZER
   useEffect(() => {
     const handleHash = () => {
@@ -394,30 +348,12 @@ export function useTheaterStageController(): TheaterStageControllerResult {
     const originX = rect.left + rect.width / 2;
     const originY = rect.top + rect.height / 2;
 
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement("div");
-      p.className = "cursor-particle";
-      p.style.left = `${originX}px`;
-      p.style.top = `${originY}px`;
-      const size = Math.floor(Math.random() * 8) + 4;
-      p.style.width = `${size}px`;
-      p.style.height = `${size}px`;
-
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 30 + 10;
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-
-      document.body.appendChild(p);
-
-      requestAnimationFrame(() => {
-        p.style.transform = `translate(${vx}px, ${vy}px) scale(0)`;
-        p.style.opacity = "0";
-      });
-
-      setTimeout(() => {
-        if (p.parentNode) p.parentNode.removeChild(p);
-      }, 500);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("artwork:particle-burst", {
+          detail: { x: originX, y: originY, count: 20 },
+        })
+      );
     }
   }, []);
 

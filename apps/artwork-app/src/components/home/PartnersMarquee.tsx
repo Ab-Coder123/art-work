@@ -6,7 +6,7 @@ import { Sparkles } from "lucide-react";
 import { DEFAULT_COMPANIES } from "@art-work/types";
 import type { PartnerLogoCardProps, PartnersMarqueeProps } from "./types";
 
-export function PartnerLogoCard({
+export const PartnerLogoCard = React.memo(function PartnerLogoCard({
   company,
   isSelected,
   onToggle,
@@ -68,9 +68,9 @@ export function PartnerLogoCard({
       </div>
     </div>
   );
-}
+});
 
-export function PartnersMarquee({
+export const PartnersMarquee = React.memo(function PartnersMarquee({
   companies = DEFAULT_COMPANIES,
 }: PartnersMarqueeProps) {
   const [activeCompanyId, setActiveCompanyId] = useState<string | null>(null);
@@ -163,4 +163,4 @@ export function PartnersMarquee({
       </div>
     </div>
   );
-}
+});

@@ -3,7 +3,7 @@
 import React from "react";
 import type { StudioFooterProps } from "./types";
 
-export function StudioFooter({ scrollToStage }: StudioFooterProps) {
+export const StudioFooter = React.memo(function StudioFooter({ scrollToStage }: StudioFooterProps) {
   return (
     <footer className="w-full py-2.5 bg-white/95 dark:bg-[#0D0D12]/95 text-black dark:text-white border-t border-black/10 dark:border-white/10 z-30 transition-colors duration-200">
       <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-7xl mx-auto text-[10px] text-black/70 dark:text-zinc-400 font-mono gap-2 sm:gap-0">
@@ -43,4 +43,4 @@ export function StudioFooter({ scrollToStage }: StudioFooterProps) {
       </div>
     </footer>
   );
-}
+});

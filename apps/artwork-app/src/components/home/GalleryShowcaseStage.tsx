@@ -12,7 +12,7 @@ import {
   getProjectThumbnailUrl,
 } from "@art-work/types";
 
-export function GalleryShowcaseStage() {
+export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage() {
   const [projectsList, setProjectsList] = useState<ProjectRecord[]>(
     rawProjects as ProjectRecord[]
   );
@@ -225,4 +225,4 @@ export function GalleryShowcaseStage() {
       </div>
     </div>
   );
-}
+});

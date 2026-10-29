@@ -3,7 +3,7 @@
 import React from "react";
 import { Loader2, Sparkles } from "lucide-react";
 
-export function StageLoadingSkeleton({
+export const StageLoadingSkeleton = React.memo(function StageLoadingSkeleton({
   title = "LOADING STAGE",
 }: {
   title?: string;
@@ -25,4 +25,4 @@ export function StageLoadingSkeleton({
       </div>
     </div>
   );
-}
+});

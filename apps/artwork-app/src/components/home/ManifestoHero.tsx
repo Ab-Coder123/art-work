@@ -11,7 +11,7 @@ import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/Kin
 import { PartnersMarquee } from "./PartnersMarquee";
 import { DEFAULT_HERO_CONTENT, type ManifestoHeroProps } from "./types";
 
-export function ManifestoHero({
+export const ManifestoHero = React.memo(function ManifestoHero({
   onViewCapabilities,
   content = DEFAULT_HERO_CONTENT,
   companies = DEFAULT_COMPANIES,
@@ -141,4 +141,4 @@ export function ManifestoHero({
       <PartnersMarquee companies={companies} />
     </div>
   );
-}
+});

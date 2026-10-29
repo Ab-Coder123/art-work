@@ -89,6 +89,14 @@ const KineticMotionArrows = dynamic(
   { ssr: false }
 );
 
+const KineticParticleCanvas = dynamic(
+  () =>
+    import("@/components/cinematic/KineticParticleCanvas").then(
+      (m) => m.KineticParticleCanvas
+    ),
+  { ssr: false }
+);
+
 export interface HomeTheaterControllerProps {
   initialData: InitialHomeData;
 }
@@ -172,6 +180,9 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
 
       {/* High-Performance 60FPS Disappearing Ink Doodle Canvas */}
       <InteractiveDoodleCanvas />
+
+      {/* Zero-DOM Pooled 2D Canvas Particle Engine (Phase 6) */}
+      <KineticParticleCanvas />
 
       {/* Dot Grid Sketchpad Canvas */}
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>

@@ -16,7 +16,7 @@ const STAGE_ITEMS: StageItem[] = [
   { id: "stage-04", label: "Contact" },
 ];
 
-export function TheaterStageIndicator({
+export const TheaterStageIndicator = React.memo(function TheaterStageIndicator({
   activeStage,
   scrollToStage,
 }: TheaterStageIndicatorProps) {
@@ -45,4 +45,4 @@ export function TheaterStageIndicator({
       })}
     </aside>
   );
-}
+});

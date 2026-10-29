@@ -8,7 +8,7 @@ import { soundFX } from "@/utils/soundFX";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
 import type { ContactSectionProps } from "./types";
 
-export function ContactSection({ content }: ContactSectionProps) {
+export const ContactSection = React.memo(function ContactSection({ content }: ContactSectionProps) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -305,4 +305,4 @@ export function ContactSection({ content }: ContactSectionProps) {
       </div>
     </div>
   );
-}
+});

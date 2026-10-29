@@ -10,7 +10,7 @@ import { MagneticButton } from "@/components/cinematic/MagneticButton";
 import { useDoodleStore } from "@/store/useDoodleStore";
 import type { StudioHeaderProps } from "./types";
 
-export function StudioHeader({
+export const StudioHeader = React.memo(function StudioHeader({
   activeStage,
   scrollToStage,
   onInkBurst,
@@ -201,4 +201,4 @@ export function StudioHeader({
       </div>
     </header>
   );
-}
+});
