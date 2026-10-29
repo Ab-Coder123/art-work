@@ -271,7 +271,7 @@ function ManifestoContent({
   companies = DEFAULT_COMPANIES,
 }: ManifestoContentProps) {
   return (
-    <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
       {/* 2-Column Responsive Hero Grid (Level & Aligned with Studio Canvas) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7 items-start">
         {/* Left Column: Headline, Paragraph, Actions, Metrics & Badges */}
@@ -403,7 +403,7 @@ function ManifestoContent({
    ========================================================================= */
 function WhyUsContent({ content = DEFAULT_WHY_US_CONTENT }: { content?: typeof DEFAULT_WHY_US_CONTENT }) {
   return (
-    <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 mb-2.5 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1">
@@ -641,8 +641,8 @@ function GalleryShowcaseContent() {
               <div className="lg:col-span-5 flex flex-col justify-between space-y-3">
                 <div>
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
-                      {primary.stamp}
+                    <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm font-mono">
+                      {primary.year || 2026}
                     </span>
                     {primary.metaBadge && (
                       <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
@@ -719,8 +719,8 @@ function GalleryShowcaseContent() {
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <span className="absolute top-2 left-2 bg-yellow-400 text-black text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm">
-                      {p.stamp}
+                    <span className="absolute top-2 left-2 bg-yellow-400 text-black text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm font-mono">
+                      {p.year || 2026}
                     </span>
                     {p.metaBadge && (
                       <span className="absolute top-2 right-2 bg-black/80 backdrop-blur-sm text-white text-[9px] sm:text-[10px] font-mono font-bold px-2 py-0.5 rounded">
@@ -861,7 +861,7 @@ function ContactContent({ content }: { content: ContactSectionContent }) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
+    <div className="w-full max-w-7xl mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
       <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-3.5 sm:p-4 lg:p-5 comic-shadow relative mt-1.5">
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border-2 border-black px-4 py-1 font-headline font-black text-[10px] sm:text-xs uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           {content.stageTag}
@@ -1727,12 +1727,12 @@ export default function Home() {
       {/* =========================================================================
           MOBILE RESPONSIVE SEQUENTIAL FLOW (Natural Unhindered Scrolling)
           ========================================================================= */}
-      <div className="block md:hidden w-full relative z-10 pt-28">
+      <div className="block md:hidden w-full relative z-10 pt-36 sm:pt-40">
         {/* Stage 01 Mobile */}
         <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
           <section
             id="stage-01-mobile"
-            className="w-full min-h-[calc(100vh-7rem)] py-6 px-4 flex flex-col justify-center"
+            className="w-full min-h-[calc(100vh-8rem)] py-8 px-4 flex flex-col justify-center"
           >
             <ManifestoContent
               content={heroContent}
@@ -1800,7 +1800,7 @@ export default function Home() {
         {/* STICKY FIXED VIEWPORT THEATER (Generous spacing below fixed navbar for 15-inch displays) */}
         <div
           ref={theaterRef}
-          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[74px] sm:pt-[80px] pb-2"
+          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[92px] sm:pt-[102px] lg:pt-[110px] pb-2"
         >
           {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
           <aside className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
@@ -1881,7 +1881,7 @@ export default function Home() {
             ref={mainContainerRef}
             data-lenis-prevent="true"
             style={{ overscrollBehaviorY: "contain" }}
-            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-1 sm:pt-2 pb-6 no-scrollbar"
+            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-6 no-scrollbar"
           >
             <AnimatePresence mode="wait">
               {activeStage === "stage-01" && (

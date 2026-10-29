@@ -433,12 +433,14 @@ export default function GalleryPage() {
                   className="relative bg-white dark:bg-[#14141c] rounded-2xl p-5 sm:p-6 border border-black/[0.06] dark:border-white/[0.08] hover:border-black/15 dark:hover:border-yellow-400/30 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.08),0_4px_12px_-2px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.16),0_8px_16px_-4px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.7),0_2px_8px_-1px_rgba(0,0,0,0.4)] dark:hover:shadow-[0_24px_54px_-8px_rgba(0,0,0,0.9),0_0_28px_-4px_rgba(234,179,8,0.14)] group hover:-translate-y-1.5 transition-all duration-300 ease-out flex flex-col justify-between cursor-pointer select-none"
                 >
                   <div>
-                    {/* Header Stamp Info */}
+                    {/* Header Info */}
                     <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-black/5 dark:border-white/5 font-mono text-[11px] text-black/60 dark:text-zinc-400">
-                      <span className="font-bold text-black dark:text-yellow-400 bg-yellow-400/20 dark:bg-yellow-400/10 px-2.5 py-0.5 rounded-full text-[10px] tracking-wider uppercase">
-                        {project.stamp}
+                      <span className="font-bold text-black dark:text-yellow-400 bg-yellow-400/20 dark:bg-yellow-400/10 px-2.5 py-0.5 rounded-full text-[10px] tracking-wider font-mono">
+                        {project.year || 2026}
                       </span>
-                      <span className="font-semibold text-xs tracking-wider">{project.metaBadge}</span>
+                      {project.metaBadge && (
+                        <span className="font-semibold text-xs tracking-wider">{project.metaBadge}</span>
+                      )}
                     </div>
 
                     {/* Hand-inked framed image */}
@@ -450,9 +452,6 @@ export default function GalleryPage() {
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                       />
-                      <div className="absolute bottom-2.5 left-2.5 bg-black/80 backdrop-blur-sm text-white font-mono text-[10px] px-2.5 py-0.5 rounded-md border border-white/10">
-                        {project.cadId}
-                      </div>
 
                       {ytMedia ? (
                         <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-red-600/90 backdrop-blur-sm text-white font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
@@ -732,9 +731,13 @@ export default function GalleryPage() {
               </button>
 
               <div className="inline-flex items-center gap-2 bg-yellow-400 text-black px-3 py-1 border-2 border-black font-mono text-xs font-black uppercase mb-3">
-                <span>{selectedProject.stamp}</span>
-                <span>•</span>
-                <span>{selectedProject.metaBadge}</span>
+                <span>{selectedProject.year || 2026}</span>
+                {selectedProject.metaBadge && (
+                  <>
+                    <span>•</span>
+                    <span>{selectedProject.metaBadge}</span>
+                  </>
+                )}
               </div>
 
               <h2 className="text-2xl font-black font-headline uppercase text-black dark:text-white mb-2">

@@ -39,20 +39,21 @@ const INITIAL_PROJECTS: ProjectRecord[] = [
   {
     id: "rameda-event",
     title: "Rameda Event",
-    stamp: "EVENT_PASS: RAMEDA_01",
+    stamp: "2026",
     metaBadge: "ANNUAL GATHERING",
-    cadId: "PROD_ID: RAMEDA_EVENT",
+    cadId: "",
     image: "/assets/images/gallery/rameda_event.jpg",
     altText: "Rameda Annual Company Gathering & Event Production",
     category: "conferences",
+    year: 2026,
     tags: [
       "Corporate Gathering",
       "Annual Event",
       "Stage & Production",
       "Event Management",
     ],
-    stats: "✨ 1,000+ Guests",
-    statsSub: "Annual Gathering • 100% Custom Stage",
+    stats: "",
+    statsSub: "",
     description:
       "Relive the highlights of Rameda’s Annual Company Gathering, bringing together our amazing team for a special day of celebration, connection, and shared achievements.",
     client: "Rameda Pharmaceuticals",
@@ -75,20 +76,21 @@ const INITIAL_PROJECTS: ProjectRecord[] = [
   {
     id: "nova-medtech-booth",
     title: "Nova MedTech Custom Pavilion",
-    stamp: "BOOTH_PASS: MED_EXPO_25",
+    stamp: "2025",
     metaBadge: "36M² CUSTOM BUILD",
-    cadId: "CAD_ID: BOOTH_NOVA_V3",
+    cadId: "",
     image: "/assets/images/gallery/project_06_sensory_expo.jpg",
     altText: "Nova MedTech Custom Exhibition Booth & Pavilion Fabrication",
     category: "booths",
+    year: 2025,
     tags: [
       "Exhibition Booth",
       "Custom Fabrication",
       "3D Spatial Design",
       "On-Site Build",
     ],
-    stats: "🏛️ 36m² Island Stand",
-    statsSub: "Custom CNC Woodwork • Integrated LED Kiosks",
+    stats: "",
+    statsSub: "",
     description:
       "Turnkey custom exhibition booth featuring architectural archways, integrated interactive touchscreens, and bespoke backlit brand displays for medical expo showcase.",
     client: "Nova MedTech Innovations",
@@ -116,20 +118,21 @@ const INITIAL_PROJECTS: ProjectRecord[] = [
   {
     id: "pharmapack-expo-booth",
     title: "Pharmapack Discovery Stand",
-    stamp: "BOOTH_PASS: PHARMA_02",
+    stamp: "2025",
     metaBadge: "54M² ISLAND BOOTH",
-    cadId: "CAD_ID: BOOTH_PHARMA_V2",
+    cadId: "",
     image: "/assets/images/gallery/project_03_cybertruss.jpg",
     altText: "Pharmapack Discovery Stand Exhibition Booth Design & Build",
     category: "booths",
+    year: 2025,
     tags: [
       "Exhibition Booth",
       "Modular Truss",
       "Brand Experience",
       "Turnkey Production",
     ],
-    stats: "📐 54m² Double-Frontage",
-    statsSub: "Modular Aluminum Core • Ambient Edge Lighting",
+    stats: "",
+    statsSub: "",
     description:
       "High-impact exhibition stand engineered for maximum visitor engagement, featuring private meeting lounges, elevated branding banners, and seamless logistics.",
     client: "Pharmapack Regional Group",
@@ -578,15 +581,16 @@ export default function GalleryProjectsManager() {
                 id: newId,
                 slug: newId,
                 title: "New Architectural Stage",
-                stamp: "STAMP_PASS: NEW_01",
+                stamp: "2026",
                 metaBadge: "2026",
-                cadId: "CAD_ID: STAGE_NEW",
+                cadId: "",
                 image: "/assets/images/gallery/project_01_neon_horizon.jpg",
                 altText: "New Stage Scenography",
                 category: "stage",
+                year: new Date().getFullYear(),
                 tags: ["Stage Design", "Creative Direction"],
-                stats: "⚡ 50,000 Fans",
-                statsSub: "Custom Arena Rig",
+                stats: "",
+                statsSub: "",
                 description:
                   "Describe the spatial scenography, lighting cues, and creative execution.",
                 client: "Live Entertainment Global",
@@ -710,11 +714,9 @@ export default function GalleryProjectsManager() {
                       <span className="text-[10px] font-mono uppercase bg-yellow-400/10 text-yellow-400 px-1.5 py-0.5 rounded border border-yellow-400/20">
                         {project.category}
                       </span>
-                      {project.stamp && (
-                        <span className="text-[10px] font-mono uppercase bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded border border-zinc-700">
-                          {project.stamp}
-                        </span>
-                      )}
+                      <span className="text-[10px] font-mono uppercase bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded border border-zinc-700">
+                        {project.year || 2026}
+                      </span>
                       {project.metaBadge && (
                         <span className="text-[10px] font-mono uppercase bg-yellow-400/20 text-yellow-300 px-1.5 py-0.5 rounded border border-yellow-400/30">
                           {project.metaBadge}
@@ -729,8 +731,6 @@ export default function GalleryProjectsManager() {
                     </div>
                     <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-400 font-mono">
                       <span>{project.client}</span>
-                      <span>•</span>
-                      <span>{project.stats}</span>
                       {project.youtubeTitle && (
                         <>
                           <span>•</span>
@@ -898,8 +898,8 @@ export default function GalleryProjectsManager() {
                   </div>
                 </div>
 
-                {/* 2. Category, Stamp Pass, Meta Badge, and CAD ID */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* 2. Category, Year, and Meta Badge */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-zinc-400 mb-1">Category</label>
                     <select
@@ -910,13 +910,6 @@ export default function GalleryProjectsManager() {
                         setEditingProject({
                           ...editingProject,
                           category: newCat,
-                          stamp:
-                            isNowBooth &&
-                            (!editingProject.stamp ||
-                              editingProject.stamp.includes("STAGE") ||
-                              editingProject.stamp.includes("EVENT"))
-                              ? "BOOTH_PASS: EXPO_25"
-                              : editingProject.stamp,
                           metaBadge:
                             isNowBooth &&
                             (!editingProject.metaBadge ||
@@ -924,27 +917,6 @@ export default function GalleryProjectsManager() {
                               editingProject.metaBadge.includes("GATHERING"))
                               ? "36M² CUSTOM BUILD"
                               : editingProject.metaBadge,
-                          cadId:
-                            isNowBooth &&
-                            (!editingProject.cadId ||
-                              editingProject.cadId.includes("STAGE") ||
-                              editingProject.cadId.includes("EVENT"))
-                              ? "CAD_ID: BOOTH_V2"
-                              : editingProject.cadId,
-                          stats:
-                            isNowBooth &&
-                            (!editingProject.stats ||
-                              editingProject.stats.includes("Fans") ||
-                              editingProject.stats.includes("Guests"))
-                              ? "🏛️ 36m² Island Stand"
-                              : editingProject.stats,
-                          statsSub:
-                            isNowBooth &&
-                            (!editingProject.statsSub ||
-                              editingProject.statsSub.includes("Rig") ||
-                              editingProject.statsSub.includes("Stage"))
-                              ? "Custom CNC Woodwork • Integrated LED Kiosks"
-                              : editingProject.statsSub,
                           image:
                             isNowBooth &&
                             (!editingProject.image ||
@@ -966,16 +938,24 @@ export default function GalleryProjectsManager() {
 
                   <div>
                     <label className="block text-zinc-400 mb-1">
-                      {editingProject.category === "booths" ? "Exhibition / Stamp Pass" : "Stamp Pass (Left Badge)"}
+                      Year / التاريخ السنوي
                     </label>
                     <input
-                      type="text"
-                      placeholder={editingProject.category === "booths" ? "BOOTH_PASS: MED_EXPO_25" : "EVENT_PASS: RAMEDA_01"}
-                      value={editingProject.stamp}
-                      onChange={(e) =>
-                        setEditingProject({ ...editingProject, stamp: e.target.value })
-                      }
-                      className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
+                      type="number"
+                      min="2000"
+                      max="2099"
+                      placeholder="2026"
+                      value={editingProject.year || 2026}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        const updatedYear = isNaN(val) ? 2026 : val;
+                        setEditingProject({
+                          ...editingProject,
+                          year: updatedYear,
+                          stamp: String(updatedYear),
+                        });
+                      }}
+                      className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-mono"
                     />
                   </div>
 
@@ -989,54 +969,6 @@ export default function GalleryProjectsManager() {
                       value={editingProject.metaBadge ?? ""}
                       onChange={(e) =>
                         setEditingProject({ ...editingProject, metaBadge: e.target.value })
-                      }
-                      className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-zinc-400 mb-1">
-                      {editingProject.category === "booths" ? "CAD / Blueprint ID" : "CAD Blueprint ID"}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder={editingProject.category === "booths" ? "CAD_ID: BOOTH_NOVA_V3" : "CAD_ID: STAGE_01"}
-                      value={editingProject.cadId}
-                      onChange={(e) =>
-                        setEditingProject({ ...editingProject, cadId: e.target.value })
-                      }
-                      className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
-                    />
-                  </div>
-                </div>
-
-                {/* 3. Stats & Metrics */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-zinc-400 mb-1">
-                      {editingProject.category === "booths" ? "Booth Footprint / Area Metric" : "Primary Stat"}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder={editingProject.category === "booths" ? "e.g. 🏛️ 36m² Island Stand" : "e.g. ⚡ 52,000 Fans / Night"}
-                      value={editingProject.stats}
-                      onChange={(e) =>
-                        setEditingProject({ ...editingProject, stats: e.target.value })
-                      }
-                      className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-zinc-400 mb-1">
-                      {editingProject.category === "booths" ? "Fabrication & Finish Highlight" : "Supporting Metric"}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder={editingProject.category === "booths" ? "e.g. Custom CNC Woodwork • Integrated LED Kiosks" : "e.g. 0.0s DMX Latency"}
-                      value={editingProject.statsSub}
-                      onChange={(e) =>
-                        setEditingProject({ ...editingProject, statsSub: e.target.value })
                       }
                       className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
                     />
