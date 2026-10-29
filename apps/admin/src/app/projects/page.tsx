@@ -1065,6 +1065,59 @@ export default function GalleryProjectsManager() {
                   />
                 </div>
 
+                {/* 4.5. Tags & Filter Keywords */}
+                <div>
+                  <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
+                    <label className="block text-zinc-400">
+                      Project Tags / Chips (Separated by commas)
+                    </label>
+                    <span className="text-[10px] text-zinc-500 font-mono">
+                      First tag is highlighted in yellow as primary
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="e.g. Corporate Gathering, Annual Event, Stage & Production, Event Management"
+                    value={
+                      Array.isArray(editingProject.tags)
+                        ? editingProject.tags.join(", ")
+                        : typeof editingProject.tags === "string"
+                        ? editingProject.tags
+                        : ""
+                    }
+                    onChange={(e) => {
+                      const tagsArray = e.target.value
+                        .split(",")
+                        .map((t) => t.trimStart());
+                      setEditingProject({ ...editingProject, tags: tagsArray });
+                    }}
+                    onBlur={(e) => {
+                      const cleanTags = e.target.value
+                        .split(",")
+                        .map((t) => t.trim())
+                        .filter(Boolean);
+                      setEditingProject({ ...editingProject, tags: cleanTags });
+                    }}
+                    className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-mono text-xs"
+                  />
+                  {Array.isArray(editingProject.tags) && editingProject.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {editingProject.tags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full border ${
+                            idx === 0
+                              ? "bg-yellow-400/20 text-yellow-300 border-yellow-400/40"
+                              : "bg-zinc-800 text-zinc-400 border-zinc-700"
+                          }`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 {/* 5. MEDIA ENGINE: DYNAMIC BASED ON BOOTH VS STANDARD */}
                 {editingProject.category === "booths" ? (
                   <div className="space-y-4">

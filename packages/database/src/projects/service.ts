@@ -180,6 +180,8 @@ export function normalizeProjectInput(
     description: String(rawInput.description ?? existing?.description ?? "").trim(),
     tags: Array.isArray(rawInput.tags)
       ? rawInput.tags.map((t) => String(t).trim()).filter(Boolean)
+      : typeof rawInput.tags === "string"
+      ? (rawInput.tags as string).split(",").map((t) => t.trim()).filter(Boolean)
       : existing?.tags ?? [],
     stamp: String(rawInput.stamp ?? existing?.stamp ?? "STAMP_PASS: 2026").trim(),
     meta_badge: String(
