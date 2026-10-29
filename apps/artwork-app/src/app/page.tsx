@@ -567,7 +567,7 @@ function GalleryShowcaseContent() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch("/api/projects?limit=6");
+        const res = await fetch("/api/projects?limit=6", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (mounted && Array.isArray(data.items) && data.items.length > 0) {
@@ -644,6 +644,11 @@ function GalleryShowcaseContent() {
                     <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
                       {primary.stamp}
                     </span>
+                    {primary.metaBadge && (
+                      <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
+                        {primary.metaBadge}
+                      </span>
+                    )}
                     <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
                       ★ FEATURED EVENT
                     </span>
@@ -728,6 +733,11 @@ function GalleryShowcaseContent() {
                     <span className="absolute top-2 left-2 bg-yellow-400 text-black text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm">
                       {p.stamp}
                     </span>
+                    {p.metaBadge && (
+                      <span className="absolute top-2 right-2 bg-black/80 backdrop-blur-sm text-white text-[9px] sm:text-[10px] font-mono font-bold px-2 py-0.5 rounded">
+                        {p.metaBadge}
+                      </span>
+                    )}
                     {ytEmbed && (
                       <span className="absolute bottom-2 right-2 bg-red-600 text-white text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm">
                         {ytEmbed.isShort ? "▶ 9:16 REEL" : "▶ VIDEO"}

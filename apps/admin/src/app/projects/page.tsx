@@ -685,9 +685,21 @@ export default function GalleryProjectsManager() {
                   </div>
 
                   <div className="w-16 h-12 rounded-xl bg-black/40 border border-[#2b2b3d] overflow-hidden relative shrink-0">
-                    <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-400">
-                      IMG
-                    </div>
+                    {project.image ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-400">
+                        IMG
+                      </div>
+                    )}
                   </div>
 
                   <div>
@@ -698,6 +710,16 @@ export default function GalleryProjectsManager() {
                       <span className="text-[10px] font-mono uppercase bg-yellow-400/10 text-yellow-400 px-1.5 py-0.5 rounded border border-yellow-400/20">
                         {project.category}
                       </span>
+                      {project.stamp && (
+                        <span className="text-[10px] font-mono uppercase bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded border border-zinc-700">
+                          {project.stamp}
+                        </span>
+                      )}
+                      {project.metaBadge && (
+                        <span className="text-[10px] font-mono uppercase bg-yellow-400/20 text-yellow-300 px-1.5 py-0.5 rounded border border-yellow-400/30">
+                          {project.metaBadge}
+                        </span>
+                      )}
                       {(project.youtubeVideoId || project.youtubeUrl) && (
                         <span className="inline-flex items-center gap-1 text-[10px] font-mono text-red-400 bg-red-500/10 border border-red-500/30 px-1.5 py-0.5 rounded">
                           <YouTubeIcon className="w-3 h-3 text-red-500" />
@@ -876,8 +898,8 @@ export default function GalleryProjectsManager() {
                   </div>
                 </div>
 
-                {/* 2. Category, Stamp Pass, and CAD ID */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* 2. Category, Stamp Pass, Meta Badge, and CAD ID */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
                     <label className="block text-zinc-400 mb-1">Category</label>
                     <select
@@ -895,6 +917,13 @@ export default function GalleryProjectsManager() {
                               editingProject.stamp.includes("EVENT"))
                               ? "BOOTH_PASS: EXPO_25"
                               : editingProject.stamp,
+                          metaBadge:
+                            isNowBooth &&
+                            (!editingProject.metaBadge ||
+                              editingProject.metaBadge.includes("2026") ||
+                              editingProject.metaBadge.includes("GATHERING"))
+                              ? "36M² CUSTOM BUILD"
+                              : editingProject.metaBadge,
                           cadId:
                             isNowBooth &&
                             (!editingProject.cadId ||
@@ -937,14 +966,29 @@ export default function GalleryProjectsManager() {
 
                   <div>
                     <label className="block text-zinc-400 mb-1">
-                      {editingProject.category === "booths" ? "Exhibition / Stamp Pass" : "Stamp Pass Label"}
+                      {editingProject.category === "booths" ? "Exhibition / Stamp Pass" : "Stamp Pass (Left Badge)"}
                     </label>
                     <input
                       type="text"
-                      placeholder={editingProject.category === "booths" ? "BOOTH_PASS: MED_EXPO_25" : "STAMP_PASS: ARENA_01"}
+                      placeholder={editingProject.category === "booths" ? "BOOTH_PASS: MED_EXPO_25" : "EVENT_PASS: RAMEDA_01"}
                       value={editingProject.stamp}
                       onChange={(e) =>
                         setEditingProject({ ...editingProject, stamp: e.target.value })
+                      }
+                      className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-zinc-400 mb-1">
+                      {editingProject.category === "booths" ? "Footprint Badge" : "Tagline / Badge (Right)"}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder={editingProject.category === "booths" ? "36M² CUSTOM BUILD" : "ANNUAL GATHERING"}
+                      value={editingProject.metaBadge ?? ""}
+                      onChange={(e) =>
+                        setEditingProject({ ...editingProject, metaBadge: e.target.value })
                       }
                       className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
                     />

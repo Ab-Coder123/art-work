@@ -66,7 +66,7 @@ export default function GalleryPage() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch("/api/projects?limit=24");
+        const res = await fetch("/api/projects?limit=24", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (mounted && Array.isArray(data.items) && data.items.length > 0) {

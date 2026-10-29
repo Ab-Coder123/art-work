@@ -43,7 +43,7 @@ export function buildContentSecurityPolicy(options: SecurityHeaderOptions = {}):
       "https://vitals.vercel-insights.com",
       "https://va.vercel-scripts.com",
     ],
-    "media-src": ["'self'", "blob:", "https://*.supabase.co"],
+    "media-src": ["'self'", "data:", "blob:", "https://*.supabase.co"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],

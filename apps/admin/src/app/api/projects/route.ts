@@ -67,5 +67,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: result.error }, { status: result.status });
   }
 
+  // Trigger on-demand ISR revalidation on the public website (fire-and-forget)
+  const publicAppUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.PUBLIC_APP_URL ||
+    "https://artwork-agency.vercel.app";
+  const revalidateSecret = process.env.REVALIDATION_SECRET;
+  if (revalidateSecret) {
+    fetch(`${publicAppUrl}/api/revalidate`, {
+      method: "POST",
+      headers: {
+        "x-revalidate-secret": revalidateSecret,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tag: "projects", path: "/gallery" }),
+    }).catch(() => {});
+  }
+
   return NextResponse.json({ project: result.data }, { status: 201 });
 }
