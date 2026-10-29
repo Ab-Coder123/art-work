@@ -621,11 +621,11 @@ function GalleryShowcaseContent() {
         if (!yt) return null;
 
         return (
-          <div className="mb-4 sm:mb-5 p-4 sm:p-6 rounded-2xl border border-black/10 dark:border-zinc-800 bg-white dark:bg-[#151520] shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
+          <div className="mb-4 sm:mb-5 p-4 sm:p-6 rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-[#151520] shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_4px_12px_-2px_rgba(0,0,0,0.03)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.6)]">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
               {/* Responsive Embedded YouTube Player */}
               <div className="lg:col-span-7">
-                <div className="relative aspect-video rounded-xl overflow-hidden border-2 border-black bg-black comic-shadow-sm">
+                <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-[0_4px_16px_rgba(0,0,0,0.2)]">
                   <iframe
                     src={yt.embedUrl}
                     title={primary.youtubeTitle || primary.title}
@@ -708,10 +708,10 @@ function GalleryShowcaseContent() {
               <Link
                 key={p.id}
                 href="/gallery"
-                className="group border border-black/10 dark:border-zinc-800 p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#151520] shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.6)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+                className="group border border-black/[0.06] dark:border-white/[0.08] hover:border-black/15 dark:hover:border-yellow-400/30 p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#151520] shadow-[0_10px_30px_-5px_rgba(0,0,0,0.08),0_4px_12px_-2px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.16),0_8px_16px_-4px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.7),0_2px_8px_-1px_rgba(0,0,0,0.4)] dark:hover:shadow-[0_24px_54px_-8px_rgba(0,0,0,0.9),0_0_28px_-4px_rgba(234,179,8,0.14)] hover:-translate-y-1.5 transition-all duration-300 ease-out flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative aspect-video rounded-lg overflow-hidden border border-black mb-2.5 bg-black">
+                  <div className="relative aspect-video rounded-lg overflow-hidden mb-2.5 bg-black shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
                     <Image
                       src={cardThumb}
                       alt={p.title}

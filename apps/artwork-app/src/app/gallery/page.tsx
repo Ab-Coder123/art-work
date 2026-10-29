@@ -430,7 +430,7 @@ export default function GalleryPage() {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   onClick={() => handleInspectClick(project)}
-                  className="relative bg-white dark:bg-[#14141c] rounded-2xl p-5 sm:p-6 border border-black/10 dark:border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.12)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] dark:hover:shadow-[0_16px_36px_rgba(0,0,0,0.6)] group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-pointer select-none"
+                  className="relative bg-white dark:bg-[#14141c] rounded-2xl p-5 sm:p-6 border border-black/[0.06] dark:border-white/[0.08] hover:border-black/15 dark:hover:border-yellow-400/30 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.08),0_4px_12px_-2px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.16),0_8px_16px_-4px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.7),0_2px_8px_-1px_rgba(0,0,0,0.4)] dark:hover:shadow-[0_24px_54px_-8px_rgba(0,0,0,0.9),0_0_28px_-4px_rgba(234,179,8,0.14)] group hover:-translate-y-1.5 transition-all duration-300 ease-out flex flex-col justify-between cursor-pointer select-none"
                 >
                   <div>
                     {/* Header Stamp Info */}
@@ -442,7 +442,7 @@ export default function GalleryPage() {
                     </div>
 
                     {/* Hand-inked framed image */}
-                    <div className="relative overflow-hidden rounded-xl mb-4 bg-neutral-100 dark:bg-zinc-800 aspect-[16/10]">
+                    <div className="relative overflow-hidden rounded-xl mb-4 bg-neutral-100 dark:bg-zinc-800 aspect-[16/10] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                       <Image
                         src={getProjectThumbnailUrl(project)}
                         alt={project.altText || project.title}
@@ -488,7 +488,7 @@ export default function GalleryPage() {
                       e.stopPropagation();
                       handleInspectClick(project);
                     }}
-                    className="w-full py-2.5 px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs uppercase rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow active:scale-95 mt-2"
+                    className="w-full py-2.5 px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs uppercase rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-[0_2px_10px_rgba(234,179,8,0.25)] hover:shadow-[0_4px_16px_rgba(234,179,8,0.4)] active:scale-95 mt-2"
                   >
                     {ytMedia ? (
                       <>
