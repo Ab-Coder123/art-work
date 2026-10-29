@@ -511,6 +511,14 @@ export default function GalleryProjectsManager() {
 
     const exists = !isCreatingNew && projects.some((p) => p.id === editingProject.id);
 
+    const projectToSave: ProjectRecord = {
+      ...editingProject,
+      stamp: editingProject.stamp || String(editingProject.year || 2026),
+      cadId: editingProject.cadId || "CAD-REV-01",
+      stats: editingProject.stats || "",
+      statsSub: editingProject.statsSub || "",
+    };
+
     try {
       const endpoint = exists
         ? `/api/projects/${encodeURIComponent(editingProject.id)}`
@@ -522,12 +530,12 @@ export default function GalleryProjectsManager() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(editingProject),
+        body: JSON.stringify(projectToSave),
       });
 
       if (res.ok) {
         const data = await res.json();
-        const saved: ProjectRecord = data.project || editingProject;
+        const saved: ProjectRecord = data.project || projectToSave;
         setProjects((prev) =>
           exists
             ? prev.map((p) => (p.id === editingProject.id ? saved : p))

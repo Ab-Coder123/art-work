@@ -183,11 +183,20 @@ export function normalizeProjectInput(
       : typeof rawInput.tags === "string"
       ? (rawInput.tags as string).split(",").map((t) => t.trim()).filter(Boolean)
       : existing?.tags ?? [],
-    stamp: String(rawInput.stamp ?? existing?.stamp ?? "STAMP_PASS: 2026").trim(),
-    meta_badge: String(
-      rawInput.meta_badge ?? rawInput.metaBadge ?? existing?.meta_badge ?? "EDITION 2026"
+    stamp: String(
+      (rawInput.stamp && String(rawInput.stamp).trim()) ||
+        (existing?.stamp && String(existing.stamp).trim()) ||
+        String(rawInput.year || existing?.year || 2026)
     ).trim(),
-    cad_id: String(rawInput.cad_id ?? rawInput.cadId ?? existing?.cad_id ?? "CAD_ID: REV_01").trim(),
+    meta_badge: String(
+      rawInput.meta_badge ?? rawInput.metaBadge ?? existing?.meta_badge ?? ""
+    ).trim(),
+    cad_id: String(
+      (rawInput.cad_id && String(rawInput.cad_id).trim()) ||
+        (rawInput.cadId && String(rawInput.cadId).trim()) ||
+        (existing?.cad_id && String(existing.cad_id).trim()) ||
+        "CAD-REV-01"
+    ).trim(),
     cover_image_url: String(
       rawInput.cover_image_url ??
         rawInput.image ??
@@ -201,10 +210,10 @@ export function normalizeProjectInput(
         (title || "Project Showcase")
     ).trim(),
     stats_primary: String(
-      rawInput.stats_primary ?? rawInput.stats ?? existing?.stats_primary ?? "⚡ LIVE ARENA"
+      rawInput.stats_primary ?? rawInput.stats ?? existing?.stats_primary ?? ""
     ).trim(),
     stats_secondary: String(
-      rawInput.stats_secondary ?? rawInput.statsSub ?? existing?.stats_secondary ?? "100% Custom Rig"
+      rawInput.stats_secondary ?? rawInput.statsSub ?? existing?.stats_secondary ?? ""
     ).trim(),
     specs: Array.isArray(rawInput.specs)
       ? rawInput.specs.map((s) => String(s).trim()).filter(Boolean)
