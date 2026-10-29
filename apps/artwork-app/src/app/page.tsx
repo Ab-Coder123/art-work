@@ -274,26 +274,8 @@ function ManifestoContent({
     <div className="w-full max-w-7xl mx-auto pt-1 pb-4 flex flex-col justify-start">
       {/* 2-Column Responsive Hero Grid (Level & Aligned with Studio Canvas) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7 items-start">
-        {/* Left Column: Badges, Headline, Paragraph, Actions & Metrics */}
+        {/* Left Column: Headline, Paragraph, Actions, Metrics & Badges */}
         <div className="lg:col-span-6 flex flex-col justify-start">
-          {/* Top Floating Badges (Level & Even Alignment) */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2.5 sm:mb-3">
-            <motion.div
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.1 }}
-              className="relative bg-white dark:bg-[#151520] border-2 border-black dark:border-zinc-700 px-3 py-1 rounded-lg shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 text-[11px] sm:text-xs font-bold tracking-tight text-black dark:text-zinc-200"
-            >
-              <div className="washi-tape"></div>
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
-              <span>PERFORMANCE MARKETING</span>
-            </motion.div>
-
-            <div className="inline-flex items-center gap-1.5 border-2 border-black bg-yellow-400 text-black px-3.5 py-1 rounded-lg comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
-              <span>{content.announcementBadge}</span>
-            </div>
-          </div>
-
           {/* Hero Typography Section */}
           <div className="relative mb-2 sm:mb-2.5 max-w-xl">
             <h1 className="font-headline font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] xl:text-[46px] tracking-tight leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
@@ -367,6 +349,23 @@ function ManifestoContent({
                   </div>
                 </motion.div>
               ))}
+            </div>
+
+            {/* Bottom Floating Badges (Positioned cleanly at bottom of Hero) */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-2">
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.15 }}
+                className="relative bg-white dark:bg-[#151520] border border-black/15 dark:border-zinc-700 px-3 py-1 rounded-lg shadow-sm flex items-center gap-1.5 text-[11px] sm:text-xs font-bold tracking-tight text-black dark:text-zinc-200"
+              >
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
+                <span>PERFORMANCE MARKETING</span>
+              </motion.div>
+
+              <div className="inline-flex items-center gap-1.5 border border-black/20 bg-yellow-400 text-black px-3.5 py-1 rounded-lg shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
+                <span>{content.announcementBadge}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -622,7 +621,7 @@ function GalleryShowcaseContent() {
         if (!yt) return null;
 
         return (
-          <div className="mb-4 sm:mb-5 p-4 sm:p-6 rounded-2xl border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] comic-shadow">
+          <div className="mb-4 sm:mb-5 p-4 sm:p-6 rounded-2xl border border-black/10 dark:border-zinc-800 bg-white dark:bg-[#151520] shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
               {/* Responsive Embedded YouTube Player */}
               <div className="lg:col-span-7">
@@ -715,7 +714,7 @@ function GalleryShowcaseContent() {
               <Link
                 key={p.id}
                 href="/gallery"
-                className="group border-2 border-black dark:border-zinc-700 p-3 sm:p-3.5 rounded-xl bg-white dark:bg-[#151520] comic-shadow hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all flex flex-col justify-between"
+                className="group border border-black/10 dark:border-zinc-800 p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#151520] shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.6)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   <div className="relative aspect-video rounded-lg overflow-hidden border border-black mb-2.5 bg-black">

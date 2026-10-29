@@ -414,7 +414,6 @@ export default function GalleryPage() {
           {/* Tactile Mounting Board Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects.map((project, index) => {
-              const tapeRot = index % 2 === 0 ? "-rotate-2" : "rotate-3";
               const ytMedia = resolveSafeYouTubeEmbed(
                 project.youtubeVideoId || project.youtubeUrl
               );
@@ -431,46 +430,32 @@ export default function GalleryPage() {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   onClick={() => handleInspectClick(project)}
-                  className="relative bg-white dark:bg-[#151520] rounded-xl p-5 border-[2.5px] border-black dark:border-zinc-700 comic-shadow group hover:-translate-y-1 transition-transform duration-200 flex flex-col justify-between cursor-pointer select-none"
+                  className="relative bg-white dark:bg-[#14141c] rounded-2xl p-5 sm:p-6 border border-black/10 dark:border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.12)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] dark:hover:shadow-[0_16px_36px_rgba(0,0,0,0.6)] group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-pointer select-none"
                 >
-                  {/* Angled Translucent Washi Masking Tape on Corner */}
-                  <div
-                    className={`washi-tape-yellow absolute -top-3 ${
-                      index % 2 === 0 ? "left-6" : "right-6"
-                    } w-24 h-5 ${tapeRot} z-20`}
-                  ></div>
-
                   <div>
                     {/* Header Stamp Info */}
-                    <div className="flex items-center justify-between pb-2.5 mb-3 border-b-2 border-dashed border-black/10 dark:border-zinc-800 font-mono text-[11px] text-black/70 dark:text-zinc-400">
-                      <span className="font-bold text-black bg-yellow-300 px-1.5 py-0.5 border border-black rounded-sm">
+                    <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-black/5 dark:border-white/5 font-mono text-[11px] text-black/60 dark:text-zinc-400">
+                      <span className="font-bold text-black dark:text-yellow-400 bg-yellow-400/20 dark:bg-yellow-400/10 px-2.5 py-0.5 rounded-full text-[10px] tracking-wider uppercase">
                         {project.stamp}
                       </span>
-                      <span>{project.metaBadge}</span>
+                      <span className="font-semibold text-xs tracking-wider">{project.metaBadge}</span>
                     </div>
 
                     {/* Hand-inked framed image */}
-                    <div className="relative overflow-hidden rounded-lg border-2 border-black dark:border-zinc-700 mb-4 bg-neutral-100 dark:bg-zinc-800 aspect-[16/10]">
+                    <div className="relative overflow-hidden rounded-xl mb-4 bg-neutral-100 dark:bg-zinc-800 aspect-[16/10]">
                       <Image
                         src={getProjectThumbnailUrl(project)}
                         alt={project.altText || project.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                       />
-                      <div className="absolute bottom-2 left-2 bg-black/90 text-white font-mono text-[10px] px-2 py-0.5 rounded border border-white/20">
+                      <div className="absolute bottom-2.5 left-2.5 bg-black/80 backdrop-blur-sm text-white font-mono text-[10px] px-2.5 py-0.5 rounded-md border border-white/10">
                         {project.cadId}
                       </div>
 
                       {ytMedia ? (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleInspectClick(project);
-                          }}
-                          className="absolute top-2 right-2 inline-flex items-center gap-1 bg-red-600 hover:bg-red-500 text-white font-headline font-black text-[10px] uppercase px-2 py-1 rounded border border-black comic-shadow-sm cursor-pointer"
-                        >
+                        <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-red-600/90 backdrop-blur-sm text-white font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
                           {project.isShort || ytMedia.isShort ? (
                             <>
                               <Smartphone className="w-3 h-3" />
@@ -482,66 +467,35 @@ export default function GalleryPage() {
                               <span>SHOWREEL</span>
                             </>
                           )}
-                        </button>
+                        </div>
                       ) : project.pdfUrl || project.category === "booths" ? (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleInspectClick(project);
-                          }}
-                          className="absolute top-2 right-2 inline-flex items-center gap-1 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-[10px] uppercase px-2 py-1 rounded border border-black comic-shadow-sm cursor-pointer"
-                        >
+                        <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-yellow-400/95 backdrop-blur-sm text-black font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
                           <FileText className="w-3 h-3" />
-                          <span>3D &amp; PDF BLUEPRINT</span>
-                        </button>
+                          <span>3D &amp; PDF</span>
+                        </div>
                       ) : null}
                     </div>
 
                     {/* Project Title */}
-                    <h3 className="text-lg sm:text-xl font-black font-headline uppercase tracking-tight text-black dark:text-white mb-2 group-hover:text-yellow-500 transition-colors">
+                    <h3 className="text-lg sm:text-xl font-black font-headline uppercase tracking-tight text-black dark:text-white mb-2.5 group-hover:text-yellow-500 transition-colors">
                       {project.title}
                     </h3>
 
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5 mb-3 font-headline text-[10px] font-bold uppercase">
+                    <div className="flex flex-wrap gap-1.5 mb-4 font-headline text-[10px] font-bold uppercase">
                       {project.tags.map((tag, i) => (
                         <span
                           key={i}
-                          className={`border px-2 py-0.5 rounded ${
+                          className={`px-2.5 py-0.5 rounded-full border transition-colors ${
                             i === 0
-                              ? "bg-yellow-200 border-black text-black font-extrabold"
-                              : "bg-neutral-100 dark:bg-zinc-800 border-black/30 dark:border-zinc-700 text-black/80 dark:text-zinc-300"
+                              ? "bg-yellow-400/20 border-yellow-400/40 text-black dark:text-yellow-300 font-extrabold"
+                              : "bg-neutral-100 dark:bg-zinc-800/80 border-black/10 dark:border-zinc-700 text-black/70 dark:text-zinc-300"
                           }`}
                         >
                           {tag}
                         </span>
                       ))}
                     </div>
-
-                    {/* YouTube Video / Reel Headline & Paragraph Callout */}
-                    {ytMedia && (project.youtubeTitle || project.youtubeDescription) && (
-                      <div className="mb-4 p-2.5 rounded-lg border-2 border-black dark:border-zinc-700 bg-neutral-50 dark:bg-[#111119] space-y-1">
-                        <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase text-red-600 dark:text-red-400">
-                          <Play className="w-3 h-3 fill-current" />
-                          <span>
-                            {project.isShort || ytMedia.isShort
-                              ? "YOUTUBE REEL / SHORT"
-                              : "YOUTUBE VIDEO SHOWCASE"}
-                          </span>
-                        </div>
-                        {project.youtubeTitle && (
-                          <h4 className="font-headline font-extrabold text-xs text-black dark:text-white leading-snug">
-                            {project.youtubeTitle}
-                          </h4>
-                        )}
-                        {project.youtubeDescription && (
-                          <p className="font-body text-[11px] text-black/75 dark:text-zinc-300 leading-relaxed line-clamp-2">
-                            {project.youtubeDescription}
-                          </p>
-                        )}
-                      </div>
-                    )}
                   </div>
 
                   {/* Action Button: Inspect Blueprint */}
@@ -550,21 +504,21 @@ export default function GalleryPage() {
                       e.stopPropagation();
                       handleInspectClick(project);
                     }}
-                    className="w-full py-2.5 px-4 bg-white dark:bg-[#1a1a26] hover:bg-yellow-400 dark:hover:bg-yellow-400 text-black dark:text-white dark:hover:text-black font-headline font-bold text-xs uppercase border-2 border-black dark:border-zinc-700 rounded comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+                    className="w-full py-2.5 px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs uppercase rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow active:scale-95 mt-2"
                   >
                     {ytMedia ? (
                       <>
                         <Play className="w-3.5 h-3.5 fill-current" />
                         <span>
                           {project.isShort || ytMedia.isShort
-                            ? "WATCH REEL & BLUEPRINT ↗"
-                            : "WATCH SHOWREEL & BLUEPRINT ↗"}
+                            ? "WATCH REEL ↗"
+                            : "WATCH SHOWREEL ↗"}
                         </span>
                       </>
                     ) : project.pdfUrl ? (
                       <>
                         <FileText className="w-3.5 h-3.5" />
-                        <span>VIEW 3D &amp; PDF BLUEPRINT ↗</span>
+                        <span>VIEW 3D &amp; PDF ↗</span>
                       </>
                     ) : (
                       <>
