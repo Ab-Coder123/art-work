@@ -72,8 +72,12 @@ describe("Art Work UI Polishing & System Reconfiguration Verification", () => {
     const homePage = path.join(artworkAppDir, "src/app/page.tsx");
     const whyUsPage = path.join(artworkAppDir, "src/app/why-us/page.tsx");
     const globalsCss = path.join(artworkAppDir, "src/app/globals.css");
+    const homeController = path.join(artworkAppDir, "src/components/home/HomeTheaterController.tsx");
 
-    const homeContent = fs.readFileSync(homePage, "utf-8");
+    let homeContent = fs.readFileSync(homePage, "utf-8");
+    if (fs.existsSync(homeController)) {
+      homeContent += "\n" + fs.readFileSync(homeController, "utf-8");
+    }
     const whyUsContent = fs.readFileSync(whyUsPage, "utf-8");
     const cssContent = fs.readFileSync(globalsCss, "utf-8");
 
