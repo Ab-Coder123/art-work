@@ -182,7 +182,7 @@ export default function GalleryPage() {
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>
 
       {/* ================= FIXED TOP HEADER ================= */}
-      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md border-b border-black/10 dark:border-white/10 transition-colors duration-200">
+      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md nav-shadow transition-colors duration-200">
         <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-2 sm:py-2.5">
           {/* Logo Anchor */}
           <Link

@@ -116,7 +116,7 @@ export default function WhyUsPage() {
       <InteractiveDoodleCanvas />
 
       {/* ================= TOP NAVIGATION ================= */}
-      <header className="fixed top-0 left-0 w-full z-50 bg-white/90 dark:bg-[#0C0C10]/90 backdrop-blur-md border-b border-black/10 dark:border-zinc-800">
+      <header className="fixed top-0 left-0 w-full z-50 bg-white/90 dark:bg-[#0C0C10]/90 backdrop-blur-md nav-shadow transition-colors duration-200">
         <div className="flex justify-between items-center w-full px-6 py-2 sm:py-2.5 max-w-7xl mx-auto">
           {/* Logo Anchor with Transparent Brand Image */}
           <Link

@@ -122,6 +122,14 @@
   box-shadow: 0 10px 25px -5px rgba(220, 184, 88, 0.2);
 }
 
+/* Premium Floating Navbar Shadow (Delicate, modern elevation) */
+.nav-shadow {
+  box-shadow: 0 4px 20px -1px rgba(0, 0, 0, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+}
+.dark .nav-shadow {
+  box-shadow: 0 6px 25px -2px rgba(0, 0, 0, 0.6), 0 2px 10px -2px rgba(0, 0, 0, 0.4);
+}
+
 /* Dot Grid Background Texture */
 .bg-dot-grid {
   background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1.2px, transparent 1.2px);

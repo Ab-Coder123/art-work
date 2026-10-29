@@ -1557,7 +1557,7 @@ export default function Home() {
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>
 
       {/* ================= FIXED TOP HEADER (SHARED DESKTOP & MOBILE) ================= */}
-      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md border-b-2 border-black dark:border-zinc-800 transition-colors duration-200">
+      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md nav-shadow transition-colors duration-200">
         <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-1.5 sm:py-2">
           {/* Logo Anchor + Quick Mobile Gallery Link */}
           <div className="flex items-center gap-2">
