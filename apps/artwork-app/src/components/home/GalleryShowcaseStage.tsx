@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
+import { YouTubeVideoFacade } from "@/components/cinematic/YouTubeVideoFacade";
 import rawProjects from "@/data/projects.json";
 import {
   type ProjectRecord,
@@ -77,18 +78,16 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage() {
         return (
           <div className="mb-4 sm:mb-5 p-4 sm:p-6 rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-[#151520] shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_4px_12px_-2px_rgba(0,0,0,0.03)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.6)]">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-              {/* Responsive Embedded YouTube Player */}
+              {/* Responsive Embedded YouTube Player Facade */}
               <div className="lg:col-span-7">
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-[0_4px_16px_rgba(0,0,0,0.2)]">
-                  <iframe
-                    src={yt.embedUrl}
-                    title={primary.youtubeTitle || primary.title}
-                    className="w-full h-full border-0 pointer-events-auto cursor-pointer relative z-10"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  />
-                </div>
+                <YouTubeVideoFacade
+                  embedUrl={yt.embedUrl}
+                  title={primary.youtubeTitle || primary.title}
+                  thumbnailUrl={getProjectThumbnailUrl(primary)}
+                  videoId={yt.videoId}
+                  isShort={yt.isShort}
+                  sizes="(max-width: 1024px) 100vw, 55vw"
+                />
               </div>
 
               {/* Video Info & Metadata */}
