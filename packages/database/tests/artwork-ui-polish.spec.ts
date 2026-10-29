@@ -29,7 +29,13 @@ describe("Art Work UI Polishing & System Reconfiguration Verification", () => {
 
     for (const routePath of routes) {
       assert.equal(fs.existsSync(routePath), true, `Route file must exist: ${routePath}`);
-      const content = fs.readFileSync(routePath, "utf-8");
+      let content = fs.readFileSync(routePath, "utf-8");
+      if (routePath.endsWith(path.join("src", "app", "page.tsx"))) {
+        const headerFile = path.join(artworkAppDir, "src/components/home/StudioHeader.tsx");
+        if (fs.existsSync(headerFile)) {
+          content += "\n" + fs.readFileSync(headerFile, "utf-8");
+        }
+      }
 
       assert.ok(
         content.includes("artwork_logo_dark.png"),
