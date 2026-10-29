@@ -469,7 +469,7 @@ export default function WhyUsPage() {
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-yellow-400 font-mono text-xs font-black rounded mb-3">
                 <LayoutDashboard className="w-3.5 h-3.5 text-yellow-400 stroke-[2.5]" />
-                EXPERIENTIAL MATRIX // STAGE 02
+                EXPERIENTIAL MATRIX
               </div>
               <h3 className="font-headline text-3xl sm:text-4xl md:text-5xl font-black text-black dark:text-white tracking-tight uppercase">
                 Core Physical &amp; Experiential{" "}
@@ -496,9 +496,7 @@ export default function WhyUsPage() {
               <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-yellow-400/20 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none"></div>
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <span className="px-3 py-1 bg-black text-white font-mono text-xs font-black rounded">
-                    SPEC // 01
-                  </span>
+                
                   <Lightbulb className="w-7 h-7 text-black dark:text-yellow-400 stroke-[1.75]" />
                 </div>
                 <h4 className="font-headline text-2xl font-black text-black dark:text-white mb-3 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
@@ -537,9 +535,7 @@ export default function WhyUsPage() {
               <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-yellow-400/20 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none"></div>
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <span className="px-3 py-1 bg-black text-white font-mono text-xs font-black rounded">
-                    SPEC // 02
-                  </span>
+                 
                   <Store className="w-7 h-7 text-black dark:text-yellow-400 stroke-[1.75]" />
                 </div>
                 <h4 className="font-headline text-2xl font-black text-black dark:text-white mb-3 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
@@ -578,9 +574,7 @@ export default function WhyUsPage() {
               <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-yellow-400/20 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none"></div>
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <span className="px-3 py-1 bg-black text-white font-mono text-xs font-black rounded">
-                    SPEC // 03
-                  </span>
+                  
                   <Layers className="w-7 h-7 text-black dark:text-yellow-400 stroke-[1.75]" />
                 </div>
                 <h4 className="font-headline text-2xl font-black text-black dark:text-white mb-3 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
@@ -619,9 +613,7 @@ export default function WhyUsPage() {
               <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-yellow-400/20 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none"></div>
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <span className="px-3 py-1 bg-black text-white font-mono text-xs font-black rounded">
-                    SPEC // 04
-                  </span>
+                  
                   <Monitor className="w-7 h-7 text-black dark:text-yellow-400 stroke-[1.75]" />
                 </div>
                 <h4 className="font-headline text-2xl font-black text-black dark:text-white mb-3 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">

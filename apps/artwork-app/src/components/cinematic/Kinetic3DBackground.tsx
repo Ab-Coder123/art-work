@@ -101,60 +101,47 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     };
 
     // =============================================================
-    // 4. STATION 1: THE GRAPHIC DESIGNER (واحد بيرسم وبيعمل ديزاين)
+    // 4. STATIONS 1 to 8: THE 8 ART WORK STUDIO DOODLE CHARACTERS
     // =============================================================
     const station1 = new THREE.Group();
     station1.position.set(-15, 2, 6);
-
-    const charDesigner = loadCharPlane(
-      "/assets/images/char_graphic_designer.png",
-      8.8,
-      10.6
-    );
-    station1.add(charDesigner);
+    station1.add(loadCharPlane("/assets/images/character-01.svg", 9.66, 10.5));
     scene.add(station1);
 
-    // =============================================================
-    // 5. STATION 2: THE MOTION DESIGNER (واحد بيعمل مونتاج وموشن)
-    // =============================================================
     const station2 = new THREE.Group();
     station2.position.set(16, -2, -2);
-
-    const charMotion = loadCharPlane(
-      "/assets/images/char_motion_designer.png",
-      9.2,
-      10.5
-    );
-    station2.add(charMotion);
+    station2.add(loadCharPlane("/assets/images/character-02.svg", 9.66, 10.5));
     scene.add(station2);
 
-    // =============================================================
-    // 6. STATION 3: THE ART DIRECTOR & CREATIVE LEAD (أرت دايركتور)
-    // =============================================================
     const station3 = new THREE.Group();
     station3.position.set(-8, -13, -6);
-
-    const charArtDirector = loadCharPlane(
-      "/assets/images/char_art_director.png",
-      8.8,
-      11.0
-    );
-    station3.add(charArtDirector);
+    station3.add(loadCharPlane("/assets/images/character-03.svg", 9.66, 10.5));
     scene.add(station3);
 
-    // =============================================================
-    // 7. STATION 4: THE CONTENT CREATOR (صانعة محتوى وتصوير)
-    // =============================================================
     const station4 = new THREE.Group();
     station4.position.set(16, -14, -8);
-
-    const charContent = loadCharPlane(
-      "/assets/images/char_content_creator.png",
-      8.8,
-      10.3
-    );
-    station4.add(charContent);
+    station4.add(loadCharPlane("/assets/images/character-04.svg", 9.66, 10.5));
     scene.add(station4);
+
+    const station5 = new THREE.Group();
+    station5.position.set(-22, -4, 1);
+    station5.add(loadCharPlane("/assets/images/character-05.svg", 9.66, 10.5));
+    scene.add(station5);
+
+    const station6 = new THREE.Group();
+    station6.position.set(9, 4, -9);
+    station6.add(loadCharPlane("/assets/images/character-06.svg", 9.66, 10.5));
+    scene.add(station6);
+
+    const station7 = new THREE.Group();
+    station7.position.set(-17, -15, -11);
+    station7.add(loadCharPlane("/assets/images/character-07.svg", 9.66, 10.5));
+    scene.add(station7);
+
+    const station8 = new THREE.Group();
+    station8.position.set(7, -17, -13);
+    station8.add(loadCharPlane("/assets/images/character-08.svg", 9.66, 10.5));
+    scene.add(station8);
 
     // =============================================================
     // 8. MINIMAL CLEAN PERSPECTIVE FLOOR GRID (Subtle Neutral Gray)
@@ -248,12 +235,20 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
       station2.position.y = -2 + Math.cos(time * 1.3) * 0.35;
       station3.position.y = -13 + Math.sin(time * 1.2) * 0.3;
       station4.position.y = -14 + Math.cos(time * 1.5) * 0.35;
+      station5.position.y = -4 + Math.sin(time * 1.1) * 0.35;
+      station6.position.y = 4 + Math.cos(time * 1.4) * 0.35;
+      station7.position.y = -15 + Math.sin(time * 1.3) * 0.3;
+      station8.position.y = -17 + Math.cos(time * 1.2) * 0.35;
 
       // Subtle tilt responding to mouse
       station1.rotation.y = Math.sin(time * 0.8) * 0.05 + mouseX * 0.02;
       station2.rotation.y = Math.cos(time * 0.7) * 0.05 + mouseX * 0.02;
       station3.rotation.y = Math.sin(time * 0.6) * 0.05;
       station4.rotation.y = Math.cos(time * 0.8) * 0.05;
+      station5.rotation.y = Math.sin(time * 0.7) * 0.05 + mouseX * 0.015;
+      station6.rotation.y = Math.cos(time * 0.9) * 0.05 + mouseX * 0.015;
+      station7.rotation.y = Math.sin(time * 0.5) * 0.05;
+      station8.rotation.y = Math.cos(time * 0.7) * 0.05;
 
       // Floor grid movement with scroll
       gridHelper.position.z = ((currentProgress * 50) % 6) - 3;
