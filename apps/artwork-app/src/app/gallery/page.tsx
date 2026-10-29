@@ -406,9 +406,6 @@ export default function GalleryPage() {
                 </KineticBrushWord>
               </h2>
             </div>
-            <p className="font-headline font-bold text-xs md:text-sm text-black/70 dark:text-zinc-400 max-w-sm">
-              A look at the events and experiences our team has helped bring to life.
-            </p>
           </div>
 
           {/* Tactile Mounting Board Grid */}

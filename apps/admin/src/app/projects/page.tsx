@@ -35,6 +35,70 @@ function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
+interface AdminNotification {
+  type: "success" | "error" | "warning";
+  title: string;
+  detail?: string;
+}
+
+function humanizeAdminError(rawError: string): { title: string; detail: string } {
+  const err = (rawError || "").toLowerCase();
+
+  if (err.includes("title must be at least") || err.includes("title is required")) {
+    return {
+      title: "اسم المشروع غير مكتمل (Title Required)",
+      detail: "يرجى كتابة عنوان واضح للمشروع لا يقل عن حرفين ليظهر بشكل صحيح في المعرض.",
+    };
+  }
+  if (err.includes("client") && (err.includes("required") || err.includes("least"))) {
+    return {
+      title: "اسم العميل مطلوب (Client Required)",
+      detail: "يرجى تحديد اسم العميل أو الجهة الراعية للعمل (حرفين على الأقل).",
+    };
+  }
+  if (err.includes("description") && (err.includes("least") || err.includes("characters") || err.includes("10"))) {
+    return {
+      title: "الوصف غير كافٍ (Description Too Short)",
+      detail: "يرجى كتابة نبذة تفصيلية عن المشروع لا تقل عن 10 أحرف لشرح فكرته وتنفيذه.",
+    };
+  }
+  if (err.includes("slug") || err.includes("duplicate key") || err.includes("already exists")) {
+    return {
+      title: "اسم المشروع مسجل مسبقاً (Duplicate Project)",
+      detail: "يوجد مشروع آخر بنفس الاسم أو الرابط التعريفي، يرجى تعديل الاسم قليلاً لتجنب التكرار.",
+    };
+  }
+  if (err.includes("youtube") || err.includes("iframe")) {
+    return {
+      title: "رابط اليوتيوب غير صالح (Invalid YouTube URL)",
+      detail: "يرجى إدخال رابط فيديو صحيح من YouTube مباشرة (تأكد من عدم استخدام كود تضمين iframe).",
+    };
+  }
+  if (err.includes("cover image")) {
+    return {
+      title: "صورة الغلاف مطلوبة (Cover Image Required)",
+      detail: "يرجى رفع صورة الغلاف أو إدخال رابط يوتيوب ليتم سحب صورة الغلاف تلقائياً.",
+    };
+  }
+  if (err.includes("year")) {
+    return {
+      title: "سنة المشروع غير صالحة (Invalid Year)",
+      detail: "يرجى كتابة سنة صالحة بين عامي 2020 و 2035.",
+    };
+  }
+  if (err.includes("network") || err.includes("failed to fetch") || err.includes("500")) {
+    return {
+      title: "تعذر الاتصال بالسيرفر (Connection Error)",
+      detail: "حدثت مشكلة أثناء الاتصال بقاعدة البيانات. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.",
+    };
+  }
+
+  return {
+    title: "تنبيه أثناء حفظ المشروع (Save Notice)",
+    detail: rawError || "يرجى مراجعة الحقول المطلوبة والتأكد من صحتها.",
+  };
+}
+
 const INITIAL_PROJECTS: ProjectRecord[] = [
   {
     id: "rameda-event",
@@ -168,7 +232,8 @@ export default function GalleryProjectsManager() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [resolvingYt, setResolvingYt] = useState(false);
   const [ytStatusMessage, setYtStatusMessage] = useState<string | null>(null);
-  const [syncMessage, setSyncMessage] = useState<string | null>(null);
+  const [notification, setNotification] = useState<AdminNotification | null>(null);
+  const [modalError, setModalError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showBoothYouTube, setShowBoothYouTube] = useState(false);
   const [isUploadingImages, setIsUploadingImages] = useState(false);
@@ -350,7 +415,11 @@ export default function GalleryProjectsManager() {
           setProjects((prev) =>
             prev.map((p) => (p.id === id ? data.project : p))
           );
-          setSyncMessage(`✓ Status updated to '${nextStatus.toUpperCase()}' in Supabase`);
+          setNotification({
+            type: "success",
+            title: "تم تحديث حالة العرض بنجاح",
+            detail: `تم تغيير حالة المشروع إلى "${nextStatus.toUpperCase()}" بنجاح في قاعدة البيانات.`,
+          });
         }
       }
     } catch {
@@ -381,7 +450,11 @@ export default function GalleryProjectsManager() {
         }),
       });
       if (res.ok) {
-        setSyncMessage("✓ Project display order synced to Supabase");
+        setNotification({
+          type: "success",
+          title: "تم حفظ ترتيب عرض المشاريع بنجاح",
+          detail: "تم تحديث ترتيب ظهور الكروت في معرض المشاريع على الموقع.",
+        });
       }
     } catch {
       // Optimistic state kept locally
@@ -397,7 +470,11 @@ export default function GalleryProjectsManager() {
         method: "DELETE",
       });
       if (res.ok) {
-        setSyncMessage(`✓ Deleted project '${id}' from Supabase`);
+        setNotification({
+          type: "success",
+          title: "تم حذف المشروع بنجاح",
+          detail: "تم مسح بيانات المشروع من قاعدة بيانات الاستوديو نهائياً.",
+        });
       }
     } catch {
       // Optimistic state kept locally
@@ -469,7 +546,7 @@ export default function GalleryProjectsManager() {
               }
             : null
         );
-        setYtStatusMessage("✓ Extracted video thumbnail, headline & paragraph from YouTube");
+        setYtStatusMessage("✓ تم استخراج صورة الغلاف وعنوان ووصف الفيديو من YouTube بنجاح");
       } else {
         const parsed = resolveSafeYouTubeEmbed(editingProject.youtubeUrl);
         if (parsed) {
@@ -491,13 +568,13 @@ export default function GalleryProjectsManager() {
                 }
               : null
           );
-          setYtStatusMessage("✓ Validated YouTube ID & synced video thumbnail");
+          setYtStatusMessage("✓ تم التحقق من رابط YouTube وسحب صورة الغلاف بنجاح");
         } else {
-          setYtStatusMessage("Invalid YouTube link. Raw <iframe> HTML is prohibited.");
+          setYtStatusMessage("⚠️ رابط YouTube غير صالح. يرجى وضع رابط الفيديو مباشرة (بدون كود iframe)");
         }
       }
     } catch {
-      setYtStatusMessage("Could not reach metadata resolver.");
+      setYtStatusMessage("⚠️ تعذر الاتصال بـ YouTube لجلب بيانات الفيديو تلقائياً");
     } finally {
       setResolvingYt(false);
     }
@@ -506,8 +583,27 @@ export default function GalleryProjectsManager() {
   const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingProject || isSaving) return;
+    setModalError(null);
+
+    // Client-side pre-validation with clear explanations
+    if (!editingProject.title || editingProject.title.trim().length < 2) {
+      const err = humanizeAdminError("title must be at least 2 characters");
+      setModalError(`${err.title}: ${err.detail}`);
+      return;
+    }
+    if (!editingProject.client || editingProject.client.trim().length < 2) {
+      const err = humanizeAdminError("client name is required");
+      setModalError(`${err.title}: ${err.detail}`);
+      return;
+    }
+    if (!editingProject.description || editingProject.description.trim().length < 10) {
+      const err = humanizeAdminError("description must be at least 10 characters");
+      setModalError(`${err.title}: ${err.detail}`);
+      return;
+    }
+
     setIsSaving(true);
-    setSyncMessage(null);
+    setNotification(null);
 
     const exists = !isCreatingNew && projects.some((p) => p.id === editingProject.id);
 
@@ -541,33 +637,47 @@ export default function GalleryProjectsManager() {
             ? prev.map((p) => (p.id === editingProject.id ? saved : p))
             : [...prev, saved]
         );
-        setSyncMessage(
-          exists
-            ? `✓ Project "${saved.title}" updated in Supabase PostgreSQL`
-            : `✓ Project "${saved.title}" created in Supabase PostgreSQL`
-        );
+        setNotification({
+          type: "success",
+          title: exists ? "تم تحديث المشروع بنجاح" : "تم إنشاء المشروع الجديد بنجاح",
+          detail: `تم حفظ ومزامنة بيانات "${saved.title}" بنجاح في قاعدة البيانات.`,
+        });
         setEditingProject(null);
         setIsCreatingNew(false);
+        setModalError(null);
         return;
       } else {
         const errData = await res.json().catch(() => ({}));
-        setSyncMessage(`⚠ ${errData.error || "Saved locally (API validation warning)"}`);
+        const rawErr = errData.error || "Failed to save project";
+        const friendly = humanizeAdminError(rawErr);
+        setModalError(`${friendly.title}: ${friendly.detail}`);
+        setNotification({
+          type: "error",
+          title: friendly.title,
+          detail: friendly.detail,
+        });
       }
-    } catch {
-      setSyncMessage("✓ Saved in local studio state");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Network error";
+      const friendly = humanizeAdminError(msg);
+      setModalError(`${friendly.title}: ${friendly.detail}`);
+      setNotification({
+        type: "warning",
+        title: "تم الحفظ في ذاكرة الجلسة المحلية",
+        detail: "تعذر الاتصال بالسيرفر، تم حفظ التعديل محلياً مؤقتاً.",
+      });
+      if (exists) {
+        setProjects((prev) =>
+          prev.map((p) => (p.id === editingProject.id ? projectToSave : p))
+        );
+      } else {
+        setProjects((prev) => [...prev, projectToSave]);
+      }
+      setEditingProject(null);
+      setIsCreatingNew(false);
     } finally {
       setIsSaving(false);
     }
-
-    if (exists) {
-      setProjects((prev) =>
-        prev.map((p) => (p.id === editingProject.id ? editingProject : p))
-      );
-    } else {
-      setProjects((prev) => [...prev, editingProject]);
-    }
-    setEditingProject(null);
-    setIsCreatingNew(false);
   };
 
   const resolvedPreview = editingProject
@@ -584,6 +694,7 @@ export default function GalleryProjectsManager() {
             onClick={() => {
               const newId = `project-${Date.now()}`;
               setYtStatusMessage(null);
+              setModalError(null);
               setIsCreatingNew(true);
               setEditingProject({
                 id: newId,
@@ -617,15 +728,44 @@ export default function GalleryProjectsManager() {
       />
 
       <main className="p-8 max-w-6xl space-y-6">
-        {syncMessage && (
-          <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono text-emerald-300">
-            <span>{syncMessage}</span>
+        {notification && (
+          <div
+            className={`p-4 rounded-xl border flex items-start justify-between gap-3 transition-all ${
+              notification.type === "success"
+                ? "bg-emerald-950/70 border-emerald-500/40 text-emerald-200"
+                : notification.type === "error"
+                ? "bg-rose-950/70 border-rose-500/50 text-rose-200"
+                : "bg-amber-950/70 border-amber-500/50 text-amber-200"
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              {notification.type === "success" ? (
+                <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                  ✓
+                </span>
+              ) : (
+                <AlertTriangle
+                  className={`w-5 h-5 shrink-0 mt-0.5 ${
+                    notification.type === "error" ? "text-rose-400" : "text-amber-400"
+                  }`}
+                />
+              )}
+              <div>
+                <h4 className="font-bold text-sm tracking-tight">{notification.title}</h4>
+                {notification.detail && (
+                  <p className="text-xs opacity-90 mt-0.5 leading-relaxed font-sans">
+                    {notification.detail}
+                  </p>
+                )}
+              </div>
+            </div>
             <button
               type="button"
-              onClick={() => setSyncMessage(null)}
-              className="text-emerald-400 hover:text-white cursor-pointer"
+              onClick={() => setNotification(null)}
+              className="text-zinc-400 hover:text-white cursor-pointer text-sm shrink-0"
+              aria-label="Dismiss notification"
             >
-              ✕
+              <X className="w-4 h-4" />
             </button>
           </div>
         )}
@@ -767,6 +907,7 @@ export default function GalleryProjectsManager() {
                   <button
                     onClick={() => {
                       setYtStatusMessage(null);
+                      setModalError(null);
                       setIsCreatingNew(false);
                       setEditingProject(project);
                     }}
@@ -1499,7 +1640,15 @@ export default function GalleryProjectsManager() {
                       </div>
 
                       {ytStatusMessage && (
-                        <div className="text-[11px] text-emerald-400 font-mono">{ytStatusMessage}</div>
+                        <div
+                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
+                            ytStatusMessage.startsWith("✓")
+                              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+                              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
+                          }`}
+                        >
+                          <span>{ytStatusMessage}</span>
+                        </div>
                       )}
 
                       {resolvedPreview ? (
@@ -1623,6 +1772,27 @@ export default function GalleryProjectsManager() {
                   </div>
                 )}
               </div>
+
+              {/* Validation / Error banner inside modal */}
+              {modalError && (
+                <div className="mx-6 my-2.5 p-3 rounded-xl bg-rose-950/80 border border-rose-500/50 text-rose-200 text-xs flex items-start justify-between gap-2.5 shrink-0">
+                  <div className="flex items-start gap-2.5">
+                    <AlertTriangle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+                    <div>
+                      <span className="font-bold block mb-0.5 font-sans">تنبيه التحقق من البيانات:</span>
+                      <p className="leading-relaxed opacity-90 font-sans">{modalError}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setModalError(null)}
+                    className="text-rose-400 hover:text-white cursor-pointer text-sm shrink-0"
+                    aria-label="Dismiss error"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
 
               {/* Sticky Bottom Actions Footer */}
               <div className="px-6 py-3.5 border-t border-[#262638] bg-[#12121a] flex items-center justify-between shrink-0">
