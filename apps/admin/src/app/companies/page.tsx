@@ -657,7 +657,7 @@ export default function AdminCompaniesPage() {
                 {formData.logo_url ? (
                   <div className="relative bg-[#0e0e14] border-2 border-[#2a2a3c] rounded-xl p-3 flex items-center gap-3">
                     {/* Visual Preview */}
-                    <div className="w-16 h-16 rounded-lg bg-[#1a1a26] border border-[#2a2a3c] flex items-center justify-center p-2 shrink-0 overflow-hidden relative">
+                    <div className="w-16 h-16 rounded-lg bg-[#1a1a26] border border-[#2a2a3c] flex items-center justify-center p-1 shrink-0 overflow-hidden relative">
                       <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:6px_6px]" />
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img

@@ -117,7 +117,7 @@ function PartnerLogoCard({
   return (
     <div
       onClick={onToggle}
-      className={`group relative flex items-center bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 p-2 sm:p-2.5 rounded-2xl comic-shadow-sm transition-all duration-300 cursor-pointer shrink-0 select-none ${hoverTilt} ${
+      className={`group relative flex items-center bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 p-1.5 rounded-2xl comic-shadow-sm transition-all duration-300 cursor-pointer shrink-0 select-none ${hoverTilt} ${
         isSelected
           ? "scale-105 -rotate-1 bg-yellow-50 dark:bg-[#222234] ring-2 ring-yellow-400 border-black dark:border-yellow-400 comic-shadow"
           : "hover:scale-105"
@@ -131,7 +131,7 @@ function PartnerLogoCard({
       ></div>
 
       {/* High-Impact Large Logo Box */}
-      <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-white dark:bg-[#101018] overflow-hidden flex items-center justify-center p-2 border border-black/15 dark:border-white/10 shrink-0 shadow-inner">
+      <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-white dark:bg-[#101018] overflow-hidden flex items-center justify-center p-1 border border-black/15 dark:border-white/10 shrink-0 shadow-inner">
         <Image
           src={company.logo}
           alt={company.name}
@@ -146,8 +146,8 @@ function PartnerLogoCard({
       <div
         className={`overflow-hidden transition-all duration-300 ease-out flex flex-col justify-center ${
           isSelected
-            ? "max-w-[260px] opacity-100 ml-3 sm:ml-3.5 pr-2"
-            : "max-w-0 opacity-0 group-hover:max-w-[260px] group-hover:opacity-100 group-hover:ml-3 sm:group-hover:ml-3.5 group-hover:pr-2"
+            ? "max-w-[260px] opacity-100 ml-2.5 sm:ml-3 pr-2"
+            : "max-w-0 opacity-0 group-hover:max-w-[260px] group-hover:opacity-100 group-hover:ml-2.5 sm:group-hover:ml-3 group-hover:pr-2"
         }`}
       >
         <div className="whitespace-nowrap">
