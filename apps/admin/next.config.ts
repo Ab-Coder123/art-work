@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   distDir: process.env.NEXT_BUILD_DIST_DIR || ".next",
-  transpilePackages: ["@art-work/types"],
+  transpilePackages: ["@art-work/types", "@art-work/database"],
   images: {
     remotePatterns: [
       {

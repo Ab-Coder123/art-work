@@ -9,6 +9,7 @@ import {
   isValidYouTubeId,
   extractDescriptionFromHtml,
   fetchYouTubeMetadata,
+  isGenericYouTubeDescription,
 } from "../src/media/youtube";
 import { YouTubeUrlSchema } from "../src/schemas/project";
 import { resolveSafeYouTubeEmbed } from "@art-work/types";
@@ -203,5 +204,69 @@ describe("Phase 05: YouTube Media Engine", () => {
       );
       assert.equal(meta.data.authorName, "Art Work Studio");
     }
+  });
+
+  it("should accurately detect generic YouTube boilerplate slogans in English and Arabic", () => {
+    assert.equal(
+      isGenericYouTubeDescription(
+        "Enjoy the videos and music you love, upload original content, and share it all with friends, family, and the world on YouTube."
+      ),
+      true
+    );
+    assert.equal(
+      isGenericYouTubeDescription(
+        "يمكنك الاستمتاع بالفيديوهات والموسيقى التي تحبها وتحميل المحتوى الأصلي ومشاركته بكامله مع أصدقائك وأفراد عائلتك والعالم أجمع على YouTube."
+      ),
+      true
+    );
+    assert.equal(isGenericYouTubeDescription(""), true);
+    assert.equal(isGenericYouTubeDescription(null), true);
+    assert.equal(
+      isGenericYouTubeDescription(
+        "Rameda Cycle Meeting 2022\n\nCelebrating the people behind the progress."
+      ),
+      false
+    );
+  });
+
+  it("should reject generic YouTube boilerplate meta tags and extract true JSON shortDescription", () => {
+    const htmlWithGenericMetaAndRealJson = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta name="description" content="Enjoy the videos and music you love, upload original content, and share it all with friends, family, and the world on YouTube.">
+        <meta property="og:description" content="Enjoy the videos and music you love, upload original content, and share it all with friends, family, and the world on YouTube.">
+      </head>
+      <body>
+        <script>
+          var ytInitialPlayerResponse = {
+            "videoDetails": {
+              "title": "Rameda Cycle meeting 2022",
+              "shortDescription": "Rameda Cycle Meeting 2022\\n\\nCelebrating the people behind the progress. Rameda’s 2022 Cycle Meeting brought the team together."
+            }
+          };
+        </script>
+      </body>
+      </html>
+    `;
+    const desc = extractDescriptionFromHtml(htmlWithGenericMetaAndRealJson);
+    assert.ok(desc);
+    assert.equal(
+      desc,
+      "Rameda Cycle Meeting 2022\n\nCelebrating the people behind the progress. Rameda’s 2022 Cycle Meeting brought the team together."
+    );
+  });
+
+  it("should return null if HTML contains only generic boilerplate without a genuine description", () => {
+    const htmlWithOnlyGenericMeta = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta name="description" content="Enjoy the videos and music you love, upload original content, and share it all with friends, family, and the world on YouTube.">
+      </head>
+      </html>
+    `;
+    const desc = extractDescriptionFromHtml(htmlWithOnlyGenericMeta);
+    assert.equal(desc, null);
   });
 });

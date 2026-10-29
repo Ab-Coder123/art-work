@@ -24,6 +24,7 @@ import {
   ProjectRecord,
   ProjectCategory,
   resolveSafeYouTubeEmbed,
+  isGenericYouTubeDescription,
 } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
 
@@ -535,12 +536,29 @@ export default function GalleryProjectsManager() {
         setEditingProject((prev) => {
           if (!prev) return null;
           const ytTitle = data.headline || prev.youtubeTitle || prev.title;
-          const ytDesc = data.paragraph || prev.youtubeDescription || prev.description;
+          const rawYtDesc = (data.paragraph || "").trim();
+          const hasFreshYtDesc = Boolean(rawYtDesc && !isGenericYouTubeDescription(rawYtDesc));
+          const ytDesc = hasFreshYtDesc
+            ? rawYtDesc
+            : (prev.youtubeDescription && !isGenericYouTubeDescription(prev.youtubeDescription)
+                ? prev.youtubeDescription
+                : "");
+
+          const prevDescIsGeneric = isGenericYouTubeDescription(prev.description);
+
+          // Update main description if empty, short, generic boilerplate, or was linked to previous YouTube description
+          const shouldUpdateMainDesc =
+            !prev.description ||
+            prev.description.trim().length < 10 ||
+            prevDescIsGeneric ||
+            prev.description === prev.youtubeDescription;
 
           return {
             ...prev,
             title: (!prev.title || prev.title === "New Project") && ytTitle ? ytTitle : prev.title,
-            description: (!prev.description || prev.description.trim().length < 10) && ytDesc ? ytDesc : prev.description,
+            description: shouldUpdateMainDesc && hasFreshYtDesc
+              ? rawYtDesc
+              : (prevDescIsGeneric ? (hasFreshYtDesc ? rawYtDesc : "") : prev.description),
             youtubeVideoId: data.videoId,
             youtubeUrl: data.canonicalUrl,
             youtubeTitle: ytTitle,
@@ -549,7 +567,7 @@ export default function GalleryProjectsManager() {
             image: posterUrl || prev.image,
           };
         });
-        setYtStatusMessage("✓ تم استخراج صورة الغلاف وعنوان ووصف الفيديو من YouTube وتعبئتها بنجاح");
+        setYtStatusMessage("✓ تم استخراج صورة الغلاف وعنوان ووصف الفيديو الحقيقي من YouTube وتعبئتها بنجاح");
       } else {
         const parsed = resolveSafeYouTubeEmbed(editingProject.youtubeUrl);
         if (parsed) {
@@ -557,12 +575,18 @@ export default function GalleryProjectsManager() {
           setEditingProject((prev) => {
             if (!prev) return null;
             const fallbackTitle = prev.youtubeTitle || `${prev.title || "Project"} — Official Showreel`;
-            const fallbackDesc = prev.youtubeDescription || prev.description;
+            const prevDescIsGeneric = isGenericYouTubeDescription(prev.description);
+            const prevYtDescIsGeneric = isGenericYouTubeDescription(prev.youtubeDescription);
+            const fallbackDesc = !prevYtDescIsGeneric && prev.youtubeDescription
+              ? prev.youtubeDescription
+              : (!prevDescIsGeneric && prev.description ? prev.description : "");
 
             return {
               ...prev,
               title: (!prev.title || prev.title === "New Project") && fallbackTitle ? fallbackTitle : prev.title,
-              description: (!prev.description || prev.description.trim().length < 10) && fallbackDesc ? fallbackDesc : prev.description,
+              description: (!prev.description || prev.description.trim().length < 10 || prevDescIsGeneric) && fallbackDesc
+                ? fallbackDesc
+                : prev.description,
               youtubeVideoId: parsed.videoId,
               youtubeUrl: parsed.canonicalUrl,
               isShort: parsed.isShort,

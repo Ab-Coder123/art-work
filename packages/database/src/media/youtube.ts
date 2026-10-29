@@ -11,6 +11,13 @@
  * Only the video ID (and canonical watch/shorts URL + headline/paragraph metadata) is ever persisted.
  */
 
+import {
+  GENERIC_YOUTUBE_DESCRIPTIONS,
+  isGenericYouTubeDescription,
+} from "@art-work/types";
+
+export { GENERIC_YOUTUBE_DESCRIPTIONS, isGenericYouTubeDescription };
+
 export const YOUTUBE_ID_REGEX = /^[a-zA-Z0-9_-]{11}$/;
 export const YOUTUBE_EMBED_ORIGIN = "https://www.youtube-nocookie.com";
 export const YOUTUBE_POSTER_ORIGIN = "https://i.ytimg.com";
@@ -156,7 +163,7 @@ export function getYouTubePosterCandidates(videoId: string): string[] {
 }
 
 /**
- * Decodes basic HTML entities in extracted meta descriptions.
+ * Decodes basic HTML entities in extracted meta descriptions and normalizes line breaks.
  */
 function decodeHtmlEntities(text: string): string {
   return text
@@ -166,50 +173,91 @@ function decodeHtmlEntities(text: string): string {
     .replace(/&apos;/g, "'")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
-    .replace(/\\n/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(/\\n/g, "\n")
+    .replace(/\r\n/g, "\n")
     .trim();
 }
 
 /**
+ * Parses and validates an extracted JSON candidate string.
+ */
+function parseJsonCandidate(raw: string): string | null {
+  try {
+    const parsed = JSON.parse(`"${raw}"`);
+    if (typeof parsed === "string") {
+      const cleaned = parsed.replace(/\r\n/g, "\n").trim();
+      if (cleaned.length > 0 && !isGenericYouTubeDescription(cleaned)) {
+        return cleaned.slice(0, 2000);
+      }
+    }
+  } catch {
+    const cleaned = raw
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, "\\")
+      .replace(/\\n/g, "\n")
+      .replace(/\r\n/g, "\n")
+      .trim();
+    if (cleaned.length > 0 && !isGenericYouTubeDescription(cleaned)) {
+      return cleaned.slice(0, 2000);
+    }
+  }
+  return null;
+}
+
+/**
  * Extracts description paragraph from YouTube watch/shorts HTML payload if present.
+ * Strictly ignores YouTube generic fallback boilerplate slogans.
  */
 export function extractDescriptionFromHtml(html: string): string | null {
-  // 1. Try JSON shortDescription inside ytInitialPlayerResponse
-  const shortDescMatch = html.match(/"shortDescription":"((?:[^"\\]|\\.)*)"/);
+  // 1. Try JSON shortDescription inside ytInitialPlayerResponse / videoDetails
+  const shortDescMatch = html.match(/"shortDescription"\s*:\s*"((?:[^"\\]|\\.)*)"/);
   if (shortDescMatch && shortDescMatch[1]) {
-    try {
-      const parsed = JSON.parse(`"${shortDescMatch[1]}"`);
-      if (typeof parsed === "string" && parsed.trim().length > 0) {
-        return parsed.trim().slice(0, 1000);
-      }
-    } catch {
-      // Fallback to regex meta below
-    }
+    const candidate = parseJsonCandidate(shortDescMatch[1]);
+    if (candidate) return candidate;
   }
 
-  // 1.5. Try simpleText inside description renderer (ytInitialData)
-  const simpleTextMatch = html.match(/"description":\s*\{\s*"simpleText":\s*"((?:[^"\\]|\\.)*)"/);
+  // 2. Try attributedDescriptionBodyText inside ytInitialData
+  const attrMatch = html.match(
+    /"attributedDescriptionBodyText"\s*:\s*\{\s*"content"\s*:\s*"((?:[^"\\]|\\.)*)"/
+  );
+  if (attrMatch && attrMatch[1]) {
+    const candidate = parseJsonCandidate(attrMatch[1]);
+    if (candidate) return candidate;
+  }
+
+  // 3. Try simpleText inside description renderer (ytInitialData)
+  const simpleTextMatch = html.match(
+    /"description"\s*:\s*\{\s*"simpleText"\s*:\s*"((?:[^"\\]|\\.)*)"/
+  );
   if (simpleTextMatch && simpleTextMatch[1]) {
-    try {
-      const parsed = JSON.parse(`"${simpleTextMatch[1]}"`);
-      if (typeof parsed === "string" && parsed.trim().length > 0) {
-        return parsed.trim().slice(0, 1000);
-      }
-    } catch {
-      // Fallback to regex meta below
+    const candidate = parseJsonCandidate(simpleTextMatch[1]);
+    if (candidate) return candidate;
+  }
+
+  // 4. Try <meta property="og:description" content="...">
+  const ogMatch = html.match(/<meta\s+property=["']og:description["']\s+content=["']([^"']+)["']/i);
+  if (ogMatch && ogMatch[1]) {
+    const cleaned = decodeHtmlEntities(ogMatch[1]);
+    if (cleaned.length > 0 && !isGenericYouTubeDescription(cleaned)) {
+      return cleaned.slice(0, 2000);
     }
   }
 
-  // 2. Try <meta property="og:description" content="..."> or <meta name="description" content="..."> or <meta itemprop="description" content="...">
-  const metaMatch =
-    html.match(/<meta\s+property=["']og:description["']\s+content=["']([^"']+)["']/i) ||
-    html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i) ||
-    html.match(/<meta\s+itemprop=["']description["']\s+content=["']([^"']+)["']/i);
+  // 5. Try <meta name="description" content="...">
+  const metaMatch = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i);
   if (metaMatch && metaMatch[1]) {
     const cleaned = decodeHtmlEntities(metaMatch[1]);
-    if (cleaned.length > 0) {
-      return cleaned.slice(0, 1000);
+    if (cleaned.length > 0 && !isGenericYouTubeDescription(cleaned)) {
+      return cleaned.slice(0, 2000);
+    }
+  }
+
+  // 6. Try <meta itemprop="description" content="...">
+  const itemPropMatch = html.match(/<meta\s+itemprop=["']description["']\s+content=["']([^"']+)["']/i);
+  if (itemPropMatch && itemPropMatch[1]) {
+    const cleaned = decodeHtmlEntities(itemPropMatch[1]);
+    if (cleaned.length > 0 && !isGenericYouTubeDescription(cleaned)) {
+      return cleaned.slice(0, 2000);
     }
   }
 
@@ -240,7 +288,7 @@ export async function fetchYouTubeMetadata(
 
   if (typeof fetchImpl === "function") {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 7500);
+    const timer = setTimeout(() => controller.abort(), 8500);
 
     try {
       const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(canonicalUrl)}&format=json`;
@@ -283,7 +331,9 @@ export async function fetchYouTubeMetadata(
             "User-Agent":
               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
             "Accept-Language": "en-US,en;q=0.9,ar;q=0.8",
+            "Cookie": "CONSENT=YES+cb.20210328-17-p0.en+FX+; PREF=hl=en",
             Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Sec-Fetch-Mode": "navigate",
           },
         });
         if (pageRes.ok) {
@@ -303,7 +353,7 @@ export async function fetchYouTubeMetadata(
     }
   }
 
-  if (!paragraph) {
+  if (!paragraph || isGenericYouTubeDescription(paragraph)) {
     paragraph = isShort
       ? `${headline} — Vertical 9:16 YouTube Reel / Short showcase by ${authorName}.`
       : `${headline} — Live production showcase by ${authorName}.`;

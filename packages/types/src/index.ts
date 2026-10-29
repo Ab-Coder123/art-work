@@ -237,6 +237,30 @@ const SAFE_YT_HOSTS = new Set([
 ]);
 
 /**
+ * Known boilerplate phrases YouTube uses as site-wide generic placeholders
+ * when no specific video description is rendered or when a consent shell is served.
+ */
+export const GENERIC_YOUTUBE_DESCRIPTIONS = [
+  "enjoy the videos and music you love",
+  "share your videos with friends, family, and the world",
+  "upload original content",
+  "يمكنك الاستمتاع بالفيديوهات والموسيقى",
+  "مشاركتها مع الأصدقاء والعائلة والعالم",
+  "تحميل المحتوى الأصلي",
+  "youtube is a video sharing service",
+];
+
+/**
+ * Returns true if the text matches generic YouTube marketing / boilerplate copy.
+ */
+export function isGenericYouTubeDescription(text: string | null | undefined): boolean {
+  if (!text) return true;
+  const normalized = text.toLowerCase().trim();
+  if (!normalized) return true;
+  return GENERIC_YOUTUBE_DESCRIPTIONS.some((phrase) => normalized.includes(phrase));
+}
+
+/**
  * Client & SSR safe helper that extracts a validated 11-char YouTube ID,
  * rejects any raw HTML/iframe markup, and returns the privacy-enhanced embed URL.
  */

@@ -329,14 +329,14 @@ export default function GalleryPage() {
           {/* Monumental Headline */}
           <div className="max-w-5xl mb-6">
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tighter uppercase leading-[0.98] text-black dark:text-white">
-              <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.8} delay={0.1}>
+              <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={3} delay={0.1}>
                 EVENTS THAT BRING
               </KineticBrushWord>{" "}
               <br />
               <span className="relative inline-block mt-2">
                 <span className="absolute -inset-1.5 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"></span>
                 <span className="text-black relative z-10 px-2">BRANDS TO LIFE.</span>
-                <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.2} delay={0.35} />
+                <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.8} delay={0.35} />
               </span>
             </h1>
           </div>
@@ -533,7 +533,7 @@ export default function GalleryPage() {
             <span className="w-4 h-4 bg-yellow-400 border border-black"></span>
             <h2 className="text-2xl md:text-3xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
-                THE BLUEPRINT TO REALITY
+                    FROM BRIEF TO LIVE EXPERIENCE.
               </KineticBrushWord>
             </h2>
             <span className="font-mono text-xs text-black/50 dark:text-zinc-400 ml-auto hidden sm:inline">
@@ -580,9 +580,7 @@ export default function GalleryPage() {
                   <div className="inline-block px-2.5 py-0.5 bg-black text-yellow-400 font-mono text-xs font-bold rounded mb-2">
                     OUR APPROACH
                   </div>
-                  <h3 className="text-xl md:text-2xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
-                    FROM BRIEF TO LIVE EXPERIENCE.
-                  </h3>
+              
 
                   {/* Sticky note quote box */}
                   <div className="my-4 p-3.5 bg-yellow-100 dark:bg-[#1e1e2c] rounded border-2 border-black dark:border-zinc-700 comic-shadow-sm relative">
