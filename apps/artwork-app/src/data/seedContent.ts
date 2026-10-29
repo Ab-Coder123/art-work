@@ -157,26 +157,26 @@ export const SEED_SITE_CONTENT: SiteContent = {
     bentoCards: [
       {
         number: "01",
-        title: "Arena & Stage Scenography",
+        title: "COMPLETE EVENT SOLUTIONS",
         description:
-          "Stage blueprints, LED mapping rigs, lighting cue choreographies, and large-format structural storytelling.",
-        badge: "PRODUCTION READY",
+          "From creative concepts and production to on-site management, we bring every element together through one coordinated team.",
+        badge: "ONE TEAM",
         iconName: "layers",
       },
       {
         number: "02",
-        title: "Dynamic Motion Systems",
+        title: "DESIGN BUILT AROUND YOUR BRAND",
         description:
-          "Kinetic typography, 3D broadcast packages, real-time reactive shaders, and frame-accurate visual sync.",
-        badge: "60 FPS FIDELITY",
+          "We create stages, booths, and branded environments that reflect your identity, engage your audience, and make your presence stand out.",
+        badge: "BRAND BUILT",
         iconName: "sparkles",
       },
       {
         number: "03",
-        title: "Brand Architecture",
+        title: "PRECISION IN EVERY DETAIL",
         description:
-          "Custom hand-drawn vector doodle suites, physical merch design, stage passes, and total campaign cohesion.",
-        badge: "TACTILE & DIGITAL",
+          "Clear planning, careful coordination, and hands-on supervision keep every detail aligned—from the first brief to the final delivery.",
+        badge: "METICULOUS",
         iconName: "palette",
       },
     ],

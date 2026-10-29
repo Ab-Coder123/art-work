@@ -1145,10 +1145,13 @@ export default function Home() {
           setContactContent({ ...DEFAULT_SITE_CONTENT.contact, ...siteContent.contact });
         }
         if (teaser?.bentoCards && teaser.bentoCards.length >= 3 && teaser.blueprint) {
+          const isLegacy = teaser.bentoCards.some((c: { title?: string }) =>
+            c.title?.includes("Arena & Stage") || c.title?.includes("Event Planning & Project") || c.title?.includes("Dynamic Motion")
+          );
           setWhyUsContent({
             ...DEFAULT_WHY_US_CONTENT,
             ...teaser,
-            bentoCards: teaser.bentoCards.slice(0, 3),
+            bentoCards: isLegacy ? DEFAULT_WHY_US_CONTENT.bentoCards : teaser.bentoCards.slice(0, 3),
             blueprint: { ...DEFAULT_WHY_US_CONTENT.blueprint, ...teaser.blueprint },
           });
         }

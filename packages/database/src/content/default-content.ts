@@ -58,24 +58,24 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     bentoCards: [
       {
         number: "01",
-        title: "Event Planning & Project Management",
+        title: "COMPLETE EVENT SOLUTIONS",
         description:
-          "Clear plans, schedules and coordination keep the moving parts of your event working together.",
-        badge: "PLANNED AROUND YOUR BRIEF",
+          "From creative concepts and production to on-site management, we bring every element together through one coordinated team.",
+        badge: "ONE TEAM",
       },
       {
         number: "02",
-        title: "Creative Design & Brand Experience",
+        title: "DESIGN BUILT AROUND YOUR BRAND",
         description:
-          "We shape the concept, environment and event branding into an experience that feels connected to your brand.",
-        badge: "MADE FOR YOUR BRAND",
+          "We create stages, booths, and branded environments that reflect your identity, engage your audience, and make your presence stand out.",
+        badge: "BRAND BUILT",
       },
       {
         number: "03",
-        title: "Production & On-Site Delivery",
+        title: "PRECISION IN EVERY DETAIL",
         description:
-          "We coordinate event production, suppliers, staffing and logistics through setup, live delivery and close-out.",
-        badge: "FROM SETUP TO SHOWTIME",
+          "Clear planning, careful coordination, and hands-on supervision keep every detail aligned—from the first brief to the final delivery.",
+        badge: "METICULOUS",
       },
     ],
     blueprint: {

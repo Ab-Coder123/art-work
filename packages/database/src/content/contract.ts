@@ -105,8 +105,19 @@ function normalizeWhyUsTeaser(value: unknown): WhyUsTeaserContent {
     eyebrow: readString(raw, "eyebrow", defaults.eyebrow),
     headline: readString(raw, "headline", defaults.headline),
     exploreCtaText: readString(raw, "exploreCtaText", defaults.exploreCtaText),
-    bentoCards: Array.isArray(raw.bentoCards) && raw.bentoCards.length >= 3
-      ? raw.bentoCards as WhyUsTeaserContent["bentoCards"]
+    bentoCards: Array.isArray(raw.bentoCards) &&
+      raw.bentoCards.length >= 3 &&
+      !raw.bentoCards.some(
+        (c: unknown) =>
+          typeof c === "object" &&
+          c !== null &&
+          "title" in c &&
+          typeof (c as { title: unknown }).title === "string" &&
+          ((c as { title: string }).title.includes("Arena & Stage") ||
+            (c as { title: string }).title.includes("Event Planning & Project") ||
+            (c as { title: string }).title.includes("Dynamic Motion"))
+      )
+      ? (raw.bentoCards as WhyUsTeaserContent["bentoCards"])
       : defaults.bentoCards,
     blueprint: {
       ...defaults.blueprint,

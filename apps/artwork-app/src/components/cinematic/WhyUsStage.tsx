@@ -284,27 +284,25 @@ export const WhyUsStage: React.FC = () => {
                 <Lightbulb className="w-7 h-7 text-black stroke-[1.75]" />
               </div>
               <h4 className="font-headline text-2xl font-black text-black mb-3 group-hover:text-yellow-600 transition-colors">
-                0% Cookie-Cutter Posts — 100% Unapologetic Strategy
+                BRAND STRATEGY &amp; CREATIVE SOLUTIONS
               </h4>
               <p className="font-body text-sm text-black/70 mb-6 leading-relaxed">
-                We eliminate fluff content and vanity metrics. We construct foundational brand
-                positioning, narrative hooks, and commercial distribution pipelines that force your
-                market to pay attention.
+                We help brands communicate with clarity and purpose through creative concepts, consistent messaging, and marketing plans built around their goals.
               </p>
             </div>
             <div className="border-t-2 border-black/10 pt-4">
               <ul className="space-y-2 text-xs font-mono font-bold text-black">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  Brand Positioning &amp; Kinetic Narrative Architecture
+                  Brand Positioning &amp; Messaging
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  Multi-Channel Commercial Go-to-Market Masterplans
+                  Creative Campaign Development
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  High-Conversion Acquisition &amp; Retention Modeling
+                  Content Strategy &amp; Design
                 </li>
               </ul>
             </div>
@@ -321,27 +319,25 @@ export const WhyUsStage: React.FC = () => {
                 <Store className="w-7 h-7 text-black stroke-[1.75]" />
               </div>
               <h4 className="font-headline text-2xl font-black text-black mb-3 group-hover:text-yellow-600 transition-colors">
-                Exhibitions &amp; Bespoke Booth Architecture
+                EXHIBITIONS &amp; CUSTOM BOOTHS
               </h4>
               <p className="font-body text-sm text-black/70 mb-6 leading-relaxed">
-                Grade-A exhibition dominance for global conventions like CES, Gitex, Arab Health,
-                and MWC. Custom millwork, double-decker cantilever VIP meeting lounges, and
-                optimized foot-traffic routing.
+                We design and produce exhibition booths that express your brand identity and create a welcoming space for visitors to explore, connect, and engage.
               </p>
             </div>
             <div className="border-t-2 border-black/10 pt-4">
               <ul className="space-y-2 text-xs font-mono font-bold text-black">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  Custom German-Spec CNC Millwork &amp; Structural Fabrication
+                  Custom Booth Design &amp; 3D Visualization
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  Double-Decker VIP Suites with Acoustic Sound Dampening
+                  Fabrication, Branding &amp; Installation
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  Interactive Tactile Product Demonstration Islands
+                  Product Displays &amp; Visitor Experience
                 </li>
               </ul>
             </div>
@@ -358,27 +354,25 @@ export const WhyUsStage: React.FC = () => {
                 <Layers className="w-7 h-7 text-black stroke-[1.75]" />
               </div>
               <h4 className="font-headline text-2xl font-black text-black mb-3 group-hover:text-yellow-600 transition-colors">
-                Massive Touring Stages &amp; Sound Engineering
+                STAGE DESIGN &amp; EVENT PRODUCTION
               </h4>
               <p className="font-body text-sm text-black/70 mb-6 leading-relaxed">
-                Stadium and arena caliber temporary architecture. Certified load-bearing trusses,
-                moving head fixture plots, sub-bass phased arrays, and synchronized DMX kinetic
-                hoists built for touring stamina.
+                We bring events to life with stage designs and coordinated production that suit your venue, reflect your brand, and support your event programme.
               </p>
             </div>
             <div className="border-t-2 border-black/10 pt-4">
               <ul className="space-y-2 text-xs font-mono font-bold text-black">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  DMX Automated Kinetic Light Rigs &amp; Laser Vector Systems
+                  Stage &amp; Backdrop Design
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  Line-Array Line-of-Sight Acoustic Engineering
+                  Production Planning &amp; Setup
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  Redundant Arena-Grade Power Distribution &amp; Backup Generators
+                  On-Site Management &amp; Coordination
                 </li>
               </ul>
             </div>
@@ -395,27 +389,25 @@ export const WhyUsStage: React.FC = () => {
                 <Monitor className="w-7 h-7 text-black stroke-[1.75]" />
               </div>
               <h4 className="font-headline text-2xl font-black text-black mb-3 group-hover:text-yellow-600 transition-colors">
-                Ultra-High Refresh LED &amp; Audiovisual Mastery
+                SCREENS &amp; AUDIOVISUAL SOLUTIONS
               </h4>
               <p className="font-body text-sm text-black/70 mb-6 leading-relaxed">
-                Zero-latency visual immersion. Seamless 1.5mm pixel pitch curved video walls,
-                transparent holographic mesh panels, and disguise media server clusters for
-                real-time generative stage graphics.
+                We bring sound, lighting, and screen content together to deliver clear presentations and engaging experiences throughout your event.
               </p>
             </div>
             <div className="border-t-2 border-black/10 pt-4">
               <ul className="space-y-2 text-xs font-mono font-bold text-black">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  7680Hz Ultra-High Refresh Rates (Broadcast &amp; Camera Safe)
+                  LED Screens &amp; Visual Content
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  Real-Time Notch / TouchDesigner Generative Visual Pipelines
+                  Sound &amp; Lighting Solutions
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 fill-yellow-400/20 stroke-black shrink-0" />
-                  Holographic Transparent Mesh Stages for 3D Illusions
+                  Technical Operation &amp; Event Support
                 </li>
               </ul>
             </div>
