@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import {
   createBrowserClient,
   createSupabaseContentRepository,
@@ -26,10 +27,10 @@ export interface InitialHomeData {
 }
 
 /**
- * Server-side data pre-fetcher for RSC Shell (Phase 2).
- * Fetches content and partner network on the server with graceful fallback guarantees.
+ * Server-side data pre-fetcher for RSC Shell (Phase 2 & Phase 4).
+ * Fetches content and partner network with Next.js Data Cache tag binding and fallback guarantees.
  */
-export async function getInitialHomeData(): Promise<InitialHomeData> {
+async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
   let contentData = normalizeSiteContent(DEFAULT_SITE_CONTENT);
   let companiesData: CompanyRecord[] = DEFAULT_COMPANIES;
 
@@ -124,3 +125,12 @@ export async function getInitialHomeData(): Promise<InitialHomeData> {
     companies: companiesData,
   };
 }
+
+export const getInitialHomeData = unstable_cache(
+  fetchInitialHomeDataRaw,
+  ["home-initial-data"],
+  {
+    tags: ["site-content", "companies"],
+    revalidate: 60,
+  }
+);

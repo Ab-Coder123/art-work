@@ -260,9 +260,21 @@ export function isGenericYouTubeDescription(text: string | null | undefined): bo
   return GENERIC_YOUTUBE_DESCRIPTIONS.some((phrase) => normalized.includes(phrase));
 }
 
+const ytEmbedMemoCache = new Map<
+  string,
+  {
+    videoId: string;
+    embedUrl: string;
+    canonicalUrl: string;
+    isShort: boolean;
+  } | null
+>();
+const MAX_YT_CACHE_SIZE = 500;
+
 /**
  * Client & SSR safe helper that extracts a validated 11-char YouTube ID,
  * rejects any raw HTML/iframe markup, and returns the privacy-enhanced embed URL.
+ * Employs in-memory calculation memoization to eliminate repeated parsing overhead.
  */
 export function resolveSafeYouTubeEmbed(
   input?:
@@ -291,29 +303,50 @@ export function resolveSafeYouTubeEmbed(
   const raw = rawInput.trim();
   if (!raw || /[<>"'`\s]/.test(raw)) return null;
 
+  const cacheKey = `${raw}::${explicitShort}`;
+  if (ytEmbedMemoCache.has(cacheKey)) {
+    return ytEmbedMemoCache.get(cacheKey) ?? null;
+  }
+
+  const storeAndReturn = (
+    result: {
+      videoId: string;
+      embedUrl: string;
+      canonicalUrl: string;
+      isShort: boolean;
+    } | null
+  ) => {
+    if (ytEmbedMemoCache.size >= MAX_YT_CACHE_SIZE) {
+      const firstKey = ytEmbedMemoCache.keys().next().value;
+      if (firstKey) ytEmbedMemoCache.delete(firstKey);
+    }
+    ytEmbedMemoCache.set(cacheKey, result);
+    return result;
+  };
+
   if (SAFE_YT_ID_REGEX.test(raw)) {
-    return {
+    return storeAndReturn({
       videoId: raw,
       embedUrl: `https://www.youtube-nocookie.com/embed/${raw}?enablejsapi=1&rel=0`,
       canonicalUrl: explicitShort
         ? `https://www.youtube.com/shorts/${raw}`
         : `https://www.youtube.com/watch?v=${raw}`,
       isShort: explicitShort,
-    };
+    });
   }
 
   let url: URL;
   try {
     url = new URL(/^[a-z][a-z0-9+.-]*:/i.test(raw) ? raw : `https://${raw}`);
   } catch {
-    return null;
+    return storeAndReturn(null);
   }
 
-  if (url.protocol !== "https:" && url.protocol !== "http:") return null;
-  if (url.username || url.password) return null;
+  if (url.protocol !== "https:" && url.protocol !== "http:") return storeAndReturn(null);
+  if (url.username || url.password) return storeAndReturn(null);
 
   const host = url.hostname.toLowerCase();
-  if (!SAFE_YT_HOSTS.has(host)) return null;
+  if (!SAFE_YT_HOSTS.has(host)) return storeAndReturn(null);
 
   const segments = url.pathname.split("/").filter(Boolean);
   let candidate: string | undefined;
@@ -333,16 +366,16 @@ export function resolveSafeYouTubeEmbed(
     }
   }
 
-  if (!candidate || !SAFE_YT_ID_REGEX.test(candidate)) return null;
+  if (!candidate || !SAFE_YT_ID_REGEX.test(candidate)) return storeAndReturn(null);
 
-  return {
+  return storeAndReturn({
     videoId: candidate,
     embedUrl: `https://www.youtube-nocookie.com/embed/${candidate}?enablejsapi=1&rel=0`,
     canonicalUrl: isShort
       ? `https://www.youtube.com/shorts/${candidate}`
       : `https://www.youtube.com/watch?v=${candidate}`,
     isShort,
-  };
+  });
 }
 
 export interface MetricItem {

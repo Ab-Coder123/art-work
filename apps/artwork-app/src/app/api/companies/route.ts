@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(result, {
       status: 200,
       headers: {
-        "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120",
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=600",
       },
     });
   } catch {
@@ -33,6 +33,11 @@ export async function GET(request: NextRequest) {
       q,
       activeOnly: true,
     });
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json(result, {
+      status: 200,
+      headers: {
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=600",
+      },
+    });
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
 import { DEFAULT_COMPANIES } from "@art-work/types";
@@ -74,28 +74,30 @@ export function PartnersMarquee({
   companies = DEFAULT_COMPANIES,
 }: PartnersMarqueeProps) {
   const [activeCompanyId, setActiveCompanyId] = useState<string | null>(null);
-  const activeCompanies = companies.filter((c) => c.isActive !== false);
+  // In-Memory calculation memoization: divide and duplicate partner arrays exactly once per dataset
+  const { marqueeRow1, marqueeRow2 } = useMemo(() => {
+    const active = companies.filter((c) => c.isActive !== false);
+    const row1Base = active.filter((_, idx) => idx % 2 === 0);
+    const row2Base = active.filter((_, idx) => idx % 2 !== 0);
 
-  // Divide companies between Row 1 and Row 2 so each row displays completely distinct partners
-  const row1Base = activeCompanies.filter((_, idx) => idx % 2 === 0);
-  const row2Base = activeCompanies.filter((_, idx) => idx % 2 !== 0);
+    const r1 = row1Base.length > 0 ? row1Base : active;
+    const r2 = row2Base.length > 0 ? row2Base : active;
 
-  const r1 = row1Base.length > 0 ? row1Base : activeCompanies;
-  const r2 = row2Base.length > 0 ? row2Base : activeCompanies;
+    const rep1 = Math.max(2, Math.ceil(8 / Math.max(1, r1.length)));
+    const rep2 = Math.max(2, Math.ceil(8 / Math.max(1, r2.length)));
 
-  // Seamless duplication so each row infinitely loops smoothly without gaps
-  const rep1 = Math.max(2, Math.ceil(8 / Math.max(1, r1.length)));
-  const rep2 = Math.max(2, Math.ceil(8 / Math.max(1, r2.length)));
+    const row1Half = Array.from({ length: rep1 }, () => r1).flat();
+    const row2Half = Array.from({ length: rep2 }, () => r2).flat();
 
-  const row1Half = Array.from({ length: rep1 }, () => r1).flat();
-  const row2Half = Array.from({ length: rep2 }, () => r2).flat();
+    return {
+      marqueeRow1: [...row1Half, ...row1Half],
+      marqueeRow2: [...row2Half, ...row2Half],
+    };
+  }, [companies]);
 
-  const marqueeRow1 = [...row1Half, ...row1Half];
-  const marqueeRow2 = [...row2Half, ...row2Half];
-
-  const handleToggle = (id: string) => {
+  const handleToggle = useCallback((id: string) => {
     setActiveCompanyId((prev) => (prev === id ? null : id));
-  };
+  }, []);
 
   return (
     <div className="w-full mt-8 sm:mt-10 pt-6 sm:pt-8 border-t-2 border-black/10 dark:border-zinc-800">

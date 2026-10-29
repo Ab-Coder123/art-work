@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(result.data, {
         status: 200,
         headers: {
-          "Cache-Control": "public, s-maxage=10, stale-while-revalidate=59",
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=600",
         },
       });
     }
@@ -58,5 +58,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: fallbackResult.error }, { status: fallbackResult.status });
   }
 
-  return NextResponse.json(fallbackResult.data, { status: 200 });
+  return NextResponse.json(fallbackResult.data, {
+    status: 200,
+    headers: {
+      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=600",
+    },
+  });
 }

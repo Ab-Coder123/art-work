@@ -1,16 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSmoothScroll } from "@/hooks/useSmoothScroll";
-import { soundFX } from "@/utils/soundFX";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
+import { useTheaterStageController } from "@/hooks/useTheaterStageController";
 
 import {
-  type StageId,
-  STAGE_ORDER,
-  resolveHashToStage,
   StudioHeader,
   StudioFooter,
   ManifestoHero,
@@ -98,26 +94,19 @@ export interface HomeTheaterControllerProps {
 }
 
 export function HomeTheaterController({ initialData }: HomeTheaterControllerProps) {
-  const [activeStage, setActiveStage] = useState<StageId>("stage-01");
+  const {
+    activeStage,
+    scrollToStage,
+    trackRef,
+    theaterRef,
+    mainContainerRef,
+    triggerInkBurst,
+  } = useTheaterStageController();
+
   const [heroContent, setHeroContent] = useState(initialData.heroContent);
   const [whyUsContent, setWhyUsContent] = useState(initialData.whyUsContent);
   const [contactContent, setContactContent] = useState(initialData.contactContent);
   const [companies, setCompanies] = useState(initialData.companies);
-
-  const trackRef = useRef<HTMLDivElement>(null);
-  const theaterRef = useRef<HTMLDivElement>(null);
-  const mainContainerRef = useRef<HTMLElement>(null);
-  const isTransitioningRef = useRef(false);
-  const accumulatedDeltaRef = useRef(0);
-  const boundaryReachedTimeRef = useRef(0);
-  const activeStageRef = useRef<StageId>(activeStage);
-
-  useEffect(() => {
-    activeStageRef.current = activeStage;
-  }, [activeStage]);
-
-  // Activate Lenis luxury 60-120 FPS momentum smooth virtual scrolling
-  useSmoothScroll();
 
   // Background content freshness re-synchronization (silent background update)
   useEffect(() => {
@@ -164,331 +153,6 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
       mounted = false;
     };
   }, []);
-
-  // Mouse sparkle trail physics (bypassed if prefers-reduced-motion is active)
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-
-    const createSparkle = (x: number, y: number) => {
-      const p = document.createElement("div");
-      p.className = "cursor-particle";
-      p.style.left = `${x}px`;
-      p.style.top = `${y}px`;
-      const size = Math.floor(Math.random() * 8) + 4;
-      p.style.width = `${size}px`;
-      p.style.height = `${size}px`;
-
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 25 + 5;
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-
-      document.body.appendChild(p);
-
-      requestAnimationFrame(() => {
-        p.style.transform = `translate(${vx}px, ${vy}px) scale(0)`;
-        p.style.opacity = "0";
-      });
-
-      setTimeout(() => {
-        if (p.parentNode) p.parentNode.removeChild(p);
-      }, 450);
-    };
-
-    let lastMove = 0;
-    const handleMouseMove = (e: MouseEvent) => {
-      const now = Date.now();
-      if (now - lastMove > 110) {
-        createSparkle(e.clientX, e.clientY);
-        lastMove = now;
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-
-    // High-performance scroll synchronizer: throttled via RAF with zero redundant re-renders
-    let ticking = false;
-    const handleScroll = () => {
-      const isMobile = window.innerWidth < 768;
-
-      if (isMobile) {
-        const s2 = document.getElementById("stage-02-mobile");
-        const s3 = document.getElementById("stage-03-mobile");
-        const sGallery = document.getElementById("stage-gallery-mobile");
-        const s4 = document.getElementById("stage-04-mobile");
-        const threshold = window.innerHeight * 0.38;
-
-        let nextStage: StageId = "stage-01";
-        if (s4 && s4.getBoundingClientRect().top <= threshold) {
-          nextStage = "stage-04";
-        } else if (sGallery && sGallery.getBoundingClientRect().top <= threshold) {
-          nextStage = "stage-gallery";
-        } else if (s3 && s3.getBoundingClientRect().top <= threshold) {
-          nextStage = "stage-03";
-        } else if (s2 && s2.getBoundingClientRect().top <= threshold) {
-          nextStage = "stage-02";
-        }
-
-        setActiveStage((prev) => (prev === nextStage ? prev : nextStage));
-      }
-    };
-
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    handleScroll();
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  const scrollToStage = useCallback((stage: StageId) => {
-    soundFX.playWhoosh();
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
-    if (isMobile) {
-      const targetEl =
-        document.getElementById(`${stage}-mobile`) ||
-        document.getElementById(stage) ||
-        (stage === "stage-04" ? document.getElementById("brief-inquiry") : null);
-      if (targetEl) {
-        const headerOffset = 104; // Height of fixed header + mobile pill bar
-        const elementPosition = targetEl.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        const targetTop = Math.max(0, offsetPosition);
-
-        if (window.__lenis) {
-          window.__lenis.scrollTo(targetTop);
-        } else {
-          window.scrollTo({
-            top: targetTop,
-            behavior: "smooth",
-          });
-        }
-        setActiveStage(stage);
-        return;
-      }
-    }
-
-    // Desktop: Update active stage & reset internal component scroll
-    setActiveStage(stage);
-    if (mainContainerRef.current) {
-      mainContainerRef.current.scrollTop = 0;
-    }
-
-    // Sync 3D background / parallax track position
-    if (!trackRef.current) return;
-    const maxScroll = trackRef.current.scrollHeight - window.innerHeight;
-    let target = 0;
-    if (stage === "stage-01") target = 0;
-    if (stage === "stage-02") target = maxScroll * 0.25;
-    if (stage === "stage-03") target = maxScroll * 0.5;
-    if (stage === "stage-gallery") target = maxScroll * 0.75;
-    if (stage === "stage-04") target = maxScroll * 1.0;
-
-    if (window.__lenis) {
-      window.__lenis.scrollTo(target);
-    } else {
-      window.scrollTo({ top: target, behavior: "smooth" });
-    }
-  }, []);
-
-  // Global hash router & internal anchor navigation synchronizer
-  useEffect(() => {
-    const handleHash = () => {
-      if (typeof window === "undefined") return;
-      const stage = resolveHashToStage(window.location.hash);
-      if (stage) {
-        scrollToStage(stage);
-      }
-    };
-
-    handleHash();
-    const timer = setTimeout(handleHash, 180);
-    window.addEventListener("hashchange", handleHash);
-
-    const handleCustomNav = (e: Event) => {
-      const customEvent = e as CustomEvent<{ stage: StageId }>;
-      if (customEvent.detail?.stage) {
-        scrollToStage(customEvent.detail.stage);
-      }
-    };
-    window.addEventListener("artwork:navigate-stage", handleCustomNav);
-
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement).closest("a");
-      if (!target) return;
-      const href = target.getAttribute("href");
-      if (!href) return;
-
-      if (href.startsWith("#") || href.startsWith("/#")) {
-        const hash = href.startsWith("/#") ? href.slice(2) : href.slice(1);
-        const stage = resolveHashToStage(hash);
-        if (stage) {
-          e.preventDefault();
-          if (window.location.hash !== `#${hash}`) {
-            window.history.pushState(null, "", `#${hash}`);
-          }
-          scrollToStage(stage);
-        }
-      }
-    };
-
-    document.addEventListener("click", handleAnchorClick);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("hashchange", handleHash);
-      window.removeEventListener("artwork:navigate-stage", handleCustomNav);
-      document.removeEventListener("click", handleAnchorClick);
-    };
-  }, [scrollToStage]);
-
-  // Desktop internal wheel progression engine
-  useEffect(() => {
-    const theater = theaterRef.current;
-    if (!theater) return;
-
-    const handleWheel = (e: WheelEvent) => {
-      if (window.innerWidth < 768) return;
-
-      const main = mainContainerRef.current;
-      if (!main) return;
-
-      if (isTransitioningRef.current) {
-        e.preventDefault();
-        return;
-      }
-
-      const { scrollTop, scrollHeight, clientHeight } = main;
-      const maxScroll = Math.max(0, scrollHeight - clientHeight);
-      const isAtBottom = scrollTop >= maxScroll - 6;
-      const isAtTop = scrollTop <= 6;
-      const now = Date.now();
-
-      // Scrolling downwards
-      if (e.deltaY > 0) {
-        if (!isAtBottom) {
-          accumulatedDeltaRef.current = 0;
-          boundaryReachedTimeRef.current = 0;
-          return;
-        }
-
-        e.preventDefault();
-
-        if (boundaryReachedTimeRef.current === 0) {
-          boundaryReachedTimeRef.current = now;
-          accumulatedDeltaRef.current = 0;
-          return;
-        }
-
-        if (maxScroll > 15 && now - boundaryReachedTimeRef.current < 160) {
-          return;
-        }
-
-        accumulatedDeltaRef.current += e.deltaY;
-        if (accumulatedDeltaRef.current >= 45) {
-          const currentIndex = STAGE_ORDER.indexOf(activeStageRef.current);
-          if (currentIndex < STAGE_ORDER.length - 1) {
-            isTransitioningRef.current = true;
-            accumulatedDeltaRef.current = 0;
-            boundaryReachedTimeRef.current = 0;
-            const nextStage = STAGE_ORDER[currentIndex + 1];
-            scrollToStage(nextStage);
-            setTimeout(() => {
-              isTransitioningRef.current = false;
-            }, 600);
-          }
-        }
-      }
-      // Scrolling upwards
-      else if (e.deltaY < 0) {
-        if (!isAtTop) {
-          accumulatedDeltaRef.current = 0;
-          boundaryReachedTimeRef.current = 0;
-          return;
-        }
-
-        e.preventDefault();
-
-        if (boundaryReachedTimeRef.current === 0) {
-          boundaryReachedTimeRef.current = now;
-          accumulatedDeltaRef.current = 0;
-          return;
-        }
-
-        if (maxScroll > 15 && now - boundaryReachedTimeRef.current < 160) {
-          return;
-        }
-
-        accumulatedDeltaRef.current += e.deltaY;
-        if (accumulatedDeltaRef.current <= -45) {
-          const currentIndex = STAGE_ORDER.indexOf(activeStageRef.current);
-          if (currentIndex > 0) {
-            isTransitioningRef.current = true;
-            accumulatedDeltaRef.current = 0;
-            boundaryReachedTimeRef.current = 0;
-            const prevStage = STAGE_ORDER[currentIndex - 1];
-            scrollToStage(prevStage);
-            setTimeout(() => {
-              isTransitioningRef.current = false;
-            }, 600);
-          }
-        }
-      }
-    };
-
-    theater.addEventListener("wheel", handleWheel, { passive: false });
-    return () => {
-      theater.removeEventListener("wheel", handleWheel);
-    };
-  }, [scrollToStage]);
-
-  const triggerInkBurst = (e: React.MouseEvent<HTMLButtonElement>) => {
-    soundFX.playPop();
-    const rect = e.currentTarget.getBoundingClientRect();
-    const originX = rect.left + rect.width / 2;
-    const originY = rect.top + rect.height / 2;
-
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement("div");
-      p.className = "cursor-particle";
-      p.style.left = `${originX}px`;
-      p.style.top = `${originY}px`;
-      const size = Math.floor(Math.random() * 8) + 4;
-      p.style.width = `${size}px`;
-      p.style.height = `${size}px`;
-
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 30 + 10;
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-
-      document.body.appendChild(p);
-
-      requestAnimationFrame(() => {
-        p.style.transform = `translate(${vx}px, ${vy}px) scale(0)`;
-        p.style.opacity = "0";
-      });
-
-      setTimeout(() => {
-        if (p.parentNode) p.parentNode.removeChild(p);
-      }, 500);
-    }
-  };
 
   return (
     <>
