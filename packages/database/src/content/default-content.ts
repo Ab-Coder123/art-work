@@ -1,9 +1,10 @@
-import type { SiteContent } from "@art-work/types";
+import type { SiteContent, ServiceDisciplineItem } from "@art-work/types";
 
 export const SITE_MEDIA = {
   heroCollective: "/assets/images/hero_studio_collective.webp",
   stageBlueprint: "/assets/images/blueprint_stage_scenography.webp",
   creativeChiefIntake: "/assets/images/creative_chief_intake.webp",
+  spotlightEasel: "/assets/images/gallery/spotlight_blueprint_easel.jpg",
 } as const;
 
 const LEGACY_SITE_MEDIA: Record<string, string> = {
@@ -16,6 +17,285 @@ export function normalizeSiteMediaPath(value: string, fallback: string): string 
   const path = value.trim();
   return LEGACY_SITE_MEDIA[path] || path || fallback;
 }
+
+export const DEFAULT_SERVICE_DISCIPLINES: ServiceDisciplineItem[] = [
+  {
+    id: "concept-creation",
+    number: "01",
+    tag: "01 / CREATIVE",
+    title: "Concept Creation & Creative Development",
+    icon: "brush",
+    category: "creative",
+    specs: [
+      "Event Concept & Theme Design",
+      "Creative Direction & Narrative",
+      "Brand Environment Concept",
+      "Guest Journey Mapping",
+    ],
+    description:
+      "We shape the event idea, creative direction and experience around your objectives, audience and brand.",
+    deliverables: [
+      "Creative Direction Moodboards",
+      "Event Identity & Theme Deck",
+      "Spatial Narrative Guidelines",
+      "Experience Journey Blueprint",
+    ],
+    metrics: "Concept to Delivery",
+  },
+  {
+    id: "event-planning",
+    number: "02",
+    tag: "02 / PLANNING",
+    title: "Event Planning & Project Management",
+    icon: "compass",
+    category: "creative",
+    specs: [
+      "Master Event Schedule & Milestones",
+      "Vendor & Supplier Coordination",
+      "Budget & Resource Tracking",
+      "Stakeholder Communication",
+    ],
+    description:
+      "We coordinate the schedule, teams, suppliers and moving parts that take an event from brief to delivery.",
+    deliverables: [
+      "Critical Path Project Timeline",
+      "Supplier Procurement Alignment",
+      "On-Site Operational Run Sheets",
+      "Contingency & Risk Management",
+    ],
+    metrics: "Full Coordination",
+  },
+  {
+    id: "exhibition-booths",
+    number: "03",
+    tag: "03 / EXHIBITIONS",
+    title: "Exhibition Booth Design & Production",
+    icon: "architecture",
+    category: "events",
+    specs: [
+      "Custom 3D Booth Layouts",
+      "Structural Fabrication & Build",
+      "Branded Visitor Engagement Zones",
+      "Turnkey On-Site Assembly",
+    ],
+    description:
+      "We design and produce branded exhibition spaces that welcome visitors and support meaningful conversations.",
+    deliverables: [
+      "Detailed 3D Spatial Renders",
+      "Structural Fabrication Packages",
+      "Exhibition Hall Permit Liaison",
+      "On-Site Installation & Handover",
+    ],
+    metrics: "Turnkey Production",
+  },
+  {
+    id: "conferences-medical",
+    number: "04",
+    tag: "04 / CONFERENCES",
+    title: "Conference & Medical Event Management",
+    icon: "terminal",
+    category: "events",
+    specs: [
+      "Plenary & Breakout Room Staging",
+      "Speaker & Delegate Flow Management",
+      "Scientific & Corporate Program Alignment",
+      "On-Site Hospitality & Protocol",
+    ],
+    description:
+      "We coordinate conferences and medical events, from the attendee journey and programme logistics to on-site delivery.",
+    deliverables: [
+      "Speaker Staging & Briefing System",
+      "Delegate Flow & Seating Plans",
+      "Live Session AV Timecoding",
+      "Post-Conference Recap Reporting",
+    ],
+    metrics: "Medical & Corporate",
+  },
+  {
+    id: "stage-sound-lighting",
+    number: "05",
+    tag: "05 / STAGE",
+    title: "Stage, Sound & Lighting Solutions",
+    icon: "bolt",
+    category: "production",
+    specs: [
+      "Custom Stage Architecture",
+      "Acoustic Engineering & Clear Sound",
+      "Dynamic Stage & Ambient Lighting",
+      "Coordinated Cue Execution",
+    ],
+    description:
+      "We plan stage environments and coordinate sound and lighting for a clear, engaging live experience.",
+    deliverables: [
+      "Stage Rigging & Truss Schematics",
+      "Professional Sound Reinforcement",
+      "Intelligent Lighting Programming",
+      "Live Show Cue Direction",
+    ],
+    metrics: "Live Show Production",
+  },
+  {
+    id: "led-audiovisual",
+    number: "06",
+    tag: "06 / AV",
+    title: "LED Screens & Audiovisual Equipment",
+    icon: "videocam",
+    category: "production",
+    specs: [
+      "High-Resolution Indoor & Outdoor LED",
+      "Multi-Input Video Switching",
+      "Presentation & Media Playout",
+      "Dedicated Technical AV Engineers",
+    ],
+    description:
+      "We provide and coordinate LED screens and audiovisual equipment to support presentations, content and live moments.",
+    deliverables: [
+      "Ultra-HD LED Screen Rigs",
+      "Seamless Live Vision Mixing",
+      "Audio-Visual Playback Systems",
+      "On-Site Technical AV Operation",
+    ],
+    metrics: "High-Definition AV",
+  },
+  {
+    id: "branding-printing",
+    number: "07",
+    tag: "07 / BRANDING",
+    title: "Branding, Printing & Event Branding",
+    icon: "campaign",
+    category: "production",
+    specs: [
+      "Venue Backdrop & Wall Graphics",
+      "Directional Signage & Flags",
+      "Delegate Lanyards & Badges",
+      "High-Fidelity Event Collateral",
+    ],
+    description:
+      "We carry your brand across event graphics, printed materials, venue touchpoints and production assets.",
+    deliverables: [
+      "Large-Format Print Production",
+      "Wayfinding & Entrance Signage",
+      "Personalized Delegate Packs",
+      "Branded Stage Fascias & Podiums",
+    ],
+    metrics: "Consistent Identity",
+  },
+  {
+    id: "interactive-activities",
+    number: "08",
+    tag: "08 / ENGAGEMENT",
+    title: "Interactive Activities & Engagement Solutions",
+    icon: "sparkles",
+    category: "delivery",
+    specs: [
+      "Interactive Experiential Stations",
+      "Digital Photo & Video Activations",
+      "Audience Participation Moments",
+      "Social Sharing Touchpoints",
+    ],
+    description:
+      "We create participation moments that invite guests to connect, explore and engage with your brand.",
+    deliverables: [
+      "Custom Activation Hardware",
+      "Interactive Digital Software",
+      "Branded Social Photo Outputs",
+      "Engagement Analytics & Feedback",
+    ],
+    metrics: "Audience Engagement",
+  },
+  {
+    id: "promotional-merchandise",
+    number: "09",
+    tag: "09 / MERCH",
+    title: "Promotional Giveaways & Merchandise",
+    icon: "gift",
+    category: "delivery",
+    specs: [
+      "Curated Corporate Gifts & Giveaways",
+      "Custom Packaging & Presentation",
+      "Premium Quality Sourcing",
+      "Timely Event Delivery & Staging",
+    ],
+    description:
+      "We help select and prepare branded merchandise and giveaways that fit the event and audience.",
+    deliverables: [
+      "Branded VIP Gift Sets",
+      "Attendee Swag Bags & Items",
+      "Sustainable Merchandise Options",
+      "Delivered Ready for Handout",
+    ],
+    metrics: "Curated Merchandise",
+  },
+  {
+    id: "photography-videography",
+    number: "10",
+    tag: "10 / MEDIA",
+    title: "Photography & Videography",
+    icon: "camera",
+    category: "delivery",
+    specs: [
+      "High-Resolution Event Photography",
+      "Cinematic Highlight Reels",
+      "Keynote & Session Recording",
+      "Fast-Turnaround Social Recaps",
+    ],
+    description:
+      "We capture the event with photography and video for documentation, recap and future communications.",
+    deliverables: [
+      "Edited High-Res Photo Gallery",
+      "Full Event Highlight Video",
+      "Social-Ready Vertical Cuts (9:16)",
+      "Archival Event Footage",
+    ],
+    metrics: "Full Event Coverage",
+  },
+  {
+    id: "registration-staffing",
+    number: "11",
+    tag: "11 / STAFFING",
+    title: "Registration & Event Staffing",
+    icon: "users",
+    category: "delivery",
+    specs: [
+      "Fast Guest Registration & Badging",
+      "Trained Hostesses & Event Ushers",
+      "VIP Protocol & Hospitality Staff",
+      "Front-of-House Coordination",
+    ],
+    description:
+      "We coordinate registration support and event staff to welcome, guide and assist attendees.",
+    deliverables: [
+      "Smooth On-Site Check-In Flow",
+      "Uniformed & Briefed Event Hosts",
+      "VIP Welcome & Escort Service",
+      "Information Desk Management",
+    ],
+    metrics: "Hospitality & Flow",
+  },
+  {
+    id: "onsite-logistics",
+    number: "12",
+    tag: "12 / LOGISTICS",
+    title: "On-Site Event Management & Logistics",
+    icon: "truck",
+    category: "delivery",
+    specs: [
+      "Live Event Day Direction & Run-of-Show",
+      "Vendor & Supplier Load-In Management",
+      "Timeline & Schedule Control",
+      "Safe Breakdown & Handover",
+    ],
+    description:
+      "We manage on-site coordination, timing and logistics so teams and suppliers stay aligned during delivery.",
+    deliverables: [
+      "Real-Time Event Control & Run-Sheet",
+      "Supplier Load-In / Load-Out Schedules",
+      "Venue Liaison & Facility Protocol",
+      "Post-Event Site Inspection",
+    ],
+    metrics: "Seamless Live Delivery",
+  },
+];
 
 /**
  * Canonical default site content for the Art Work marketing platform.
@@ -32,14 +312,19 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     headlinePart1: "WE TURN IDEAS",
     headlinePart2: "INTO LIVE EXPERIENCES.",
     starburstText: {
-      top: "LIVE",
-      middle: "EVENTS",
-      bottom: "2026",
+      top: "TOP TIER",
+      middle: "TRUSTED",
+      bottom: "PARTNERS",
     },
     introParagraph:
       "From the initial concept to the final execution, we create memorable experiences that bring brands to life. Our team plans, designs and delivers events with the details, production and coordination needed to make every moment count.",
     primaryCtaText: "VIEW OUR PROJECTS",
     secondaryCtaText: "EXPLORE OUR SERVICES",
+    proofTagline: "CREATIVE | PLANNING | PRODUCTION | ON-SITE DELIVERY",
+    performanceBadge: "PERFORMANCE MARKETING",
+    partnersBadge: "PARTNERS",
+    partnersHeadlinePrefix: "TRUSTED BY",
+    partnersHeadlineHighlight: "INDUSTRY LEADERS",
     metrics: [
       { num: "12", label: "Service Areas" },
       { num: "1", label: "Connected Team" },
@@ -88,6 +373,42 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     },
   },
 
+  services: {
+    eyebrow: "OUR SERVICES",
+    headlinePrefix: "EVERY DETAIL, FROM FIRST IDEA TO",
+    headlineHighlight: "EVENT DAY.",
+    description:
+      "Creative, planning and production support for events that bring brands to life.",
+    filterAllLabel: "ALL SERVICES",
+    filterCreativeLabel: "CREATIVE & PLANNING",
+    filterEventsLabel: "EVENTS & EXHIBITIONS",
+    filterProductionLabel: "PRODUCTION & BRANDING",
+    filterDeliveryLabel: "GUEST EXPERIENCE & DELIVERY",
+    cardCtaText: "VIEW DELIVERABLES",
+    modalSelectCtaText: "Select in Brief",
+    disciplines: DEFAULT_SERVICE_DISCIPLINES,
+    bannerEyebrow: "PLANNING A BRAND EVENT OR EXHIBITION?",
+    bannerHeadlinePrefix: "ONE CONNECTED TEAM FROM",
+    bannerHeadlineHighlight: "FIRST IDEA TO EVENT DAY.",
+    bannerDescription:
+      "Tell us about your event format, audience and timing. We’ll follow up to discuss the right creative and production support.",
+    bannerCtaText: "PLAN YOUR EVENT",
+  },
+
+  homeShowcase: {
+    badge: "★ SELECTED PROJECTS",
+    headlinePrefix: "EVENTS THAT BRING",
+    headlineHighlight: "BRANDS TO LIFE.",
+    description:
+      "Explore events and experiences delivered by our team, from creative development to on-site coordination.",
+    viewAllCtaText: "VIEW ALL PROJECTS",
+    featuredEventBadge: "★ FEATURED EVENT",
+    youtubeButtonText: "YOUTUBE",
+    exploreGalleryCtaText: "EXPLORE GALLERY",
+    cardExploreText: "EXPLORE ➔",
+    mobileArchiveCtaText: "★ EXPLORE COMPLETE PROJECT ARCHIVE",
+  },
+
   contact: {
     stageTag: "TELL US WHAT YOU’RE PLANNING",
     headline: "LET’S PLAN YOUR NEXT EVENT.",
@@ -100,32 +421,39 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     phone: "+20 (2) 2794-0000",
     studioLocations: '380 Maadi Corniche - Jawharet Maadi Towers - Tower "B", 35th floor - Cairo',
     submitButtonText: "SEND YOUR EVENT BRIEF",
+    serviceOptions: [
+      "Stage Design & Arena Rigging",
+      "Conferences & Keynote LED",
+      "Exhibition Booths",
+      "Brand Architecture",
+      "Custom Rigging & Tech",
+    ],
     formFields: [
       {
         name: "fullName",
-        label: "YOUR NAME",
-        placeholder: "e.g. Alex Mercer",
+        label: "Full Name / Producer",
+        placeholder: "Alex Mercer",
         type: "text",
         required: true,
       },
       {
         name: "email",
-        label: "WORK EMAIL",
-        placeholder: "alex@company.com",
+        label: "Email Address",
+        placeholder: "alex@brand.com",
         type: "email",
         required: true,
       },
       {
         name: "serviceType",
-        label: "SERVICE NEEDED",
+        label: "Target Discipline",
         placeholder: "Select service needed...",
         type: "select",
         required: true,
       },
       {
         name: "brief",
-        label: "TELL US ABOUT YOUR EVENT",
-        placeholder: "Tell us about your event format, audience, objectives, and timing...",
+        label: "Project Brief & Scale",
+        placeholder: "Tell us about your venue, timeline, and creative vision...",
         type: "textarea",
         required: true,
       },
@@ -156,5 +484,139 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
       { num: "1", label: "Connected Team" },
       { num: "360°", label: "Live Delivery" },
     ],
+    primaryCtaText: "EXPLORE OUR SERVICES",
+    secondaryCtaText: "VIEW SELECTED PROJECTS",
+    easelTag: "EASEL BLUEPRINT // STAGE 02",
+    directorNote: "DIRECTOR NOTE: Every millimeter stress-tested & drafted custom.",
+    tailoredStamp: "100% TAILORED ENGINEERING",
+    zeroTemplatesBadge: "0% COOKIE-CUTTER TEMPLATES",
+    matrixBadge: "EXPERIENTIAL MATRIX",
+    matrixHeadlinePrefix: "Core Physical & Experiential",
+    matrixHeadlineHighlight: "Capabilities",
+    matrixDescription:
+      "We bring creative development, event planning and production together under one coordinated approach, keeping your brand and audience at the center of every experience.",
+    capabilityCards: [
+      {
+        title: "BRAND STRATEGY & CREATIVE SOLUTIONS",
+        description:
+          "We help brands communicate with clarity and purpose through creative concepts, consistent messaging, and marketing plans built around their goals.",
+        bullets: [
+          "Brand Positioning & Messaging",
+          "Creative Campaign Development",
+          "Content Strategy & Design",
+        ],
+        icon: "lightbulb",
+      },
+      {
+        title: "EXHIBITIONS & CUSTOM BOOTHS",
+        description:
+          "We design and produce exhibition booths that express your brand identity and create a welcoming space for visitors to explore, connect, and engage.",
+        bullets: [
+          "Custom Booth Design & 3D Visualization",
+          "Fabrication, Branding & Installation",
+          "Product Displays & Visitor Experience",
+        ],
+        icon: "store",
+      },
+      {
+        title: "STAGE DESIGN & EVENT PRODUCTION",
+        description:
+          "We bring events to life with stage designs and coordinated production that suit your venue, reflect your brand, and support your event programme.",
+        bullets: [
+          "Stage & Backdrop Design",
+          "Production Planning & Setup",
+          "On-Site Management & Coordination",
+        ],
+        icon: "layers",
+      },
+      {
+        title: "SCREENS & AUDIOVISUAL SOLUTIONS",
+        description:
+          "We bring sound, lighting, and screen content together to deliver clear presentations and engaging experiences throughout your event.",
+        bullets: [
+          "LED Screens & Visual Content",
+          "Sound & Lighting Solutions",
+          "Technical Operation & Event Support",
+        ],
+        icon: "monitor",
+      },
+    ],
+    calloutTag: "TELL US WHAT YOU’RE PLANNING",
+    calloutHeadlinePrefix: "LET'S DRAFT YOUR",
+    calloutHeadlineHighlight: "NEXT EVENT.",
+    calloutDescription:
+      "Tell us about your event format, audience and timing. We’ll follow up to discuss the right creative, planning and production support.",
+    calloutPrimaryCta: "SEND YOUR EVENT BRIEF",
+    calloutSecondaryCta: "EXPLORE SERVICES",
+  },
+
+  galleryPage: {
+    heroBadge: "★ PROJECT GALLERY",
+    headlinePart1: "EVENTS THAT BRING",
+    headlinePart2: "BRANDS TO LIFE.",
+    heroDescription:
+      "Explore conferences, exhibitions and brand experiences created for real audiences and real moments.",
+    heroTags: ["EVENTS", "EXHIBITIONS", "CONFERENCES", "BRAND EXPERIENCES"],
+    filterAllLabel: "All Projects",
+    filterConferencesLabel: "Conferences & Medical Events",
+    filterBoothsLabel: "Exhibition Booths",
+    filterBrandingLabel: "Branding & Print & giveways",
+    gridEyebrow: "SELECTED PROJECTS",
+    gridHeadline: "THE WORK, IN THE MOMENTS",
+    spotlightHeadline: "FROM BRIEF TO LIVE EXPERIENCE.",
+    spotlightTag: "DRAFTING TABLE: WORKBENCH 01",
+    spotlightImage: SITE_MEDIA.spotlightEasel,
+    spotlightImageAlt: "Stage Architect presenting hand-sketched blueprints",
+    approachBadge: "OUR APPROACH",
+    quoteText:
+      "From the initial concept to the final execution, we create memorable experiences that bring brands to life.",
+    quoteAuthor: "— ART WORK EVENT TEAM",
+    workflowSteps: [
+      {
+        stepNumber: "1",
+        title: "Understand",
+        description:
+          "We learn about your objectives, audience, event format, timing and practical requirements.",
+      },
+      {
+        stepNumber: "2",
+        title: "Create",
+        description:
+          "We develop the concept, creative direction and event experience with your team.",
+      },
+      {
+        stepNumber: "3",
+        title: "Plan & Produce",
+        description:
+          "We coordinate the schedule, suppliers, event branding, equipment and production details.",
+      },
+      {
+        stepNumber: "4",
+        title: "Deliver On Site",
+        description:
+          "We manage event operations and logistics as the experience comes to life.",
+      },
+    ],
+    spotlightCtaText: "LET’S PLAN YOUR NEXT EVENT",
+    ctaTag: "TELL US WHAT YOU’RE PLANNING",
+    ctaHeadlinePrefix: "PLANNING AN EVENT OR EXHIBITION?",
+    ctaHeadlineHighlight: "LET’S BRING IT TO LIFE.",
+    ctaDescription:
+      "Tell us about your event format, audience and timing. We’ll follow up to discuss the right creative and production support for your brief.",
+    ctaPrimaryButtonText: "SEND YOUR EVENT BRIEF",
+    ctaEmailPrefix: "EMAIL DIRECT",
+  },
+
+  layout: {
+    navHomeLabel: "Home",
+    navWhyUsLabel: "Why Us",
+    navServicesLabel: "Services",
+    navGalleryLabel: "Gallery",
+    navContactLabel: "Contact",
+    fullVaultCtaText: "★ Full Vault ↗",
+    briefCtaText: "Brief Inquiry",
+    footerCopyright: "© 2026 Art Work - Marketing Solutions.",
+    footerBrandTitle: "ART WORK",
+    footerBrandSubtitle: "Marketing Solutions",
   },
 };

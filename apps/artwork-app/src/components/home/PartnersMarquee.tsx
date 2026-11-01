@@ -17,15 +17,17 @@ export const PartnerLogoCard = React.memo(function PartnerLogoCard({
   return (
     <div
       onClick={onToggle}
-      className={`group relative flex items-center bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 p-1.5 rounded-2xl comic-shadow-sm transition-all duration-300 cursor-pointer shrink-0 select-none ${hoverTilt} ${isSelected
+      className={`group relative flex items-center bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 p-1.5 rounded-2xl comic-shadow-sm transition-all duration-300 cursor-pointer shrink-0 select-none ${hoverTilt} ${
+        isSelected
           ? "scale-105 -rotate-1 bg-yellow-50 dark:bg-[#222234] ring-2 ring-yellow-400 border-black dark:border-yellow-400 comic-shadow"
           : "hover:scale-105"
-        }`}
+      }`}
     >
       {/* Tape decoration on selected / hover */}
       <div
-        className={`absolute -top-2 left-3 w-8 h-3.5 bg-yellow-300/80 border border-black/30 -rotate-6 transition-opacity duration-200 pointer-events-none ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-          }`}
+        className={`absolute -top-2 left-3 w-8 h-3.5 bg-yellow-300/80 border border-black/30 -rotate-6 transition-opacity duration-200 pointer-events-none ${
+          isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+        }`}
       ></div>
 
       {/* High-Impact Large Logo Box */}
@@ -42,10 +44,11 @@ export const PartnerLogoCard = React.memo(function PartnerLogoCard({
 
       {/* Hidden by default -> Revealed smoothly on hover or click */}
       <div
-        className={`overflow-hidden transition-all duration-300 ease-out flex flex-col justify-center ${isSelected
+        className={`overflow-hidden transition-all duration-300 ease-out flex flex-col justify-center ${
+          isSelected
             ? "max-w-[260px] opacity-100 ml-2.5 sm:ml-3 pr-2"
             : "max-w-0 opacity-0 group-hover:max-w-[260px] group-hover:opacity-100 group-hover:ml-2.5 sm:group-hover:ml-3 group-hover:pr-2"
-          }`}
+        }`}
       >
         <div className="whitespace-nowrap">
           <div className="font-headline font-black text-xs sm:text-sm text-black dark:text-white uppercase tracking-wider">
@@ -69,9 +72,13 @@ export const PartnerLogoCard = React.memo(function PartnerLogoCard({
 
 export const PartnersMarquee = React.memo(function PartnersMarquee({
   companies = DEFAULT_COMPANIES,
+  partnersBadge = "PARTNERS",
+  partnersHeadlinePrefix = "TRUSTED BY",
+  partnersHeadlineHighlight = "INDUSTRY LEADERS",
+  starburstText = { top: "TOP TIER", middle: "TRUSTED", bottom: "PARTNERS" },
 }: PartnersMarqueeProps) {
   const [activeCompanyId, setActiveCompanyId] = useState<string | null>(null);
-  // In-Memory calculation memoization: divide and duplicate partner arrays exactly once per dataset
+
   const { marqueeRow1, marqueeRow2 } = useMemo(() => {
     const active = companies.filter((c) => c.isActive !== false);
     const row1Base = active.filter((_, idx) => idx % 2 === 0);
@@ -103,10 +110,13 @@ export const PartnersMarquee = React.memo(function PartnersMarquee({
         <div>
           <div className="inline-flex items-center gap-2 border-2 border-black bg-yellow-300 dark:bg-yellow-400 text-black px-3 py-1 rounded-full comic-shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider -rotate-1 mb-2">
             <Sparkles className="w-3.5 h-3.5 fill-current" />
-            <span>PARTNERS</span>
+            <span>{partnersBadge}</span>
           </div>
           <h2 className="font-headline font-black text-lg sm:text-2xl lg:text-3xl text-black dark:text-white uppercase tracking-tight">
-            TRUSTED BY <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-lg border-2 border-black comic-shadow-sm inline-block -rotate-1"> INDUSTRY LEADERS</span>
+            {partnersHeadlinePrefix}{" "}
+            <span className="bg-yellow-400 text-black px-2 py-0.5 rounded-lg border-2 border-black comic-shadow-sm inline-block -rotate-1">
+              {partnersHeadlineHighlight}
+            </span>
           </h2>
         </div>
 
@@ -121,9 +131,11 @@ export const PartnersMarquee = React.memo(function PartnersMarquee({
                 <polygon points="50,0 63,28 95,20 78,48 100,70 69,76 65,100 45,82 18,95 24,68 0,55 25,36 15,10 44,22"></polygon>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-1 text-black font-headline font-black text-[8px] sm:text-[9px] uppercase leading-tight -rotate-6">
-                <span>TOP TIER</span>
-                <span className="bg-black text-white px-1 py-0.2 rounded-sm text-[7px]">TRUSTED</span>
-                <span>PARTNERS</span>
+                <span>{starburstText.top}</span>
+                <span className="bg-black text-white px-1 py-0.2 rounded-sm text-[7px]">
+                  {starburstText.middle}
+                </span>
+                <span>{starburstText.bottom}</span>
               </div>
             </div>
           </div>

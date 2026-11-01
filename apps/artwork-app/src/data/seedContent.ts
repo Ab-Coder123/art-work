@@ -1,5 +1,5 @@
 import type { SiteContent, ProjectRecord } from "@art-work/types";
-import { SITE_MEDIA } from "@art-work/database/content/default-content";
+import { SITE_MEDIA, DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
 
 export const SEED_PROJECTS: ProjectRecord[] = [
   {
@@ -259,4 +259,8 @@ export const SEED_SITE_CONTENT: SiteContent = {
       { num: "72h", label: "Rapid Spatial Turnaround" },
     ],
   },
+  services: DEFAULT_SITE_CONTENT.services,
+  homeShowcase: DEFAULT_SITE_CONTENT.homeShowcase,
+  galleryPage: DEFAULT_SITE_CONTENT.galleryPage,
+  layout: DEFAULT_SITE_CONTENT.layout,
 };

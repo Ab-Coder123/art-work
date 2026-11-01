@@ -418,6 +418,11 @@ export interface HeroManifestoContent {
   introParagraph: string;
   primaryCtaText: string;
   secondaryCtaText: string;
+  proofTagline?: string;
+  performanceBadge?: string;
+  partnersBadge?: string;
+  partnersHeadlinePrefix?: string;
+  partnersHeadlineHighlight?: string;
   metrics: MetricItem[];
   canvasHeader: string;
   canvasTag: string;
@@ -431,6 +436,54 @@ export interface WhyUsTeaserContent {
   exploreCtaText: string;
   bentoCards: BentoCard[];
   blueprint: BlueprintContent;
+}
+
+export type ServiceDisciplineCategory = "creative" | "events" | "production" | "delivery";
+
+export interface ServiceDisciplineItem {
+  id: string;
+  number: string;
+  tag: string;
+  title: string;
+  icon: string;
+  category: ServiceDisciplineCategory;
+  specs: string[];
+  description: string;
+  deliverables: string[];
+  metrics: string;
+}
+
+export interface ServicesSectionContent {
+  eyebrow: string;
+  headlinePrefix: string;
+  headlineHighlight: string;
+  description: string;
+  filterAllLabel: string;
+  filterCreativeLabel: string;
+  filterEventsLabel: string;
+  filterProductionLabel: string;
+  filterDeliveryLabel: string;
+  cardCtaText: string;
+  modalSelectCtaText: string;
+  disciplines: ServiceDisciplineItem[];
+  bannerEyebrow: string;
+  bannerHeadlinePrefix: string;
+  bannerHeadlineHighlight: string;
+  bannerDescription: string;
+  bannerCtaText: string;
+}
+
+export interface HomeShowcaseSectionContent {
+  badge: string;
+  headlinePrefix: string;
+  headlineHighlight: string;
+  description: string;
+  viewAllCtaText: string;
+  featuredEventBadge: string;
+  youtubeButtonText: string;
+  exploreGalleryCtaText: string;
+  cardExploreText: string;
+  mobileArchiveCtaText: string;
 }
 
 export interface ContactFormField {
@@ -452,7 +505,15 @@ export interface ContactSectionContent {
   phone: string;
   studioLocations: string;
   submitButtonText: string;
+  serviceOptions?: string[];
   formFields: ContactFormField[];
+}
+
+export interface WhyUsCapabilityCard {
+  title: string;
+  description: string;
+  bullets: string[];
+  icon?: string;
 }
 
 export interface WhyUsPageContent {
@@ -469,6 +530,71 @@ export interface WhyUsPageContent {
   presentationImage: string;
   presentationImageAlt: string;
   metrics: MetricItem[];
+  primaryCtaText?: string;
+  secondaryCtaText?: string;
+  easelTag?: string;
+  directorNote?: string;
+  tailoredStamp?: string;
+  zeroTemplatesBadge?: string;
+  matrixBadge?: string;
+  matrixHeadlinePrefix?: string;
+  matrixHeadlineHighlight?: string;
+  matrixDescription?: string;
+  capabilityCards?: WhyUsCapabilityCard[];
+  calloutTag?: string;
+  calloutHeadlinePrefix?: string;
+  calloutHeadlineHighlight?: string;
+  calloutDescription?: string;
+  calloutPrimaryCta?: string;
+  calloutSecondaryCta?: string;
+}
+
+export interface GalleryWorkflowStep {
+  stepNumber: string;
+  title: string;
+  description: string;
+}
+
+export interface GalleryPageContent {
+  heroBadge: string;
+  headlinePart1: string;
+  headlinePart2: string;
+  heroDescription: string;
+  heroTags: string[];
+  filterAllLabel: string;
+  filterConferencesLabel: string;
+  filterBoothsLabel: string;
+  filterBrandingLabel: string;
+  gridEyebrow: string;
+  gridHeadline: string;
+  spotlightHeadline: string;
+  spotlightTag: string;
+  spotlightImage: string;
+  spotlightImageAlt: string;
+  approachBadge: string;
+  quoteText: string;
+  quoteAuthor: string;
+  workflowSteps: GalleryWorkflowStep[];
+  spotlightCtaText: string;
+  ctaTag: string;
+  ctaHeadlinePrefix: string;
+  ctaHeadlineHighlight: string;
+  ctaDescription: string;
+  ctaPrimaryButtonText: string;
+  ctaEmailPrefix: string;
+}
+
+export interface LayoutSectionContent {
+  navHomeLabel: string;
+  navWhyUsLabel: string;
+  navServicesLabel: string;
+  navGalleryLabel: string;
+  navContactLabel: string;
+  fullVaultCtaText: string;
+  briefCtaText: string;
+  footerCopyright: string;
+  footerBrandTitle: string;
+  footerBrandSubtitle: string;
 }
 
 export interface SiteContent {
@@ -476,8 +602,12 @@ export interface SiteContent {
   updatedAt: string;
   manifesto: HeroManifestoContent;
   whyUsTeaser: WhyUsTeaserContent;
+  services: ServicesSectionContent;
+  homeShowcase: HomeShowcaseSectionContent;
   contact: ContactSectionContent;
   whyUsPage: WhyUsPageContent;
+  galleryPage: GalleryPageContent;
+  layout: LayoutSectionContent;
 }
 
 // ---------------------------------------------------------------------------
@@ -694,4 +824,48 @@ export function isValidBehanceUrl(input: unknown): boolean {
   } catch {
     return false;
   }
+}
+
+
+export interface HomeShowcaseResolution {
+  hasExplicitStarred: boolean;
+  showcaseItems: ProjectRecord[];
+  featuredVideos: ProjectRecord[];
+  primaryVideo: ProjectRecord | null;
+  secondaryVideos: ProjectRecord[];
+  nonVideoItems: ProjectRecord[];
+}
+
+/**
+ * Resolves the projects and YouTube videos to showcase on the Home page (`/`).
+ * - Prioritizes all published projects marked with ★ Star (`featured: true`), ordered by `order` ascending.
+ * - Allows 1, 2, 3, or N starred videos to appear on the Home page without artificial truncation.
+ * - Gracefully falls back to the top 3 published projects only when zero projects are starred.
+ */
+export function resolveHomeShowcaseItems(
+  projects: ProjectRecord[]
+): HomeShowcaseResolution {
+  const published = (Array.isArray(projects) ? projects : [])
+    .filter((p) => !p.status || p.status === "published")
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  const starred = published.filter((p) => Boolean(p.featured));
+  const hasExplicitStarred = starred.length > 0;
+  const showcaseItems = hasExplicitStarred ? starred : published.slice(0, 3);
+
+  const featuredVideos = showcaseItems.filter(
+    (p) => resolveSafeYouTubeEmbed(p) !== null
+  );
+  const nonVideoItems = showcaseItems.filter(
+    (p) => resolveSafeYouTubeEmbed(p) === null
+  );
+
+  return {
+    hasExplicitStarred,
+    showcaseItems,
+    featuredVideos,
+    primaryVideo: featuredVideos[0] ?? null,
+    secondaryVideos: featuredVideos.slice(1),
+    nonVideoItems,
+  };
 }

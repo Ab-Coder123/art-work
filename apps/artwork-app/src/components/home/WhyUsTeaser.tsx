@@ -18,7 +18,14 @@ import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import { DEFAULT_WHY_US_CONTENT, type WhyUsTeaserProps } from "./types";
 
-export const WhyUsTeaser = React.memo(function WhyUsTeaser({ content = DEFAULT_WHY_US_CONTENT }: WhyUsTeaserProps) {
+export const WhyUsTeaser = React.memo(function WhyUsTeaser({
+  content = DEFAULT_WHY_US_CONTENT,
+}: WhyUsTeaserProps) {
+  const cards =
+    Array.isArray(content.bentoCards) && content.bentoCards.length > 0
+      ? content.bentoCards
+      : DEFAULT_WHY_US_CONTENT.bentoCards;
+
   return (
     <div className="w-full max-w-7xl mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 mb-2.5 pb-1.5 border-b-2 border-black dark:border-zinc-700">
@@ -43,90 +50,62 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({ content = DEFAULT_W
         </div>
       </div>
 
-      {/* 3 Bento Cards (Scaled ~5% for 15-inch Laptops) */}
+      {/* Bento Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 mb-2.5 sm:mb-3">
-        <motion.div
-          initial={{ opacity: 0, y: 22, scale: 0.97 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.12 }}
-          transition={{ duration: 0.45, delay: 0, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[175px] sm:min-h-[195px]"
-        >
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
-                {content.bentoCards[0].number}
-              </span>
-              <Layers className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
-            </div>
-            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
-              {content.bentoCards[0].title}
-            </h3>
-            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
-              {content.bentoCards[0].description}
-            </p>
-          </div>
-          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
-            <span className="bg-black text-white px-2 py-0.5 rounded">{content.bentoCards[0].badge}</span>
-            <CheckCircle2 className="w-3.5 h-3.5 text-black dark:text-yellow-400" />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 22, scale: 0.97 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.12 }}
-          transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-yellow-50 dark:bg-[#1B1B28] comic-shadow flex flex-col justify-between min-h-[175px] sm:min-h-[195px]"
-        >
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
-                {content.bentoCards[1].number}
-              </span>
-              <Sparkles className="w-4 h-4 text-black dark:text-yellow-400 fill-yellow-400" />
-            </div>
-            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
-              {content.bentoCards[1].title}
-            </h3>
-            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
-              {content.bentoCards[1].description}
-            </p>
-          </div>
-          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
-            <span className="bg-yellow-400 text-black border border-black px-2 py-0.5 rounded">
-              {content.bentoCards[1].badge}
-            </span>
-            <Zap className="w-3.5 h-3.5 text-black dark:text-yellow-400 fill-yellow-400" />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 22, scale: 0.97 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.12 }}
-          transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#151520] comic-shadow flex flex-col justify-between min-h-[175px] sm:min-h-[195px]"
-        >
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
-                {content.bentoCards[2].number}
-              </span>
-              <Palette className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
-            </div>
-            <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
-              {content.bentoCards[2].title}
-            </h3>
-            <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
-              {content.bentoCards[2].description}
-            </p>
-          </div>
-          <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
-            <span className="bg-black text-white px-2 py-0.5 rounded">{content.bentoCards[2].badge}</span>
-            <Paintbrush className="w-3.5 h-3.5 text-black dark:text-yellow-400" />
-          </div>
-        </motion.div>
+        {cards.map((card, idx) => {
+          const isMiddle = idx % 3 === 1;
+          return (
+            <motion.div
+              key={`${card.number}-${idx}`}
+              initial={{ opacity: 0, y: 22, scale: 0.97 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.45, delay: idx * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className={`border-2 border-black dark:border-zinc-700 p-3.5 sm:p-4 rounded-xl ${
+                isMiddle ? "bg-yellow-50 dark:bg-[#1B1B28]" : "bg-white dark:bg-[#151520]"
+              } comic-shadow flex flex-col justify-between min-h-[175px] sm:min-h-[195px]`}
+            >
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="w-5 h-5 rounded-DEFAULT bg-yellow-400 text-black border border-black flex items-center justify-center font-headline font-black text-[11px] comic-shadow-sm">
+                    {card.number}
+                  </span>
+                  {idx % 3 === 0 ? (
+                    <Layers className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
+                  ) : idx % 3 === 1 ? (
+                    <Sparkles className="w-4 h-4 text-black dark:text-yellow-400 fill-yellow-400" />
+                  ) : (
+                    <Palette className="w-4 h-4 text-black dark:text-yellow-400 stroke-[1.75]" />
+                  )}
+                </div>
+                <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 uppercase">
+                  {card.title}
+                </h3>
+                <p className="font-body text-xs text-black/75 dark:text-zinc-300 leading-relaxed">
+                  {card.description}
+                </p>
+              </div>
+              <div className="pt-2 mt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[10px] font-headline font-bold">
+                <span
+                  className={
+                    isMiddle
+                      ? "bg-yellow-400 text-black border border-black px-2 py-0.5 rounded"
+                      : "bg-black text-white px-2 py-0.5 rounded"
+                  }
+                >
+                  {card.badge}
+                </span>
+                {idx % 3 === 0 ? (
+                  <CheckCircle2 className="w-3.5 h-3.5 text-black dark:text-yellow-400" />
+                ) : idx % 3 === 1 ? (
+                  <Zap className="w-3.5 h-3.5 text-black dark:text-yellow-400 fill-yellow-400" />
+                ) : (
+                  <Paintbrush className="w-3.5 h-3.5 text-black dark:text-yellow-400" />
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Blueprint Showcase Card */}
@@ -152,6 +131,10 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({ content = DEFAULT_W
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover object-center"
+                unoptimized={
+                  content.blueprint.image.startsWith("http") ||
+                  content.blueprint.image.startsWith("data:")
+                }
               />
             </div>
           </div>

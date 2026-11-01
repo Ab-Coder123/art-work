@@ -12,12 +12,13 @@ import {
   CheckCircle2,
   Box,
   Mail,
+  Star,
 } from "lucide-react";
 
 export default function AdminOverviewPage() {
   const stats = [
-    { label: "Published Projects", value: "6", change: "100% Live", icon: FolderKanban, color: "text-emerald-400" },
-    { label: "Content Sections", value: "4", change: "Home & Why Us", icon: FileText, color: "text-yellow-400" },
+    { label: "Published Projects", value: "Live", change: "★ Home Video & Gallery", icon: FolderKanban, color: "text-emerald-400" },
+    { label: "Content Sections", value: "8", change: "Home, Why Us, Gallery & Nav", icon: FileText, color: "text-yellow-400" },
     { label: "Monorepo Apps", value: "2", change: "web + admin", icon: Box, color: "text-blue-400" },
     { label: "Build Engine", value: "Turbo", change: "Cached & Fast", icon: Sparkles, color: "text-purple-400" },
   ];
@@ -61,7 +62,7 @@ export default function AdminOverviewPage() {
             <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
               DIRECT MANAGEMENT DESTINATIONS
             </h3>
-            <span className="text-xs text-zinc-400 font-mono">3 modules configured</span>
+            <span className="text-xs text-zinc-400 font-mono">Full-site CMS &amp; ★ Video Sync</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -103,37 +104,37 @@ export default function AdminOverviewPage() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </h4>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Manage headline segments, manifesto intro, proof metrics, Why-Us bento cards, blueprint schematics, and client intake contact copy.
+                  Edit all 8 website sections: Home Hero &amp; Partners, Why-Us Bento, Services Matrix, Video Stage copy, Contact Form, /why-us, /gallery, and Header/Footer.
                 </p>
               </div>
 
               <div className="mt-6 pt-4 border-t border-[#262638] flex items-center justify-between text-xs font-mono text-zinc-400">
-                <span>Targets: / and /why-us</span>
-                <span className="text-yellow-400 font-bold group-hover:underline">Edit Copy →</span>
+                <span>Targets: /, /why-us &amp; /gallery</span>
+                <span className="text-yellow-400 font-bold group-hover:underline">Edit All 8 Sections →</span>
               </div>
             </Link>
 
-            {/* Card 3: Gallery Projects */}
+            {/* Card 3: Gallery Projects & ★ Home Videos */}
             <Link
               href="/projects"
               className="group p-6 rounded-2xl bg-[#151520] hover:bg-[#1a1a28] border border-[#262638] hover:border-yellow-400/50 transition-all flex flex-col justify-between relative overflow-hidden shadow-lg"
             >
               <div className="space-y-3">
                 <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 transition-transform">
-                  <FolderKanban className="w-6 h-6" />
+                  <Star className="w-6 h-6 text-yellow-400 fill-yellow-400/30" />
                 </div>
                 <h4 className="text-lg font-bold text-white group-hover:text-yellow-400 transition-colors flex items-center gap-2">
-                  <span>Gallery Projects Manager</span>
+                  <span>★ Home Videos &amp; Projects</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </h4>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Full CRUD lifecycle for showcase works. Reorder cards, assign categories (stage, booths, conferences, led), update CAD IDs, stamps, and specs.
+                  Click ★ On Home to swap or add multiple YouTube videos on the Home page, reorder showcase priority, upload 3D renders, Behance covers &amp; PDF blueprints.
                 </p>
               </div>
 
               <div className="mt-6 pt-4 border-t border-[#262638] flex items-center justify-between text-xs font-mono text-zinc-400">
-                <span>Targets: /gallery modal & grid</span>
-                <span className="text-yellow-400 font-bold group-hover:underline">Manage Works →</span>
+                <span>Targets: /#gallery-showcase &amp; /gallery</span>
+                <span className="text-yellow-400 font-bold group-hover:underline">Manage ★ Videos →</span>
               </div>
             </Link>
           </div>
@@ -153,7 +154,7 @@ export default function AdminOverviewPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
             <div className="p-3 rounded-xl bg-[#181824] border border-[#232334]">
-              <div className="text-yellow-400 font-bold mb-1">apps/web</div>
+              <div className="text-yellow-400 font-bold mb-1">apps/artwork-app</div>
               <div className="text-zinc-400 text-[11px]">Next.js 15 Client Marketing Site (Port 3000)</div>
             </div>
             <div className="p-3 rounded-xl bg-[#181824] border border-[#232334]">
@@ -161,8 +162,8 @@ export default function AdminOverviewPage() {
               <div className="text-zinc-400 text-[11px]">Next.js 15 Standalone Dashboard (Port 3001)</div>
             </div>
             <div className="p-3 rounded-xl bg-[#181824] border border-[#232334]">
-              <div className="text-yellow-400 font-bold mb-1">packages/types</div>
-              <div className="text-zinc-400 text-[11px]">Shared TypeScript Content Schemas</div>
+              <div className="text-yellow-400 font-bold mb-1">packages/types &amp; database</div>
+              <div className="text-zinc-400 text-[11px]">8-Section CMS Contract &amp; ★ Star Video Engine</div>
             </div>
           </div>
         </div>

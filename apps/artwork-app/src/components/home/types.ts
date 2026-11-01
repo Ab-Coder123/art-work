@@ -1,5 +1,14 @@
 import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
-import type { CompanyRecord, ContactSectionContent } from "@art-work/types";
+import type {
+  CompanyRecord,
+  ContactSectionContent,
+  HeroManifestoContent,
+  HomeShowcaseSectionContent,
+  LayoutSectionContent,
+  ProjectRecord,
+  ServicesSectionContent,
+  WhyUsTeaserContent,
+} from "@art-work/types";
 
 export type StageId = "stage-01" | "stage-02" | "stage-03" | "stage-gallery" | "stage-04";
 
@@ -32,19 +41,14 @@ export const resolveHashToStage = (hash: string): StageId | null => {
   return null;
 };
 
-export const DEFAULT_HERO_CONTENT = {
-  announcementBadge: DEFAULT_SITE_CONTENT.manifesto.announcementBadge,
-  editionBadge: DEFAULT_SITE_CONTENT.manifesto.editionBadge,
-  headlinePart1: DEFAULT_SITE_CONTENT.manifesto.headlinePart1,
-  headlinePart2: DEFAULT_SITE_CONTENT.manifesto.headlinePart2,
-  introParagraph: DEFAULT_SITE_CONTENT.manifesto.introParagraph,
-  metrics: DEFAULT_SITE_CONTENT.manifesto.metrics,
-};
+export const DEFAULT_HERO_CONTENT: HeroManifestoContent = DEFAULT_SITE_CONTENT.manifesto;
+export const DEFAULT_WHY_US_CONTENT: WhyUsTeaserContent = DEFAULT_SITE_CONTENT.whyUsTeaser;
+export const DEFAULT_SERVICES_CONTENT: ServicesSectionContent = DEFAULT_SITE_CONTENT.services;
+export const DEFAULT_HOME_SHOWCASE_CONTENT: HomeShowcaseSectionContent = DEFAULT_SITE_CONTENT.homeShowcase;
+export const DEFAULT_LAYOUT_CONTENT: LayoutSectionContent = DEFAULT_SITE_CONTENT.layout;
 
-export const DEFAULT_WHY_US_CONTENT = DEFAULT_SITE_CONTENT.whyUsTeaser;
-
-export type HeroContentData = typeof DEFAULT_HERO_CONTENT;
-export type WhyUsContentData = typeof DEFAULT_WHY_US_CONTENT;
+export type HeroContentData = HeroManifestoContent;
+export type WhyUsContentData = WhyUsTeaserContent;
 
 export interface ManifestoHeroProps {
   onViewCapabilities: () => void;
@@ -63,10 +67,27 @@ export interface PartnerLogoCardProps {
 
 export interface PartnersMarqueeProps {
   companies?: CompanyRecord[];
+  partnersBadge?: string;
+  partnersHeadlinePrefix?: string;
+  partnersHeadlineHighlight?: string;
+  starburstText?: {
+    top: string;
+    middle: string;
+    bottom: string;
+  };
 }
 
 export interface WhyUsTeaserProps {
   content?: WhyUsContentData;
+}
+
+export interface ServicesStageProps {
+  content?: ServicesSectionContent;
+}
+
+export interface GalleryShowcaseStageProps {
+  content?: HomeShowcaseSectionContent;
+  initialProjects?: ProjectRecord[];
 }
 
 export interface ContactSectionProps {
@@ -77,10 +98,12 @@ export interface StudioHeaderProps {
   activeStage: StageId;
   scrollToStage: (stage: StageId) => void;
   onInkBurst: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  layout?: LayoutSectionContent;
 }
 
 export interface StudioFooterProps {
   scrollToStage: (stage: StageId) => void;
+  layout?: LayoutSectionContent;
 }
 
 export interface TheaterStageIndicatorProps {

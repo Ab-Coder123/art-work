@@ -17,7 +17,7 @@ import { StageLoadingSkeleton } from "./StageLoadingSkeleton";
 import type { InitialHomeData } from "./server";
 
 /* =========================================================================
-   PHASE 3: BUNDLE SLICING VIA NEXT/DYNAMIC
+   BUNDLE SLICING VIA NEXT/DYNAMIC
    Heavy stage components & cinematic interactive canvas modules are lazy loaded
    to dramatically reduce the initial bundle size and boost Core Web Vitals (LCP/TBT).
    ========================================================================= */
@@ -113,46 +113,60 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
 
   const [heroContent, setHeroContent] = useState(initialData.heroContent);
   const [whyUsContent, setWhyUsContent] = useState(initialData.whyUsContent);
+  const [servicesContent, setServicesContent] = useState(initialData.servicesContent);
+  const [homeShowcaseContent, setHomeShowcaseContent] = useState(initialData.homeShowcaseContent);
   const [contactContent, setContactContent] = useState(initialData.contactContent);
+  const [layoutContent, setLayoutContent] = useState(initialData.layoutContent);
   const [companies, setCompanies] = useState(initialData.companies);
+  const [projects, setProjects] = useState(initialData.projects);
 
-  // Background content freshness re-synchronization (silent background update)
+  // Background content & ★ Starred projects freshness re-synchronization
   useEffect(() => {
     let mounted = true;
+
     fetch("/api/content", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((siteContent) => {
         if (!mounted || !siteContent) return;
-        if (siteContent.contact) {
-          setContactContent((prev) => ({ ...prev, ...siteContent.contact }));
+        if (siteContent.manifesto) {
+          setHeroContent((prev) => ({ ...prev, ...siteContent.manifesto }));
         }
-        if (siteContent.whyUsTeaser?.bentoCards && siteContent.whyUsTeaser.blueprint) {
+        if (siteContent.whyUsTeaser) {
           setWhyUsContent((prev) => ({
             ...prev,
             ...siteContent.whyUsTeaser,
-            bentoCards: siteContent.whyUsTeaser.bentoCards.slice(0, 3),
-            blueprint: { ...prev.blueprint, ...siteContent.whyUsTeaser.blueprint },
+            blueprint: { ...prev.blueprint, ...(siteContent.whyUsTeaser.blueprint || {}) },
           }));
         }
-        if (siteContent.manifesto) {
-          const m = siteContent.manifesto;
-          setHeroContent((prev) => ({
-            announcementBadge: String(m.announcementBadge || m.banner_badge || prev.announcementBadge),
-            editionBadge: String(m.editionBadge || prev.editionBadge),
-            headlinePart1: String(m.headlinePart1 || m.headline_highlight || prev.headlinePart1),
-            headlinePart2: String(m.headlinePart2 || m.headline_suffix || prev.headlinePart2),
-            introParagraph: String(m.introParagraph || m.subheadline || prev.introParagraph),
-            metrics: Array.isArray(m.metrics) && m.metrics.length ? m.metrics.slice(0, 3) : prev.metrics,
-          }));
+        if (siteContent.services) {
+          setServicesContent((prev) => ({ ...prev, ...siteContent.services }));
+        }
+        if (siteContent.homeShowcase) {
+          setHomeShowcaseContent((prev) => ({ ...prev, ...siteContent.homeShowcase }));
+        }
+        if (siteContent.contact) {
+          setContactContent((prev) => ({ ...prev, ...siteContent.contact }));
+        }
+        if (siteContent.layout) {
+          setLayoutContent((prev) => ({ ...prev, ...siteContent.layout }));
         }
       })
       .catch(() => {});
 
-    fetch("/api/companies")
+    fetch("/api/companies", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((json) => {
         if (mounted && json?.ok && Array.isArray(json.data) && json.data.length > 0) {
           setCompanies(json.data);
+        }
+      })
+      .catch(() => {});
+
+    fetch("/api/projects?limit=24", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((json) => {
+        if (mounted && Array.isArray(json?.items) && json.items.length > 0) {
+          setProjects(json.items);
         }
       })
       .catch(() => {});
@@ -181,7 +195,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
       {/* High-Performance 60FPS Disappearing Ink Doodle Canvas */}
       <InteractiveDoodleCanvas />
 
-      {/* Zero-DOM Pooled 2D Canvas Particle Engine (Phase 6) */}
+      {/* Zero-DOM Pooled 2D Canvas Particle Engine */}
       <KineticParticleCanvas />
 
       {/* Dot Grid Sketchpad Canvas */}
@@ -192,6 +206,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
         activeStage={activeStage}
         scrollToStage={scrollToStage}
         onInkBurst={triggerInkBurst}
+        layout={layoutContent}
       />
 
       {/* =========================================================================
@@ -229,17 +244,20 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
             id="stage-03-mobile"
             className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
           >
-            <ServicesStage />
+            <ServicesStage content={servicesContent} />
           </section>
         </ScrollReveal>
 
-        {/* Stage Gallery Mobile (Featured Projects Showcase) */}
+        {/* Stage Gallery Mobile (Featured Projects & ★ Star Videos Showcase) */}
         <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
           <section
             id="stage-gallery-mobile"
             className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
           >
-            <GalleryShowcaseStage />
+            <GalleryShowcaseStage
+              content={homeShowcaseContent}
+              initialProjects={projects}
+            />
           </section>
         </ScrollReveal>
 
@@ -256,7 +274,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
         </ScrollReveal>
 
         {/* Mobile Page Footer */}
-        <StudioFooter scrollToStage={scrollToStage} />
+        <StudioFooter scrollToStage={scrollToStage} layout={layoutContent} />
       </div>
 
       {/* =========================================================================
@@ -326,7 +344,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                   className="w-full flex-1 flex flex-col items-center justify-start"
                 >
-                  <ServicesStage />
+                  <ServicesStage content={servicesContent} />
                 </motion.div>
               )}
 
@@ -339,7 +357,10 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                   className="w-full flex-1 flex flex-col items-center justify-start"
                 >
-                  <GalleryShowcaseStage />
+                  <GalleryShowcaseStage
+                    content={homeShowcaseContent}
+                    initialProjects={projects}
+                  />
                 </motion.div>
               )}
 
@@ -362,7 +383,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
           </main>
 
           {/* Desktop Compact Footer */}
-          <StudioFooter scrollToStage={scrollToStage} />
+          <StudioFooter scrollToStage={scrollToStage} layout={layoutContent} />
         </div>
       </div>
     </>

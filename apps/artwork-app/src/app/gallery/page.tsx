@@ -26,15 +26,28 @@ import {
   FileText,
 } from "lucide-react";
 import {
-  ProjectCategory,
-  ProjectRecord,
+  type ContactSectionContent,
+  type GalleryPageContent,
+  type LayoutSectionContent,
+  type ProjectCategory,
+  type ProjectRecord,
   resolveSafeYouTubeEmbed,
   getProjectThumbnailUrl,
 } from "@art-work/types";
+import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
 import { SEED_PROJECTS } from "@/data/seedContent";
 
 export default function GalleryPage() {
   const [projects, setProjects] = useState<ProjectRecord[]>(SEED_PROJECTS);
+  const [galleryContent, setGalleryContent] = useState<GalleryPageContent>(
+    DEFAULT_SITE_CONTENT.galleryPage
+  );
+  const [layout, setLayout] = useState<LayoutSectionContent>(
+    DEFAULT_SITE_CONTENT.layout
+  );
+  const [contact, setContact] = useState<ContactSectionContent>(
+    DEFAULT_SITE_CONTENT.contact
+  );
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
   const [activeModalImage, setActiveModalImage] = useState<string | null>(null);
@@ -66,15 +79,34 @@ export default function GalleryPage() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch("/api/projects?limit=24", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
+        const [projRes, contentRes] = await Promise.allSettled([
+          fetch("/api/projects?limit=24", { cache: "no-store" }),
+          fetch("/api/content", { cache: "no-store" }),
+        ]);
+
+        if (projRes.status === "fulfilled" && projRes.value.ok) {
+          const data = await projRes.value.json();
           if (mounted && Array.isArray(data.items) && data.items.length > 0) {
             setProjects(data.items);
           }
         }
+
+        if (contentRes.status === "fulfilled" && contentRes.value.ok) {
+          const siteContent = await contentRes.value.json();
+          if (mounted && siteContent) {
+            if (siteContent.galleryPage) {
+              setGalleryContent((prev) => ({ ...prev, ...siteContent.galleryPage }));
+            }
+            if (siteContent.layout) {
+              setLayout((prev) => ({ ...prev, ...siteContent.layout }));
+            }
+            if (siteContent.contact) {
+              setContact((prev) => ({ ...prev, ...siteContent.contact }));
+            }
+          }
+        }
       } catch {
-        // Fallback to SEED_PROJECTS when offline
+        // Fallback to defaults when offline
       }
     })();
     return () => {
@@ -181,7 +213,11 @@ export default function GalleryPage() {
             return p.category === "branding" || p.category === "tech";
           }
           if (activeFilter === "conferences") {
-            return p.category === "conferences" || p.category === "stage" || p.category === "led";
+            return (
+              p.category === "conferences" ||
+              p.category === "stage" ||
+              p.category === "led"
+            );
           }
           return p.category === activeFilter;
         });
@@ -189,6 +225,16 @@ export default function GalleryPage() {
   const selectedYtEmbed = selectedProject
     ? resolveSafeYouTubeEmbed(selectedProject.youtubeVideoId || selectedProject.youtubeUrl)
     : null;
+
+  const heroTags =
+    Array.isArray(galleryContent.heroTags) && galleryContent.heroTags.length > 0
+      ? galleryContent.heroTags
+      : DEFAULT_SITE_CONTENT.galleryPage.heroTags;
+
+  const workflowSteps =
+    Array.isArray(galleryContent.workflowSteps) && galleryContent.workflowSteps.length > 0
+      ? galleryContent.workflowSteps
+      : DEFAULT_SITE_CONTENT.galleryPage.workflowSteps;
 
   return (
     <>
@@ -214,7 +260,7 @@ export default function GalleryPage() {
           <Link
             href="/"
             className="group cursor-pointer active:scale-95 transition-transform flex items-center"
-            title="Art Work — Home"
+            title={`${layout.footerBrandTitle} — ${layout.navHomeLabel}`}
           >
             <div className="relative w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 lg:w-16 lg:h-16 hover:rotate-3 transition-transform">
               <Image
@@ -242,29 +288,29 @@ export default function GalleryPage() {
               href="/#stage-01"
               className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              Home
+              {layout.navHomeLabel}
             </Link>
             <Link
               href="/why-us"
               className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              Why Us
+              {layout.navWhyUsLabel}
             </Link>
             <Link
               href="/#stage-03"
               className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              Services
+              {layout.navServicesLabel}
             </Link>
             {/* Active Link: Gallery */}
             <span className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
-              Gallery
+              {layout.navGalleryLabel}
             </span>
             <Link
               href="/#stage-04"
               className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
-              Contact
+              {layout.navContactLabel}
             </Link>
           </nav>
 
@@ -278,7 +324,7 @@ export default function GalleryPage() {
                 href="/#stage-04"
                 className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-bold text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150"
               >
-                <span>Brief Inquiry</span>
+                <span>{layout.briefCtaText}</span>
                 <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
               </Link>
             </MagneticButton>
@@ -303,22 +349,22 @@ export default function GalleryPage() {
             href="/#stage-01"
             className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
           >
-            ← Home
+            ← {layout.navHomeLabel}
           </Link>
           <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
-            ★ Gallery Vault
+            ★ {layout.navGalleryLabel}
           </span>
           <Link
             href="/why-us"
             className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
           >
-            Why Us
+            {layout.navWhyUsLabel}
           </Link>
           <Link
             href="/#stage-04"
             className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
           >
-            Contact
+            {layout.navContactLabel}
           </Link>
         </div>
       </header>
@@ -330,7 +376,7 @@ export default function GalleryPage() {
           {/* Subtitle Tag */}
           <div className="flex items-center gap-3 mb-4">
             <div className="inline-flex items-center gap-2 border border-black dark:border-zinc-700 bg-yellow-400 text-black px-3.5 py-1 rounded-full comic-shadow-sm font-headline text-[10px] font-black uppercase tracking-wider -rotate-1">
-              <span>★ PROJECT GALLERY</span>
+              <span>{galleryContent.heroBadge}</span>
             </div>
           </div>
 
@@ -338,12 +384,14 @@ export default function GalleryPage() {
           <div className="max-w-5xl mb-6">
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-headline tracking-tighter uppercase leading-[0.98] text-black dark:text-white">
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={3} delay={0.1}>
-                EVENTS THAT BRING
+                {galleryContent.headlinePart1}
               </KineticBrushWord>{" "}
               <br />
               <span className="relative inline-block mt-2">
                 <span className="absolute -inset-1.5 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"></span>
-                <span className="text-black relative z-10 px-2">BRANDS TO LIFE.</span>
+                <span className="text-black relative z-10 px-2">
+                  {galleryContent.headlinePart2}
+                </span>
                 <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.8} delay={0.35} />
               </span>
             </h1>
@@ -351,36 +399,34 @@ export default function GalleryPage() {
 
           {/* Hero Subtitle & Taped Paper Callout */}
           <div className="relative p-5 sm:p-6 bg-yellow-50 dark:bg-[#161622] rounded-lg border-2 border-dashed border-yellow-500/70 dark:border-yellow-500/40 comic-shadow-sm max-w-4xl">
-            {/* Washi Masking Tape Accents */}
             <div className="washi-tape-yellow absolute -top-3 left-8 w-24 h-5 -rotate-2"></div>
             <div className="washi-tape-yellow absolute -top-3 right-12 w-20 h-5 rotate-3"></div>
 
             <p className="font-body text-sm sm:text-base text-black/90 dark:text-zinc-200 leading-relaxed font-semibold">
-              Explore conferences, exhibitions and brand experiences created for real audiences and real moments.
+              {galleryContent.heroDescription}
             </p>
 
             <div className="mt-4 flex flex-wrap items-center gap-3 pt-3 border-t border-yellow-300 dark:border-zinc-700 font-mono text-xs text-black/70 dark:text-zinc-400">
-              <span className="font-bold text-black dark:text-zinc-200">EVENTS</span>
-              <span>•</span>
-              <span className="font-bold text-black dark:text-zinc-200">EXHIBITIONS</span>
-              <span>•</span>
-              <span className="font-bold text-black dark:text-zinc-200">CONFERENCES</span>
-              <span>•</span>
-              <span className="font-bold text-black dark:text-zinc-200">BRAND EXPERIENCES</span>
+              {heroTags.map((tag, idx) => (
+                <React.Fragment key={`${tag}-${idx}`}>
+                  {idx > 0 && <span>•</span>}
+                  <span className="font-bold text-black dark:text-zinc-200">{tag}</span>
+                </React.Fragment>
+              ))}
             </div>
           </div>
 
-          {/* ================= PANTONE-STYLE CATEGORY FILTER CHIPS ================= */}
+          {/* ================= CATEGORY FILTER CHIPS ================= */}
           <div className="mt-10 flex flex-wrap items-center gap-2 pt-6 border-t border-dashed border-black/20 dark:border-zinc-800">
             <span className="font-mono text-xs font-bold text-black/60 dark:text-zinc-400 uppercase mr-2 flex items-center gap-1">
               <Filter className="w-3.5 h-3.5" /> FILTERS:
             </span>
 
             {[
-              { key: "all", label: `All Projects (${projects.length})` },
-              { key: "conferences", label: "Conferences & Medical Events" },
-              { key: "booths", label: "Exhibition Booths" },
-              { key: "branding", label: "Branding & Print & giveways" },
+              { key: "all", label: `${galleryContent.filterAllLabel} (${projects.length})` },
+              { key: "conferences", label: galleryContent.filterConferencesLabel },
+              { key: "booths", label: galleryContent.filterBoothsLabel },
+              { key: "branding", label: galleryContent.filterBrandingLabel },
             ].map((chip) => (
               <button
                 key={chip.key}
@@ -397,17 +443,16 @@ export default function GalleryPage() {
           </div>
         </section>
 
-        {/* ================= 6 UNCONVENTIONAL TACTILE PROJECT CARDS ================= */}
+        {/* ================= TACTILE PROJECT CARDS ================= */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-          {/* Section Sub-heading */}
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-3">
             <div>
               <div className="font-mono text-xs font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-widest mb-1">
-                SELECTED PROJECTS
+                {galleryContent.gridEyebrow}
               </div>
               <h2 className="text-2xl md:text-4xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
                 <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
-                  THE WORK, IN THE MOMENTS
+                  {galleryContent.gridHeadline}
                 </KineticBrushWord>
               </h2>
             </div>
@@ -437,11 +482,20 @@ export default function GalleryPage() {
                   <div>
                     {/* Header Info */}
                     <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-black/5 dark:border-white/5 font-mono text-[11px] text-black/60 dark:text-zinc-400">
-                      <span className="font-bold text-black dark:text-yellow-400 bg-yellow-400/20 dark:bg-yellow-400/10 px-2.5 py-0.5 rounded-full text-[10px] tracking-wider font-mono">
-                        {project.year || 2026}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-black dark:text-yellow-400 bg-yellow-400/20 dark:bg-yellow-400/10 px-2.5 py-0.5 rounded-full text-[10px] tracking-wider font-mono">
+                          {project.year || 2026}
+                        </span>
+                        {project.featured && (
+                          <span className="font-headline font-black text-[9px] bg-yellow-400 text-black px-2 py-0.5 rounded-full border border-black">
+                            ★ HOME
+                          </span>
+                        )}
+                      </div>
                       {project.metaBadge && (
-                        <span className="font-semibold text-xs tracking-wider">{project.metaBadge}</span>
+                        <span className="font-semibold text-xs tracking-wider">
+                          {project.metaBadge}
+                        </span>
                       )}
                     </div>
 
@@ -453,6 +507,10 @@ export default function GalleryPage() {
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        unoptimized={
+                          getProjectThumbnailUrl(project).startsWith("http") ||
+                          getProjectThumbnailUrl(project).startsWith("data:")
+                        }
                       />
 
                       {ytMedia ? (
@@ -469,7 +527,7 @@ export default function GalleryPage() {
                             </>
                           )}
                         </div>
-                                            ) : project.pdfUrl || project.category === "booths" ? (
+                      ) : project.pdfUrl || project.category === "booths" ? (
                         <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-yellow-400/95 backdrop-blur-sm text-black font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
                           <FileText className="w-3 h-3" />
                           <span>3D &amp; PDF</span>
@@ -525,7 +583,7 @@ export default function GalleryPage() {
                   onClick={() => setActiveFilter("all")}
                   className="px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs uppercase rounded border-2 border-black comic-shadow-sm cursor-pointer"
                 >
-                  VIEW ALL MASTERPIECES ({projects.length})
+                  {galleryContent.filterAllLabel} ({projects.length})
                 </button>
               </div>
             )}
@@ -538,11 +596,11 @@ export default function GalleryPage() {
             <span className="w-4 h-4 bg-yellow-400 border border-black"></span>
             <h2 className="text-2xl md:text-3xl font-black font-headline uppercase tracking-tight text-black dark:text-white">
               <KineticBrushWord variant="wave" color="#dcb858" strokeWidth={2.4}>
-                    FROM BRIEF TO LIVE EXPERIENCE.
+                {galleryContent.spotlightHeadline}
               </KineticBrushWord>
             </h2>
             <span className="font-mono text-xs text-black/50 dark:text-zinc-400 ml-auto hidden sm:inline">
-              DRAFTING TABLE: WORKBENCH 01
+              {galleryContent.spotlightTag}
             </span>
           </ScrollReveal>
 
@@ -552,7 +610,6 @@ export default function GalleryPage() {
             delay={0.1}
             className="relative bg-white dark:bg-[#151520] rounded-2xl border-3 border-black dark:border-zinc-700 p-6 md:p-8 comic-shadow overflow-hidden"
           >
-            {/* Washi Tape on corners */}
             <div className="washi-tape-yellow absolute top-3 left-10 w-32 h-6 -rotate-2 z-10"></div>
             <div className="washi-tape-yellow absolute top-3 right-10 w-28 h-6 rotate-3 z-10"></div>
 
@@ -561,11 +618,15 @@ export default function GalleryPage() {
               <div className="lg:col-span-7 space-y-3">
                 <div className="relative border-2 border-black dark:border-zinc-700 rounded-xl overflow-hidden comic-shadow-sm bg-white dark:bg-zinc-900 aspect-[16/11]">
                   <Image
-                    src="/assets/images/gallery/spotlight_blueprint_easel.jpg"
-                    alt="Stage Architect presenting hand-sketched blueprints"
+                    src={galleryContent.spotlightImage}
+                    alt={galleryContent.spotlightImageAlt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 55vw"
                     className="object-cover"
+                    unoptimized={
+                      galleryContent.spotlightImage.startsWith("http") ||
+                      galleryContent.spotlightImage.startsWith("data:")
+                    }
                   />
                   <div className="absolute top-3 right-3 bg-yellow-400 text-black font-mono text-xs px-2.5 py-1 rounded border border-black font-bold comic-shadow-sm">
                     STAGE_SPEC_REV_04
@@ -583,54 +644,31 @@ export default function GalleryPage() {
               <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-5">
                 <div>
                   <div className="inline-block px-2.5 py-0.5 bg-black text-yellow-400 font-mono text-xs font-bold rounded mb-2">
-                    OUR APPROACH
+                    {galleryContent.approachBadge}
                   </div>
-              
 
                   {/* Sticky note quote box */}
                   <div className="my-4 p-3.5 bg-yellow-100 dark:bg-[#1e1e2c] rounded border-2 border-black dark:border-zinc-700 comic-shadow-sm relative">
                     <p className="font-headline font-bold text-xs sm:text-sm text-black dark:text-zinc-100 leading-snug">
-                      &quot;From the initial concept to the final execution, we create memorable experiences that bring brands to life.&quot;
+                      &quot;{galleryContent.quoteText}&quot;
                     </p>
                     <div className="mt-2 text-right font-mono text-[10px] text-black/70 dark:text-zinc-400 font-bold">
-                      — ART WORK EVENT TEAM
+                      {galleryContent.quoteAuthor}
                     </div>
                   </div>
 
                   {/* Workflow Checklist */}
                   <ul className="space-y-2.5 font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300">
-                    <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 rounded bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
-                        1
-                      </span>
-                      <span>
-                        <strong>Understand:</strong> We learn about your objectives, audience, event format, timing and practical requirements.
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 rounded bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
-                        2
-                      </span>
-                      <span>
-                        <strong>Create:</strong> We develop the concept, creative direction and event experience with your team.
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 rounded bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
-                        3
-                      </span>
-                      <span>
-                        <strong>Plan &amp; Produce:</strong> We coordinate the schedule, suppliers, event branding, equipment and production details.
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 rounded bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
-                        4
-                      </span>
-                      <span>
-                        <strong>Deliver On Site:</strong> We manage event operations and logistics as the experience comes to life.
-                      </span>
-                    </li>
+                    {workflowSteps.map((step, idx) => (
+                      <li key={`${step.title}-${idx}`} className="flex items-start gap-2">
+                        <span className="w-5 h-5 rounded bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black flex items-center justify-center font-mono text-xs font-bold flex-shrink-0">
+                          {step.stepNumber}
+                        </span>
+                        <span>
+                          <strong>{step.title}:</strong> {step.description}
+                        </span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
 
@@ -639,7 +677,7 @@ export default function GalleryPage() {
                     href="#brief-inquiry"
                     className="w-full inline-flex items-center justify-center gap-2 py-3 px-6 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-300 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors"
                   >
-                    <span>LET’S PLAN YOUR NEXT EVENT</span>
+                    <span>{galleryContent.spotlightCtaText}</span>
                     <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>
@@ -657,16 +695,16 @@ export default function GalleryPage() {
           >
             <div className="relative z-10 max-w-3xl">
               <span className="px-3 py-0.5 bg-black text-white font-mono text-xs font-bold uppercase rounded inline-block mb-3">
-                TELL US WHAT YOU’RE PLANNING
+                {galleryContent.ctaTag}
               </span>
               <h2 className="text-2xl sm:text-4xl font-black font-headline uppercase tracking-tight text-black leading-tight mb-3">
-                PLANNING AN EVENT OR EXHIBITION?{" "}
+                {galleryContent.ctaHeadlinePrefix}{" "}
                 <KineticBrushWord variant="double" color="#111111" strokeWidth={2.4}>
-                  LET’S BRING IT TO LIFE.
+                  {galleryContent.ctaHeadlineHighlight}
                 </KineticBrushWord>
               </h2>
               <p className="font-body text-sm sm:text-base text-black/90 font-medium leading-relaxed mb-6">
-                Tell us about your event format, audience and timing. We’ll follow up to discuss the right creative and production support for your brief.
+                {galleryContent.ctaDescription}
               </p>
 
               {/* Action Buttons Cluster */}
@@ -676,20 +714,22 @@ export default function GalleryPage() {
                   className="px-6 py-3 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm flex items-center gap-2 active:scale-95 transition-transform"
                 >
                   <Send className="w-4 h-4" />
-                  <span>SEND YOUR EVENT BRIEF</span>
+                  <span>{galleryContent.ctaPrimaryButtonText}</span>
                 </Link>
                 <a
-                  href="mailto:ahmed.artwork2026@gmail.com"
+                  href={`mailto:${contact.email}`}
                   className="px-6 py-3 bg-white hover:bg-yellow-100 text-black font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm flex items-center gap-2 active:scale-95 transition-transform"
                 >
-                  <span>EMAIL DIRECT: ahmed.artwork2026@gmail.com</span>
+                  <span>
+                    {galleryContent.ctaEmailPrefix}: {contact.email}
+                  </span>
                 </a>
               </div>
 
               <div className="mt-6 pt-4 border-t border-black/20 flex flex-wrap items-center gap-4 font-mono text-xs text-black/80">
                 <span>★ ONE CONNECTED TEAM</span>
                 <span>•</span>
-                <span>📍 380 MAADI CORNICHE, JAWAHRET MAADI TOWERS // CAIRO</span>
+                <span>📍 {contact.studioLocations}</span>
                 <span>•</span>
                 <span>CREATIVE | PLANNING | PRODUCTION</span>
               </div>
@@ -809,6 +849,10 @@ export default function GalleryPage() {
                       alt={selectedProject.altText || selectedProject.title}
                       fill
                       className="object-cover"
+                      unoptimized={
+                        (activeModalImage || selectedProject.image).startsWith("http") ||
+                        (activeModalImage || selectedProject.image).startsWith("data:")
+                      }
                     />
                   </div>
 
@@ -835,6 +879,9 @@ export default function GalleryPage() {
                               alt={`Render ${idx + 1}`}
                               fill
                               className="object-cover"
+                              unoptimized={
+                                imgUrl.startsWith("http") || imgUrl.startsWith("data:")
+                              }
                             />
                           </button>
                         ))}
@@ -851,7 +898,8 @@ export default function GalleryPage() {
                         </div>
                         <div className="min-w-0">
                           <div className="font-headline font-black text-xs uppercase truncate">
-                            {selectedProject.pdfTitle || "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET"}
+                            {selectedProject.pdfTitle ||
+                              "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET"}
                           </div>
                           <div className="font-mono text-[10px] text-black/70">
                             Downloadable PDF • 100% CAD Specs
@@ -869,7 +917,7 @@ export default function GalleryPage() {
                       </a>
                     </div>
                   )}
-</div>
+                </div>
               )}
 
               <div className="pt-4 border-t border-black/10 dark:border-zinc-800 flex items-center justify-end">
@@ -888,33 +936,34 @@ export default function GalleryPage() {
       {/* ================= FOOTER ================= */}
       <footer className="w-full py-4 bg-white/95 dark:bg-[#0C0C10]/95 text-black dark:text-zinc-300 border-t-2 border-black dark:border-zinc-800 z-30">
         <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-7xl mx-auto text-[10px] text-black/70 dark:text-zinc-400 font-mono gap-2 sm:gap-0">
-          <div>
-            © 2025 Art Work Scenography Collective. All sketchbooks &amp; blueprints reserved.
-          </div>
-          <div className="flex items-center gap-4 font-headline font-bold">
+          <div>{layout.footerCopyright}</div>
+          <div className="flex items-center gap-4 font-headline font-bold uppercase">
             <Link href="/" className="hover:text-black dark:hover:text-white hover:underline">
-              HOME
+              {layout.navHomeLabel}
             </Link>
-            <Link href="/why-us" className="hover:text-black dark:hover:text-white hover:underline">
-              WHY US
+            <Link
+              href="/why-us"
+              className="hover:text-black dark:hover:text-white hover:underline"
+            >
+              {layout.navWhyUsLabel}
             </Link>
             <Link
               href="/#stage-03"
               className="hover:text-black dark:hover:text-white hover:underline"
             >
-              SERVICES
+              {layout.navServicesLabel}
             </Link>
             <Link
               href="/gallery"
               className="text-black dark:text-yellow-400 underline decoration-yellow-400"
             >
-              GALLERY
+              {layout.navGalleryLabel}
             </Link>
             <Link
               href="/#stage-04"
               className="hover:text-black dark:hover:text-white hover:underline"
             >
-              CONTACT
+              {layout.navContactLabel}
             </Link>
           </div>
         </div>

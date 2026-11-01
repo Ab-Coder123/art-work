@@ -723,3 +723,22 @@ export async function reorderProjects(
     data: rows.map(mapDbProjectToRecord),
   };
 }
+
+
+export {
+  resolveHomeShowcaseItems,
+  type HomeShowcaseResolution,
+} from "@art-work/types";
+
+/**
+ * Toggles the ★ Star (`featured`) flag on a project to add or remove it
+ * from the Home page video & project showcase. Returns HTTP 200 on success.
+ */
+export async function toggleProjectFeatured(
+  idOrSlug: string,
+  featured: boolean,
+  actorId: string | null,
+  repo: ProjectsRepository
+): Promise<ProjectServiceResult<ProjectRecord>> {
+  return updateProject(idOrSlug, { featured: Boolean(featured) }, actorId, repo);
+}

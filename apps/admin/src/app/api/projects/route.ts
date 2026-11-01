@@ -6,6 +6,26 @@ import {
   createProject,
 } from "@art-work/database";
 
+function revalidatePublicShowcase() {
+  const publicAppUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.PUBLIC_APP_URL ||
+    "https://artwork-agency.vercel.app";
+  const revalidateSecret = process.env.REVALIDATION_SECRET;
+  if (!revalidateSecret) return;
+
+  for (const path of ["/", "/gallery"]) {
+    fetch(`${publicAppUrl}/api/revalidate`, {
+      method: "POST",
+      headers: {
+        "x-revalidate-secret": revalidateSecret,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tag: "projects", path }),
+    }).catch(() => {});
+  }
+}
+
 /**
  * GET /api/projects (Admin Dashboard)
  * Lists all projects (published, draft, archived) with filtering & pagination.
@@ -46,9 +66,12 @@ export async function GET(request: NextRequest) {
  * Creates a new showcase project in `public.projects`.
  */
 export async function POST(request: NextRequest) {
-  const sessionCheck = await verifyAdminSessionFromCookies({
-    getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
-  }, { requireWriteAccess: true });
+  const sessionCheck = await verifyAdminSessionFromCookies(
+    {
+      getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
+    },
+    { requireWriteAccess: true }
+  );
   if (!sessionCheck.ok) {
     return NextResponse.json({ error: sessionCheck.error }, { status: sessionCheck.status });
   }
@@ -67,22 +90,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: result.error }, { status: result.status });
   }
 
-  // Trigger on-demand ISR revalidation on the public website (fire-and-forget)
-  const publicAppUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.PUBLIC_APP_URL ||
-    "https://artwork-agency.vercel.app";
-  const revalidateSecret = process.env.REVALIDATION_SECRET;
-  if (revalidateSecret) {
-    fetch(`${publicAppUrl}/api/revalidate`, {
-      method: "POST",
-      headers: {
-        "x-revalidate-secret": revalidateSecret,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ tag: "projects", path: "/gallery" }),
-    }).catch(() => {});
-  }
+  revalidatePublicShowcase();
 
   return NextResponse.json({ project: result.data }, { status: 201 });
 }

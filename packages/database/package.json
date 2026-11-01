@@ -18,6 +18,10 @@
       "types": "./src/content/default-content.ts",
       "default": "./src/content/default-content.ts"
     },
+    "./content/contract": {
+      "types": "./src/content/contract.ts",
+      "default": "./src/content/contract.ts"
+    },
     "./migrations": {
       "types": "./src/migrations/runner.ts",
       "default": "./src/migrations/runner.ts"

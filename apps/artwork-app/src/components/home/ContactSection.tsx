@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { CheckCircle2, AlertCircle, Loader2, Send } from "lucide-react";
@@ -8,11 +8,40 @@ import { soundFX } from "@/utils/soundFX";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
 import type { ContactSectionProps } from "./types";
 
-export const ContactSection = React.memo(function ContactSection({ content }: ContactSectionProps) {
+const DEFAULT_SERVICE_OPTIONS = [
+  "Stage Design & Arena Rigging",
+  "Conferences & Keynote LED",
+  "Exhibition Booths",
+  "Brand Architecture",
+  "Custom Rigging & Tech",
+];
+
+export const ContactSection = React.memo(function ContactSection({
+  content,
+}: ContactSectionProps) {
+  const serviceOptions = useMemo(
+    () =>
+      Array.isArray(content.serviceOptions) && content.serviceOptions.length > 0
+        ? content.serviceOptions
+        : DEFAULT_SERVICE_OPTIONS,
+    [content.serviceOptions]
+  );
+
+  const fieldMap = useMemo(() => {
+    const fields = Array.isArray(content.formFields) ? content.formFields : [];
+    const findField = (name: string) => fields.find((f) => f.name === name);
+    return {
+      fullName: findField("fullName"),
+      email: findField("email"),
+      serviceType: findField("serviceType"),
+      brief: findField("brief"),
+    };
+  }, [content.formFields]);
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    serviceType: "Stage Design & Arena Rigging",
+    serviceType: serviceOptions[0] || "Stage Design & Arena Rigging",
     brief: "",
     attachmentUrl: "",
     _hp: "",
@@ -28,13 +57,11 @@ export const ContactSection = React.memo(function ContactSection({ content }: Co
     formLoadedAtRef.current = Date.now();
   }, []);
 
-  const serviceOptions = [
-    "Stage Design & Arena Rigging",
-    "Conferences & Keynote LED",
-    "Exhibition Booths",
-    "Brand Architecture",
-    "Custom Rigging & Tech",
-  ];
+  useEffect(() => {
+    if (serviceOptions.length > 0 && !serviceOptions.includes(formData.serviceType)) {
+      setFormData((prev) => ({ ...prev, serviceType: serviceOptions[0] }));
+    }
+  }, [serviceOptions, formData.serviceType]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,17 +92,20 @@ export const ContactSection = React.memo(function ContactSection({ content }: Co
       if (!response.ok || !data.ok) {
         setSubmitStatus({
           type: "error",
-          message: data.error || "Failed to submit project brief. Please check your information.",
+          message:
+            data.error ||
+            "Failed to submit project brief. Please check your information.",
         });
       } else {
         setSubmitStatus({
           type: "success",
-          message: "⚡ Brief dispatched! Our stage director has received your specifications and will respond within 24 hours.",
+          message:
+            "⚡ Brief dispatched! Our stage director has received your specifications and will respond within 24 hours.",
         });
         setFormData({
           fullName: "",
           email: "",
-          serviceType: "Stage Design & Arena Rigging",
+          serviceType: serviceOptions[0] || "Stage Design & Arena Rigging",
           brief: "",
           attachmentUrl: "",
           _hp: "",
@@ -85,7 +115,8 @@ export const ContactSection = React.memo(function ContactSection({ content }: Co
     } catch {
       setSubmitStatus({
         type: "error",
-        message: "Network error occurred while sending your brief. Please verify your connection.",
+        message:
+          "Network error occurred while sending your brief. Please verify your connection.",
       });
     } finally {
       setIsSubmitting(false);
@@ -122,6 +153,10 @@ export const ContactSection = React.memo(function ContactSection({ content }: Co
                   fill
                   sizes="(max-width: 1024px) 100vw, 30vw"
                   className="object-cover object-center"
+                  unoptimized={
+                    content.intakeImage.startsWith("http") ||
+                    content.intakeImage.startsWith("data:")
+                  }
                 />
               </div>
               <div className="mt-1.5 text-center text-[10px] sm:text-xs font-headline font-bold text-black/70 dark:text-zinc-400">
@@ -134,14 +169,28 @@ export const ContactSection = React.memo(function ContactSection({ content }: Co
                 <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
                   @
                 </span>
-                <a href={`mailto:${content.email}`} className="hover:underline">{content.email}</a>
+                <a href={`mailto:${content.email}`} className="hover:underline">
+                  {content.email}
+                </a>
               </div>
+              {content.phone && (
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
+                    ☎
+                  </span>
+                  <a href={`tel:${content.phone}`} className="hover:underline">
+                    {content.phone}
+                  </a>
+                </div>
+              )}
               <div className="flex items-start sm:items-center gap-2">
                 <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5 sm:mt-0">
                   📍
                 </span>
                 <a
-                  href={`https://maps.google.com/?q=${encodeURIComponent(content.studioLocations)}`}
+                  href={`https://maps.google.com/?q=${encodeURIComponent(
+                    content.studioLocations
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline hover:text-yellow-500 transition-colors"
@@ -199,35 +248,41 @@ export const ContactSection = React.memo(function ContactSection({ content }: Co
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
-                    Your Name / Title
+                    {fieldMap.fullName?.label || "Your Name / Title"}
                   </label>
                   <input
                     className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
-                    placeholder="Alex Mercer, Head of Brand"
+                    placeholder={
+                      fieldMap.fullName?.placeholder || "Alex Mercer, Head of Brand"
+                    }
                     required
                     type="text"
                     value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, fullName: e.target.value })
+                    }
                   />
                 </div>
                 <div>
                   <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
-                    Email Address
+                    {fieldMap.email?.label || "Email Address"}
                   </label>
                   <input
                     className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
-                    placeholder="alex@company.com"
+                    placeholder={fieldMap.email?.placeholder || "alex@company.com"}
                     required
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                   />
                 </div>
               </div>
 
               <div>
                 <label className="block font-headline font-bold text-xs uppercase mb-1.5 text-black dark:text-zinc-300">
-                  Target Service
+                  {fieldMap.serviceType?.label || "Target Service"}
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {serviceOptions.map((opt) => (
@@ -251,14 +306,15 @@ export const ContactSection = React.memo(function ContactSection({ content }: Co
                 <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
                   {formData.serviceType === "Exhibition Booths"
                     ? "Booth Space Dimensions, Design Brief & Spatial Vision"
-                    : "The Core Brief / Vision Constraints"}
+                    : fieldMap.brief?.label || "The Core Brief / Vision Constraints"}
                 </label>
                 <textarea
                   className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
                   placeholder={
                     formData.serviceType === "Exhibition Booths"
                       ? "Specify stand dimensions (e.g. 6x6m island), height limits, custom CNC woodwork, and 3D render needs (min 10 characters)..."
-                      : "Describe your arena, product launch, or brand evolution requirements (min 10 characters)..."
+                      : fieldMap.brief?.placeholder ||
+                        "Describe your arena, product launch, or brand evolution requirements (min 10 characters)..."
                   }
                   required
                   rows={3}
@@ -271,13 +327,17 @@ export const ContactSection = React.memo(function ContactSection({ content }: Co
                 <div>
                   <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300 flex items-center justify-between">
                     <span>Attach Floorplan / 3D Reference (PDF or Image URL)</span>
-                    <span className="text-[10px] text-black/50 dark:text-zinc-500 font-normal lowercase">(optional)</span>
+                    <span className="text-[10px] text-black/50 dark:text-zinc-500 font-normal lowercase">
+                      (optional)
+                    </span>
                   </label>
                   <input
                     type="url"
                     placeholder="https://... (Link to your booth floorplan PDF, Google Drive, or render image)"
                     value={formData.attachmentUrl}
-                    onChange={(e) => setFormData({ ...formData, attachmentUrl: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, attachmentUrl: e.target.value })
+                    }
                     className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
                   />
                 </div>

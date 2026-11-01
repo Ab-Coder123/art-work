@@ -103,6 +103,24 @@ export async function updateSiteContent(
       doodleStickers: updates.whyUsPage?.doodleStickers || current.whyUsPage.doodleStickers,
       metrics: updates.whyUsPage?.metrics || current.whyUsPage.metrics,
     },
+    services: {
+      ...current.services,
+      ...(updates.services || {}),
+      disciplines: updates.services?.disciplines || current.services.disciplines,
+    },
+    homeShowcase: {
+      ...current.homeShowcase,
+      ...(updates.homeShowcase || {}),
+    },
+    galleryPage: {
+      ...current.galleryPage,
+      ...(updates.galleryPage || {}),
+      workflowSteps: updates.galleryPage?.workflowSteps || current.galleryPage.workflowSteps,
+    },
+    layout: {
+      ...current.layout,
+      ...(updates.layout || {}),
+    },
     updatedAt: new Date().toISOString(),
   };
 

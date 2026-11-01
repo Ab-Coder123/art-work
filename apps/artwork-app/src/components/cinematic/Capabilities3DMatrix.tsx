@@ -20,6 +20,8 @@ import {
   Building,
   ArrowUpRight,
 } from "lucide-react";
+import type { ServicesSectionContent, ServiceDisciplineItem } from "@art-work/types";
+import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 
@@ -55,306 +57,21 @@ const renderDisciplineIcon = (icon: string, className = "w-4 h-4 text-black") =>
 };
 
 export type ServiceCategory = "all" | "creative" | "events" | "production" | "delivery";
-
-export interface Discipline {
-  id: string;
-  number: string;
-  tag: string;
-  title: string;
-  icon: string;
-  category: "creative" | "events" | "production" | "delivery";
-  specs: string[];
-  description: string;
-  deliverables: string[];
-  metrics: string;
-}
-
-const DISCIPLINES: Discipline[] = [
-  {
-    id: "concept-creation",
-    number: "01",
-    tag: "01 / CREATIVE",
-    title: "Concept Creation & Creative Development",
-    icon: "brush",
-    category: "creative",
-    specs: [
-      "Event Concept & Theme Design",
-      "Creative Direction & Narrative",
-      "Brand Environment Concept",
-      "Guest Journey Mapping",
-    ],
-    description:
-      "We shape the event idea, creative direction and experience around your objectives, audience and brand.",
-    deliverables: [
-      "Creative Direction Moodboards",
-      "Event Identity & Theme Deck",
-      "Spatial Narrative Guidelines",
-      "Experience Journey Blueprint",
-    ],
-    metrics: "Concept to Delivery",
-  },
-  {
-    id: "event-planning",
-    number: "02",
-    tag: "02 / PLANNING",
-    title: "Event Planning & Project Management",
-    icon: "compass",
-    category: "creative",
-    specs: [
-      "Master Event Schedule & Milestones",
-      "Vendor & Supplier Coordination",
-      "Budget & Resource Tracking",
-      "Stakeholder Communication",
-    ],
-    description:
-      "We coordinate the schedule, teams, suppliers and moving parts that take an event from brief to delivery.",
-    deliverables: [
-      "Critical Path Project Timeline",
-      "Supplier Procurement Alignment",
-      "On-Site Operational Run Sheets",
-      "Contingency & Risk Management",
-    ],
-    metrics: "Full Coordination",
-  },
-  {
-    id: "exhibition-booths",
-    number: "03",
-    tag: "03 / EXHIBITIONS",
-    title: "Exhibition Booth Design & Production",
-    icon: "architecture",
-    category: "events",
-    specs: [
-      "Custom 3D Booth Layouts",
-      "Structural Fabrication & Build",
-      "Branded Visitor Engagement Zones",
-      "Turnkey On-Site Assembly",
-    ],
-    description:
-      "We design and produce branded exhibition spaces that welcome visitors and support meaningful conversations.",
-    deliverables: [
-      "Detailed 3D Spatial Renders",
-      "Structural Fabrication Packages",
-      "Exhibition Hall Permit Liaison",
-      "On-Site Installation & Handover",
-    ],
-    metrics: "Turnkey Production",
-  },
-  {
-    id: "conferences-medical",
-    number: "04",
-    tag: "04 / CONFERENCES",
-    title: "Conference & Medical Event Management",
-    icon: "terminal",
-    category: "events",
-    specs: [
-      "Plenary & Breakout Room Staging",
-      "Speaker & Delegate Flow Management",
-      "Scientific & Corporate Program Alignment",
-      "On-Site Hospitality & Protocol",
-    ],
-    description:
-      "We coordinate conferences and medical events, from the attendee journey and programme logistics to on-site delivery.",
-    deliverables: [
-      "Speaker Staging & Briefing System",
-      "Delegate Flow & Seating Plans",
-      "Live Session AV Timecoding",
-      "Post-Conference Recap Reporting",
-    ],
-    metrics: "Medical & Corporate",
-  },
-  {
-    id: "stage-sound-lighting",
-    number: "05",
-    tag: "05 / STAGE",
-    title: "Stage, Sound & Lighting Solutions",
-    icon: "bolt",
-    category: "production",
-    specs: [
-      "Custom Stage Architecture",
-      "Acoustic Engineering & Clear Sound",
-      "Dynamic Stage & Ambient Lighting",
-      "Coordinated Cue Execution",
-    ],
-    description:
-      "We plan stage environments and coordinate sound and lighting for a clear, engaging live experience.",
-    deliverables: [
-      "Stage Rigging & Truss Schematics",
-      "Professional Sound Reinforcement",
-      "Intelligent Lighting Programming",
-      "Live Show Cue Direction",
-    ],
-    metrics: "Live Show Production",
-  },
-  {
-    id: "led-audiovisual",
-    number: "06",
-    tag: "06 / AV",
-    title: "LED Screens & Audiovisual Equipment",
-    icon: "videocam",
-    category: "production",
-    specs: [
-      "High-Resolution Indoor & Outdoor LED",
-      "Multi-Input Video Switching",
-      "Presentation & Media Playout",
-      "Dedicated Technical AV Engineers",
-    ],
-    description:
-      "We provide and coordinate LED screens and audiovisual equipment to support presentations, content and live moments.",
-    deliverables: [
-      "Ultra-HD LED Screen Rigs",
-      "Seamless Live Vision Mixing",
-      "Audio-Visual Playback Systems",
-      "On-Site Technical AV Operation",
-    ],
-    metrics: "High-Definition AV",
-  },
-  {
-    id: "branding-printing",
-    number: "07",
-    tag: "07 / BRANDING",
-    title: "Branding, Printing & Event Branding",
-    icon: "campaign",
-    category: "production",
-    specs: [
-      "Venue Backdrop & Wall Graphics",
-      "Directional Signage & Flags",
-      "Delegate Lanyards & Badges",
-      "High-Fidelity Event Collateral",
-    ],
-    description:
-      "We carry your brand across event graphics, printed materials, venue touchpoints and production assets.",
-    deliverables: [
-      "Large-Format Print Production",
-      "Wayfinding & Entrance Signage",
-      "Personalized Delegate Packs",
-      "Branded Stage Fascias & Podiums",
-    ],
-    metrics: "Consistent Identity",
-  },
-  {
-    id: "interactive-activities",
-    number: "08",
-    tag: "08 / ENGAGEMENT",
-    title: "Interactive Activities & Engagement Solutions",
-    icon: "sparkles",
-    category: "delivery",
-    specs: [
-      "Interactive Experiential Stations",
-      "Digital Photo & Video Activations",
-      "Audience Participation Moments",
-      "Social Sharing Touchpoints",
-    ],
-    description:
-      "We create participation moments that invite guests to connect, explore and engage with your brand.",
-    deliverables: [
-      "Custom Activation Hardware",
-      "Interactive Digital Software",
-      "Branded Social Photo Outputs",
-      "Engagement Analytics & Feedback",
-    ],
-    metrics: "Audience Engagement",
-  },
-  {
-    id: "promotional-merchandise",
-    number: "09",
-    tag: "09 / MERCH",
-    title: "Promotional Giveaways & Merchandise",
-    icon: "gift",
-    category: "delivery",
-    specs: [
-      "Curated Corporate Gifts & Giveaways",
-      "Custom Packaging & Presentation",
-      "Premium Quality Sourcing",
-      "Timely Event Delivery & Staging",
-    ],
-    description:
-      "We help select and prepare branded merchandise and giveaways that fit the event and audience.",
-    deliverables: [
-      "Branded VIP Gift Sets",
-      "Attendee Swag Bags & Items",
-      "Sustainable Merchandise Options",
-      "Delivered Ready for Handout",
-    ],
-    metrics: "Curated Merchandise",
-  },
-  {
-    id: "photography-videography",
-    number: "10",
-    tag: "10 / MEDIA",
-    title: "Photography & Videography",
-    icon: "camera",
-    category: "delivery",
-    specs: [
-      "High-Resolution Event Photography",
-      "Cinematic Highlight Reels",
-      "Keynote & Session Recording",
-      "Fast-Turnaround Social Recaps",
-    ],
-    description:
-      "We capture the event with photography and video for documentation, recap and future communications.",
-    deliverables: [
-      "Edited High-Res Photo Gallery",
-      "Full Event Highlight Video",
-      "Social-Ready Vertical Cuts (9:16)",
-      "Archival Event Footage",
-    ],
-    metrics: "Full Event Coverage",
-  },
-  {
-    id: "registration-staffing",
-    number: "11",
-    tag: "11 / STAFFING",
-    title: "Registration & Event Staffing",
-    icon: "users",
-    category: "delivery",
-    specs: [
-      "Fast Guest Registration & Badging",
-      "Trained Hostesses & Event Ushers",
-      "VIP Protocol & Hospitality Staff",
-      "Front-of-House Coordination",
-    ],
-    description:
-      "We coordinate registration support and event staff to welcome, guide and assist attendees.",
-    deliverables: [
-      "Smooth On-Site Check-In Flow",
-      "Uniformed & Briefed Event Hosts",
-      "VIP Welcome & Escort Service",
-      "Information Desk Management",
-    ],
-    metrics: "Hospitality & Flow",
-  },
-  {
-    id: "onsite-logistics",
-    number: "12",
-    tag: "12 / LOGISTICS",
-    title: "On-Site Event Management & Logistics",
-    icon: "truck",
-    category: "delivery",
-    specs: [
-      "Live Event Day Direction & Run-of-Show",
-      "Vendor & Supplier Load-In Management",
-      "Timeline & Schedule Control",
-      "Safe Breakdown & Handover",
-    ],
-    description:
-      "We manage on-site coordination, timing and logistics so teams and suppliers stay aligned during delivery.",
-    deliverables: [
-      "Real-Time Event Control & Run-Sheet",
-      "Supplier Load-In / Load-Out Schedules",
-      "Venue Liaison & Facility Protocol",
-      "Post-Event Site Inspection",
-    ],
-    metrics: "Seamless Live Delivery",
-  },
-];
+export type Discipline = ServiceDisciplineItem;
 
 interface TiltCardProps {
   discipline: Discipline;
   index: number;
+  cardCtaText: string;
   onSelect: (discipline: Discipline) => void;
 }
 
-const TiltCard: React.FC<TiltCardProps> = ({ discipline, index, onSelect }) => {
+const TiltCard: React.FC<TiltCardProps> = ({
+  discipline,
+  index,
+  cardCtaText,
+  onSelect,
+}) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
@@ -444,7 +161,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ discipline, index, onSelect }) => {
 
         <div className="relative z-10 pt-2.5 border-t border-black/15 dark:border-zinc-800 font-headline font-black text-[10px] text-black dark:text-zinc-200 flex items-center justify-between tracking-wider">
           <span className="group-hover:underline decoration-yellow-400 decoration-2">
-            VIEW DELIVERABLES
+            {cardCtaText}
           </span>
           <span className="group-hover:translate-x-1 transition-transform text-black dark:text-yellow-400 flex items-center justify-center">
             <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
@@ -455,9 +172,20 @@ const TiltCard: React.FC<TiltCardProps> = ({ discipline, index, onSelect }) => {
   );
 };
 
-export const Capabilities3DMatrix: React.FC = () => {
+export interface Capabilities3DMatrixProps {
+  content?: ServicesSectionContent;
+}
+
+export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
+  content = DEFAULT_SITE_CONTENT.services,
+}) => {
   const [selectedDiscipline, setSelectedDiscipline] = useState<Discipline | null>(null);
   const [activeFilter, setActiveFilter] = useState<ServiceCategory>("all");
+
+  const disciplines =
+    Array.isArray(content.disciplines) && content.disciplines.length > 0
+      ? content.disciplines
+      : DEFAULT_SITE_CONTENT.services.disciplines;
 
   const navigateToBrief = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -472,39 +200,42 @@ export const Capabilities3DMatrix: React.FC = () => {
     }
   };
 
-  const filteredDisciplines = DISCIPLINES.filter((d) =>
+  const filteredDisciplines = disciplines.filter((d) =>
     activeFilter === "all" ? true : d.category === activeFilter
   );
 
+  const filterTabs: { key: ServiceCategory; label: string }[] = [
+    { key: "all", label: `${content.filterAllLabel} (${disciplines.length})` },
+    { key: "creative", label: content.filterCreativeLabel },
+    { key: "events", label: content.filterEventsLabel },
+    { key: "production", label: content.filterProductionLabel },
+    { key: "delivery", label: content.filterDeliveryLabel },
+  ];
+
   return (
-    <section className="w-full max-w-[1480px] mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 relative" id="stage-03">
+    <section
+      className="w-full max-w-[1480px] mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 relative"
+      id="stage-03"
+    >
       {/* Section Header */}
       <ScrollReveal direction="up" distance={15} className="text-center max-w-3xl mx-auto mb-6">
         <div className="inline-block bg-yellow-400 text-black px-3 py-1 border-2 border-black comic-shadow-sm font-headline text-xs font-black uppercase mb-2 -rotate-1">
-          OUR SERVICES
+          {content.eyebrow}
         </div>
         <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-black dark:text-white tracking-tight mb-2 uppercase">
-          EVERY DETAIL, FROM FIRST IDEA TO{" "}
+          {content.headlinePrefix}{" "}
           <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
-            EVENT DAY.
+            {content.headlineHighlight}
           </KineticBrushWord>
         </h2>
         <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-400 max-w-2xl mx-auto">
-          Creative, planning and production support for events that bring brands to life.
+          {content.description}
         </p>
       </ScrollReveal>
 
       {/* Filter Tabs */}
       <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-        {(
-          [
-            { key: "all", label: "ALL SERVICES (12)" },
-            { key: "creative", label: "CREATIVE & PLANNING" },
-            { key: "events", label: "EVENTS & EXHIBITIONS" },
-            { key: "production", label: "PRODUCTION & BRANDING" },
-            { key: "delivery", label: "GUEST EXPERIENCE & DELIVERY" },
-          ] as const
-        ).map((tab) => (
+        {filterTabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveFilter(tab.key)}
@@ -526,6 +257,7 @@ export const Capabilities3DMatrix: React.FC = () => {
             key={d.id}
             discipline={d}
             index={index}
+            cardCtaText={content.cardCtaText || "VIEW DELIVERABLES"}
             onSelect={(discipline) => setSelectedDiscipline(discipline)}
           />
         ))}
@@ -598,7 +330,7 @@ export const Capabilities3DMatrix: React.FC = () => {
                   onClick={navigateToBrief}
                   className="inline-flex items-center gap-2 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black font-headline font-bold text-xs px-5 py-2.5 rounded-lg border-2 border-black comic-shadow-sm transition-all cursor-pointer"
                 >
-                  <span>Select in Brief</span>
+                  <span>{content.modalSelectCtaText}</span>
                   <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
                 </a>
               </div>
@@ -613,16 +345,16 @@ export const Capabilities3DMatrix: React.FC = () => {
           <div className="relative z-10 max-w-xl text-left">
             <div className="flex items-center gap-1.5 mb-1 text-yellow-400 font-headline font-black text-xs tracking-wider uppercase">
               <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
-              <span>PLANNING A BRAND EVENT OR EXHIBITION?</span>
+              <span>{content.bannerEyebrow}</span>
             </div>
             <h3 className="font-headline font-black text-lg sm:text-xl tracking-tight mb-1">
-              ONE CONNECTED TEAM FROM{" "}
+              {content.bannerHeadlinePrefix}{" "}
               <KineticBrushWord variant="wave" color="#facc15" strokeWidth={2.2}>
-                FIRST IDEA TO EVENT DAY.
+                {content.bannerHeadlineHighlight}
               </KineticBrushWord>
             </h3>
             <p className="font-body text-xs text-white/80">
-              Tell us about your event format, audience and timing. We’ll follow up to discuss the right creative and production support.
+              {content.bannerDescription}
             </p>
           </div>
           <div className="relative z-10 flex-shrink-0">
@@ -631,7 +363,7 @@ export const Capabilities3DMatrix: React.FC = () => {
               href="#stage-04"
               onClick={navigateToBrief}
             >
-              <span>PLAN YOUR EVENT</span>
+              <span>{content.bannerCtaText}</span>
               <Send className="w-3.5 h-3.5 stroke-[2.5]" />
             </a>
           </div>

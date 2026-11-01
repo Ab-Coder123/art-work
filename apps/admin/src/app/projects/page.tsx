@@ -18,6 +18,7 @@ import {
   Smartphone,
   FileText,
   UploadCloud,
+  Star,
 } from "lucide-react";
 import {
   ProjectRecord,
@@ -235,6 +236,7 @@ export default function GalleryProjectsManager() {
   const [projects, setProjects] = useState<ProjectRecord[]>(INITIAL_PROJECTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ProjectCategory>("all");
+  const [showHomeStarredOnly, setShowHomeStarredOnly] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectRecord | null>(null);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -456,15 +458,78 @@ export default function GalleryProjectsManager() {
     };
   }, []);
 
+  const homeStarredCount = projects.filter((p) => Boolean(p.featured)).length;
+  const homeStarredVideosCount = projects.filter(
+    (p) => Boolean(p.featured) && Boolean(p.youtubeVideoId || p.youtubeUrl)
+  ).length;
+
   const filtered = projects.filter((p) => {
+    const matchesStar = !showHomeStarredOnly || Boolean(p.featured);
     const matchesCat = activeCategory === "all" || p.category === activeCategory;
     const matchesQuery =
       searchQuery === "" ||
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCat && matchesQuery;
+    return matchesStar && matchesCat && matchesQuery;
   });
+
+  const handleToggleFeatured = async (id: string) => {
+    const target = projects.find((p) => p.id === id);
+    if (!target) return;
+    const nextFeatured = !Boolean(target.featured);
+    const shouldAutoPublish = nextFeatured && target.status !== "published";
+
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              featured: nextFeatured,
+              status: shouldAutoPublish ? "published" : p.status,
+            }
+          : p
+      )
+    );
+
+    try {
+      const res = shouldAutoPublish
+        ? await apiFetchWithCsrf(`/api/projects/${encodeURIComponent(id)}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...target,
+              featured: true,
+              status: "published",
+            }),
+          })
+        : await apiFetchWithCsrf(`/api/projects/${encodeURIComponent(id)}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ featured: nextFeatured }),
+          });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.project) {
+          setProjects((prev) =>
+            prev.map((p) => (p.id === id ? data.project : p))
+          );
+        }
+        setNotification({
+          type: "success",
+          title: nextFeatured
+            ? "★ تمت إضافة الفيديو / المشروع للصفحة الرئيسية (Home)"
+            : "تم إزالة المشروع من الصفحة الرئيسية (Home)",
+          detail: nextFeatured
+            ? `سيظهر "${target.title}" الآن في قسم الفيديو والمشاريع المختارة في الصفحة الرئيسية.`
+            : `سيظل "${target.title}" متاحاً في معرض الأعمال الكامل (/gallery).`,
+        });
+      }
+    } catch {
+      // Optimistic state kept locally
+    }
+  };
 
   const handleToggleStatus = async (id: string) => {
     const target = projects.find((p) => p.id === id);
@@ -820,6 +885,7 @@ export default function GalleryProjectsManager() {
                 client: "Live Entertainment Global",
                 specs: ["30m Truss Frame", "DMX Lighting Matrix"],
                 status: "draft",
+                featured: false,
                 order: projects.length + 1,
                 isShort: false,
               });
@@ -874,6 +940,36 @@ export default function GalleryProjectsManager() {
             </button>
           </div>
         )}
+        {/* ★ Home Featured Videos & Showcase Status Bar */}
+        <div className="p-4 rounded-2xl bg-yellow-400/10 border border-yellow-400/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-yellow-400 text-black flex items-center justify-center shrink-0 shadow-[2px_2px_0px_#ffffff]">
+              <Star className="w-4 h-4 fill-black text-black" />
+            </div>
+            <div>
+              <div className="text-xs font-bold font-mono uppercase text-yellow-400">
+                ★ Home Page Video &amp; Showcase Control ({homeStarredVideosCount} Starred Video
+                {homeStarredVideosCount === 1 ? "" : "s"} • {homeStarredCount} Total Starred)
+              </div>
+              <p className="text-[11px] text-zinc-300 mt-0.5">
+                Click <strong>★ On Home</strong> on any YouTube video or project below to feature or swap it on the Home page. Star multiple videos to show a video switcher &amp; playable cards on Home! Use ↑↓ arrows to set #1 priority.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowHomeStarredOnly((v) => !v)}
+            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase flex items-center gap-1.5 shrink-0 transition-all cursor-pointer border ${
+              showHomeStarredOnly
+                ? "bg-yellow-400 text-black border-yellow-300"
+                : "bg-[#151520] text-yellow-400 border-yellow-400/40 hover:bg-yellow-400/20"
+            }`}
+          >
+            <Star className={`w-3.5 h-3.5 ${showHomeStarredOnly ? "fill-black" : "fill-yellow-400"}`} />
+            <span>{showHomeStarredOnly ? "Showing ★ Home Only" : `Filter ★ Home (${homeStarredCount})`}</span>
+          </button>
+        </div>
+
         {/* Controls Bar: Search & Filter */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-2xl bg-[#151520] border border-[#262638]">
           <div className="relative flex-1 max-w-md">
@@ -967,6 +1063,16 @@ export default function GalleryProjectsManager() {
                       <h4 className="text-sm font-bold text-white tracking-tight">
                         {project.title}
                       </h4>
+                      {project.featured && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold uppercase bg-yellow-400 text-black px-1.5 py-0.5 rounded">
+                          <Star className="w-2.5 h-2.5 fill-black text-black" />
+                          <span>
+                            {project.youtubeVideoId || project.youtubeUrl
+                              ? "HOME VIDEO"
+                              : "ON HOME"}
+                          </span>
+                        </span>
+                      )}
                       <span className="text-[10px] font-mono uppercase bg-yellow-400/10 text-yellow-400 px-1.5 py-0.5 rounded border border-yellow-400/20">
                         {project.category}
                       </span>
@@ -1005,8 +1111,30 @@ export default function GalleryProjectsManager() {
                   </div>
                 </div>
 
-                {/* Right: Status Toggle & Actions */}
-                <div className="flex items-center gap-3 self-end md:self-center">
+                {/* Right: ★ Home Star Toggle, Status Toggle & Actions */}
+                <div className="flex items-center gap-2.5 self-end md:self-center flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleFeatured(project.id)}
+                    title={
+                      project.featured
+                        ? "Currently featured on Home Page — Click to remove from Home"
+                        : "Click ★ Star to feature this video/project on the Home Page"
+                    }
+                    className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
+                      project.featured
+                        ? "bg-yellow-400 text-black border-yellow-300 shadow-[0_0_12px_rgba(250,204,21,0.25)]"
+                        : "bg-[#20202e] text-zinc-400 border-[#2b2b3d] hover:text-yellow-400 hover:border-yellow-400/50"
+                    }`}
+                  >
+                    <Star
+                      className={`w-3.5 h-3.5 ${
+                        project.featured ? "fill-black text-black" : ""
+                      }`}
+                    />
+                    <span>{project.featured ? "★ On Home" : "☆ Add to Home"}</span>
+                  </button>
+
                   <button
                     onClick={() => handleToggleStatus(project.id)}
                     className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold uppercase transition-colors cursor-pointer border ${
@@ -2257,22 +2385,47 @@ export default function GalleryProjectsManager() {
 
               {/* Sticky Bottom Actions Footer */}
               <div className="px-6 py-3.5 border-t border-[#262638] bg-[#12121a] flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="statusCheck"
-                    checked={editingProject.status === "published"}
-                    onChange={(e) =>
-                      setEditingProject({
-                        ...editingProject,
-                        status: e.target.checked ? "published" : "draft",
-                      })
-                    }
-                    className="w-4 h-4 rounded bg-[#0d0d12] border-[#2b2b3d] text-yellow-400 focus:ring-0 cursor-pointer"
-                  />
-                  <label htmlFor="statusCheck" className="text-zinc-300 cursor-pointer select-none">
-                    Publish to live /gallery view
-                  </label>
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="statusCheck"
+                      checked={editingProject.status === "published"}
+                      onChange={(e) =>
+                        setEditingProject({
+                          ...editingProject,
+                          status: e.target.checked ? "published" : "draft",
+                        })
+                      }
+                      className="w-4 h-4 rounded bg-[#0d0d12] border-[#2b2b3d] text-yellow-400 focus:ring-0 cursor-pointer"
+                    />
+                    <label htmlFor="statusCheck" className="text-zinc-300 cursor-pointer select-none">
+                      Publish to live /gallery view
+                    </label>
+                  </div>
+
+                  <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-yellow-400/10 border border-yellow-400/30">
+                    <input
+                      type="checkbox"
+                      id="featuredHomeCheck"
+                      checked={Boolean(editingProject.featured)}
+                      onChange={(e) =>
+                        setEditingProject({
+                          ...editingProject,
+                          featured: e.target.checked,
+                          status: e.target.checked ? "published" : editingProject.status,
+                        })
+                      }
+                      className="w-4 h-4 rounded bg-[#0d0d12] border-[#2b2b3d] text-yellow-400 focus:ring-0 cursor-pointer"
+                    />
+                    <label
+                      htmlFor="featuredHomeCheck"
+                      className="text-yellow-300 font-bold cursor-pointer select-none flex items-center gap-1"
+                    >
+                      <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                      <span>★ Show on Home Page (Video / Showcase)</span>
+                    </label>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-3">

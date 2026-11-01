@@ -1,13 +1,8 @@
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type {
-  SiteContent,
-  HeroManifestoContent,
-  WhyUsTeaserContent,
-  ContactSectionContent,
-  WhyUsPageContent,
-} from "@art-work/types";
+import type { SiteContent } from "@art-work/types";
 import { DEFAULT_SITE_CONTENT } from "./default-content";
+import { normalizeSiteContent } from "./contract";
 
 /* =========================================================================
    ZOD SECTION VALIDATION SCHEMAS
@@ -48,6 +43,11 @@ export const ManifestoSectionSchema = z.object({
   introParagraph: z.string().trim().min(5),
   primaryCtaText: z.string().trim().min(1),
   secondaryCtaText: z.string().trim().min(1),
+  proofTagline: z.string().trim().optional(),
+  performanceBadge: z.string().trim().optional(),
+  partnersBadge: z.string().trim().optional(),
+  partnersHeadlinePrefix: z.string().trim().optional(),
+  partnersHeadlineHighlight: z.string().trim().optional(),
   metrics: z.array(ContentMetricItemSchema).min(1),
   canvasHeader: z.string().trim().min(1),
   canvasTag: z.string().trim().min(1),
@@ -61,6 +61,52 @@ export const WhyUsTeaserSectionSchema = z.object({
   exploreCtaText: z.string().trim().min(1),
   bentoCards: z.array(BentoCardSchema).min(1),
   blueprint: BlueprintSchema,
+});
+
+export const ServiceDisciplineItemSchema = z.object({
+  id: z.string().trim().min(1),
+  number: z.string().trim().min(1),
+  tag: z.string().trim().min(1),
+  title: z.string().trim().min(1),
+  icon: z.string().trim().min(1),
+  category: z.enum(["creative", "events", "production", "delivery"]),
+  specs: z.array(z.string().trim().min(1)).min(1),
+  description: z.string().trim().min(3),
+  deliverables: z.array(z.string().trim().min(1)).min(1),
+  metrics: z.string().trim().min(1),
+});
+
+export const ServicesSectionSchema = z.object({
+  eyebrow: z.string().trim().min(1),
+  headlinePrefix: z.string().trim().min(1),
+  headlineHighlight: z.string().trim().min(1),
+  description: z.string().trim().min(3),
+  filterAllLabel: z.string().trim().min(1),
+  filterCreativeLabel: z.string().trim().min(1),
+  filterEventsLabel: z.string().trim().min(1),
+  filterProductionLabel: z.string().trim().min(1),
+  filterDeliveryLabel: z.string().trim().min(1),
+  cardCtaText: z.string().trim().min(1),
+  modalSelectCtaText: z.string().trim().min(1),
+  disciplines: z.array(ServiceDisciplineItemSchema).min(1),
+  bannerEyebrow: z.string().trim().min(1),
+  bannerHeadlinePrefix: z.string().trim().min(1),
+  bannerHeadlineHighlight: z.string().trim().min(1),
+  bannerDescription: z.string().trim().min(3),
+  bannerCtaText: z.string().trim().min(1),
+});
+
+export const HomeShowcaseSectionSchema = z.object({
+  badge: z.string().trim().min(1),
+  headlinePrefix: z.string().trim().min(1),
+  headlineHighlight: z.string().trim().min(1),
+  description: z.string().trim().min(3),
+  viewAllCtaText: z.string().trim().min(1),
+  featuredEventBadge: z.string().trim().min(1),
+  youtubeButtonText: z.string().trim().min(1),
+  exploreGalleryCtaText: z.string().trim().min(1),
+  cardExploreText: z.string().trim().min(1),
+  mobileArchiveCtaText: z.string().trim().min(1),
 });
 
 export const ContactFormFieldSchema = z.object({
@@ -82,7 +128,15 @@ export const ContactSectionSchema = z.object({
   phone: z.string().trim().min(3),
   studioLocations: z.string().trim().min(1),
   submitButtonText: z.string().trim().min(1),
+  serviceOptions: z.array(z.string().trim().min(1)).optional(),
   formFields: z.array(ContactFormFieldSchema).min(1),
+});
+
+export const WhyUsCapabilityCardSchema = z.object({
+  title: z.string().trim().min(1),
+  description: z.string().trim().min(3),
+  bullets: z.array(z.string().trim().min(1)).min(1),
+  icon: z.string().trim().optional(),
 });
 
 export const WhyUsPageSectionSchema = z.object({
@@ -99,27 +153,113 @@ export const WhyUsPageSectionSchema = z.object({
   presentationImage: z.string().trim().min(1),
   presentationImageAlt: z.string().trim().min(1),
   metrics: z.array(ContentMetricItemSchema).min(1),
+  primaryCtaText: z.string().trim().optional(),
+  secondaryCtaText: z.string().trim().optional(),
+  easelTag: z.string().trim().optional(),
+  directorNote: z.string().trim().optional(),
+  tailoredStamp: z.string().trim().optional(),
+  zeroTemplatesBadge: z.string().trim().optional(),
+  matrixBadge: z.string().trim().optional(),
+  matrixHeadlinePrefix: z.string().trim().optional(),
+  matrixHeadlineHighlight: z.string().trim().optional(),
+  matrixDescription: z.string().trim().optional(),
+  capabilityCards: z.array(WhyUsCapabilityCardSchema).optional(),
+  calloutTag: z.string().trim().optional(),
+  calloutHeadlinePrefix: z.string().trim().optional(),
+  calloutHeadlineHighlight: z.string().trim().optional(),
+  calloutDescription: z.string().trim().optional(),
+  calloutPrimaryCta: z.string().trim().optional(),
+  calloutSecondaryCta: z.string().trim().optional(),
+});
+
+export const GalleryWorkflowStepSchema = z.object({
+  stepNumber: z.string().trim().min(1),
+  title: z.string().trim().min(1),
+  description: z.string().trim().min(3),
+});
+
+export const GalleryPageSectionSchema = z.object({
+  heroBadge: z.string().trim().min(1),
+  headlinePart1: z.string().trim().min(1),
+  headlinePart2: z.string().trim().min(1),
+  heroDescription: z.string().trim().min(3),
+  heroTags: z.array(z.string().trim().min(1)).min(1),
+  filterAllLabel: z.string().trim().min(1),
+  filterConferencesLabel: z.string().trim().min(1),
+  filterBoothsLabel: z.string().trim().min(1),
+  filterBrandingLabel: z.string().trim().min(1),
+  gridEyebrow: z.string().trim().min(1),
+  gridHeadline: z.string().trim().min(1),
+  spotlightHeadline: z.string().trim().min(1),
+  spotlightTag: z.string().trim().min(1),
+  spotlightImage: z.string().trim().min(1),
+  spotlightImageAlt: z.string().trim().min(1),
+  approachBadge: z.string().trim().min(1),
+  quoteText: z.string().trim().min(3),
+  quoteAuthor: z.string().trim().min(1),
+  workflowSteps: z.array(GalleryWorkflowStepSchema).min(1),
+  spotlightCtaText: z.string().trim().min(1),
+  ctaTag: z.string().trim().min(1),
+  ctaHeadlinePrefix: z.string().trim().min(1),
+  ctaHeadlineHighlight: z.string().trim().min(1),
+  ctaDescription: z.string().trim().min(3),
+  ctaPrimaryButtonText: z.string().trim().min(1),
+  ctaEmailPrefix: z.string().trim().min(1),
+});
+
+export const LayoutSectionSchema = z.object({
+  navHomeLabel: z.string().trim().min(1),
+  navWhyUsLabel: z.string().trim().min(1),
+  navServicesLabel: z.string().trim().min(1),
+  navGalleryLabel: z.string().trim().min(1),
+  navContactLabel: z.string().trim().min(1),
+  fullVaultCtaText: z.string().trim().min(1),
+  briefCtaText: z.string().trim().min(1),
+  footerCopyright: z.string().trim().min(1),
+  footerBrandTitle: z.string().trim().min(1),
+  footerBrandSubtitle: z.string().trim().min(1),
 });
 
 export type ValidSectionKey =
   | "manifesto"
   | "whyUsTeaser"
+  | "services"
+  | "homeShowcase"
   | "contact"
-  | "whyUsPage";
+  | "whyUsPage"
+  | "galleryPage"
+  | "layout";
+
+export const ALL_VALID_SECTION_KEYS: ValidSectionKey[] = [
+  "manifesto",
+  "whyUsTeaser",
+  "services",
+  "homeShowcase",
+  "contact",
+  "whyUsPage",
+  "galleryPage",
+  "layout",
+];
 
 export const CANONICAL_SECTION_KEYS: Record<string, ValidSectionKey> = {
   manifesto: "manifesto",
   hero: "manifesto",
   whyusteaser: "whyUsTeaser",
-  why_us_teaser: "whyUsTeaser",
-  "why-us-teaser": "whyUsTeaser",
   teaser: "whyUsTeaser",
-  why_us: "whyUsTeaser",
+  services: "services",
+  capabilities: "services",
+  disciplines: "services",
+  homeshowcase: "homeShowcase",
+  galleryshowcase: "homeShowcase",
+  showcase: "homeShowcase",
   contact: "contact",
   whyuspage: "whyUsPage",
-  why_us_page: "whyUsPage",
-  "why-us-page": "whyUsPage",
   whyus: "whyUsPage",
+  gallerypage: "galleryPage",
+  gallery: "galleryPage",
+  layout: "layout",
+  navigation: "layout",
+  headerfooter: "layout",
 };
 
 export function normalizeSectionKey(key: string): ValidSectionKey | null {
@@ -201,19 +341,23 @@ export class InMemoryContentRepository implements ContentRepository {
 
   constructor(initialContent?: SiteContent) {
     this.content = initialContent
-      ? JSON.parse(JSON.stringify(initialContent))
+      ? normalizeSiteContent(JSON.parse(JSON.stringify(initialContent)))
       : JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT));
     this.versions = {
       manifesto: 1,
       whyUsTeaser: 1,
+      services: 1,
+      homeShowcase: 1,
       contact: 1,
       whyUsPage: 1,
+      galleryPage: 1,
+      layout: 1,
     };
     this.revisions = [];
   }
 
   async getSiteContent(): Promise<SiteContent> {
-    return JSON.parse(JSON.stringify(this.content));
+    return normalizeSiteContent(JSON.parse(JSON.stringify(this.content)));
   }
 
   async getSectionData(key: ValidSectionKey): Promise<Record<string, unknown> | null> {
@@ -297,14 +441,16 @@ export class SupabaseContentRepository implements ContentRepository {
         return DEFAULT_SITE_CONTENT;
       }
 
-      const compiled: SiteContent = JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT));
+      const compiled: Record<string, unknown> = JSON.parse(
+        JSON.stringify(DEFAULT_SITE_CONTENT)
+      );
       let latestUpdated = DEFAULT_SITE_CONTENT.updatedAt;
       let maxVersion = 1;
 
       for (const row of data) {
         const canonicalKey = normalizeSectionKey(row.section_key);
         if (canonicalKey && row.data && typeof row.data === "object") {
-          ((compiled as unknown) as Record<string, unknown>)[canonicalKey] = row.data;
+          compiled[canonicalKey] = row.data;
           if (row.version && row.version > maxVersion) {
             maxVersion = row.version;
           }
@@ -314,9 +460,10 @@ export class SupabaseContentRepository implements ContentRepository {
         }
       }
 
-      compiled.version = `1.${maxVersion}.0`;
-      compiled.updatedAt = latestUpdated;
-      return compiled;
+      const normalized = normalizeSiteContent(compiled);
+      normalized.version = `1.${maxVersion}.0`;
+      normalized.updatedAt = latestUpdated;
+      return normalized;
     } catch {
       return DEFAULT_SITE_CONTENT;
     }
@@ -496,12 +643,28 @@ export function validateSectionPayload(
         const parsed = WhyUsTeaserSectionSchema.parse(payload);
         return { success: true, data: parsed as unknown as Record<string, unknown> };
       }
+      case "services": {
+        const parsed = ServicesSectionSchema.parse(payload);
+        return { success: true, data: parsed as unknown as Record<string, unknown> };
+      }
+      case "homeShowcase": {
+        const parsed = HomeShowcaseSectionSchema.parse(payload);
+        return { success: true, data: parsed as unknown as Record<string, unknown> };
+      }
       case "contact": {
         const parsed = ContactSectionSchema.parse(payload);
         return { success: true, data: parsed as unknown as Record<string, unknown> };
       }
       case "whyUsPage": {
         const parsed = WhyUsPageSectionSchema.parse(payload);
+        return { success: true, data: parsed as unknown as Record<string, unknown> };
+      }
+      case "galleryPage": {
+        const parsed = GalleryPageSectionSchema.parse(payload);
+        return { success: true, data: parsed as unknown as Record<string, unknown> };
+      }
+      case "layout": {
+        const parsed = LayoutSectionSchema.parse(payload);
         return { success: true, data: parsed as unknown as Record<string, unknown> };
       }
       default:
@@ -553,7 +716,7 @@ export async function updateContentSection(
     return {
       ok: false,
       status: 400,
-      error: `Invalid section key '${sectionKey}'. Supported: manifesto, whyUsTeaser, contact, whyUsPage`,
+      error: `Invalid section key '${sectionKey}'. Supported: ${ALL_VALID_SECTION_KEYS.join(", ")}`,
     };
   }
 

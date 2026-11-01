@@ -16,6 +16,14 @@ export const ManifestoHero = React.memo(function ManifestoHero({
   content = DEFAULT_HERO_CONTENT,
   companies = DEFAULT_COMPANIES,
 }: ManifestoHeroProps) {
+  const heroImg = content.heroImage || "/assets/images/hero_studio_collective.jpg";
+  const heroAlt = content.heroImageAlt || "Art Work Creative Marketing Studio Collective";
+  const primaryCta = content.primaryCtaText || "VIEW OUR PROJECTS";
+  const secondaryCta = content.secondaryCtaText || "EXPLORE OUR SERVICES";
+  const proofTagline =
+    content.proofTagline || "CREATIVE | PLANNING | PRODUCTION | ON-SITE DELIVERY";
+  const performanceBadge = content.performanceBadge || "PERFORMANCE MARKETING";
+
   return (
     <div className="w-full max-w-7xl mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
       {/* 2-Column Responsive Hero Grid (Level & Aligned with Studio Canvas) */}
@@ -56,7 +64,7 @@ export const ManifestoHero = React.memo(function ManifestoHero({
                 href="/gallery"
                 className="relative group inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 cursor-pointer"
               >
-                <span>VIEW OUR PROJECTS</span>
+                <span>{primaryCta}</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </Link>
 
@@ -65,7 +73,7 @@ export const ManifestoHero = React.memo(function ManifestoHero({
                   onClick={onViewCapabilities}
                   className="inline-flex items-center gap-1.5 bg-white dark:bg-[#161622] text-black dark:text-white hover:bg-black dark:hover:bg-yellow-400 hover:text-white dark:hover:text-black font-headline font-bold text-xs sm:text-sm px-4 sm:px-4.5 py-2.5 sm:py-3 rounded-xl border-2 border-black dark:border-zinc-600 comic-shadow-sm transition-all duration-150 cursor-pointer"
                 >
-                  <span>EXPLORE OUR SERVICES</span>
+                  <span>{secondaryCta}</span>
                   <ArrowDown className="w-4 h-4 stroke-[2.5]" />
                 </button>
               </MagneticButton>
@@ -73,14 +81,14 @@ export const ManifestoHero = React.memo(function ManifestoHero({
 
             {/* Safe Proof Tagline */}
             <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/60 dark:text-zinc-400 pt-0.5">
-              CREATIVE | PLANNING | PRODUCTION | ON-SITE DELIVERY
+              {proofTagline}
             </div>
 
             {/* Milestone Badges */}
             <div className="grid grid-cols-3 gap-2 pt-1 max-w-md">
-              {content.metrics.map((badge, idx) => (
+              {(content.metrics || DEFAULT_HERO_CONTENT.metrics).map((badge, idx) => (
                 <motion.div
-                  key={badge.label}
+                  key={`${badge.label}-${idx}`}
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
@@ -106,7 +114,7 @@ export const ManifestoHero = React.memo(function ManifestoHero({
                 className="relative bg-white dark:bg-[#151520] border border-black/15 dark:border-zinc-700 px-3 py-1 rounded-lg shadow-sm flex items-center gap-1.5 text-[11px] sm:text-xs font-bold tracking-tight text-black dark:text-zinc-200"
               >
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
-                <span>PERFORMANCE MARKETING</span>
+                <span>{performanceBadge}</span>
               </motion.div>
 
               <div className="inline-flex items-center gap-1.5 border border-black/20 bg-yellow-400 text-black px-3.5 py-1 rounded-lg shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
@@ -126,19 +134,26 @@ export const ManifestoHero = React.memo(function ManifestoHero({
         >
           <div className="relative overflow-hidden rounded-2xl aspect-[16/10] min-h-[220px] sm:min-h-[270px] lg:min-h-[320px] xl:min-h-[360px] flex items-center justify-center shadow-2xl">
             <Image
-              src="/assets/images/hero_studio_collective.jpg"
-              alt="Art Work Creative Marketing Studio Collective"
+              src={heroImg}
+              alt={heroAlt}
               fill
               priority
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 45vw"
               className="object-cover rounded-2xl"
+              unoptimized={heroImg.startsWith("http") || heroImg.startsWith("data:")}
             />
           </div>
         </motion.div>
       </div>
 
       {/* SECTION 02: PARTNERS & CLIENT NETWORK TICKER */}
-      <PartnersMarquee companies={companies} />
+      <PartnersMarquee
+        companies={companies}
+        partnersBadge={content.partnersBadge}
+        partnersHeadlinePrefix={content.partnersHeadlinePrefix}
+        partnersHeadlineHighlight={content.partnersHeadlineHighlight}
+        starburstText={content.starburstText}
+      />
     </div>
   );
 });

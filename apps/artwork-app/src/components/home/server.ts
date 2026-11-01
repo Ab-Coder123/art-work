@@ -2,7 +2,9 @@ import { unstable_cache } from "next/cache";
 import {
   createBrowserClient,
   createSupabaseContentRepository,
+  createSupabaseProjectsRepository,
   fetchSiteContent,
+  listPublicProjects,
   DEFAULT_SITE_CONTENT,
   normalizeSiteContent,
   listCompanies,
@@ -11,36 +13,44 @@ import {
   DEFAULT_COMPANIES,
   type CompanyRecord,
   type ContactSectionContent,
+  type HomeShowcaseSectionContent,
+  type LayoutSectionContent,
+  type ProjectRecord,
+  type ServicesSectionContent,
 } from "@art-work/types";
-import {
-  DEFAULT_HERO_CONTENT,
-  DEFAULT_WHY_US_CONTENT,
-  type HeroContentData,
-  type WhyUsContentData,
-} from "./types";
+import { SEED_PROJECTS } from "@/data/seedContent";
+import type { HeroContentData, WhyUsContentData } from "./types";
 
 export interface InitialHomeData {
   heroContent: HeroContentData;
   whyUsContent: WhyUsContentData;
+  servicesContent: ServicesSectionContent;
+  homeShowcaseContent: HomeShowcaseSectionContent;
   contactContent: ContactSectionContent;
+  layoutContent: LayoutSectionContent;
   companies: CompanyRecord[];
+  projects: ProjectRecord[];
 }
 
 /**
- * Server-side data pre-fetcher for RSC Shell (Phase 2 & Phase 4).
- * Fetches content and partner network with Next.js Data Cache tag binding and fallback guarantees.
+ * Server-side data pre-fetcher for RSC Shell.
+ * Fetches full 8-section CMS content, partner network, and public projects
+ * with Next.js Data Cache tag binding and deterministic fallback guarantees.
  */
 async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
   let contentData = normalizeSiteContent(DEFAULT_SITE_CONTENT);
   let companiesData: CompanyRecord[] = DEFAULT_COMPANIES;
+  let projectsData: ProjectRecord[] = SEED_PROJECTS;
 
   try {
     const supabase = createBrowserClient();
-    const repo = createSupabaseContentRepository(supabase);
+    const contentRepo = createSupabaseContentRepository(supabase);
+    const projectsRepo = createSupabaseProjectsRepository(supabase);
 
-    const [contentRes, companiesRes] = await Promise.allSettled([
-      fetchSiteContent(repo),
+    const [contentRes, companiesRes, projectsRes] = await Promise.allSettled([
+      fetchSiteContent(contentRepo),
       listCompanies(supabase, { category: "all", q: "", activeOnly: true }),
+      listPublicProjects({ limit: 24 }, projectsRepo),
     ]);
 
     if (contentRes.status === "fulfilled" && contentRes.value.ok) {
@@ -55,82 +65,36 @@ async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
     ) {
       companiesData = companiesRes.value.data;
     }
+
+    if (
+      projectsRes.status === "fulfilled" &&
+      projectsRes.value.ok &&
+      Array.isArray(projectsRes.value.data.items) &&
+      projectsRes.value.data.items.length > 0
+    ) {
+      projectsData = projectsRes.value.data.items;
+    }
   } catch {
     // Graceful offline fallback to defaults
   }
 
-  const manifesto = contentData.manifesto;
-  const teaser = contentData.whyUsTeaser;
-  const contact = contentData.contact;
-
-  const metrics = Array.isArray(manifesto?.metrics)
-    ? manifesto.metrics
-        .filter((item): item is { num: string; label: string } =>
-          Boolean(item && typeof item === "object" && "num" in item && "label" in item)
-        )
-        .map((item) => ({ num: String(item.num), label: String(item.label) }))
-    : DEFAULT_HERO_CONTENT.metrics;
-
-  const heroRecord = manifesto as unknown as Record<string, unknown> | undefined;
-
-  const heroContent: HeroContentData = {
-    announcementBadge: String(
-      manifesto?.announcementBadge ||
-      heroRecord?.banner_badge ||
-      DEFAULT_HERO_CONTENT.announcementBadge
-    ),
-    editionBadge: String(manifesto?.editionBadge || DEFAULT_HERO_CONTENT.editionBadge),
-    headlinePart1: String(
-      manifesto?.headlinePart1 ||
-      heroRecord?.headline_highlight ||
-      DEFAULT_HERO_CONTENT.headlinePart1
-    ),
-    headlinePart2: String(
-      manifesto?.headlinePart2 ||
-      heroRecord?.headline_suffix ||
-      DEFAULT_HERO_CONTENT.headlinePart2
-    ),
-    introParagraph: String(
-      manifesto?.introParagraph ||
-      heroRecord?.subheadline ||
-      DEFAULT_HERO_CONTENT.introParagraph
-    ),
-    metrics: metrics.length ? metrics.slice(0, 3) : DEFAULT_HERO_CONTENT.metrics,
-  };
-
-  let whyUsContent: WhyUsContentData = DEFAULT_WHY_US_CONTENT;
-  if (teaser?.bentoCards && teaser.bentoCards.length >= 3 && teaser.blueprint) {
-    const isLegacy = teaser.bentoCards.some((c: { title?: string }) =>
-      c.title?.includes("Arena & Stage") ||
-      c.title?.includes("Event Planning & Project") ||
-      c.title?.includes("Dynamic Motion")
-    );
-    whyUsContent = {
-      ...DEFAULT_WHY_US_CONTENT,
-      ...teaser,
-      bentoCards: isLegacy ? DEFAULT_WHY_US_CONTENT.bentoCards : teaser.bentoCards.slice(0, 3),
-      blueprint: { ...DEFAULT_WHY_US_CONTENT.blueprint, ...teaser.blueprint },
-    };
-  }
-
-  const contactContent: ContactSectionContent = {
-    ...DEFAULT_SITE_CONTENT.contact,
-    ...(contact || {}),
-  };
-
   return {
-    heroContent,
-    whyUsContent,
-    contactContent,
+    heroContent: contentData.manifesto,
+    whyUsContent: contentData.whyUsTeaser,
+    servicesContent: contentData.services,
+    homeShowcaseContent: contentData.homeShowcase,
+    contactContent: contentData.contact,
+    layoutContent: contentData.layout,
     companies: companiesData,
+    projects: projectsData,
   };
 }
 
 export const getInitialHomeData = unstable_cache(
   fetchInitialHomeDataRaw,
-  ["home-initial-data"],
+  ["home-initial-data-v2"],
   {
-    tags: ["site-content", "companies"],
+    tags: ["site-content", "companies", "projects"],
     revalidate: 60,
   }
 );

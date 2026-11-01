@@ -12,7 +12,7 @@ import { SEED_PROJECTS } from "@/data/seedContent";
  * GET /api/projects (Public Website Showcase API)
  * Query params: ?category=stage&q=arena&featured=true&page=1&limit=24
  * Enforces `status = 'published'` via both PostgreSQL RLS and `listPublicProjects`.
- * Gracefully falls back to `SEED_PROJECTS` if offline.
+ * Gracefully falls back to `SEED_PROJECTS` if offline or unseeded.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -33,8 +33,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
 
-    // If database returned published rows, serve them with edge cache headers
-    if (result.data.total > 0 || queryInput.category !== "all" || queryInput.q !== "") {
+    const hasFilter =
+      queryInput.category !== "all" ||
+      queryInput.q !== "" ||
+      queryInput.featured !== undefined;
+    let dbHasAnyPublished = result.data.total > 0;
+    if (!dbHasAnyPublished && hasFilter) {
+      const probe = await listPublicProjects({ limit: 1 }, repo);
+      dbHasAnyPublished = probe.ok && probe.data.total > 0;
+    }
+
+    // If database returned published rows (or has published rows when filtering), serve them with edge cache headers
+    if (result.data.total > 0 || dbHasAnyPublished) {
       return NextResponse.json(result.data, {
         status: 200,
         headers: {

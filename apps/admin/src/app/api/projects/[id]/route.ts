@@ -4,11 +4,32 @@ import {
   createSupabaseProjectsRepository,
   getProjectByIdOrSlug,
   updateProject,
+  toggleProjectFeatured,
   deleteProject,
 } from "@art-work/database";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
+}
+
+function revalidatePublicShowcase() {
+  const publicAppUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.PUBLIC_APP_URL ||
+    "https://artwork-agency.vercel.app";
+  const revalidateSecret = process.env.REVALIDATION_SECRET;
+  if (!revalidateSecret) return;
+
+  for (const path of ["/", "/gallery"]) {
+    fetch(`${publicAppUrl}/api/revalidate`, {
+      method: "POST",
+      headers: {
+        "x-revalidate-secret": revalidateSecret,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tag: "projects", path }),
+    }).catch(() => {});
+  }
 }
 
 /**
@@ -37,9 +58,12 @@ export async function GET(request: NextRequest, context: RouteContext) {
  * PUT /api/projects/[id] (Admin Dashboard — CSRF enforced by middleware)
  */
 export async function PUT(request: NextRequest, context: RouteContext) {
-  const sessionCheck = await verifyAdminSessionFromCookies({
-    getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
-  }, { requireWriteAccess: true });
+  const sessionCheck = await verifyAdminSessionFromCookies(
+    {
+      getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
+    },
+    { requireWriteAccess: true }
+  );
   if (!sessionCheck.ok) {
     return NextResponse.json({ error: sessionCheck.error }, { status: sessionCheck.status });
   }
@@ -59,22 +83,44 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: result.error }, { status: result.status });
   }
 
-  // Trigger on-demand ISR revalidation on the public website (fire-and-forget)
-  const publicAppUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.PUBLIC_APP_URL ||
-    "https://artwork-agency.vercel.app";
-  const revalidateSecret = process.env.REVALIDATION_SECRET;
-  if (revalidateSecret) {
-    fetch(`${publicAppUrl}/api/revalidate`, {
-      method: "POST",
-      headers: {
-        "x-revalidate-secret": revalidateSecret,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ tag: "projects", path: "/gallery" }),
-    }).catch(() => {});
+  revalidatePublicShowcase();
+
+  return NextResponse.json({ project: result.data }, { status: 200 });
+}
+
+/**
+ * PATCH /api/projects/[id] (Admin Dashboard — lightweight ★ Star featured toggle or partial update)
+ */
+export async function PATCH(request: NextRequest, context: RouteContext) {
+  const sessionCheck = await verifyAdminSessionFromCookies(
+    {
+      getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
+    },
+    { requireWriteAccess: true }
+  );
+  if (!sessionCheck.ok) {
+    return NextResponse.json({ error: sessionCheck.error }, { status: sessionCheck.status });
   }
+
+  let body: Record<string, unknown>;
+  try {
+    body = (await request.json()) as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const { id } = await context.params;
+  const repo = createSupabaseProjectsRepository(sessionCheck.supabase);
+  const result =
+    Object.keys(body).length === 1 && typeof body.featured === "boolean"
+      ? await toggleProjectFeatured(id, body.featured, sessionCheck.adminUser.user_id, repo)
+      : await updateProject(id, body, sessionCheck.adminUser.user_id, repo);
+
+  if (!result.ok) {
+    return NextResponse.json({ error: result.error }, { status: result.status });
+  }
+
+  revalidatePublicShowcase();
 
   return NextResponse.json({ project: result.data }, { status: 200 });
 }
@@ -83,9 +129,12 @@ export async function PUT(request: NextRequest, context: RouteContext) {
  * DELETE /api/projects/[id] (Admin Dashboard — CSRF enforced by middleware)
  */
 export async function DELETE(request: NextRequest, context: RouteContext) {
-  const sessionCheck = await verifyAdminSessionFromCookies({
-    getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
-  }, { requireWriteAccess: true });
+  const sessionCheck = await verifyAdminSessionFromCookies(
+    {
+      getAll: () => request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
+    },
+    { requireWriteAccess: true }
+  );
   if (!sessionCheck.ok) {
     return NextResponse.json({ error: sessionCheck.error }, { status: sessionCheck.status });
   }
@@ -98,22 +147,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: result.error }, { status: result.status });
   }
 
-  // Trigger on-demand ISR revalidation on the public website (fire-and-forget)
-  const publicAppUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.PUBLIC_APP_URL ||
-    "https://artwork-agency.vercel.app";
-  const revalidateSecret = process.env.REVALIDATION_SECRET;
-  if (revalidateSecret) {
-    fetch(`${publicAppUrl}/api/revalidate`, {
-      method: "POST",
-      headers: {
-        "x-revalidate-secret": revalidateSecret,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ tag: "projects", path: "/gallery" }),
-    }).catch(() => {});
-  }
+  revalidatePublicShowcase();
 
   return NextResponse.json(result.data, { status: 200 });
 }

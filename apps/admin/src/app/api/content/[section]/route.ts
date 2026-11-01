@@ -7,17 +7,21 @@ import {
 
 /**
  * PUT /api/content/[section]
- * Atomically updates a specific content section (manifesto, whyUsTeaser, contact, whyUsPage).
- * Creates audit log via Supabase Postgres trigger.
+ * Atomically updates a specific content section across all 8 full-site sections:
+ * (manifesto, whyUsTeaser, services, homeShowcase, contact, whyUsPage, galleryPage, layout).
+ * Creates audit log via Supabase Postgres trigger and revalidates "/", "/why-us", and "/gallery".
  */
 export async function PUT(
   request: NextRequest,
   context: { params: Promise<{ section: string }> }
 ) {
-  const sessionCheck = await verifyAdminSessionFromCookies({
-    getAll: () =>
-      request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
-  }, { requireWriteAccess: true });
+  const sessionCheck = await verifyAdminSessionFromCookies(
+    {
+      getAll: () =>
+        request.cookies.getAll().map((c) => ({ name: c.name, value: c.value })),
+    },
+    { requireWriteAccess: true }
+  );
   if (!sessionCheck.ok) {
     return NextResponse.json(
       { error: sessionCheck.error },
@@ -43,21 +47,34 @@ export async function PUT(
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
 
-    // Trigger on-demand cache revalidation on the public website (fire-and-forget, header-only)
+    // Trigger on-demand cache revalidation on the public website across "/", "/why-us", "/gallery"
     const publicAppUrl =
       process.env.NEXT_PUBLIC_SITE_URL ||
       process.env.PUBLIC_APP_URL ||
       "https://artwork-agency.vercel.app";
     const revalidateSecret = process.env.REVALIDATION_SECRET;
     if (revalidateSecret) {
-      fetch(`${publicAppUrl}/api/revalidate`, {
-        method: "POST",
-        headers: {
-          "x-revalidate-secret": revalidateSecret,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tag: "site-content" }),
-      }).catch(() => {});
+      const headers = {
+        "x-revalidate-secret": revalidateSecret,
+        "Content-Type": "application/json",
+      };
+      Promise.allSettled([
+        fetch(`${publicAppUrl}/api/revalidate`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ tag: "site-content", path: "/" }),
+        }),
+        fetch(`${publicAppUrl}/api/revalidate`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ path: "/why-us" }),
+        }),
+        fetch(`${publicAppUrl}/api/revalidate`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ path: "/gallery" }),
+        }),
+      ]).catch(() => {});
     }
 
     return NextResponse.json(result.data, { status: 200 });

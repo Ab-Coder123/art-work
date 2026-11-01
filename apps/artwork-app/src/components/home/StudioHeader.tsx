@@ -8,12 +8,13 @@ import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import { SoundToggle } from "@/components/cinematic/SoundToggle";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
 import { useDoodleStore } from "@/store/useDoodleStore";
-import type { StudioHeaderProps } from "./types";
+import { DEFAULT_LAYOUT_CONTENT, type StudioHeaderProps } from "./types";
 
 export const StudioHeader = React.memo(function StudioHeader({
   activeStage,
   scrollToStage,
   onInkBurst,
+  layout = DEFAULT_LAYOUT_CONTENT,
 }: StudioHeaderProps) {
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
 
@@ -25,8 +26,8 @@ export const StudioHeader = React.memo(function StudioHeader({
           <button
             onClick={() => scrollToStage("stage-01")}
             className="group cursor-pointer active:scale-95 transition-transform flex items-center"
-            title="Art Work — Home"
-            aria-label="Art Work — Home"
+            title={`${layout.footerBrandTitle} — ${layout.navHomeLabel}`}
+            aria-label={`${layout.footerBrandTitle} — ${layout.navHomeLabel}`}
           >
             <div className="relative w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 lg:w-16 lg:h-16 hover:rotate-3 transition-transform">
               <Image
@@ -53,7 +54,7 @@ export const StudioHeader = React.memo(function StudioHeader({
             href="/gallery"
             className="md:hidden inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-[10px] uppercase px-2 py-0.5 rounded border border-black comic-shadow-sm active:scale-95"
           >
-            <span>★ Gallery</span>
+            <span>★ {layout.navGalleryLabel}</span>
           </Link>
         </div>
 
@@ -67,7 +68,7 @@ export const StudioHeader = React.memo(function StudioHeader({
                 : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
             }`}
           >
-            Home
+            {layout.navHomeLabel}
           </button>
           <button
             onClick={() => scrollToStage("stage-02")}
@@ -77,7 +78,7 @@ export const StudioHeader = React.memo(function StudioHeader({
                 : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1"
             }`}
           >
-            Why Us
+            {layout.navWhyUsLabel}
           </button>
           <button
             onClick={() => scrollToStage("stage-03")}
@@ -87,7 +88,7 @@ export const StudioHeader = React.memo(function StudioHeader({
                 : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
             }`}
           >
-            Services
+            {layout.navServicesLabel}
           </button>
           <button
             onClick={() => scrollToStage("stage-gallery")}
@@ -97,7 +98,7 @@ export const StudioHeader = React.memo(function StudioHeader({
                 : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1"
             }`}
           >
-            Gallery
+            {layout.navGalleryLabel}
           </button>
           <button
             onClick={() => scrollToStage("stage-04")}
@@ -107,13 +108,13 @@ export const StudioHeader = React.memo(function StudioHeader({
                 : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
             }`}
           >
-            Contact
+            {layout.navContactLabel}
           </button>
           <Link
             href="/gallery"
             className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:-rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ml-1 cursor-pointer"
           >
-            ★ Full Vault ↗
+            {layout.fullVaultCtaText}
           </Link>
         </nav>
 
@@ -127,7 +128,7 @@ export const StudioHeader = React.memo(function StudioHeader({
               onClick={() => scrollToStage("stage-04")}
               className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-bold text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150 cursor-pointer"
             >
-              <span>Brief Inquiry</span>
+              <span>{layout.briefCtaText}</span>
               <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
           </MagneticButton>
@@ -156,7 +157,7 @@ export const StudioHeader = React.memo(function StudioHeader({
               : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
           }`}
         >
-          Home
+          {layout.navHomeLabel}
         </button>
         <button
           onClick={() => scrollToStage("stage-02")}
@@ -166,7 +167,7 @@ export const StudioHeader = React.memo(function StudioHeader({
               : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
           }`}
         >
-          Why Us
+          {layout.navWhyUsLabel}
         </button>
         <button
           onClick={() => scrollToStage("stage-03")}
@@ -176,7 +177,7 @@ export const StudioHeader = React.memo(function StudioHeader({
               : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
           }`}
         >
-          Services
+          {layout.navServicesLabel}
         </button>
         <button
           onClick={() => scrollToStage("stage-gallery")}
@@ -186,7 +187,7 @@ export const StudioHeader = React.memo(function StudioHeader({
               : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
           }`}
         >
-          Gallery
+          {layout.navGalleryLabel}
         </button>
         <button
           onClick={() => scrollToStage("stage-04")}
@@ -196,7 +197,7 @@ export const StudioHeader = React.memo(function StudioHeader({
               : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
           }`}
         >
-          Contact
+          {layout.navContactLabel}
         </button>
       </div>
     </header>
