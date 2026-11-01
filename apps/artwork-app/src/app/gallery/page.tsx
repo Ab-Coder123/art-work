@@ -689,7 +689,7 @@ export default function GalleryPage() {
               <div className="mt-6 pt-4 border-t border-black/20 flex flex-wrap items-center gap-4 font-mono text-xs text-black/80">
                 <span>★ ONE CONNECTED TEAM</span>
                 <span>•</span>
-                <span>📍 CAIRO // REGIONAL EVENT DELIVERY</span>
+                <span>📍 380 MAADI CORNICHE, JAWAHRET MAADI TOWERS // CAIRO</span>
                 <span>•</span>
                 <span>CREATIVE | PLANNING | PRODUCTION</span>
               </div>

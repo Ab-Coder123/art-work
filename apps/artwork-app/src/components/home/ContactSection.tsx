@@ -136,11 +136,19 @@ export const ContactSection = React.memo(function ContactSection({ content }: Co
                 </span>
                 <a href={`mailto:${content.email}`} className="hover:underline">{content.email}</a>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
+              <div className="flex items-start sm:items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5 sm:mt-0">
                   📍
                 </span>
-                <span>{content.studioLocations}</span>
+                <a
+                  href={`https://maps.google.com/?q=${encodeURIComponent(content.studioLocations)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline hover:text-yellow-500 transition-colors"
+                  title="View on Google Maps"
+                >
+                  {content.studioLocations}
+                </a>
               </div>
             </div>
           </motion.div>

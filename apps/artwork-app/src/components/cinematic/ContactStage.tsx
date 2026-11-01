@@ -38,8 +38,8 @@ const DEFAULT_CONTACT_CONTENT: ContactSectionContent = {
   intakeImage: "/assets/images/creative_chief_intake.png",
   intakeImageAlt: "Art Work Event Producer On-Call Intake",
   email: "ahmed.artwork2026@gmail.com",
-  phone: "",
-  studioLocations: "Cairo // Regional Event Delivery",
+  phone: "+20 (2) 2794-0000",
+  studioLocations: '380 Maadi Corniche - Jawharet Maadi Towers - Tower "B", 35th floor - Cairo',
   submitButtonText: "SEND YOUR EVENT BRIEF",
   formFields: [],
 };
@@ -173,18 +173,26 @@ export const ContactStage: React.FC<ContactStageProps> = ({
 
           <div className="space-y-2 text-xs font-headline font-bold text-black dark:text-zinc-200">
             <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
+              <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px] shrink-0">
                 @
               </span>
               <a href={`mailto:${content.email}`} className="hover:underline">
                 {content.email}
               </a>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
+            <div className="flex items-start sm:items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5 sm:mt-0">
                 📍
               </span>
-              <span>{content.studioLocations}</span>
+              <a
+                href={`https://maps.google.com/?q=${encodeURIComponent(content.studioLocations)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline hover:text-yellow-500 transition-colors"
+                title="View on Google Maps"
+              >
+                {content.studioLocations}
+              </a>
             </div>
           </div>
         </motion.div>

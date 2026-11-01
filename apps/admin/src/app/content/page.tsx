@@ -79,8 +79,8 @@ export default function WebsiteContentEditor() {
       "Whether you need a dynamic stage package for an arena tour or an unforgettable brand identity, our sketchpad is open.",
     intakeLabel: "DIRECT INTAKE // CREATIVE CHIEF ON-CALL",
     email: "ahmed.artwork2026@gmail.com",
-    phone: "+1 (800) ART-WORK // DMX-EXT: 04",
-    studioLocations: "BERLIN // NEW YORK // TOKYO",
+    phone: "+20 (2) 2794-0000",
+    studioLocations: '380 Maadi Corniche - Jawharet Maadi Towers - Tower "B", 35th floor - Cairo',
     submitButtonText: "TRANSMIT BRIEF // LAUNCH STAGE",
   });
 

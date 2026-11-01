@@ -198,8 +198,8 @@ export const SEED_SITE_CONTENT: SiteContent = {
     intakeImage: "/assets/images/creative_chief_intake.png",
     intakeImageAlt: "Creative Chief on call ready for brief intake",
     email: "ahmed.artwork2026@gmail.com",
-    phone: "+1 (800) ART-WORK // DMX-EXT: 04",
-    studioLocations: "BERLIN // NEW YORK // TOKYO",
+    phone: "+20 (2) 2794-0000",
+    studioLocations: '380 Maadi Corniche - Jawharet Maadi Towers - Tower "B", 35th floor - Cairo',
     submitButtonText: "TRANSMIT BRIEF // LAUNCH STAGE",
     formFields: [
       {
