@@ -1470,7 +1470,8 @@ export default function GalleryProjectsManager() {
                         )}
                       </div>
                     ) : (
-                      /* 2. DIRECT FILE UPLOAD TAB (THE SCREENSHOT VIEW, MODERNIZED) */
+                      /* 2. DIRECT FILE UPLOAD TAB (INCLUDES MANUAL RENDERS, ARCHITECTURAL BLUEPRINT & VIDEO HUB) */
+                      <div className="space-y-4">
                       <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
                         <div className="flex items-center justify-between flex-wrap gap-2">
                           <div className="flex items-center gap-2">
@@ -1633,7 +1634,6 @@ export default function GalleryProjectsManager() {
                           );
                         })()}
                       </div>
-                    )}
 
                     {/* 3. ARCHITECTURAL BLUEPRINT & TECHNICAL SPEC (PDF) */}
                     <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
@@ -1850,6 +1850,8 @@ export default function GalleryProjectsManager() {
                         );
                       })()}
                     </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   /* STANDARD STAGE & CONFERENCES YOUTUBE ENGINE */
