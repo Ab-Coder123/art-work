@@ -176,7 +176,15 @@ export default function GalleryPage() {
   const filteredProjects =
     activeFilter === "all"
       ? projects
-      : projects.filter((p) => p.category === activeFilter);
+      : projects.filter((p) => {
+          if (activeFilter === "branding") {
+            return p.category === "branding" || p.category === "tech";
+          }
+          if (activeFilter === "conferences") {
+            return p.category === "conferences" || p.category === "stage" || p.category === "led";
+          }
+          return p.category === activeFilter;
+        });
 
   const selectedYtEmbed = selectedProject
     ? resolveSafeYouTubeEmbed(selectedProject.youtubeVideoId || selectedProject.youtubeUrl)
@@ -372,10 +380,7 @@ export default function GalleryPage() {
               { key: "all", label: `All Projects (${projects.length})` },
               { key: "conferences", label: "Conferences & Medical Events" },
               { key: "booths", label: "Exhibition Booths" },
-              { key: "stage", label: "Stage, Sound & Lighting" },
-              { key: "led", label: "LED & Audiovisual" },
-              { key: "branding", label: "Branding & Print" },
-              { key: "tech", label: "Interactive Experiences" },
+              { key: "branding", label: "Branding & Print & giveways" },
             ].map((chip) => (
               <button
                 key={chip.key}

@@ -810,7 +810,7 @@ export default function GalleryProjectsManager() {
                 cadId: "",
                 image: "/assets/images/gallery/project_01_neon_horizon.jpg",
                 altText: "New Stage Scenography",
-                category: "stage",
+                category: "conferences",
                 year: new Date().getFullYear(),
                 tags: ["Stage Design", "Creative Direction"],
                 stats: "",
@@ -888,19 +888,22 @@ export default function GalleryProjectsManager() {
           </div>
 
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 text-xs font-mono">
-            {(
-              ["all", "stage", "conferences", "booths", "branding", "tech", "led"] as ProjectCategory[]
-            ).map((cat) => (
+            {[
+              { key: "all", label: "ALL" },
+              { key: "conferences", label: "CONFERENCES & MEDICAL" },
+              { key: "booths", label: "EXHIBITION BOOTHS" },
+              { key: "branding", label: "BRANDING & PRINT & GIVEAWAYS" },
+            ].map((cat) => (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
+                key={cat.key}
+                onClick={() => setActiveCategory(cat.key as ProjectCategory)}
                 className={`px-3 py-1.5 rounded-lg uppercase transition-all whitespace-nowrap cursor-pointer ${
-                  activeCategory === cat
+                  activeCategory === cat.key
                     ? "bg-yellow-400 text-black font-bold"
                     : "text-zinc-400 hover:text-white bg-[#0d0d12] border border-[#262638]"
                 }`}
               >
-                {cat}
+                {cat.label}
               </button>
             ))}
           </div>
@@ -1189,12 +1192,9 @@ export default function GalleryProjectsManager() {
                       }}
                       className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
                     >
-                      <option value="stage">Stage & Lighting</option>
-                      <option value="conferences">Conferences</option>
-                      <option value="booths">Booths & Pavilions</option>
-                      <option value="branding">Branding</option>
-                      <option value="tech">Tech & Esports</option>
-                      <option value="led">LED Screens</option>
+                      <option value="conferences">Conferences & Medical Events</option>
+                      <option value="booths">Exhibition Booths</option>
+                      <option value="branding">Branding & Print & Giveaways</option>
                     </select>
                   </div>
 
