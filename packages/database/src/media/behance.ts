@@ -4,7 +4,7 @@
  * Pure, dependency-free (Edge/Node/browser safe) utilities for Behance project integration:
  *  - Parses and validates Behance project and portfolio links,
  *  - Rejects raw HTML (<iframe> tags), unsafe protocols, and unapproved hosts,
- *  - Resolves project cover images and metadata via Behance oEmbed and OpenGraph scraping.
+ *  - Resolves project cover images and metadata via Behance oEmbed, OpenGraph scraping, and official embed widget fallback.
  */
 
 import { BEHANCE_HOSTS, isValidBehanceUrl } from "@art-work/types";
@@ -127,7 +127,7 @@ function extractMetaTag(html: string, propertyOrName: string): string | null {
 }
 
 /**
- * Fetches Behance project metadata via official oEmbed and OpenGraph fallback.
+ * Fetches Behance project metadata via official oEmbed, OpenGraph scraping, and official embed widget fallback.
  */
 export async function fetchBehanceMetadata(
   urlOrInput: string,
@@ -139,6 +139,11 @@ export async function fetchBehanceMetadata(
   }
 
   const { canonicalUrl, projectId } = parsed;
+  let title = "Behance Exhibition Booth";
+  let description = "";
+  let authorName = "Behance Creator";
+  let coverImageUrl = "";
+  let resolvedProjectId = projectId;
 
   // 1. Try Behance oEmbed Endpoint
   try {
@@ -148,7 +153,7 @@ export async function fetchBehanceMetadata(
         Accept: "application/json",
         "User-Agent": "ArtWorkStudio/2026 (Experiential Architecture & Booth Showcase)",
       },
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(8000),
     });
 
     if (oembedRes.ok) {
@@ -157,24 +162,21 @@ export async function fetchBehanceMetadata(
         description?: string;
         thumbnail_url?: string;
         author_name?: string;
+        html?: string;
       };
 
-      if (data.thumbnail_url || data.title) {
-        return {
-          ok: true,
-          data: {
-            canonicalUrl,
-            projectId,
-            title: data.title || "Behance Project",
-            description: data.description || "",
-            coverImageUrl: data.thumbnail_url || "",
-            authorName: data.author_name || "Behance Creator",
-          },
-        };
+      if (data.title) title = data.title;
+      if (data.description) description = data.description;
+      if (data.author_name) authorName = data.author_name;
+      if (data.thumbnail_url) coverImageUrl = data.thumbnail_url;
+
+      if (!resolvedProjectId && data.html) {
+        const idMatch = data.html.match(/\/project\/(\d+)/);
+        if (idMatch && idMatch[1]) resolvedProjectId = idMatch[1];
       }
     }
   } catch {
-    // Continue to OpenGraph HTML fallback
+    // Continue to next resolver
   }
 
   // 2. OpenGraph Fallback: Scrape Behance HTML page
@@ -189,47 +191,58 @@ export async function fetchBehanceMetadata(
 
     if (htmlRes.ok) {
       const html = await htmlRes.text();
-      const title =
-        extractMetaTag(html, "og:title") ||
-        extractMetaTag(html, "twitter:title") ||
-        "Behance Exhibition Booth";
-      const description =
-        extractMetaTag(html, "og:description") ||
-        extractMetaTag(html, "twitter:description") ||
-        "";
-      const coverImageUrl =
-        extractMetaTag(html, "og:image") ||
-        extractMetaTag(html, "twitter:image") ||
-        "";
-
-      if (coverImageUrl) {
-        return {
-          ok: true,
-          data: {
-            canonicalUrl,
-            projectId,
-            title,
-            description,
-            coverImageUrl,
-            authorName: "Behance Creator",
-          },
-        };
-      }
+      const ogTitle = extractMetaTag(html, "og:title") || extractMetaTag(html, "twitter:title");
+      if (ogTitle) title = ogTitle;
+      const ogDesc = extractMetaTag(html, "og:description") || extractMetaTag(html, "twitter:description");
+      if (ogDesc) description = ogDesc;
+      const ogImage = extractMetaTag(html, "og:image") || extractMetaTag(html, "twitter:image");
+      if (ogImage && !coverImageUrl) coverImageUrl = ogImage;
     }
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Network error";
-    return { ok: false, error: `Failed to fetch Behance project details: ${msg}` };
+  } catch {
+    // Continue to next resolver
+  }
+
+  // 3. Official Behance embed widget fallback (bypasses Cloudflare bot detection if direct page had no image)
+  if (!coverImageUrl && resolvedProjectId) {
+    try {
+      const embedUrl = `https://www.behance.net/embed/project/${resolvedProjectId}?ilo0=1`;
+      const embedRes = await fetchFn(embedUrl, {
+        headers: {
+          Accept: "text/html,application/xhtml+xml",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          Referer: "https://www.behance.net",
+        },
+        signal: AbortSignal.timeout(5000),
+      });
+
+      if (embedRes.ok) {
+        const embedHtml = await embedRes.text();
+        const matches = [...embedHtml.matchAll(/https:\/\/mir-s3-cdn-cf\.behance\.net\/[^\s"',\\]+/g)].map(
+          (m) => m[0]
+        );
+        const best =
+          matches.find((m) => m.includes("max_808_webp")) ||
+          matches.find((m) => m.includes("404_webp")) ||
+          matches.find((m) => m.includes("projects")) ||
+          matches[0];
+        if (best) {
+          coverImageUrl = best;
+        }
+      }
+    } catch {
+      // Continue
+    }
   }
 
   return {
     ok: true,
     data: {
       canonicalUrl,
-      projectId,
-      title: "Behance Exhibition Booth",
-      description: "",
-      coverImageUrl: "",
-      authorName: "Behance Creator",
+      projectId: resolvedProjectId || projectId,
+      title,
+      description,
+      coverImageUrl,
+      authorName,
     },
   };
 }

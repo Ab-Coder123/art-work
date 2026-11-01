@@ -289,9 +289,12 @@ export default function GalleryProjectsManager() {
         const data = await res.json();
         setEditingProject((prev) => {
           if (!prev) return null;
-          const nextImages = prev.images ? [...prev.images] : [];
-          if (data.coverImageUrl && !nextImages.includes(data.coverImageUrl)) {
-            nextImages.unshift(data.coverImageUrl);
+          const rawImages = prev.images ? [...prev.images] : [];
+          const cleanImages = rawImages.filter(
+            (img) => !img.includes("project_01_neon_horizon.jpg")
+          );
+          if (data.coverImageUrl && !cleanImages.includes(data.coverImageUrl)) {
+            cleanImages.unshift(data.coverImageUrl);
           }
 
           const shouldUpdateTitle = !prev.title || prev.title.startsWith("New ");
@@ -300,13 +303,13 @@ export default function GalleryProjectsManager() {
           return {
             ...prev,
             behanceUrl: data.canonicalUrl,
-            image: data.coverImageUrl || prev.image,
-            images: nextImages.length > 0 ? nextImages : prev.images,
+            image: data.coverImageUrl || (prev.image?.includes("project_01_neon_horizon.jpg") ? "" : prev.image),
+            images: cleanImages.length > 0 ? cleanImages : (data.coverImageUrl ? [data.coverImageUrl] : []),
             title: shouldUpdateTitle && data.title ? data.title : prev.title,
             description: shouldUpdateDesc && data.description ? data.description : prev.description,
           };
         });
-        setBehanceStatusMessage("✓ تم استخراج صورة الغلاف وبيانات المشروع من Behance بنجاح!");
+        setBehanceStatusMessage("✓ تم استخراج صورة الغلاف بدقة عالية وبيانات المشروع من Behance بنجاح!");
       } else {
         const errData = await res.json().catch(() => ({}));
         setBehanceStatusMessage(`✕ تعذر سحب البيانات: ${errData.error || "تأكد من صحة الرابط"}`);
@@ -1442,12 +1445,12 @@ export default function GalleryProjectsManager() {
                         )}
 
                         {/* Live Extracted Render Preview Card */}
-                        {editingProject.image && editingProject.behanceUrl && (
-                          <div className="pt-2 border-t border-blue-500/20">
-                            <div className="text-[10px] text-blue-300/80 font-mono mb-2 flex items-center justify-between">
+                        {editingProject.image && !editingProject.image.includes("project_01_neon_horizon.jpg") ? (
+                          <div className="pt-2 border-t border-blue-500/20 space-y-3">
+                            <div className="text-[10px] text-blue-300/80 font-mono flex items-center justify-between">
                               <span>ACTIVE 3D PERSPECTIVE (EXTRACTED FROM BEHANCE)</span>
                               <a
-                                href={editingProject.behanceUrl}
+                                href={editingProject.behanceUrl || undefined}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="text-blue-400 hover:underline flex items-center gap-1 font-bold"
@@ -1466,6 +1469,65 @@ export default function GalleryProjectsManager() {
                                 ★ BEHANCE 3D COVER
                               </div>
                             </div>
+
+                            {/* Additional angles input from Behance */}
+                            <div className="pt-2 border-t border-blue-500/10 space-y-2">
+                              <label className="text-[11px] text-blue-200/90 font-mono block">
+                                Add more 3D render angles from this Behance project (Copy image address &amp; paste here):
+                              </label>
+                              <div className="flex flex-col sm:flex-row gap-2">
+                                <input
+                                  type="url"
+                                  placeholder="https://mir-s3-cdn-cf.behance.net/..."
+                                  value={manualImageUrl}
+                                  onChange={(e) => setManualImageUrl(e.target.value)}
+                                  className="flex-1 bg-[#151520] border border-blue-500/30 rounded-xl px-3 py-1.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-400 text-xs font-mono"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={handleAddManualImage}
+                                  disabled={!manualImageUrl.trim()}
+                                  className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold disabled:opacity-40 cursor-pointer shadow whitespace-nowrap"
+                                >
+                                  + Add Angle
+                                </button>
+                              </div>
+
+                              {/* Images row if more than 1 image */}
+                              {editingProject.images && editingProject.images.length > 1 && (
+                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1">
+                                  {editingProject.images.map((img, idx) => {
+                                    const isCover = img === editingProject.image;
+                                    return (
+                                      <div
+                                        key={idx}
+                                        className={`relative aspect-[16/10] rounded-lg overflow-hidden border p-0.5 bg-black cursor-pointer group ${
+                                          isCover ? "border-blue-400 ring-1 ring-blue-400" : "border-[#2b2b3d]"
+                                        }`}
+                                        onClick={() => setEditingProject({ ...editingProject, image: img })}
+                                      >
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src={img} alt={`Angle ${idx + 1}`} className="w-full h-full object-cover" />
+                                        {isCover && (
+                                          <span className="absolute top-1 left-1 bg-blue-600 text-white font-black text-[8px] px-1 py-0.2 rounded shadow">
+                                            Cover
+                                          </span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="p-4 rounded-xl border border-dashed border-blue-500/30 bg-blue-500/5 text-center space-y-1.5 mt-2">
+                            <p className="text-xs text-blue-300 font-mono">
+                              ✦ جاهز لسحب صورة الغلاف من مشروع Behance
+                            </p>
+                            <p className="text-[11px] text-zinc-400">
+                              اضغط على <span className="text-blue-400 font-bold">&ldquo;Auto-Fetch 3D Render&rdquo;</span> بالأعلى وسيتم جلب وتعيين صورة الرندر الحقيقية للمشروع تلقائياً.
+                            </p>
                           </div>
                         )}
                       </div>
