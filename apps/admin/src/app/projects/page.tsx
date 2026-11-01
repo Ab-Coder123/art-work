@@ -248,6 +248,22 @@ export default function GalleryProjectsManager() {
   const [isUploadingImages, setIsUploadingImages] = useState(false);
   const [isResolvingBehance, setIsResolvingBehance] = useState(false);
   const [behanceStatusMessage, setBehanceStatusMessage] = useState<string | null>(null);
+  const [manualImageUrl, setManualImageUrl] = useState("");
+
+  const handleAddManualImage = () => {
+    if (!manualImageUrl.trim() || !editingProject) return;
+    const url = manualImageUrl.trim();
+    const nextImages = editingProject.images ? [...editingProject.images] : [];
+    if (!nextImages.includes(url)) {
+      nextImages.push(url);
+    }
+    setEditingProject({
+      ...editingProject,
+      image: editingProject.image || url,
+      images: nextImages,
+    });
+    setManualImageUrl("");
+  };
   const [isUploadingPdf, setIsUploadingPdf] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
@@ -1302,12 +1318,93 @@ export default function GalleryProjectsManager() {
                       </div>
                     )}
 
+                    {/* 1. BEHANCE 3D PROJECT LINK & INSTANT AUTO-FETCH (PROMINENT AT TOP) */}
+                    <div className="p-4 bg-gradient-to-r from-blue-950/40 via-[#0e1628] to-[#0d0d12] border-2 border-blue-500/50 rounded-xl space-y-3 shadow-lg shadow-blue-950/20">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <label className="text-white font-bold flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-lg bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-400 shrink-0">
+                            <BehanceIcon className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="text-blue-300 font-mono tracking-wide text-xs uppercase">
+                            1. Attach Behance 3D Project Link &amp; Auto-Fetch Renders
+                          </span>
+                        </label>
+                        <span className="text-[10px] text-blue-200/70 font-mono">
+                          Paste Behance URL to auto-extract 3D cover &amp; link portfolio
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          placeholder="https://www.behance.net/gallery/12345678/Booth-Design..."
+                          value={editingProject.behanceUrl || ""}
+                          onChange={(e) => {
+                            setEditingProject({
+                              ...editingProject,
+                              behanceUrl: e.target.value,
+                            });
+                            setBehanceStatusMessage(null);
+                          }}
+                          className="flex-1 bg-[#151520] border border-blue-500/40 focus:border-blue-400 rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none text-xs font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleFetchBehanceMetadata}
+                          disabled={!editingProject.behanceUrl || isResolvingBehance}
+                          className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs disabled:opacity-40 cursor-pointer shadow-md transition-colors whitespace-nowrap"
+                        >
+                          {isResolvingBehance ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-3.5 h-3.5" />
+                          )}
+                          <span>Auto-Fetch Render &amp; Info</span>
+                        </button>
+                      </div>
+
+                      {behanceStatusMessage && (
+                        <div
+                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
+                            behanceStatusMessage.startsWith("✓")
+                              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+                              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
+                          }`}
+                        >
+                          <span>{behanceStatusMessage}</span>
+                        </div>
+                      )}
+
+                      {editingProject.behanceUrl && (
+                        <div className="flex items-center justify-between text-xs pt-0.5">
+                          <a
+                            href={editingProject.behanceUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-400 hover:underline flex items-center gap-1 text-[11px] font-mono"
+                          >
+                            <span>Open Behance Project ↗</span>
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingProject({ ...editingProject, behanceUrl: null });
+                              setBehanceStatusMessage(null);
+                            }}
+                            className="text-zinc-500 hover:text-red-400 text-[10px] cursor-pointer"
+                          >
+                            Remove Link
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
                     {/* A. ATTACH BOOTH IMAGES */}
                     <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <label className="text-zinc-200 font-bold flex items-center gap-2">
                           <Sparkles className="w-4 h-4 text-yellow-400" />
-                          <span>Attach Booth Images &amp; 3D Spatial Renders</span>
+                          <span>2. Attach Booth Images &amp; 3D Spatial Renders</span>
                         </label>
                         <span className="text-[10px] text-zinc-400 font-mono">
                           Upload 3D perspectives, elevation sketches &amp; photos from device
@@ -1367,6 +1464,25 @@ export default function GalleryProjectsManager() {
                             </div>
                           </>
                         )}
+                      </div>
+
+                      {/* Direct Image URL input */}
+                      <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-[#1e1e2d]">
+                        <input
+                          type="url"
+                          placeholder="Or paste direct image URL (e.g. Behance render image link)..."
+                          value={manualImageUrl}
+                          onChange={(e) => setManualImageUrl(e.target.value)}
+                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-1.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400 text-xs font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleAddManualImage}
+                          disabled={!manualImageUrl.trim()}
+                          className="px-3.5 py-1.5 rounded-xl bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 border border-yellow-400/30 text-xs font-bold disabled:opacity-40 cursor-pointer whitespace-nowrap"
+                        >
+                          + Add Image URL
+                        </button>
                       </div>
 
                       {/* Images Previews Grid */}
@@ -1441,7 +1557,7 @@ export default function GalleryProjectsManager() {
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <label className="text-zinc-200 font-bold flex items-center gap-2">
                           <FileText className="w-4 h-4 text-yellow-400" />
-                          <span>Attach Architectural PDF Blueprint / Spec Sheet</span>
+                          <span>3. Attach Architectural PDF Blueprint / Spec Sheet</span>
                         </label>
                         <span className="text-[10px] text-zinc-400 font-mono">
                           PDF floor plans, 3D technical drawings &amp; spec sheets
@@ -1546,82 +1662,6 @@ export default function GalleryProjectsManager() {
                       )}
                     </div>
 
-                    {/* C. ATTACH BEHANCE PROJECT SHOWCASE LINK & AUTO-FETCH */}
-                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <label className="text-zinc-200 font-bold flex items-center gap-2">
-                          <BehanceIcon className="w-4 h-4 text-blue-400" />
-                          <span>Attach Behance Project Link &amp; Auto-Fetch 3D Renders</span>
-                        </label>
-                        <span className="text-[10px] text-zinc-400 font-mono">
-                          Paste Behance URL to auto-extract cover images &amp; portfolio link
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                          type="text"
-                          placeholder="https://www.behance.net/gallery/12345678/Booth-Design..."
-                          value={editingProject.behanceUrl || ""}
-                          onChange={(e) => {
-                            setEditingProject({
-                              ...editingProject,
-                              behanceUrl: e.target.value,
-                            });
-                            setBehanceStatusMessage(null);
-                          }}
-                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400 text-xs font-mono"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleFetchBehanceMetadata}
-                          disabled={!editingProject.behanceUrl || isResolvingBehance}
-                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-300 border border-blue-500/30 font-bold text-[11px] disabled:opacity-40 cursor-pointer whitespace-nowrap"
-                        >
-                          {isResolvingBehance ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          ) : (
-                            <Sparkles className="w-3.5 h-3.5" />
-                          )}
-                          <span>Auto-Fetch Render &amp; Info</span>
-                        </button>
-                      </div>
-
-                      {behanceStatusMessage && (
-                        <div
-                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
-                            behanceStatusMessage.startsWith("✓")
-                              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
-                              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
-                          }`}
-                        >
-                          <span>{behanceStatusMessage}</span>
-                        </div>
-                      )}
-
-                      {editingProject.behanceUrl && (
-                        <div className="flex items-center justify-between text-xs pt-1">
-                          <a
-                            href={editingProject.behanceUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-blue-400 hover:underline flex items-center gap-1 text-[11px] font-mono"
-                          >
-                            <span>Open Behance Project ↗</span>
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setEditingProject({ ...editingProject, behanceUrl: null });
-                              setBehanceStatusMessage(null);
-                            }}
-                            className="text-zinc-500 hover:text-red-400 text-[10px] cursor-pointer"
-                          >
-                            Remove Link
-                          </button>
-                        </div>
-                      )}
-                    </div>
 
                     {/* Optional YouTube Video toggle for booths */}
                     <div className="pt-1">
@@ -1937,6 +1977,31 @@ export default function GalleryProjectsManager() {
                           blocked for security).
                         </p>
                       ) : null}
+                    </div>
+
+                    {/* Optional Behance Link for Standard Projects */}
+                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-zinc-200 font-bold flex items-center gap-2 text-xs">
+                          <BehanceIcon className="w-4 h-4 text-blue-400" />
+                          <span>Attach Behance Project Link</span>
+                        </label>
+                        <span className="text-[10px] text-zinc-400 font-mono">
+                          Optional link to Behance portfolio
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="https://www.behance.net/gallery/12345678/..."
+                        value={editingProject.behanceUrl || ""}
+                        onChange={(e) =>
+                          setEditingProject({
+                            ...editingProject,
+                            behanceUrl: e.target.value,
+                          })
+                        }
+                        className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-400 text-xs font-mono"
+                      />
                     </div>
                   </div>
                 )}
