@@ -29,7 +29,7 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
       0.1,
       1000
     );
-    camera.position.set(-6, 2, 38);
+    camera.position.set(0, 2, 42);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -92,7 +92,7 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
         map: texture,
         transparent: true,
         alphaTest: 0.02,
-        opacity: 0.85,
+        opacity: 0.50,
         depthWrite: false,
         side: THREE.DoubleSide,
       });
@@ -101,45 +101,46 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     };
 
     // =============================================================
-    // 4. STATIONS 1 to 8: THE 8 ART WORK STUDIO DOODLE CHARACTERS
+    // 4. STATIONS 1 to 8: BALANCED STUDIO DOODLE CHARACTERS IN SIDE FLANKS
+    // Flanked on outer left and right margins, leaving center 100% clean for text
     // =============================================================
     const station1 = new THREE.Group();
-    station1.position.set(-15, 2, 6);
+    station1.position.set(-25, 6, 2); // Upper Left
     station1.add(loadCharPlane("/assets/images/character-01.svg", 9.66, 10.5));
     scene.add(station1);
 
     const station2 = new THREE.Group();
-    station2.position.set(16, -2, -2);
+    station2.position.set(25, 5, 0); // Upper Right
     station2.add(loadCharPlane("/assets/images/character-02.svg", 9.66, 10.5));
     scene.add(station2);
 
     const station3 = new THREE.Group();
-    station3.position.set(-8, -13, -6);
+    station3.position.set(-27, -6, -6); // Mid Left
     station3.add(loadCharPlane("/assets/images/character-03.svg", 9.66, 10.5));
     scene.add(station3);
 
     const station4 = new THREE.Group();
-    station4.position.set(16, -14, -8);
+    station4.position.set(27, -7, -8); // Mid Right
     station4.add(loadCharPlane("/assets/images/character-04.svg", 9.66, 10.5));
     scene.add(station4);
 
     const station5 = new THREE.Group();
-    station5.position.set(-22, -4, 1);
+    station5.position.set(-24, -18, -14); // Lower Left
     station5.add(loadCharPlane("/assets/images/character-05.svg", 9.66, 10.5));
     scene.add(station5);
 
     const station6 = new THREE.Group();
-    station6.position.set(9, 4, -9);
+    station6.position.set(24, -19, -16); // Lower Right
     station6.add(loadCharPlane("/assets/images/character-06.svg", 9.66, 10.5));
     scene.add(station6);
 
     const station7 = new THREE.Group();
-    station7.position.set(-17, -15, -11);
+    station7.position.set(-30, -28, -22); // Deep Left
     station7.add(loadCharPlane("/assets/images/character-07.svg", 9.66, 10.5));
     scene.add(station7);
 
     const station8 = new THREE.Group();
-    station8.position.set(7, -17, -13);
+    station8.position.set(30, -29, -24); // Deep Right
     station8.add(loadCharPlane("/assets/images/character-08.svg", 9.66, 10.5));
     scene.add(station8);
 
@@ -147,9 +148,9 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
     // 8. MINIMAL CLEAN PERSPECTIVE FLOOR GRID (Subtle Neutral Gray)
     // =============================================================
     const gridHelper = new THREE.GridHelper(100, 30, 0xd1d5db, 0xe5e7eb);
-    gridHelper.position.y = -17;
+    gridHelper.position.y = -35;
     (gridHelper.material as THREE.Material).transparent = true;
-    (gridHelper.material as THREE.Material).opacity = 0.12;
+    (gridHelper.material as THREE.Material).opacity = 0.08;
     scene.add(gridHelper);
 
     // =============================================================
@@ -196,49 +197,26 @@ export const Kinetic3DBackground: React.FC<Kinetic3DBackgroundProps> = ({
       currentProgress += (targetProgress - currentProgress) * 0.08;
       const time = performance.now() * 0.001;
 
-      // CAMERA TRAJECTORY: Smooth glide through the stations
-      let targetCamX = -6;
-      let targetCamY = 2;
-      let targetCamZ = 38;
-      const lookTarget = new THREE.Vector3(0, 0, 0);
-
-      if (currentProgress < 0.4) {
-        // Station 1: Focus on Graphic Designer
-        const t = currentProgress / 0.4;
-        targetCamX = -10 + t * 6;
-        targetCamY = 3 - t * 2;
-        targetCamZ = 34 - t * 4;
-        lookTarget.set(-15, 2, 6);
-      } else if (currentProgress < 0.75) {
-        // Station 2: Glide over to Motion Designer
-        const t = (currentProgress - 0.4) / 0.35;
-        targetCamX = -4 + t * 16;
-        targetCamY = 1 - t * 2;
-        targetCamZ = 30 - t * 2;
-        lookTarget.set(16, -2, -2);
-      } else {
-        // Station 3 & 4: Descend to Art Director & Content Creator
-        const t = (currentProgress - 0.75) / 0.25;
-        targetCamX = 12 - t * 14;
-        targetCamY = -1 - t * 9;
-        targetCamZ = 28 - t * 4;
-        lookTarget.set(0, -13, -7);
-      }
+      // CAMERA TRAJECTORY: Centered panoramic glide preserving clean central readable area
+      const targetCamX = 0;
+      const targetCamY = 2 - currentProgress * 26;
+      const targetCamZ = 42 - currentProgress * 6;
+      const lookTarget = new THREE.Vector3(0, targetCamY - 2, 0);
 
       camera.position.x += (targetCamX + mouseX - camera.position.x) * 0.05;
       camera.position.y += (targetCamY + mouseY - camera.position.y) * 0.05;
       camera.position.z += (targetCamZ - camera.position.z) * 0.08;
       camera.lookAt(lookTarget);
 
-      // Subtle breathing float for characters
-      station1.position.y = 2 + Math.sin(time * 1.4) * 0.35;
-      station2.position.y = -2 + Math.cos(time * 1.3) * 0.35;
-      station3.position.y = -13 + Math.sin(time * 1.2) * 0.3;
-      station4.position.y = -14 + Math.cos(time * 1.5) * 0.35;
-      station5.position.y = -4 + Math.sin(time * 1.1) * 0.35;
-      station6.position.y = 4 + Math.cos(time * 1.4) * 0.35;
-      station7.position.y = -15 + Math.sin(time * 1.3) * 0.3;
-      station8.position.y = -17 + Math.cos(time * 1.2) * 0.35;
+      // Subtle breathing float for characters around their balanced flank positions
+      station1.position.y = 6 + Math.sin(time * 1.4) * 0.35;
+      station2.position.y = 5 + Math.cos(time * 1.3) * 0.35;
+      station3.position.y = -6 + Math.sin(time * 1.2) * 0.3;
+      station4.position.y = -7 + Math.cos(time * 1.5) * 0.35;
+      station5.position.y = -18 + Math.sin(time * 1.1) * 0.35;
+      station6.position.y = -19 + Math.cos(time * 1.4) * 0.35;
+      station7.position.y = -28 + Math.sin(time * 1.3) * 0.3;
+      station8.position.y = -29 + Math.cos(time * 1.2) * 0.35;
 
       // Subtle tilt responding to mouse
       station1.rotation.y = Math.sin(time * 0.8) * 0.05 + mouseX * 0.02;
