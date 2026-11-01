@@ -23,8 +23,9 @@ export * from "./schemas/index";
 // Authentication, Session Lifecycle & CSRF Defense (Phase 03)
 export * from "./auth/index";
 
-// YouTube Media Engine (Phase 05)
+// YouTube & Behance Media Engines (Phase 05 & Booth Integration)
 export * from "./media/youtube";
+export * from "./media/behance";
 
 // Projects Showcase Service & Repository (Phase 06)
 export * from "./projects/service";

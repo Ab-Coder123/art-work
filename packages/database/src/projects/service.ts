@@ -254,6 +254,16 @@ export function normalizeProjectInput(
           ? String(rawInput.pdf_url).trim()
           : null
         : existing?.pdf_url ?? null,
+    behance_url:
+      rawInput.behanceUrl !== undefined
+        ? rawInput.behanceUrl
+          ? String(rawInput.behanceUrl).trim()
+          : null
+        : rawInput.behance_url !== undefined
+        ? rawInput.behance_url
+          ? String(rawInput.behance_url).trim()
+          : null
+        : existing?.behance_url ?? null,
     pdf_title:
       rawInput.pdfTitle !== undefined
         ? rawInput.pdfTitle

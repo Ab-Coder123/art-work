@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { parseYouTubeInput } from "../media/youtube";
+import { isValidBehanceUrl } from "@art-work/types";
 
 export const PROJECT_CATEGORIES = [
   "stage",
@@ -44,6 +45,18 @@ export const YouTubeUrlSchema = z
 /**
  * Validates slug format: lowercase kebab-case (e.g. "neon-horizon-stage").
  */
+/**
+ * Validates optional Behance project or portfolio links.
+ */
+export const BehanceUrlSchema = z
+  .string()
+  .refine(
+    (url) => !url || isValidBehanceUrl(url),
+    "Behance URL must be a valid link on behance.net"
+  )
+  .nullable()
+  .optional();
+
 export const SlugSchema = z
   .string()
   .min(2, "Slug must contain at least 2 characters")
@@ -81,6 +94,7 @@ export const ProjectInputSchema = z.object({
   images: z.array(z.string()).default([]),
   pdf_url: z.string().nullable().optional(),
   pdf_title: z.string().max(200).nullable().optional(),
+  behance_url: BehanceUrlSchema,
   status: ContentStatusEnum.default("draft"),
   order_index: z.number().int().default(0),
   featured: z.boolean().default(false),

@@ -28,6 +28,14 @@ import {
 } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
 
+function BehanceIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M7.643 12.185c-1.396 0-2.383 1.054-2.383 2.518 0 1.488.944 2.508 2.373 2.508 1.155 0 1.942-.55 2.277-1.579h2.09c-.481 2.062-2.316 3.328-4.367 3.328-2.68 0-4.664-1.93-4.664-4.257 0-2.348 1.994-4.278 4.674-4.278 2.041 0 3.866 1.256 4.357 3.298h-2.09c-.335-1.009-1.112-1.538-2.267-1.538zm9.734-.146h-4.834v-1.785h4.834v1.785zm1.968 4.103c0 1.99-1.597 2.818-3.415 2.818h-4.387v-9.92h4.156c1.717 0 3.193.818 3.193 2.529 0 1.058-.628 1.832-1.539 2.167 1.235.314 1.992 1.246 1.992 2.406zm-2.094-3.791c0-.827-.691-1.131-1.633-1.131h-2.146v2.272h2.146c.942 0 1.633-.304 1.633-1.141zm.262 3.655c0-.9-.754-1.236-1.769-1.236h-2.387v2.482h2.387c1.015 0 1.769-.335 1.769-1.246z" />
+    </svg>
+  );
+}
+
 function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -238,6 +246,8 @@ export default function GalleryProjectsManager() {
   const [isSaving, setIsSaving] = useState(false);
   const [showBoothYouTube, setShowBoothYouTube] = useState(false);
   const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [isResolvingBehance, setIsResolvingBehance] = useState(false);
+  const [behanceStatusMessage, setBehanceStatusMessage] = useState<string | null>(null);
   const [isUploadingPdf, setIsUploadingPdf] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
@@ -247,6 +257,51 @@ export default function GalleryProjectsManager() {
   const coverInputRef = React.useRef<HTMLInputElement | null>(null);
   const boothImagesInputRef = React.useRef<HTMLInputElement | null>(null);
   const boothPdfInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const handleFetchBehanceMetadata = async () => {
+    if (!editingProject?.behanceUrl) return;
+    setIsResolvingBehance(true);
+    setBehanceStatusMessage(null);
+
+    try {
+      const res = await apiFetchWithCsrf("/api/media/behance/resolve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: editingProject.behanceUrl }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setEditingProject((prev) => {
+          if (!prev) return null;
+          const nextImages = prev.images ? [...prev.images] : [];
+          if (data.coverImageUrl && !nextImages.includes(data.coverImageUrl)) {
+            nextImages.unshift(data.coverImageUrl);
+          }
+
+          const shouldUpdateTitle = !prev.title || prev.title.startsWith("New ");
+          const shouldUpdateDesc = !prev.description || prev.description.length < 15;
+
+          return {
+            ...prev,
+            behanceUrl: data.canonicalUrl,
+            image: data.coverImageUrl || prev.image,
+            images: nextImages.length > 0 ? nextImages : prev.images,
+            title: shouldUpdateTitle && data.title ? data.title : prev.title,
+            description: shouldUpdateDesc && data.description ? data.description : prev.description,
+          };
+        });
+        setBehanceStatusMessage("✓ تم استخراج صورة الغلاف وبيانات المشروع من Behance بنجاح!");
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setBehanceStatusMessage(`✕ تعذر سحب البيانات: ${errData.error || "تأكد من صحة الرابط"}`);
+      }
+    } catch {
+      setBehanceStatusMessage("✕ حدث خطأ أثناء الاتصال بسيرفر Behance");
+    } finally {
+      setIsResolvingBehance(false);
+    }
+  };
 
   const handleUploadCoverFile = async (file: File) => {
     if (!file || !editingProject) return;
@@ -900,6 +955,12 @@ export default function GalleryProjectsManager() {
                           {project.metaBadge}
                         </span>
                       )}
+                      {project.behanceUrl && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-mono text-blue-400 bg-blue-500/10 border border-blue-500/30 px-1.5 py-0.5 rounded">
+                          <BehanceIcon className="w-3 h-3 text-blue-400" />
+                          <span>Behance</span>
+                        </span>
+                      )}
                       {(project.youtubeVideoId || project.youtubeUrl) && (
                         <span className="inline-flex items-center gap-1 text-[10px] font-mono text-red-400 bg-red-500/10 border border-red-500/30 px-1.5 py-0.5 rounded">
                           <YouTubeIcon className="w-3 h-3 text-red-500" />
@@ -1482,6 +1543,83 @@ export default function GalleryProjectsManager() {
                         </div>
                       ) : (
                         <p className="text-[11px] text-zinc-500 italic">No PDF attached yet. Click or drag &amp; drop a PDF above.</p>
+                      )}
+                    </div>
+
+                    {/* C. ATTACH BEHANCE PROJECT SHOWCASE LINK & AUTO-FETCH */}
+                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <label className="text-zinc-200 font-bold flex items-center gap-2">
+                          <BehanceIcon className="w-4 h-4 text-blue-400" />
+                          <span>Attach Behance Project Link &amp; Auto-Fetch 3D Renders</span>
+                        </label>
+                        <span className="text-[10px] text-zinc-400 font-mono">
+                          Paste Behance URL to auto-extract cover images &amp; portfolio link
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          placeholder="https://www.behance.net/gallery/12345678/Booth-Design..."
+                          value={editingProject.behanceUrl || ""}
+                          onChange={(e) => {
+                            setEditingProject({
+                              ...editingProject,
+                              behanceUrl: e.target.value,
+                            });
+                            setBehanceStatusMessage(null);
+                          }}
+                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400 text-xs font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleFetchBehanceMetadata}
+                          disabled={!editingProject.behanceUrl || isResolvingBehance}
+                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-300 border border-blue-500/30 font-bold text-[11px] disabled:opacity-40 cursor-pointer whitespace-nowrap"
+                        >
+                          {isResolvingBehance ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-3.5 h-3.5" />
+                          )}
+                          <span>Auto-Fetch Render &amp; Info</span>
+                        </button>
+                      </div>
+
+                      {behanceStatusMessage && (
+                        <div
+                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
+                            behanceStatusMessage.startsWith("✓")
+                              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+                              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
+                          }`}
+                        >
+                          <span>{behanceStatusMessage}</span>
+                        </div>
+                      )}
+
+                      {editingProject.behanceUrl && (
+                        <div className="flex items-center justify-between text-xs pt-1">
+                          <a
+                            href={editingProject.behanceUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-400 hover:underline flex items-center gap-1 text-[11px] font-mono"
+                          >
+                            <span>Open Behance Project ↗</span>
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingProject({ ...editingProject, behanceUrl: null });
+                              setBehanceStatusMessage(null);
+                            }}
+                            className="text-zinc-500 hover:text-red-400 text-[10px] cursor-pointer"
+                          >
+                            Remove Link
+                          </button>
+                        </div>
                       )}
                     </div>
 

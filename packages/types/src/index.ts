@@ -54,6 +54,8 @@ export interface ProjectRecord {
   pdfUrl?: string | null;
   /** Display label for PDF document (e.g. "Architectural Plan & Specs PDF") */
   pdfTitle?: string | null;
+  /** Optional Behance project showcase or portfolio link */
+  behanceUrl?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -86,6 +88,7 @@ export interface DbProjectRecord {
   images?: string[];
   pdf_url?: string | null;
   pdf_title?: string | null;
+  behance_url?: string | null;
   status: PublicationStatus;
   order_index: number;
   featured: boolean;
@@ -172,6 +175,7 @@ export function mapDbProjectToRecord(row: DbProjectRecord): ProjectRecord {
     images: row.images || (resolvedImage ? [resolvedImage] : []),
     pdfUrl: row.pdf_url ?? null,
     pdfTitle: row.pdf_title ?? null,
+    behanceUrl: row.behance_url ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -218,6 +222,7 @@ export function mapRecordToDbProject(
     images: record.images || (record.image ? [record.image] : []),
     pdf_url: record.pdfUrl ?? null,
     pdf_title: record.pdfTitle ?? null,
+    behance_url: record.behanceUrl ? String(record.behanceUrl).trim() : null,
     status: record.status,
     order_index: record.order,
     featured: Boolean(record.featured),
@@ -671,5 +676,22 @@ export const DEFAULT_COMPANIES: CompanyRecord[] = [
   },
 ];
 
+/** Approved Behance hostnames */
+export const BEHANCE_HOSTS = new Set(["behance.net", "www.behance.net"]);
 
-
+/**
+ * Validates whether an input is a valid Behance project or profile URL.
+ * Rejects raw HTML tags and unsafe schemes.
+ */
+export function isValidBehanceUrl(input: unknown): boolean {
+  if (typeof input !== "string") return false;
+  const raw = input.trim();
+  if (!raw || /[<>"'`\s]/.test(raw)) return false;
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return false;
+    return BEHANCE_HOSTS.has(parsed.hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+}
