@@ -49,13 +49,7 @@ export const StudioHeader = React.memo(function StudioHeader({
             </div>
           </button>
 
-          {/* Quick Mobile Gallery Badge */}
-          <Link
-            href="/gallery"
-            className="md:hidden inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-[10px] uppercase px-2 py-0.5 rounded border border-black comic-shadow-sm active:scale-95"
-          >
-            <span>★ {layout.navGalleryLabel}</span>
-          </Link>
+
         </div>
 
         {/* Desktop Navigation Links (Sticker Buttons) */}
@@ -105,7 +99,13 @@ export const StudioHeader = React.memo(function StudioHeader({
           >
             {layout.navContactLabel}
           </button>
-
+          {/* Quick Mobile Gallery Badge */}
+          <Link
+            href="/gallery"
+            className="md:hidden inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-[10px] uppercase px-2 py-0.5 rounded border border-black comic-shadow-sm active:scale-95"
+          >
+            <span>★ {layout.navGalleryLabel}</span>
+          </Link>
         </nav>
 
         {/* Trailing Primary Actions: Theme Toggle + Sound Toggle + Brief Inquiry + Ink Mode */}
