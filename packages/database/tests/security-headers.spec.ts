@@ -16,6 +16,7 @@ describe("Phase 09: Security Headers & Content Security Policy (CSP)", () => {
     assert.match(csp, /https:\/\/www\.youtube-nocookie\.com/);
     assert.match(csp, /img-src.*https:\/\/i\.ytimg\.com/);
     assert.match(csp, /img-src.*https:\/\/img\.youtube\.com/);
+    assert.match(csp, /img-src.*https:\/\/mir-s3-cdn-cf\.behance\.net/);
   });
 
   it("should configure CSP with Supabase endpoints", () => {

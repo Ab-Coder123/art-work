@@ -28,6 +28,9 @@ export function buildContentSecurityPolicy(options: SecurityHeaderOptions = {}):
       "https://i.ytimg.com",
       "https://img.youtube.com",
       "https://*.supabase.co",
+      "https://mir-s3-cdn-cf.behance.net",
+      "https://*.behance.net",
+      "https://a5.behance.net",
     ],
     "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
     "frame-src": [

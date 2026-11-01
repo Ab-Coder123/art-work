@@ -33,14 +33,6 @@ import {
 } from "@art-work/types";
 import { SEED_PROJECTS } from "@/data/seedContent";
 
-function BehanceIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M7.643 12.185c-1.396 0-2.383 1.054-2.383 2.518 0 1.488.944 2.508 2.373 2.508 1.155 0 1.942-.55 2.277-1.579h2.09c-.481 2.062-2.316 3.328-4.367 3.328-2.68 0-4.664-1.93-4.664-4.257 0-2.348 1.994-4.278 4.674-4.278 2.041 0 3.866 1.256 4.357 3.298h-2.09c-.335-1.009-1.112-1.538-2.267-1.538zm9.734-.146h-4.834v-1.785h4.834v1.785zm1.968 4.103c0 1.99-1.597 2.818-3.415 2.818h-4.387v-9.92h4.156c1.717 0 3.193.818 3.193 2.529 0 1.058-.628 1.832-1.539 2.167 1.235.314 1.992 1.246 1.992 2.406zm-2.094-3.791c0-.827-.691-1.131-1.633-1.131h-2.146v2.272h2.146c.942 0 1.633-.304 1.633-1.141zm.262 3.655c0-.9-.754-1.236-1.769-1.236h-2.387v2.482h2.387c1.015 0 1.769-.335 1.769-1.246z" />
-    </svg>
-  );
-}
-
 export default function GalleryPage() {
   const [projects, setProjects] = useState<ProjectRecord[]>(SEED_PROJECTS);
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
@@ -472,12 +464,7 @@ export default function GalleryPage() {
                             </>
                           )}
                         </div>
-                                            ) : project.behanceUrl ? (
-                        <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-[#0057ff] text-white font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
-                          <BehanceIcon className="w-3 h-3 fill-current" />
-                          <span>BEHANCE 3D</span>
-                        </div>
-                      ) : project.pdfUrl || project.category === "booths" ? (
+                                            ) : project.pdfUrl || project.category === "booths" ? (
                         <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-yellow-400/95 backdrop-blur-sm text-black font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
                           <FileText className="w-3 h-3" />
                           <span>3D &amp; PDF</span>
@@ -877,34 +864,7 @@ export default function GalleryPage() {
                       </a>
                     </div>
                   )}
-{/* Behance Project Showcase Action Banner */}
-                  {selectedProject.behanceUrl && (
-                    <div className="p-3.5 bg-blue-50 dark:bg-blue-950/30 text-black dark:text-white rounded-xl border-2 border-black dark:border-blue-500/40 comic-shadow-sm flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-9 h-9 rounded-lg bg-[#0057ff] text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
-                          <BehanceIcon className="w-5 h-5 fill-current" />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="font-headline font-black text-xs uppercase truncate text-black dark:text-white">
-                            BEHANCE 3D RENDERS &amp; BLUEPRINT CASE STUDY
-                          </div>
-                          <div className="font-mono text-[10px] text-black/70 dark:text-zinc-400 truncate">
-                            Official Showcase • Full Spatial Visualizations
-                          </div>
-                        </div>
-                      </div>
-                      <a
-                        href={selectedProject.behanceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3.5 py-1.5 bg-[#0057ff] hover:bg-[#0047d4] text-white font-headline font-bold text-xs uppercase rounded border-2 border-black flex items-center gap-1.5 active:scale-95 transition-transform shrink-0 comic-shadow-sm"
-                      >
-                        <span>VIEW ON BEHANCE</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </a>
-                    </div>
-                  )}
-                </div>
+</div>
               )}
 
               <div className="pt-4 border-t border-black/10 dark:border-zinc-800 flex items-center justify-end">

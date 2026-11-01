@@ -1463,6 +1463,8 @@ export default function GalleryProjectsManager() {
                               <img
                                 src={editingProject.image}
                                 alt="Behance 3D Booth Preview"
+                                referrerPolicy="no-referrer"
+                                crossOrigin="anonymous"
                                 className="w-full h-full object-cover"
                               />
                               <div className="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow uppercase">
@@ -1507,7 +1509,7 @@ export default function GalleryProjectsManager() {
                                         onClick={() => setEditingProject({ ...editingProject, image: img })}
                                       >
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={img} alt={`Angle ${idx + 1}`} className="w-full h-full object-cover" />
+                                        <img src={img} alt={`Angle ${idx + 1}`} referrerPolicy="no-referrer" crossOrigin="anonymous" className="w-full h-full object-cover" />
                                         {isCover && (
                                           <span className="absolute top-1 left-1 bg-blue-600 text-white font-black text-[8px] px-1 py-0.2 rounded shadow">
                                             Cover
