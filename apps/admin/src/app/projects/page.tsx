@@ -17,7 +17,6 @@ import {
   Loader2,
   Smartphone,
   FileText,
-  Paperclip,
   UploadCloud,
 } from "lucide-react";
 import {
@@ -244,10 +243,10 @@ export default function GalleryProjectsManager() {
   const [notification, setNotification] = useState<AdminNotification | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [showBoothYouTube, setShowBoothYouTube] = useState(false);
   const [isUploadingImages, setIsUploadingImages] = useState(false);
   const [isResolvingBehance, setIsResolvingBehance] = useState(false);
   const [behanceStatusMessage, setBehanceStatusMessage] = useState<string | null>(null);
+  const [mediaSourceTab, setMediaSourceTab] = useState<"behance" | "upload">("upload");
   const [manualImageUrl, setManualImageUrl] = useState("");
 
   const handleAddManualImage = () => {
@@ -797,6 +796,8 @@ export default function GalleryProjectsManager() {
               setYtStatusMessage(null);
               setModalError(null);
               setIsCreatingNew(true);
+              setMediaSourceTab("upload");
+              setManualImageUrl("");
               setEditingProject({
                 id: newId,
                 slug: newId,
@@ -1016,6 +1017,8 @@ export default function GalleryProjectsManager() {
                       setYtStatusMessage(null);
                       setModalError(null);
                       setIsCreatingNew(false);
+                      setMediaSourceTab(project.behanceUrl ? "behance" : "upload");
+                      setManualImageUrl("");
                       setEditingProject(project);
                     }}
                     className="p-2 rounded-lg bg-[#20202e] hover:bg-yellow-400 hover:text-black text-zinc-300 transition-colors border border-[#2b2b3d] cursor-pointer"
@@ -1318,253 +1321,344 @@ export default function GalleryProjectsManager() {
                       </div>
                     )}
 
-                    {/* 1. BEHANCE 3D PROJECT LINK & INSTANT AUTO-FETCH (PROMINENT AT TOP) */}
-                    <div className="p-4 bg-gradient-to-r from-blue-950/40 via-[#0e1628] to-[#0d0d12] border-2 border-blue-500/50 rounded-xl space-y-3 shadow-lg shadow-blue-950/20">
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <label className="text-white font-bold flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-lg bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-400 shrink-0">
-                            <BehanceIcon className="w-3.5 h-3.5" />
-                          </div>
-                          <span className="text-blue-300 font-mono tracking-wide text-xs uppercase">
-                            1. Attach Behance 3D Project Link &amp; Auto-Fetch Renders
-                          </span>
-                        </label>
-                        <span className="text-[10px] text-blue-200/70 font-mono">
-                          Paste Behance URL to auto-extract 3D cover &amp; link portfolio
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                          type="text"
-                          placeholder="https://www.behance.net/gallery/12345678/Booth-Design..."
-                          value={editingProject.behanceUrl || ""}
-                          onChange={(e) => {
-                            setEditingProject({
-                              ...editingProject,
-                              behanceUrl: e.target.value,
-                            });
-                            setBehanceStatusMessage(null);
-                          }}
-                          className="flex-1 bg-[#151520] border border-blue-500/40 focus:border-blue-400 rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none text-xs font-mono"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleFetchBehanceMetadata}
-                          disabled={!editingProject.behanceUrl || isResolvingBehance}
-                          className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs disabled:opacity-40 cursor-pointer shadow-md transition-colors whitespace-nowrap"
-                        >
-                          {isResolvingBehance ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          ) : (
-                            <Sparkles className="w-3.5 h-3.5" />
-                          )}
-                          <span>Auto-Fetch Render &amp; Info</span>
-                        </button>
-                      </div>
-
-                      {behanceStatusMessage && (
-                        <div
-                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
-                            behanceStatusMessage.startsWith("✓")
-                              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
-                              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
-                          }`}
-                        >
-                          <span>{behanceStatusMessage}</span>
-                        </div>
-                      )}
-
-                      {editingProject.behanceUrl && (
-                        <div className="flex items-center justify-between text-xs pt-0.5">
-                          <a
-                            href={editingProject.behanceUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-blue-400 hover:underline flex items-center gap-1 text-[11px] font-mono"
-                          >
-                            <span>Open Behance Project ↗</span>
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setEditingProject({ ...editingProject, behanceUrl: null });
-                              setBehanceStatusMessage(null);
-                            }}
-                            className="text-zinc-500 hover:text-red-400 text-[10px] cursor-pointer"
-                          >
-                            Remove Link
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* A. ATTACH BOOTH IMAGES */}
-                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <label className="text-zinc-200 font-bold flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-yellow-400" />
-                          <span>2. Attach Booth Images &amp; 3D Spatial Renders</span>
-                        </label>
-                        <span className="text-[10px] text-zinc-400 font-mono">
-                          Upload 3D perspectives, elevation sketches &amp; photos from device
-                        </span>
-                      </div>
-
-                      {/* Drag & Drop Booth Images Zone */}
-                      <div
-                        onDragOver={(e) => {
-                          e.preventDefault();
-                          setIsBoothImagesDragging(true);
-                        }}
-                        onDragLeave={() => setIsBoothImagesDragging(false)}
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          setIsBoothImagesDragging(false);
-                          if (e.dataTransfer.files) handleUploadImages(e.dataTransfer.files);
-                        }}
-                        onClick={() => !isUploadingImages && boothImagesInputRef.current?.click()}
-                        className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 ${
-                          isBoothImagesDragging
-                            ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
-                            : "border-[#2b2b3d] bg-[#12121c] hover:border-yellow-400/60 hover:bg-[#151522]"
+                    {/* SELECT MEDIA SOURCE TABS / أسلوب إرفاق الوسائط */}
+                    <div className="p-1 bg-[#101018] border border-[#2b2b3d] rounded-2xl flex items-center gap-1.5 shadow-inner">
+                      <button
+                        type="button"
+                        onClick={() => setMediaSourceTab("behance")}
+                        className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                          mediaSourceTab === "behance"
+                            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-black"
+                            : "text-zinc-400 hover:text-white hover:bg-[#181824]"
                         }`}
                       >
-                        <input
-                          ref={boothImagesInputRef}
-                          type="file"
-                          accept="image/png, image/jpeg, image/webp"
-                          multiple
-                          disabled={isUploadingImages}
-                          onChange={(e) => {
-                            handleUploadImages(e.target.files);
-                            e.target.value = "";
-                          }}
-                          className="hidden"
-                        />
-                        {isUploadingImages ? (
-                          <div className="py-2 flex flex-col items-center gap-2">
-                            <Loader2 className="w-5 h-5 text-yellow-400 animate-spin" />
-                            <span className="font-mono text-zinc-400 text-[11px]">
-                              Uploading images...
-                            </span>
-                          </div>
-                        ) : (
-                          <>
-                            <div className="w-8 h-8 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center text-yellow-400">
-                              <UploadCloud className="w-4 h-4" />
+                        <BehanceIcon className="w-4 h-4" />
+                        <span>Behance 3D Project Sync</span>
+                        {editingProject.behanceUrl && (
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setMediaSourceTab("upload")}
+                        className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                          mediaSourceTab === "upload"
+                            ? "bg-yellow-400 text-black shadow-lg shadow-yellow-400/20 font-black"
+                            : "text-zinc-400 hover:text-white hover:bg-[#181824]"
+                        }`}
+                      >
+                        <UploadCloud className="w-4 h-4" />
+                        <span>Manual 3D Renders &amp; File Upload</span>
+                        {(editingProject.images?.length || editingProject.image) ? (
+                          <span className="text-[10px] bg-black/40 text-yellow-300 px-1.5 py-0.5 rounded-full ml-0.5">
+                            {editingProject.images?.length || 1}
+                          </span>
+                        ) : null}
+                      </button>
+                    </div>
+
+                    {/* DYNAMIC RENDERING: BEHANCE ONLY VS MANUAL UPLOAD ONLY */}
+                    {mediaSourceTab === "behance" ? (
+                      /* 1. BEHANCE 3D INTEGRATION TAB (CLEAN, NO DROPZONE) */
+                      <div className="p-5 bg-gradient-to-br from-blue-950/40 via-[#0e1424] to-[#0d0d12] border-2 border-blue-500/50 rounded-2xl space-y-4 shadow-xl shadow-blue-950/30">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-400 shrink-0">
+                              <BehanceIcon className="w-4 h-4" />
                             </div>
                             <div>
-                              <p className="text-white text-xs font-bold">
-                                Drag &amp; drop booth images here, or <span className="text-yellow-400 underline">browse</span>
-                              </p>
-                              <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
-                                Select single or multiple images (PNG, JPG, WebP)
-                              </p>
+                              <div className="flex items-center gap-2">
+                                <span className="text-white font-bold text-xs uppercase tracking-wider font-mono">
+                                  Behance 3D Project Sync
+                                </span>
+                                <span className="text-[9px] bg-blue-500/20 text-blue-300 border border-blue-500/30 px-1.5 py-0.5 rounded font-mono font-bold">
+                                  AUTO-IMPORT
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-blue-200/70 font-mono">
+                                Paste Behance project URL to auto-extract high-res 3D perspective &amp; portfolio link
+                              </span>
                             </div>
-                          </>
+                          </div>
+                        </div>
+
+                        {/* Input & Auto-Fetch Button */}
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <div className="relative flex-1">
+                            <input
+                              type="text"
+                              placeholder="https://www.behance.net/gallery/12345678/Booth-Design..."
+                              value={editingProject.behanceUrl || ""}
+                              onChange={(e) => {
+                                setEditingProject({
+                                  ...editingProject,
+                                  behanceUrl: e.target.value,
+                                });
+                                setBehanceStatusMessage(null);
+                              }}
+                              className="w-full bg-[#151520] border border-blue-500/40 focus:border-blue-400 rounded-xl px-3.5 py-2.5 text-white placeholder:text-zinc-600 focus:outline-none text-xs font-mono pr-8"
+                            />
+                            {editingProject.behanceUrl && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingProject({ ...editingProject, behanceUrl: null });
+                                  setBehanceStatusMessage(null);
+                                }}
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-red-400 cursor-pointer"
+                                title="Clear URL"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleFetchBehanceMetadata}
+                            disabled={!editingProject.behanceUrl || isResolvingBehance}
+                            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs disabled:opacity-40 cursor-pointer shadow-lg shadow-blue-600/30 transition-all whitespace-nowrap active:scale-95"
+                          >
+                            {isResolvingBehance ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Sparkles className="w-4 h-4" />
+                            )}
+                            <span>Auto-Fetch 3D Render</span>
+                          </button>
+                        </div>
+
+                        {/* Status Message */}
+                        {behanceStatusMessage && (
+                          <div
+                            className={`text-xs font-mono px-3.5 py-2 rounded-xl border flex items-center gap-2 ${
+                              behanceStatusMessage.startsWith("✓")
+                                ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+                                : "text-rose-300 bg-rose-500/10 border-rose-500/30"
+                            }`}
+                          >
+                            <span>{behanceStatusMessage}</span>
+                          </div>
+                        )}
+
+                        {/* Live Extracted Render Preview Card */}
+                        {editingProject.image && editingProject.behanceUrl && (
+                          <div className="pt-2 border-t border-blue-500/20">
+                            <div className="text-[10px] text-blue-300/80 font-mono mb-2 flex items-center justify-between">
+                              <span>ACTIVE 3D PERSPECTIVE (EXTRACTED FROM BEHANCE)</span>
+                              <a
+                                href={editingProject.behanceUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-blue-400 hover:underline flex items-center gap-1 font-bold"
+                              >
+                                <span>Open Project on Behance ↗</span>
+                              </a>
+                            </div>
+                            <div className="relative aspect-[16/9] max-w-md mx-auto rounded-xl overflow-hidden border-2 border-blue-400/40 bg-black shadow-lg">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={editingProject.image}
+                                alt="Behance 3D Booth Preview"
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow uppercase">
+                                ★ BEHANCE 3D COVER
+                              </div>
+                            </div>
+                          </div>
                         )}
                       </div>
+                    ) : (
+                      /* 2. DIRECT FILE UPLOAD TAB (THE SCREENSHOT VIEW, MODERNIZED) */
+                      <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-md bg-yellow-400/20 text-yellow-400 border border-yellow-400/30 flex items-center justify-center">
+                              <Sparkles className="w-3.5 h-3.5" />
+                            </div>
+                            <div>
+                              <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                                Manual 3D Spatial Renders &amp; Photos
+                              </span>
+                              <span className="text-[10px] text-zinc-500 block font-mono">
+                                Upload 3D perspectives, elevations or paste direct image links
+                              </span>
+                            </div>
+                          </div>
+                          {(editingProject.images?.length || editingProject.image) ? (
+                            <span className="text-[10px] text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 px-2 py-0.5 rounded-full font-mono">
+                              {(editingProject.images?.length || 1)} Renders Attached
+                            </span>
+                          ) : null}
+                        </div>
 
-                      {/* Direct Image URL input */}
-                      <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-[#1e1e2d]">
-                        <input
-                          type="url"
-                          placeholder="Or paste direct image URL (e.g. Behance render image link)..."
-                          value={manualImageUrl}
-                          onChange={(e) => setManualImageUrl(e.target.value)}
-                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-1.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400 text-xs font-mono"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleAddManualImage}
-                          disabled={!manualImageUrl.trim()}
-                          className="px-3.5 py-1.5 rounded-xl bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 border border-yellow-400/30 text-xs font-bold disabled:opacity-40 cursor-pointer whitespace-nowrap"
+                        {/* Drag & Drop Booth Images Zone */}
+                        <div
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            setIsBoothImagesDragging(true);
+                          }}
+                          onDragLeave={() => setIsBoothImagesDragging(false)}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            setIsBoothImagesDragging(false);
+                            if (e.dataTransfer.files) handleUploadImages(e.dataTransfer.files);
+                          }}
+                          onClick={() => !isUploadingImages && boothImagesInputRef.current?.click()}
+                          className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 ${
+                            isBoothImagesDragging
+                              ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
+                              : "border-[#2b2b3d] bg-[#12121c] hover:border-yellow-400/60 hover:bg-[#151522]"
+                          }`}
                         >
-                          + Add Image URL
-                        </button>
-                      </div>
+                          <input
+                            ref={boothImagesInputRef}
+                            type="file"
+                            accept="image/png, image/jpeg, image/webp"
+                            multiple
+                            disabled={isUploadingImages}
+                            onChange={(e) => {
+                              handleUploadImages(e.target.files);
+                              e.target.value = "";
+                            }}
+                            className="hidden"
+                          />
+                          {isUploadingImages ? (
+                            <div className="py-2 flex flex-col items-center gap-2">
+                              <Loader2 className="w-6 h-6 text-yellow-400 animate-spin" />
+                              <span className="font-mono text-zinc-400 text-xs">
+                                Uploading spatial renders to Supabase...
+                              </span>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="w-10 h-10 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.15)]">
+                                <UploadCloud className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <p className="text-white text-xs font-bold">
+                                  Drag &amp; drop booth images here, or <span className="text-yellow-400 underline">browse</span>
+                                </p>
+                                <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
+                                  Select single or multiple perspectives (PNG, JPG, WebP)
+                                </p>
+                              </div>
+                            </>
+                          )}
+                        </div>
 
-                      {/* Images Previews Grid */}
-                      {(() => {
-                        const imagesList =
-                          editingProject.images && editingProject.images.length > 0
-                            ? editingProject.images
-                            : editingProject.image
-                            ? [editingProject.image]
-                            : [];
-                        return imagesList.length > 0 ? (
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-                            {imagesList.map((img, idx) => {
-                              const isCover = img === editingProject.image;
-                              return (
-                                <div
-                                  key={idx}
-                                  className={`relative rounded-xl border p-1.5 bg-[#151520] flex flex-col gap-1.5 ${
-                                    isCover ? "border-yellow-400 ring-1 ring-yellow-400" : "border-[#2b2b3d]"
-                                  }`}
-                                >
-                                  <div className="relative aspect-[16/10] rounded-lg overflow-hidden bg-black">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={img} alt={`Booth preview ${idx + 1}`} className="w-full h-full object-cover" />
-                                    {isCover && (
-                                      <span className="absolute top-1 left-1 bg-yellow-400 text-black font-black text-[9px] uppercase px-1.5 py-0.5 rounded shadow">
-                                        ★ Cover
-                                      </span>
-                                    )}
-                                  </div>
-                                  <div className="flex items-center justify-between gap-1 text-[10px]">
-                                    {!isCover ? (
+                        {/* Direct Image URL input */}
+                        <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-[#1e1e2d]">
+                          <input
+                            type="url"
+                            placeholder="Or paste direct image URL (e.g. Behance CDN link, Unsplash, etc.)..."
+                            value={manualImageUrl}
+                            onChange={(e) => setManualImageUrl(e.target.value)}
+                            className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-1.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400 text-xs font-mono"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleAddManualImage}
+                            disabled={!manualImageUrl.trim()}
+                            className="px-3.5 py-1.5 rounded-xl bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 border border-yellow-400/30 text-xs font-bold disabled:opacity-40 cursor-pointer whitespace-nowrap"
+                          >
+                            + Add Image URL
+                          </button>
+                        </div>
+
+                        {/* Images Previews Grid */}
+                        {(() => {
+                          const imagesList =
+                            editingProject.images && editingProject.images.length > 0
+                              ? editingProject.images
+                              : editingProject.image
+                              ? [editingProject.image]
+                              : [];
+                          return imagesList.length > 0 ? (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                              {imagesList.map((img, idx) => {
+                                const isCover = img === editingProject.image;
+                                return (
+                                  <div
+                                    key={idx}
+                                    className={`relative rounded-xl border p-1.5 bg-[#151520] flex flex-col gap-1.5 ${
+                                      isCover ? "border-yellow-400 ring-1 ring-yellow-400" : "border-[#2b2b3d]"
+                                    }`}
+                                  >
+                                    <div className="relative aspect-[16/10] rounded-lg overflow-hidden bg-black">
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                                      <img src={img} alt={`Booth preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                      {isCover && (
+                                        <span className="absolute top-1 left-1 bg-yellow-400 text-black font-black text-[9px] uppercase px-1.5 py-0.5 rounded shadow">
+                                          ★ Cover
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="flex items-center justify-between gap-1 text-[10px]">
                                       <button
                                         type="button"
                                         onClick={() => setEditingProject({ ...editingProject, image: img })}
-                                        className="text-yellow-400 hover:underline cursor-pointer font-bold"
+                                        className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                                          isCover
+                                            ? "bg-yellow-400 text-black"
+                                            : "text-zinc-400 hover:text-white bg-[#20202e]"
+                                        }`}
                                       >
-                                        Set as Cover
+                                        {isCover ? "Primary Cover" : "Set as Cover"}
                                       </button>
-                                    ) : (
-                                      <span className="text-zinc-400 font-bold">Primary Cover</span>
-                                    )}
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        const filtered = imagesList.filter((_, i) => i !== idx);
-                                        const nextCover = isCover ? filtered[0] || "" : editingProject.image;
-                                        setEditingProject({
-                                          ...editingProject,
-                                          images: filtered,
-                                          image: nextCover,
-                                        });
-                                      }}
-                                      className="text-red-400 hover:text-red-300 cursor-pointer p-0.5"
-                                      title="Remove image"
-                                    >
-                                      <X className="w-3.5 h-3.5" />
-                                    </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const filtered = imagesList.filter((_, i) => i !== idx);
+                                          const nextCover = isCover ? filtered[0] || "" : editingProject.image;
+                                          setEditingProject({
+                                            ...editingProject,
+                                            images: filtered,
+                                            image: nextCover,
+                                          });
+                                        }}
+                                        className="text-zinc-500 hover:text-red-400 p-1 cursor-pointer"
+                                        title="Remove Image"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
                                   </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <p className="text-[11px] text-zinc-500 italic">No images attached yet. Click the button above to upload.</p>
-                        );
-                      })()}
-                    </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p className="text-[11px] text-zinc-500 italic">No images attached yet. Add at least 1 image.</p>
+                          );
+                        })()}
+                      </div>
+                    )}
 
-                    {/* B. ATTACH ARCHITECTURAL PDF BLUEPRINT / SPEC SHEET */}
-                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                    {/* 3. ARCHITECTURAL BLUEPRINT & TECHNICAL SPEC (PDF) */}
+                    <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
                       <div className="flex items-center justify-between flex-wrap gap-2">
-                        <label className="text-zinc-200 font-bold flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-yellow-400" />
-                          <span>3. Attach Architectural PDF Blueprint / Spec Sheet</span>
-                        </label>
-                        <span className="text-[10px] text-zinc-400 font-mono">
-                          PDF floor plans, 3D technical drawings &amp; spec sheets
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+                            <FileText className="w-3.5 h-3.5" />
+                          </div>
+                          <div>
+                            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                              Architectural Blueprint &amp; Specs (PDF)
+                            </span>
+                            <span className="text-[10px] text-zinc-500 block font-mono">
+                              Floor plans, 3D technical elevation &amp; spatial layout sheets
+                            </span>
+                          </div>
+                        </div>
+                        {editingProject.pdfUrl && (
+                          <span className="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                            ✓ Blueprint Attached
+                          </span>
+                        )}
                       </div>
 
-                      {/* Drag & Drop Booth PDF Zone */}
+                      {/* Dropzone */}
                       <div
                         onDragOver={(e) => {
                           e.preventDefault();
@@ -1580,8 +1674,8 @@ export default function GalleryProjectsManager() {
                         onClick={() => !isUploadingPdf && boothPdfInputRef.current?.click()}
                         className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 ${
                           isBoothPdfDragging
-                            ? "border-red-400 bg-red-400/10 scale-[1.01]"
-                            : "border-[#2b2b3d] bg-[#12121c] hover:border-red-400/60 hover:bg-[#151522]"
+                            ? "border-amber-400 bg-amber-400/10 scale-[1.01]"
+                            : "border-[#2b2b3d] bg-[#12121c] hover:border-amber-400/50 hover:bg-[#141420]"
                         }`}
                       >
                         <input
@@ -1598,22 +1692,22 @@ export default function GalleryProjectsManager() {
                         />
                         {isUploadingPdf ? (
                           <div className="py-2 flex flex-col items-center gap-2">
-                            <Loader2 className="w-5 h-5 text-red-400 animate-spin" />
+                            <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
                             <span className="font-mono text-zinc-400 text-[11px]">
-                              Uploading PDF Blueprint...
+                              Uploading PDF blueprint...
                             </span>
                           </div>
                         ) : (
                           <>
-                            <div className="w-8 h-8 rounded-lg bg-red-600/10 border border-red-500/20 flex items-center justify-center text-red-400">
-                              <Paperclip className="w-4 h-4" />
+                            <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                              <FileText className="w-4 h-4" />
                             </div>
                             <div>
                               <p className="text-white text-xs font-bold">
-                                Drag &amp; drop architectural PDF here, or <span className="text-red-400 underline">browse</span>
+                                Drag &amp; drop architectural PDF here, or <span className="text-amber-400 underline">browse</span>
                               </p>
                               <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
-                                PDF blueprints, floor plans &amp; 3D spec sheets (up to 25MB)
+                                CAD drawings, spatial specs &amp; 3D axonometric sheets (Max 25MB)
                               </p>
                             </div>
                           </>
@@ -1621,10 +1715,10 @@ export default function GalleryProjectsManager() {
                       </div>
 
                       {/* Attached PDF Preview Card */}
-                      {editingProject.pdfUrl ? (
-                        <div className="p-3 bg-red-950/20 border border-red-500/30 rounded-xl flex flex-wrap items-center justify-between gap-3">
+                      {editingProject.pdfUrl && (
+                        <div className="p-3 bg-amber-950/20 border border-amber-500/30 rounded-xl flex flex-wrap items-center justify-between gap-3">
                           <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="w-9 h-9 rounded-lg bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center shrink-0">
+                            <div className="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
                               <FileText className="w-5 h-5" />
                             </div>
                             <div className="min-w-0">
@@ -1639,9 +1733,9 @@ export default function GalleryProjectsManager() {
                               href={editingProject.pdfUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="px-2.5 py-1 text-[11px] bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-lg flex items-center gap-1 font-bold"
+                              className="px-2.5 py-1 text-[11px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 rounded-lg flex items-center gap-1 font-bold"
                             >
-                              <span>View PDF ↗</span>
+                              <span>View Blueprint ↗</span>
                             </a>
                             <button
                               type="button"
@@ -1653,42 +1747,109 @@ export default function GalleryProjectsManager() {
                               title="Delete Attached PDF"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
-                              <span>Remove PDF</span>
+                              <span>Remove</span>
                             </button>
                           </div>
                         </div>
-                      ) : (
-                        <p className="text-[11px] text-zinc-500 italic">No PDF attached yet. Click or drag &amp; drop a PDF above.</p>
                       )}
                     </div>
 
+                    {/* 4. VIDEO & WALKTHROUGH HUB */}
+                    <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-md bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center">
+                            <Video className="w-3.5 h-3.5" />
+                          </div>
+                          <div>
+                            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                              Booth Walkthrough &amp; Video Tour
+                            </span>
+                            <span className="text-[10px] text-zinc-500 block font-mono">
+                              Optional YouTube showreel, spatial animation or vertical short
+                            </span>
+                          </div>
+                        </div>
 
-                    {/* Optional YouTube Video toggle for booths */}
-                    <div className="pt-1">
-                      <button
-                        type="button"
-                        onClick={() => setShowBoothYouTube(!showBoothYouTube)}
-                        className="text-[10px] text-zinc-400 hover:text-yellow-400 flex items-center gap-1 cursor-pointer"
-                      >
-                        <span>{showBoothYouTube ? "▾ Hide" : "▸ Show"} Optional YouTube Walkthrough Video</span>
-                      </button>
-                    </div>
+                        {/* Format Switcher Badge */}
+                        <div className="flex items-center gap-1 bg-[#161622] p-1 rounded-lg border border-[#262638]">
+                          <button
+                            type="button"
+                            onClick={() => setEditingProject({ ...editingProject, isShort: false })}
+                            className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
+                              !editingProject.isShort
+                                ? "bg-red-500 text-white font-bold"
+                                : "text-zinc-400 hover:text-white"
+                            }`}
+                          >
+                            16:9 Showcase
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditingProject({ ...editingProject, isShort: true })}
+                            className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
+                              editingProject.isShort
+                                ? "bg-red-500 text-white font-bold"
+                                : "text-zinc-400 hover:text-white"
+                            }`}
+                          >
+                            9:16 Reel/Shorts
+                          </button>
+                        </div>
+                      </div>
 
-                    {showBoothYouTube && (
-                      <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
-                        <label className="text-zinc-200 font-bold flex items-center gap-2">
-                          <YouTubeIcon className="w-4 h-4 text-red-500" />
-                          <span>Optional YouTube Walkthrough Link</span>
-                        </label>
+                      {/* Video Input + Embed */}
+                      <div className="flex flex-col sm:flex-row gap-2">
                         <input
                           type="text"
-                          placeholder="https://www.youtube.com/watch?v=..."
+                          placeholder="Paste YouTube video or Shorts link (e.g. youtube.com/watch?v=... or shorts/...)"
                           value={editingProject.youtubeUrl || ""}
                           onChange={(e) => handleYouTubeInputChange(e.target.value)}
-                          className="w-full bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400"
+                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-red-500/60 text-xs font-mono"
                         />
+                        {editingProject.youtubeUrl && (
+                          <button
+                            type="button"
+                            onClick={() => handleYouTubeInputChange("")}
+                            className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
+                          >
+                            Clear
+                          </button>
+                        )}
                       </div>
-                    )}
+
+                      {/* Live Embed Preview if valid */}
+                      {(() => {
+                        const resolved = editingProject.youtubeUrl ? resolveSafeYouTubeEmbed(editingProject.youtubeUrl) : null;
+                        if (!resolved) return null;
+                        return (
+                          <div className="mt-2 pt-2 border-t border-[#1e1e2d] space-y-2">
+                            <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                              <span className="flex items-center gap-1.5 text-emerald-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                                Valid YouTube Embed (ID: {resolved.videoId})
+                              </span>
+                              <span>{editingProject.isShort ? "9:16 Vertical Reel" : "16:9 Cinematic Video"}</span>
+                            </div>
+                            <div
+                              className={`rounded-xl overflow-hidden border border-[#2b2b3d] bg-black ${
+                                editingProject.isShort
+                                  ? "aspect-[9/16] max-w-[220px] mx-auto"
+                                  : "aspect-video w-full max-w-md mx-auto"
+                              }`}
+                            >
+                              <iframe
+                                src={resolved.embedUrl}
+                                title="Booth Video Walkthrough"
+                                className="w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              />
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
                   </div>
                 ) : (
                   /* STANDARD STAGE & CONFERENCES YOUTUBE ENGINE */
