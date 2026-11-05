@@ -195,16 +195,16 @@ export default function WhyUsPage() {
               {layout.navServicesLabel}
             </Link>
             <Link
-              href="/gallery"
-              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
-            >
-              ★ {layout.navGalleryLabel}
-            </Link>
-            <Link
               href="/#stage-04"
               className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
               {layout.navContactLabel}
+            </Link>
+            <Link
+              href="/gallery"
+              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ml-1 cursor-pointer"
+            >
+              ★ {layout.navGalleryLabel} ↗
             </Link>
           </nav>
 
@@ -220,6 +220,37 @@ export default function WhyUsPage() {
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </Link>
           </div>
+        </div>
+
+        {/* Mobile Navigation Strip in Why Us */}
+        <div className="md:hidden flex items-center justify-start gap-1.5 px-3 py-1.5 bg-yellow-50/95 dark:bg-[#12121A]/95 border-t border-black/10 dark:border-white/10 overflow-x-auto no-scrollbar">
+          <Link
+            href="/#stage-01"
+            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
+          >
+            ← {layout.navHomeLabel}
+          </Link>
+          <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
+            {layout.navWhyUsLabel}
+          </span>
+          <Link
+            href="/#stage-03"
+            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
+          >
+            {layout.navServicesLabel}
+          </Link>
+          <Link
+            href="/#stage-04"
+            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
+          >
+            {layout.navContactLabel}
+          </Link>
+          <Link
+            href="/gallery"
+            className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-300 dark:bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap"
+          >
+            ★ {layout.navGalleryLabel} ↗
+          </Link>
         </div>
       </header>
 

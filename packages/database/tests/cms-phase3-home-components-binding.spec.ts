@@ -41,6 +41,11 @@ describe("CMS Phase 3: Full Home Page Component CMS Bindings & Multi-Video Stage
     assert.ok(headerSrc.includes("artwork_logo_dark.png"));
     assert.ok(headerSrc.includes("dark:hidden"));
     assert.ok(headerSrc.includes("hidden dark:block"));
+    assert.ok(
+      headerSrc.includes('href="/gallery"') &&
+        !headerSrc.includes('href="/gallery"\n            className="md:hidden'),
+      "StudioHeader desktop /gallery CTA must be visible on desktop viewports (no md:hidden inside hidden md:flex)"
+    );
 
     assert.ok(footerSrc.includes("layout.footerCopyright"));
     assert.ok(footerSrc.includes("layout.navGalleryLabel"));
