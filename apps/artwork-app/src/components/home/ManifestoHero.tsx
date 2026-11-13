@@ -122,7 +122,7 @@ export const ManifestoHero = React.memo(function ManifestoHero({
   return (
     <div className="w-full flex flex-col justify-start">
       {/* Edge-to-Edge Full-Width Hero Stage styled to EKO luxury aesthetic */}
-      <div className="relative w-full overflow-hidden min-h-[calc(100svh-120px)] md:min-h-[calc(100vh-90px)] flex flex-col items-center justify-center px-4 sm:px-8 lg:px-12 pt-8 pb-10 bg-[#08080d]">
+      <div className="relative w-full overflow-hidden min-h-[100svh] md:min-h-[100vh] flex flex-col items-center justify-center px-4 sm:px-8 lg:px-12 pt-24 sm:pt-28 md:pt-32 pb-12 bg-[#08080d]">
         {/* Full-Bleed Studio Backdrop Image with 3s Glitch Swapper */}
         <div
           key={currentBackdrop}
@@ -292,25 +292,25 @@ export const ManifestoHero = React.memo(function ManifestoHero({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-2xl mx-auto mb-6 p-2 rounded-2xl sm:rounded-full bg-[#0d0d15]/80 backdrop-blur-xl ring-1 ring-white/15 hover:ring-[#dcb858]/40 transition-all flex flex-col sm:flex-row items-center gap-2 shadow-2xl"
+            className="w-full max-w-2xl mx-auto mb-6 p-2 rounded-2xl sm:rounded-full bg-white/95 dark:bg-[#0d0d15]/80 backdrop-blur-xl ring-1 ring-black/10 dark:ring-white/15 hover:ring-[#dcb858]/40 transition-all flex flex-col sm:flex-row items-center gap-2 shadow-2xl"
           >
-            <div className="flex-1 w-full flex items-center px-4 py-2 rounded-full bg-white/5 ring-1 ring-white/10 text-xs">
+            <div className="flex-1 w-full flex items-center px-4 py-2 rounded-full bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-300 dark:ring-white/10 text-xs">
               <input
                 type="text"
                 placeholder="Full Name"
                 value={quickName}
                 onChange={(e) => setQuickName(e.target.value)}
-                className="w-full bg-transparent text-white placeholder:text-zinc-500 focus:outline-none font-body text-xs"
+                className="w-full bg-transparent text-zinc-900 dark:text-white placeholder:text-zinc-500 focus:outline-none font-body text-xs"
                 id="hero-quick-name"
               />
             </div>
-            <div className="flex-1 w-full flex items-center px-4 py-2 rounded-full bg-white/5 ring-1 ring-white/10 text-xs">
+            <div className="flex-1 w-full flex items-center px-4 py-2 rounded-full bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-300 dark:ring-white/10 text-xs">
               <input
                 type="text"
                 placeholder="Work Email or WhatsApp"
                 value={quickContact}
                 onChange={(e) => setQuickContact(e.target.value)}
-                className="w-full bg-transparent text-white placeholder:text-zinc-500 focus:outline-none font-body text-xs"
+                className="w-full bg-transparent text-zinc-900 dark:text-white placeholder:text-zinc-500 focus:outline-none font-body text-xs"
                 id="hero-quick-contact"
               />
             </div>
@@ -335,17 +335,17 @@ export const ManifestoHero = React.memo(function ManifestoHero({
               return (
                 <div
                   key={item.title}
-                  className="p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] ring-1 ring-white/10 hover:ring-[#dcb858]/40 transition-all duration-200 group"
+                  className="p-4 rounded-xl bg-white dark:bg-white/[0.03] hover:bg-zinc-50 dark:hover:bg-white/[0.06] ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/40 shadow-sm dark:shadow-none transition-all duration-200 group"
                 >
                   <div className="flex items-center gap-2.5 mb-2">
                     <div className="w-7 h-7 rounded-lg bg-[#dcb858]/10 ring-1 ring-[#dcb858]/30 flex items-center justify-center text-[#dcb858] group-hover:bg-[#dcb858] group-hover:text-black transition-colors">
                       <Icon className="w-4 h-4 stroke-[2]" />
                     </div>
-                    <div className="font-headline font-bold text-xs text-white group-hover:text-[#dcb858] transition-colors">
+                    <div className="font-headline font-bold text-xs text-zinc-900 dark:text-white group-hover:text-[#dcb858] transition-colors">
                       {item.title}
                     </div>
                   </div>
-                  <p className="font-body text-[11px] text-zinc-400 leading-snug">
+                  <p className="font-body text-[11px] text-zinc-600 dark:text-zinc-400 leading-snug">
                     {item.description}
                   </p>
                 </div>

@@ -48,13 +48,13 @@ export const DeliveryProcessTimeline = React.memo(function DeliveryProcessTimeli
     >
       {/* Section Header (Matching Image Section 11) */}
       <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-        <h2 className="font-headline font-black text-2xl sm:text-4xl text-white tracking-tight leading-tight mb-2">
+        <h2 className="font-headline font-black text-2xl sm:text-4xl text-zinc-900 dark:text-white tracking-tight leading-tight mb-2">
           How we{" "}
           <span className="text-[#dcb858] drop-shadow-[0_2px_20px_rgba(220,184,88,0.25)]">
             deliver
           </span>
         </h2>
-        <p className="font-body text-xs sm:text-sm text-zinc-400">
+        <p className="font-body text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
           A simple system: clarify, create, launch, optimize — then scale.
         </p>
       </div>
@@ -62,7 +62,7 @@ export const DeliveryProcessTimeline = React.memo(function DeliveryProcessTimeli
       {/* Alternating Timeline (Desktop: Center Line with alternating cards; Mobile: Left Line) */}
       <div className="relative">
         {/* Center Vertical Gradient Line */}
-        <div className="absolute left-4 md:left-1/2 top-4 bottom-4 w-0.5 -translate-x-1/2 bg-gradient-to-b from-[#dcb858]/80 via-white/20 to-[#dcb858]/80 pointer-events-none" />
+        <div className="absolute left-4 md:left-1/2 top-4 bottom-4 w-0.5 -translate-x-1/2 bg-gradient-to-b from-[#dcb858]/80 via-zinc-300 dark:via-white/20 to-[#dcb858]/80 pointer-events-none" />
 
         <div className="space-y-8 sm:space-y-12">
           {DELIVERY_STEPS.map((item, idx) => {
@@ -81,20 +81,20 @@ export const DeliveryProcessTimeline = React.memo(function DeliveryProcessTimeli
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
                     transition={{ duration: 0.45, delay: idx * 0.05, ease: [0.16, 1, 0.3, 1] }}
-                    className="p-6 rounded-2xl bg-[#0d0d15]/90 hover:bg-[#13131f]/95 ring-1 ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 shadow-xl group"
+                    className="p-6 rounded-2xl bg-white dark:bg-[#0d0d15]/90 hover:bg-zinc-50 dark:hover:bg-[#13131f]/95 ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 shadow-lg dark:shadow-xl group"
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] font-mono text-[#dcb858] uppercase font-bold tracking-wider">
                         {item.tag}
                       </span>
-                      <span className="text-[10px] font-mono text-zinc-500">
+                      <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
                         STAGE {item.step}
                       </span>
                     </div>
-                    <h3 className="font-headline font-bold text-base sm:text-lg text-white group-hover:text-[#dcb858] transition-colors mb-2">
+                    <h3 className="font-headline font-bold text-base sm:text-lg text-zinc-900 dark:text-white group-hover:text-[#dcb858] transition-colors mb-2">
                       {item.title}
                     </h3>
-                    <p className="font-body text-xs text-zinc-400 leading-relaxed">
+                    <p className="font-body text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                       {item.description}
                     </p>
                   </motion.div>

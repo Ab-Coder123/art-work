@@ -15,7 +15,7 @@ export const FeaturedInsightsSection = React.memo(function FeaturedInsightsSecti
     >
       {/* Eyebrow */}
       <div className="mb-6">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 ring-1 ring-white/10 text-zinc-300 text-xs font-mono font-bold tracking-wider uppercase">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-300 dark:ring-white/10 text-zinc-700 dark:text-zinc-300 text-xs font-mono font-bold tracking-wider uppercase">
           <Sparkles className="w-3.5 h-3.5 text-[#dcb858]" />
           <span>Featured Insights</span>
         </div>
@@ -29,7 +29,7 @@ export const FeaturedInsightsSection = React.memo(function FeaturedInsightsSecti
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="rounded-2xl p-6 sm:p-7 bg-[#0b0b12] ring-1 ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl"
+          className="rounded-2xl p-6 sm:p-7 bg-white dark:bg-[#0b0b12] ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 flex flex-col justify-between group shadow-lg dark:shadow-xl"
         >
           <div>
             <div className="aspect-[16/9] w-full rounded-xl overflow-hidden mb-5 relative bg-[#060609] ring-1 ring-white/10">
@@ -41,16 +41,16 @@ export const FeaturedInsightsSection = React.memo(function FeaturedInsightsSecti
                 className="object-cover object-center group-hover:scale-105 transition-transform duration-500 filter brightness-90 saturate-125"
                 unoptimized
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b12] via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
               <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md ring-1 ring-[#dcb858]/50 text-[10px] font-mono font-bold text-[#dcb858] uppercase">
                 INDUSTRY POWER LIST
               </div>
             </div>
 
-            <h3 className="font-headline font-bold text-lg sm:text-xl text-white mb-2 group-hover:text-[#dcb858] transition-colors leading-snug">
+            <h3 className="font-headline font-bold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-[#dcb858] transition-colors leading-snug">
               Top-Ranked Event & Scenography Studios in Egypt 2026
             </h3>
-            <p className="font-body text-xs sm:text-sm text-zinc-400 leading-relaxed mb-6">
+            <p className="font-body text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
               The definitive 2026 power list of Egypt&apos;s premier exhibition, spatial architecture, and
               turnkey event production studios — scored on verified capability depth and zero-delay execution.
             </p>
@@ -58,7 +58,7 @@ export const FeaturedInsightsSection = React.memo(function FeaturedInsightsSecti
 
           <Link
             href="/why-us"
-            className="inline-flex items-center gap-2 text-xs font-headline font-bold text-[#dcb858] hover:text-yellow-300 transition-colors uppercase tracking-wider group-hover:translate-x-1 duration-200"
+            className="inline-flex items-center gap-2 text-xs font-headline font-bold text-[#dcb858] hover:text-yellow-400 transition-colors uppercase tracking-wider group-hover:translate-x-1 duration-200"
           >
             <span>Read the ranking</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -71,7 +71,7 @@ export const FeaturedInsightsSection = React.memo(function FeaturedInsightsSecti
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="rounded-2xl p-6 sm:p-7 bg-[#0b0b12] ring-1 ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 flex flex-col justify-between group shadow-xl"
+          className="rounded-2xl p-6 sm:p-7 bg-white dark:bg-[#0b0b12] ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 flex flex-col justify-between group shadow-lg dark:shadow-xl"
         >
           <div>
             <div className="aspect-[16/9] w-full rounded-xl overflow-hidden mb-5 relative bg-[#060609] ring-1 ring-white/10">
@@ -83,16 +83,16 @@ export const FeaturedInsightsSection = React.memo(function FeaturedInsightsSecti
                 className="object-cover object-center group-hover:scale-105 transition-transform duration-500 filter brightness-90 saturate-125"
                 unoptimized
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b12] via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
               <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md ring-1 ring-[#dcb858]/50 text-[10px] font-mono font-bold text-[#dcb858] uppercase">
                 MENA PRODUCTION REPORT
               </div>
             </div>
 
-            <h3 className="font-headline font-bold text-lg sm:text-xl text-white mb-2 group-hover:text-[#dcb858] transition-colors leading-snug">
+            <h3 className="font-headline font-bold text-lg sm:text-xl text-zinc-900 dark:text-white mb-2 group-hover:text-[#dcb858] transition-colors leading-snug">
               Top Digital & 360° Production Agencies 2026
             </h3>
-            <p className="font-body text-xs sm:text-sm text-zinc-400 leading-relaxed mb-6">
+            <p className="font-body text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
               MENA&apos;s full-funnel live event benchmark — custom booth engineering, DMX lighting orchestration,
               4K LED show direction, and AI-powered spatial media under one roof.
             </p>
@@ -100,7 +100,7 @@ export const FeaturedInsightsSection = React.memo(function FeaturedInsightsSecti
 
           <Link
             href="/gallery"
-            className="inline-flex items-center gap-2 text-xs font-headline font-bold text-[#dcb858] hover:text-yellow-300 transition-colors uppercase tracking-wider group-hover:translate-x-1 duration-200"
+            className="inline-flex items-center gap-2 text-xs font-headline font-bold text-[#dcb858] hover:text-yellow-400 transition-colors uppercase tracking-wider group-hover:translate-x-1 duration-200"
           >
             <span>Read the ranking</span>
             <ArrowRight className="w-3.5 h-3.5" />

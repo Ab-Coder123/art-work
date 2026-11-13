@@ -14,19 +14,19 @@ export const PartnerLogoCard = React.memo(function PartnerLogoCard({
   return (
     <div
       onClick={onToggle}
-      className={`group relative flex items-center px-4 py-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] ring-1 ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 cursor-pointer shrink-0 select-none ${
+      className={`group relative flex items-center px-4.5 py-3 rounded-xl bg-white dark:bg-white/[0.03] hover:bg-zinc-50 dark:hover:bg-white/[0.08] ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 shadow-sm dark:shadow-none transition-all duration-300 cursor-pointer shrink-0 select-none ${
         isSelected
-          ? "scale-105 bg-white/10 ring-1 ring-[#dcb858] shadow-[0_0_20px_rgba(220,184,88,0.25)]"
+          ? "scale-105 bg-zinc-100 dark:bg-white/10 ring-1 ring-[#dcb858] shadow-[0_0_20px_rgba(220,184,88,0.25)]"
           : ""
       }`}
     >
-      {/* High-Impact Logo Box */}
-      <div className="w-12 h-10 sm:w-16 sm:h-12 relative flex items-center justify-center shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+      {/* High-Impact Logo Box (+10% scale for higher brand presence) */}
+      <div className="w-[54px] h-[45px] sm:w-[72px] sm:h-[54px] relative flex items-center justify-center shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
         <Image
           src={company.logo}
           alt={company.name}
-          width={70}
-          height={48}
+          width={80}
+          height={56}
           className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
           unoptimized
         />
@@ -41,15 +41,15 @@ export const PartnerLogoCard = React.memo(function PartnerLogoCard({
         }`}
       >
         <div className="whitespace-nowrap">
-          <div className="font-headline font-bold text-xs text-white uppercase tracking-wider">
+          <div className="font-headline font-bold text-xs text-zinc-900 dark:text-white uppercase tracking-wider">
             {company.name}
           </div>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[10px] font-mono text-[#dcb858] uppercase">
+            <span className="text-[10px] font-mono text-[#dcb858] font-bold uppercase">
               {company.category}
             </span>
             {company.highlight && (
-              <span className="text-[10px] font-mono text-zinc-500 uppercase hidden sm:inline-block">
+              <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 uppercase hidden sm:inline-block">
                 • {company.highlight}
               </span>
             )}
@@ -96,12 +96,12 @@ export const PartnersMarquee = React.memo(function PartnersMarquee({
     >
       {/* EKO-Style Section Header: SELECTED CLIENTS // SCROLL TO DISCOVER */}
       <div className="w-full flex flex-col items-center justify-center text-center mb-6">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 ring-1 ring-white/10 text-[11px] font-mono font-bold tracking-widest text-zinc-400 uppercase mb-1">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-300 dark:ring-white/10 text-[11px] font-mono font-bold tracking-widest text-zinc-700 dark:text-zinc-300 uppercase mb-1">
           <Sparkles className="w-3 h-3 text-[#dcb858]" />
           <span>{partnersBadge} • {partnersHeadlinePrefix}</span>{" "}
-          <span className="text-[#dcb858]">{partnersHeadlineHighlight}</span>
+          <span className="text-[#dcb858] font-black">{partnersHeadlineHighlight}</span>
         </div>
-        <div className="flex items-center gap-1 text-[10px] font-mono tracking-widest text-zinc-500 uppercase">
+        <div className="flex items-center gap-1 text-[10px] font-mono tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
           <span>{`${starburstText.top} • SCROLL TO DISCOVER`}</span>
           <ChevronDown className="w-3 h-3 animate-bounce text-[#dcb858]" />
         </div>

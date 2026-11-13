@@ -182,17 +182,17 @@ export const ContactSection = React.memo(function ContactSection({
             className="lg:col-span-5 space-y-5"
           >
             <div>
-              <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight mb-2.5">
+              <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-zinc-900 dark:text-white tracking-tight leading-tight mb-2.5">
                 {content.headline}
               </h2>
-              <p className="font-body text-xs sm:text-sm text-zinc-400 leading-relaxed">
+              <p className="font-body text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 {content.description}
               </p>
             </div>
 
             {/* Creative Director / Intake Visual */}
-            <div className="rounded-xl overflow-hidden p-2 bg-[#060609] ring-1 ring-white/10">
-              <div className="aspect-[16/9] min-h-[160px] sm:min-h-[190px] rounded-lg overflow-hidden bg-[#0a0a0f] ring-1 ring-white/10 relative">
+            <div className="rounded-xl overflow-hidden p-2 bg-zinc-100 dark:bg-[#060609] ring-1 ring-black/10 dark:ring-white/10">
+              <div className="aspect-[16/9] min-h-[160px] sm:min-h-[190px] rounded-lg overflow-hidden bg-zinc-200 dark:bg-[#0a0a0f] ring-1 ring-black/10 dark:ring-white/10 relative">
                 <Image
                   src={content.intakeImage}
                   alt={content.intakeImageAlt}
@@ -205,34 +205,34 @@ export const ContactSection = React.memo(function ContactSection({
                   }
                 />
               </div>
-              <div className="mt-2 text-center text-[11px] font-mono font-bold text-zinc-400">
+              <div className="mt-2 text-center text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400">
                 {content.intakeLabel}
               </div>
             </div>
 
             {/* Direct Studio Contacts & WhatsApp (Page 5 Reference) */}
-            <div className="space-y-2.5 text-xs font-mono text-zinc-300">
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 ring-1 ring-white/10">
+            <div className="space-y-2.5 text-xs font-mono text-zinc-700 dark:text-zinc-300">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10 shadow-sm dark:shadow-none">
                 <div className="w-8 h-8 rounded-lg bg-[#dcb858]/15 ring-1 ring-[#dcb858]/30 flex items-center justify-center text-[#dcb858] shrink-0">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div className="overflow-hidden">
                   <span className="text-[10px] text-zinc-500 uppercase block">Direct Inbox</span>
-                  <a href={`mailto:${content.email}`} className="text-white hover:text-[#dcb858] transition-colors truncate block">
+                  <a href={`mailto:${content.email}`} className="text-zinc-900 dark:text-white hover:text-[#dcb858] transition-colors truncate block font-bold">
                     {content.email}
                   </a>
                 </div>
               </div>
 
               {content.phone && (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 ring-1 ring-white/10">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10 shadow-sm dark:shadow-none">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/15 ring-1 ring-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/15 ring-1 ring-emerald-500/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400 shrink-0">
                       <MessageCircle className="w-4 h-4" />
                     </div>
                     <div>
                       <span className="text-[10px] text-zinc-500 uppercase block">WhatsApp Direct</span>
-                      <a href={`tel:${content.phone}`} className="text-white hover:text-emerald-400 transition-colors">
+                      <a href={`tel:${content.phone}`} className="text-zinc-900 dark:text-white hover:text-emerald-500 transition-colors font-bold">
                         {content.phone}
                       </a>
                     </div>
@@ -241,14 +241,14 @@ export const ContactSection = React.memo(function ContactSection({
                     href={`https://wa.me/${content.phone.replace(/\D/g, "") || "20227940000"}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-black ring-1 ring-emerald-500/40 text-[11px] font-bold transition-all"
+                    className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-700 dark:text-emerald-300 hover:text-white dark:hover:text-black ring-1 ring-emerald-500/40 text-[11px] font-bold transition-all"
                   >
                     Open Chat ↗
                   </a>
                 </div>
               )}
 
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 ring-1 ring-white/10">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10 shadow-sm dark:shadow-none">
                 <div className="w-8 h-8 rounded-lg bg-[#dcb858]/15 ring-1 ring-[#dcb858]/30 flex items-center justify-center text-[#dcb858] shrink-0 mt-0.5">
                   <MapPin className="w-4 h-4" />
                 </div>
@@ -258,7 +258,7 @@ export const ContactSection = React.memo(function ContactSection({
                     href={`https://maps.google.com/?q=${encodeURIComponent(content.studioLocations)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-white hover:text-[#dcb858] transition-colors text-xs leading-relaxed block"
+                    className="text-zinc-900 dark:text-white hover:text-[#dcb858] transition-colors text-xs leading-relaxed block"
                     title="View on Google Maps"
                   >
                     {content.studioLocations}
@@ -274,7 +274,7 @@ export const ContactSection = React.memo(function ContactSection({
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7 bg-[#0f0f18] ring-1 ring-white/10 rounded-2xl p-6 sm:p-7 shadow-xl"
+            className="lg:col-span-7 bg-white dark:bg-[#0f0f18] ring-1 ring-black/10 dark:ring-white/10 rounded-2xl p-6 sm:p-7 shadow-xl"
           >
             {submitStatus.type === "success" && (
               <div className="mb-4 p-3 bg-emerald-500/10 ring-1 ring-emerald-500/30 rounded-xl text-emerald-400 text-xs flex items-center gap-2.5">
@@ -314,11 +314,11 @@ export const ContactSection = React.memo(function ContactSection({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-300">
+                  <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-700 dark:text-zinc-300">
                     {fieldMap.fullName?.label || "Your Name / Title"}
                   </label>
                   <input
-                    className="w-full rounded-xl p-3 font-body text-xs sm:text-sm bg-[#08080d] ring-1 ring-white/15 focus:ring-[#dcb858] focus:outline-none text-white placeholder:text-zinc-600 transition-all"
+                    className="w-full rounded-xl p-3 font-body text-xs sm:text-sm bg-zinc-50 dark:bg-[#08080d] ring-1 ring-zinc-300 dark:ring-white/15 focus:ring-[#dcb858] focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition-all"
                     placeholder={
                       fieldMap.fullName?.placeholder || "Alex Mercer, Head of Brand"
                     }
@@ -332,11 +332,11 @@ export const ContactSection = React.memo(function ContactSection({
                 </div>
 
                 <div>
-                  <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-300">
+                  <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-700 dark:text-zinc-300">
                     {fieldMap.email?.label || "Direct Inbox"}
                   </label>
                   <input
-                    className="w-full rounded-xl p-3 font-body text-xs sm:text-sm bg-[#08080d] ring-1 ring-white/15 focus:ring-[#dcb858] focus:outline-none text-white placeholder:text-zinc-600 transition-all"
+                    className="w-full rounded-xl p-3 font-body text-xs sm:text-sm bg-zinc-50 dark:bg-[#08080d] ring-1 ring-zinc-300 dark:ring-white/15 focus:ring-[#dcb858] focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition-all"
                     placeholder={
                       fieldMap.email?.placeholder || "director@brand.com"
                     }
@@ -352,7 +352,7 @@ export const ContactSection = React.memo(function ContactSection({
 
               {/* Target Service Selection Pills (Page 2 Reference) */}
               <div>
-                <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-300">
+                <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-700 dark:text-zinc-300">
                   {fieldMap.serviceType?.label || "Target Discipline"}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -364,8 +364,8 @@ export const ContactSection = React.memo(function ContactSection({
                         onClick={() => setFormData({ ...formData, serviceType: opt })}
                         className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
                           formData.serviceType === opt
-                            ? "bg-[#dcb858] text-black font-bold ring-1 ring-[#dcb858]"
-                            : "bg-[#08080d] text-zinc-400 hover:text-white ring-1 ring-white/10"
+                            ? "bg-[#dcb858] text-black font-bold ring-1 ring-[#dcb858] shadow-sm"
+                            : "bg-zinc-100 dark:bg-[#08080d] text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white ring-1 ring-zinc-200 dark:ring-white/10"
                         }`}
                       >
                         {opt}
@@ -379,8 +379,8 @@ export const ContactSection = React.memo(function ContactSection({
                         onClick={() => setFormData({ ...formData, serviceType: opt })}
                         className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
                           formData.serviceType === opt
-                            ? "bg-[#dcb858] text-black font-bold ring-1 ring-[#dcb858]"
-                            : "bg-[#08080d] text-zinc-400 hover:text-white ring-1 ring-white/10"
+                            ? "bg-[#dcb858] text-black font-bold ring-1 ring-[#dcb858] shadow-sm"
+                            : "bg-zinc-100 dark:bg-[#08080d] text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white ring-1 ring-zinc-200 dark:ring-white/10"
                         }`}
                       >
                         {opt}
@@ -392,11 +392,11 @@ export const ContactSection = React.memo(function ContactSection({
 
               {/* Brief Parameters Textarea */}
               <div>
-                <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-300">
+                <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-700 dark:text-zinc-300">
                   {fieldMap.brief?.label || "Event Parameters & Vision"}
                 </label>
                 <textarea
-                  className="w-full rounded-xl p-3 font-body text-xs sm:text-sm bg-[#08080d] ring-1 ring-white/15 focus:ring-[#dcb858] focus:outline-none text-white placeholder:text-zinc-600 transition-all min-h-[90px]"
+                  className="w-full rounded-xl p-3 font-body text-xs sm:text-sm bg-zinc-50 dark:bg-[#08080d] ring-1 ring-zinc-300 dark:ring-white/15 focus:ring-[#dcb858] focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition-all min-h-[90px]"
                   placeholder={
                     fieldMap.brief?.placeholder ||
                     "Brief your event format, dates, venue specs, or booth vision..."

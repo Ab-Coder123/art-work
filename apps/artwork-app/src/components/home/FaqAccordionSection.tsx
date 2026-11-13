@@ -42,17 +42,17 @@ export const FaqAccordionSection = React.memo(function FaqAccordionSection() {
     >
       {/* Header */}
       <div className="flex flex-col items-center text-center mb-8 sm:mb-12">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 ring-1 ring-white/10 text-xs font-mono font-bold tracking-wider text-zinc-400 uppercase mb-2">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-300 dark:ring-white/10 text-xs font-mono font-bold tracking-wider text-zinc-700 dark:text-zinc-400 uppercase mb-2">
           <HelpCircle className="w-3.5 h-3.5 text-[#dcb858]" />
           <span>FAQ</span>
         </div>
-        <h2 className="font-headline font-black text-2xl sm:text-4xl text-white tracking-tight leading-tight mb-2">
+        <h2 className="font-headline font-black text-2xl sm:text-4xl text-zinc-900 dark:text-white tracking-tight leading-tight mb-2">
           Frequently Asked{" "}
           <span className="text-[#dcb858] drop-shadow-[0_2px_20px_rgba(220,184,88,0.25)]">
             Questions
           </span>
         </h2>
-        <p className="font-body text-xs sm:text-sm text-zinc-400">
+        <p className="font-body text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
           Everything you need to know about partnering with our studio.
         </p>
       </div>
@@ -64,17 +64,17 @@ export const FaqAccordionSection = React.memo(function FaqAccordionSection() {
           return (
             <div
               key={idx}
-              className="rounded-2xl bg-[#0d0d15]/90 ring-1 ring-white/10 hover:ring-[#dcb858]/40 transition-all duration-200 overflow-hidden"
+              className="rounded-2xl bg-white dark:bg-[#0d0d15]/90 ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/40 shadow-sm dark:shadow-none transition-all duration-200 overflow-hidden"
             >
               <button
                 type="button"
                 onClick={() => toggleIndex(idx)}
                 className="w-full p-5 text-left flex items-center justify-between gap-4 cursor-pointer select-none"
               >
-                <span className="font-headline font-bold text-sm sm:text-base text-white hover:text-[#dcb858] transition-colors leading-snug">
+                <span className="font-headline font-bold text-sm sm:text-base text-zinc-900 dark:text-white hover:text-[#dcb858] transition-colors leading-snug">
                   {item.q}
                 </span>
-                <div className="w-7 h-7 rounded-full bg-white/5 ring-1 ring-white/10 flex items-center justify-center shrink-0 text-zinc-400">
+                <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-300 dark:ring-white/10 flex items-center justify-center shrink-0 text-zinc-600 dark:text-zinc-400">
                   {isOpen ? (
                     <Minus className="w-4 h-4 text-[#dcb858]" />
                   ) : (
@@ -92,7 +92,7 @@ export const FaqAccordionSection = React.memo(function FaqAccordionSection() {
                     transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                     className="overflow-hidden"
                   >
-                    <div className="px-5 pb-5 pt-1 font-body text-xs sm:text-sm text-zinc-400 leading-relaxed ring-t-1 ring-white/5">
+                    <div className="px-5 pb-5 pt-1 font-body text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-200 dark:border-white/10">
                       {item.a}
                     </div>
                   </motion.div>

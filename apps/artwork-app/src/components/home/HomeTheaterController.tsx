@@ -218,7 +218,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
           ========================================================================= */}
       <main
         ref={mainContainerRef}
-        className="w-full relative z-10 pt-[72px] sm:pt-[76px] overflow-x-hidden no-scrollbar flex flex-col items-center"
+        className="w-full relative z-10 overflow-x-hidden no-scrollbar flex flex-col items-center bg-transparent"
       >
         {/* 01: HERO & CLIENT NETWORK TICKER & 4 VALUE PILLARS */}
         <section id="stage-01" className="w-full">
