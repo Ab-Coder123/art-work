@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap,
@@ -19,13 +19,13 @@ import {
   Truck,
   Building,
   ArrowUpRight,
+  X,
 } from "lucide-react";
 import type { ServicesSectionContent, ServiceDisciplineItem } from "@art-work/types";
 import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
-import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 
-const renderDisciplineIcon = (icon: string, className = "w-4 h-4 text-black") => {
+const renderDisciplineIcon = (icon: string, className = "w-5 h-5 text-[#dcb858]") => {
   switch (icon) {
     case "brush":
       return <Paintbrush className={className} />;
@@ -59,113 +59,64 @@ const renderDisciplineIcon = (icon: string, className = "w-4 h-4 text-black") =>
 export type ServiceCategory = "all" | "creative" | "events" | "production" | "delivery";
 export type Discipline = ServiceDisciplineItem;
 
-interface TiltCardProps {
+interface ServiceCardProps {
   discipline: Discipline;
   index: number;
-  cardCtaText: string;
   onSelect: (discipline: Discipline) => void;
 }
 
-const TiltCard: React.FC<TiltCardProps> = ({
+const ServiceCard: React.FC<ServiceCardProps> = ({
   discipline,
   index,
-  cardCtaText,
   onSelect,
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
-  const [glarePos, setGlarePos] = useState({ x: 50, y: 50, opacity: 0 });
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rX = ((y - centerY) / centerY) * -10;
-    const rY = ((x - centerX) / centerX) * 10;
-
-    setRotateX(rX);
-    setRotateY(rY);
-    setGlarePos({
-      x: (x / rect.width) * 100,
-      y: (y / rect.height) * 100,
-      opacity: 0.25,
-    });
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setRotateX(0);
-    setRotateY(0);
-    setGlarePos((prev) => ({ ...prev, opacity: 0 }));
-  }, []);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.1 }}
-      transition={{
-        duration: 0.4,
-        delay: (index % 4) * 0.05,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="h-full flex flex-col"
+      transition={{ duration: 0.4, delay: (index % 4) * 0.08, ease: [0.16, 1, 0.3, 1] }}
+      onClick={() => onSelect(discipline)}
+      className="p-6 rounded-2xl bg-[#0d0d15]/90 hover:bg-[#13131f]/95 ring-1 ring-white/10 hover:ring-[#dcb858]/60 transition-all duration-300 group cursor-pointer flex flex-col justify-between shadow-xl min-h-[260px] relative overflow-hidden"
     >
-      <div
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        onClick={() => onSelect(discipline)}
-        style={{
-          transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-          transition: "transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
-        }}
-        className="relative border-2 border-black dark:border-zinc-700 p-4 rounded-xl bg-white dark:bg-[#15151F] comic-shadow-sm hover:comic-shadow-yellow hover:bg-yellow-50 dark:hover:bg-[#1D1D2B] transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden group select-none flex-1 min-h-[165px] sm:min-h-[175px]"
-      >
-        {/* Dynamic Specular Glare Overlay */}
-        <div
-          className="pointer-events-none absolute inset-0 transition-opacity duration-300"
-          style={{
-            background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(250, 204, 21, 0.45) 0%, transparent 60%)`,
-            opacity: glarePos.opacity,
-          }}
-        />
-
-        <div className="relative z-10 flex flex-col flex-1 justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-headline font-black text-[10px] text-black/60 dark:text-zinc-400 tracking-wider">
+      <div>
+        {/* Top Header: Title and Arrow ↗ */}
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#dcb858]/10 ring-1 ring-[#dcb858]/30 flex items-center justify-center shrink-0 group-hover:bg-[#dcb858] transition-colors duration-200">
+              {renderDisciplineIcon(discipline.icon, "w-5 h-5 text-[#dcb858] group-hover:text-black transition-colors stroke-[2]")}
+            </div>
+            <div>
+              <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider block">
                 {discipline.tag}
               </span>
-              <span className="w-5 h-5 rounded-full bg-black text-yellow-400 font-mono text-[9px] font-black flex items-center justify-center">
-                {discipline.number}
-              </span>
-            </div>
-
-            {/* Headline Title with Icon side by side */}
-            <div className="flex items-start gap-3 my-1">
-              <div className="w-10 h-10 rounded-xl bg-yellow-400 text-black border-2 border-black flex items-center justify-center comic-shadow-sm shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-200 mt-0.5">
-                {renderDisciplineIcon(discipline.icon, "w-5 h-5 text-black stroke-[2.2]")}
-              </div>
-              <h3 className="font-headline font-black text-sm lg:text-[15px] text-black dark:text-white leading-snug group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors pt-0.5">
+              <h3 className="font-headline font-bold text-base sm:text-lg text-white group-hover:text-[#dcb858] transition-colors leading-snug">
                 {discipline.title}
               </h3>
             </div>
           </div>
+          <div className="w-8 h-8 rounded-full bg-white/5 ring-1 ring-white/10 flex items-center justify-center text-zinc-400 group-hover:text-black group-hover:bg-[#dcb858] group-hover:ring-[#dcb858] transition-all duration-200 shrink-0 mt-0.5">
+            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </div>
         </div>
 
-        <div className="relative z-10 pt-2.5 border-t border-black/15 dark:border-zinc-800 font-headline font-black text-[10px] text-black dark:text-zinc-200 flex items-center justify-between tracking-wider">
-          <span className="group-hover:underline decoration-yellow-400 decoration-2">
-            {cardCtaText}
-          </span>
-          <span className="group-hover:translate-x-1 transition-transform text-black dark:text-yellow-400 flex items-center justify-center">
-            <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
-          </span>
+        {/* Middle: Clean Description */}
+        <p className="font-body text-xs sm:text-[13px] text-zinc-400 leading-relaxed mb-4 line-clamp-3">
+          {discipline.description}
+        </p>
+      </div>
+
+      {/* Bottom: Spec Pills (Page 2 Reference) */}
+      <div>
+        <div className="flex flex-wrap gap-1.5 pt-3 ring-t-1 ring-white/10">
+          {(discipline.specs || []).slice(0, 3).map((spec, sIdx) => (
+            <span
+              key={sIdx}
+              className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white/5 ring-1 ring-white/10 text-zinc-300"
+            >
+              {spec}
+            </span>
+          ))}
         </div>
       </div>
     </motion.div>
@@ -204,12 +155,17 @@ export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
     activeFilter === "all" ? true : d.category === activeFilter
   );
 
+  const getCategoryCount = (cat: ServiceCategory) => {
+    if (cat === "all") return disciplines.length;
+    return disciplines.filter((d) => d.category === cat).length;
+  };
+
   const filterTabs: { key: ServiceCategory; label: string }[] = [
-    { key: "all", label: `${content.filterAllLabel} (${disciplines.length})` },
-    { key: "creative", label: content.filterCreativeLabel },
-    { key: "events", label: content.filterEventsLabel },
-    { key: "production", label: content.filterProductionLabel },
-    { key: "delivery", label: content.filterDeliveryLabel },
+    { key: "all", label: `${content.filterAllLabel} (${getCategoryCount("all")})` },
+    { key: "creative", label: `${content.filterCreativeLabel} (${getCategoryCount("creative")})` },
+    { key: "events", label: `${content.filterEventsLabel} (${getCategoryCount("events")})` },
+    { key: "production", label: `${content.filterProductionLabel} (${getCategoryCount("production")})` },
+    { key: "delivery", label: `${content.filterDeliveryLabel} (${getCategoryCount("delivery")})` },
   ];
 
   return (
@@ -217,32 +173,45 @@ export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
       className="w-full max-w-[1480px] mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 relative"
       id="stage-03"
     >
-      {/* Section Header */}
-      <ScrollReveal direction="up" distance={15} className="text-center max-w-3xl mx-auto mb-6">
-        <div className="inline-block bg-yellow-400 text-black px-3 py-1 border-2 border-black comic-shadow-sm font-headline text-xs font-black uppercase mb-2 -rotate-1">
-          {content.eyebrow}
+      {/* ================= SECTION HEADER (Page 2 Reference) ================= */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-4 ring-b-1 ring-white/10">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#dcb858]/15 ring-1 ring-[#dcb858]/40 text-[#dcb858] text-[11px] font-mono font-bold uppercase tracking-wider mb-2">
+            <Compass className="w-3 h-3 text-[#dcb858]" />
+            <span>{content.eyebrow}</span>
+          </div>
+          <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight uppercase">
+            {content.headlinePrefix}{" "}
+            <KineticBrushWord variant="double" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4}>
+              {content.headlineHighlight}
+            </KineticBrushWord>
+          </h2>
+          <p className="font-body text-xs sm:text-sm text-zinc-400 max-w-2xl mt-1.5 leading-relaxed">
+            {content.description}
+          </p>
         </div>
-        <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-black dark:text-white tracking-tight mb-2 uppercase">
-          {content.headlinePrefix}{" "}
-          <KineticBrushWord variant="double" color="#dcb858" strokeWidth={2.4}>
-            {content.headlineHighlight}
-          </KineticBrushWord>
-        </h2>
-        <p className="font-body text-xs sm:text-sm text-black/75 dark:text-zinc-400 max-w-2xl mx-auto">
-          {content.description}
-        </p>
-      </ScrollReveal>
 
-      {/* Filter Tabs */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+        <div className="flex items-center gap-3 shrink-0">
+          <button
+            onClick={navigateToBrief}
+            className="group inline-flex items-center gap-2 font-headline font-bold text-xs uppercase px-4 py-2.5 rounded-xl bg-[#dcb858] text-black hover:bg-[#e6c975] transition-all duration-200 cursor-pointer shadow-md"
+          >
+            <span>{content.cardCtaText || "VIEW DELIVERABLES"}</span>
+            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </button>
+        </div>
+      </div>
+
+      {/* ================= FILTER PILLS (Page 2 Reference) ================= */}
+      <div className="flex flex-wrap items-center gap-2 mb-6">
         {filterTabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveFilter(tab.key)}
-            className={`px-3.5 py-1.5 rounded-full font-headline text-xs font-bold uppercase tracking-wider border-2 border-black dark:border-zinc-700 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-headline text-xs font-bold tracking-wider transition-all cursor-pointer ${
               activeFilter === tab.key
-                ? "bg-yellow-400 text-black comic-shadow-sm scale-105 font-black -rotate-1"
-                : "bg-white dark:bg-[#15151F] text-black/70 dark:text-zinc-300 hover:bg-yellow-100 dark:hover:bg-[#1E1E2C]"
+                ? "bg-[#dcb858] text-black font-black shadow-md ring-1 ring-[#dcb858]"
+                : "bg-[#0f0f18] text-zinc-300 hover:text-white hover:bg-[#161622] ring-1 ring-white/10"
             }`}
           >
             {tab.label}
@@ -250,126 +219,123 @@ export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
         ))}
       </div>
 
-      {/* 3D Tilt Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+      {/* ================= SERVICE CARDS GRID (Page 2 Reference) ================= */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
         {filteredDisciplines.map((d, index) => (
-          <TiltCard
+          <ServiceCard
             key={d.id}
             discipline={d}
             index={index}
-            cardCtaText={content.cardCtaText || "VIEW DELIVERABLES"}
             onSelect={(discipline) => setSelectedDiscipline(discipline)}
           />
         ))}
       </div>
 
-      {/* Expanded Toolkit Inspector Modal / Lightbox */}
+      {/* ================= HIGHLIGHT BANNER (Page 2 Reference Bottom) ================= */}
+      <div className="rounded-2xl p-6 sm:p-8 bg-[#0a0a10] ring-1 ring-white/10 hover:ring-[#dcb858]/40 transition-all duration-300 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+        <div className="space-y-1.5 max-w-2xl">
+          <span className="font-mono text-[10px] tracking-wider uppercase px-2 py-0.5 rounded bg-[#dcb858]/15 text-[#dcb858] ring-1 ring-[#dcb858]/30 font-bold">
+            {content.bannerEyebrow || "PLANNING A BRAND EVENT OR EXHIBITION?"}
+          </span>
+          <h3 className="font-headline font-black text-lg sm:text-xl text-white tracking-tight">
+            {content.bannerHeadlinePrefix || "BRING YOUR STAGE VISION TO"}{" "}
+            <span className="text-[#dcb858]">
+              {content.bannerHeadlineHighlight || "LIFE."}
+            </span>
+          </h3>
+          <p className="font-body text-xs text-zinc-400">
+            {content.bannerDescription || "We coordinate 3D booth fabrication, LED screens, sound systems, and on-site operations under one connected team."}
+          </p>
+        </div>
+
+        <button
+          onClick={navigateToBrief}
+          className="group inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/5 hover:bg-[#dcb858] text-white hover:text-black ring-1 ring-white/20 hover:ring-[#dcb858] font-headline font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer shrink-0"
+        >
+          <span>{content.bannerCtaText || "START EVENT BRIEF"}</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+
+      {/* ================= INSPECTOR MODAL ================= */}
       <AnimatePresence>
         {selectedDiscipline && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
             onClick={() => setSelectedDiscipline(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.94, y: 15 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+              exit={{ scale: 0.94, y: 15 }}
               transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              className="bg-[#0f0f18] ring-1 ring-white/20 rounded-2xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl relative"
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-[#15151F] border-4 border-black dark:border-zinc-600 rounded-2xl p-6 sm:p-8 max-w-2xl w-full comic-shadow dark:shadow-[8px_8px_0px_#000000] relative text-black dark:text-white"
             >
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedDiscipline(null)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black border-2 border-black font-black flex items-center justify-center transition-colors cursor-pointer"
-                aria-label="Close dialog"
-              >
-                ✕
-              </button>
-
-              <div className="inline-flex items-center gap-2 bg-yellow-400 text-black px-3 py-1 border-2 border-black font-mono text-xs font-black uppercase mb-4">
-                <span>{selectedDiscipline.tag}</span>
-                <span>•</span>
-                <span>{selectedDiscipline.metrics}</span>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-[#dcb858]/15 ring-1 ring-[#dcb858]/40 flex items-center justify-center text-[#dcb858]">
+                    {renderDisciplineIcon(selectedDiscipline.icon, "w-6 h-6 text-[#dcb858] stroke-[2.2]")}
+                  </div>
+                  <div>
+                    <span className="font-mono text-xs text-[#dcb858] uppercase font-bold tracking-wider">
+                      {selectedDiscipline.tag}
+                    </span>
+                    <h3 className="font-headline font-black text-xl text-white">
+                      {selectedDiscipline.title}
+                    </h3>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedDiscipline(null)}
+                  className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 ring-1 ring-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
 
-              <h3 className="font-headline font-black text-xl sm:text-2xl text-black dark:text-white mb-2">
-                {selectedDiscipline.title}
-              </h3>
-
-              <p className="font-body text-sm text-black/80 dark:text-zinc-300 mb-5 leading-relaxed">
+              <p className="font-body text-xs sm:text-sm text-zinc-300 mb-5 leading-relaxed">
                 {selectedDiscipline.description}
               </p>
 
-              <div className="border-t-2 border-black/10 dark:border-white/10 pt-4 mb-6">
-                <h4 className="font-headline font-bold text-xs uppercase text-black/60 dark:text-zinc-400 tracking-wider mb-3">
-                  Scope &amp; Deliverables
+              {/* Deliverables List */}
+              <div className="space-y-3 mb-6">
+                <h4 className="font-mono text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                  Verified Deliverables &amp; Specifications
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {selectedDiscipline.deliverables.map((item, idx) => (
+                  {(selectedDiscipline.deliverables || selectedDiscipline.specs || []).map((item, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-2 text-xs font-mono font-bold text-black dark:text-zinc-200 bg-yellow-50 dark:bg-[#1B1B26] border border-black/20 dark:border-zinc-700 p-2 rounded"
+                      className="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 ring-1 ring-white/10 text-xs font-mono text-zinc-200"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400 fill-yellow-400/20 stroke-black dark:stroke-yellow-400 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2">
-                <span className="text-xs font-mono text-black/60 dark:text-zinc-400">
-                  CREATIVE • PLANNING • PRODUCTION • LIVE DELIVERY
-                </span>
-                <a
-                  href="#stage-04"
+              {/* Metric & CTA Footer */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 ring-t-1 ring-white/10">
+                <div className="text-xs font-mono text-zinc-400">
+                  Turnaround: <strong className="text-[#dcb858]">{selectedDiscipline.metrics || "Concept to Delivery"}</strong>
+                </div>
+                <button
                   onClick={navigateToBrief}
-                  className="inline-flex items-center gap-2 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black font-headline font-bold text-xs px-5 py-2.5 rounded-lg border-2 border-black comic-shadow-sm transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#dcb858] text-black font-headline font-black text-xs uppercase tracking-wider hover:bg-[#e6c975] transition-all cursor-pointer shadow-md"
                 >
-                  <span>{content.modalSelectCtaText}</span>
-                  <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
-                </a>
+                  <span>{content.modalSelectCtaText || "Select in Brief"}</span>
+                  <Send className="w-3.5 h-3.5" />
+                </button>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Event Planning Banner */}
-      <ScrollReveal direction="pop" distance={20} className="mt-4 sm:mt-6">
-        <div className="bg-black dark:bg-[#14141E] text-white px-5 py-4 sm:py-5 rounded-2xl border-2 border-black dark:border-zinc-700 comic-shadow relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="relative z-10 max-w-xl text-left">
-            <div className="flex items-center gap-1.5 mb-1 text-yellow-400 font-headline font-black text-xs tracking-wider uppercase">
-              <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
-              <span>{content.bannerEyebrow}</span>
-            </div>
-            <h3 className="font-headline font-black text-lg sm:text-xl tracking-tight mb-1">
-              {content.bannerHeadlinePrefix}{" "}
-              <KineticBrushWord variant="wave" color="#facc15" strokeWidth={2.2}>
-                {content.bannerHeadlineHighlight}
-              </KineticBrushWord>
-            </h3>
-            <p className="font-body text-xs text-white/80">
-              {content.bannerDescription}
-            </p>
-          </div>
-          <div className="relative z-10 flex-shrink-0">
-            <a
-              className="inline-flex items-center gap-2 bg-yellow-400 text-black hover:bg-white font-headline font-black text-xs px-5 py-2.5 rounded-xl border-2 border-black comic-shadow-sm active:scale-95 transition-all whitespace-nowrap cursor-pointer"
-              href="#stage-04"
-              onClick={navigateToBrief}
-            >
-              <span>{content.bannerCtaText}</span>
-              <Send className="w-3.5 h-3.5 stroke-[2.5]" />
-            </a>
-          </div>
-          <div className="absolute -right-8 -top-8 w-48 h-48 bg-yellow-400/10 rounded-full blur-2xl pointer-events-none"></div>
-        </div>
-      </ScrollReveal>
     </section>
   );
 };

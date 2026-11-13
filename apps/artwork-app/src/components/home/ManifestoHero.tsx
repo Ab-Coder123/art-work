@@ -225,6 +225,46 @@ export const ManifestoHero = React.memo(function ManifestoHero({
             )}
           </motion.div>
 
+          {/* Quick Intake Bar (Page 1 Reference) */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full max-w-xl mx-auto mb-5 p-1.5 sm:p-2 rounded-2xl sm:rounded-full bg-[#0a0a10]/80 backdrop-blur-xl ring-1 ring-white/15 hover:ring-[#dcb858]/40 transition-all flex flex-col sm:flex-row items-center gap-2 shadow-2xl"
+          >
+            <div className="flex-1 w-full flex items-center px-3.5 py-1.5 rounded-full bg-white/5 ring-1 ring-white/10 text-xs">
+              <input
+                type="text"
+                placeholder="Full Name"
+                className="w-full bg-transparent text-white placeholder:text-zinc-500 focus:outline-none font-body text-xs"
+                id="hero-quick-name"
+              />
+            </div>
+            <div className="flex-1 w-full flex items-center px-3.5 py-1.5 rounded-full bg-white/5 ring-1 ring-white/10 text-xs">
+              <input
+                type="text"
+                placeholder="Work Email or Phone"
+                className="w-full bg-transparent text-white placeholder:text-zinc-500 focus:outline-none font-body text-xs"
+                id="hero-quick-contact"
+              />
+            </div>
+            <button
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(
+                    new CustomEvent("artwork:navigate-stage", { detail: { stage: "stage-04" } })
+                  );
+                  const briefSec = document.getElementById("brief-inquiry");
+                  if (briefSec) briefSec.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-full bg-[#dcb858] hover:bg-[#e6c975] text-black font-headline font-bold text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer shrink-0 shadow-md"
+            >
+              <span>Get Proposal</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </motion.div>
+
           {/* Compact Glass Milestone Metrics & Studio Tagline */}
           <div className="w-full max-w-lg flex flex-col items-center gap-2.5">
             <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full">
