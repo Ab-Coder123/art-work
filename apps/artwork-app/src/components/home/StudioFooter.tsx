@@ -19,6 +19,12 @@ export const StudioFooter = React.memo(function StudioFooter({
             {layout.navHomeLabel}
           </button>
           <button
+            onClick={() => scrollToStage("stage-gallery")}
+            className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer text-yellow-600 dark:text-yellow-400 font-black uppercase"
+          >
+            ★ {layout.navGalleryLabel}
+          </button>
+          <button
             onClick={() => scrollToStage("stage-02")}
             className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer uppercase"
           >
@@ -29,12 +35,6 @@ export const StudioFooter = React.memo(function StudioFooter({
             className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer uppercase"
           >
             {layout.navServicesLabel}
-          </button>
-          <button
-            onClick={() => scrollToStage("stage-gallery")}
-            className="hover:text-black dark:hover:text-yellow-400 hover:underline cursor-pointer text-yellow-600 dark:text-yellow-400 font-black uppercase"
-          >
-            ★ {layout.navGalleryLabel}
           </button>
           <button
             onClick={() => scrollToStage("stage-04")}

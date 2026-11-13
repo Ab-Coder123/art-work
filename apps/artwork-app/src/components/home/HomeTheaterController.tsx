@@ -207,17 +207,18 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
         scrollToStage={scrollToStage}
         onInkBurst={triggerInkBurst}
         layout={layoutContent}
+        whatsappPhone={contactContent.phone}
       />
 
       {/* =========================================================================
           MOBILE RESPONSIVE SEQUENTIAL FLOW (Natural Unhindered Scrolling)
           ========================================================================= */}
-      <div className="block md:hidden w-full relative z-10 pt-36 sm:pt-40">
+      <div className="block md:hidden w-full relative z-10 pt-[92px] sm:pt-[98px]">
         {/* Stage 01 Mobile */}
         <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
           <section
             id="stage-01-mobile"
-            className="w-full min-h-[calc(100vh-8rem)] py-8 px-4 flex flex-col justify-center"
+            className="w-full min-h-[calc(100svh-92px)] p-0 flex flex-col justify-start"
           >
             <ManifestoHero
               content={heroContent}
@@ -288,7 +289,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
         {/* STICKY FIXED VIEWPORT THEATER */}
         <div
           ref={theaterRef}
-          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[92px] sm:pt-[102px] lg:pt-[110px] pb-2"
+          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[62px] sm:pt-[66px] pb-0"
         >
           {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
           <TheaterStageIndicator
@@ -301,7 +302,11 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
             ref={mainContainerRef}
             data-lenis-prevent="true"
             style={{ overscrollBehaviorY: "contain" }}
-            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-6 no-scrollbar"
+            className={`flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center no-scrollbar ${
+              activeStage === "stage-01"
+                ? "px-0 pt-0 pb-0"
+                : "px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-6"
+            }`}
           >
             <AnimatePresence mode="wait">
               {activeStage === "stage-01" && (

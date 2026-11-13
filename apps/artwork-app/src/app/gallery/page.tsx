@@ -18,6 +18,7 @@ import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import {
   ArrowRight,
+  MessageCircle,
   Pencil,
   Send,
   Filter,
@@ -318,6 +319,18 @@ export default function GalleryPage() {
           <div className="flex items-center gap-2 sm:gap-2.5">
             <ThemeToggle />
             <SoundToggle />
+
+            <a
+              href={`https://wa.me/${(contact.phone || "+20 (2) 2794-0000").replace(/\D/g, "") || "20227940000"}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`WhatsApp ${contact.phone || "+20 (2) 2794-0000"}`}
+              title={`WhatsApp: ${contact.phone || "+20 (2) 2794-0000"}`}
+              className="inline-flex items-center gap-1.5 bg-white dark:bg-[#181824] hover:bg-emerald-50 dark:hover:bg-emerald-500/15 text-black dark:text-zinc-100 font-headline font-bold text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full ring-1 ring-black/15 dark:ring-white/15 hover:ring-emerald-500/60 transition-all duration-150 cursor-pointer whitespace-nowrap"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 stroke-[2.2]" />
+              <span className="hidden lg:inline">{contact.phone || "+20 (2) 2794-0000"}</span>
+            </a>
 
             <MagneticButton soundType="pop">
               <Link

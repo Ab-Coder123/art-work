@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Pencil } from "lucide-react";
+import { ArrowRight, MessageCircle, Pencil } from "lucide-react";
 import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import { SoundToggle } from "@/components/cinematic/SoundToggle";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
@@ -15,8 +15,10 @@ export const StudioHeader = React.memo(function StudioHeader({
   scrollToStage,
   onInkBurst,
   layout = DEFAULT_LAYOUT_CONTENT,
+  whatsappPhone = "+20 (2) 2794-0000",
 }: StudioHeaderProps) {
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
+  const whatsappDigits = (whatsappPhone || "+20 (2) 2794-0000").replace(/\D/g, "") || "20227940000";
 
   const galleryVaultLabel =
     layout.fullVaultCtaText &&
@@ -26,7 +28,7 @@ export const StudioHeader = React.memo(function StudioHeader({
 
   return (
     <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md nav-shadow transition-colors duration-200">
-      <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-1.5 sm:py-2">
+      <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-1.5">
         {/* Logo Anchor */}
         <div className="flex items-center gap-2">
           <button
@@ -35,7 +37,7 @@ export const StudioHeader = React.memo(function StudioHeader({
             title={`${layout.footerBrandTitle} — ${layout.navHomeLabel}`}
             aria-label={`${layout.footerBrandTitle} — ${layout.navHomeLabel}`}
           >
-            <div className="relative w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 lg:w-16 lg:h-16 hover:rotate-3 transition-transform">
+            <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-13 lg:h-13 hover:rotate-3 transition-transform">
               <Image
                 src="/assets/images/artwork_logo.png"
                 alt="Art Work Logo"
@@ -109,15 +111,27 @@ export const StudioHeader = React.memo(function StudioHeader({
           </button>
         </nav>
 
-        {/* Trailing Primary Actions: Theme Toggle + Sound Toggle + Brief Inquiry + Ink Mode */}
+        {/* Trailing Primary Actions: Theme Toggle + Sound Toggle + WhatsApp + Brief Inquiry + Ink Mode */}
         <div className="flex items-center gap-2 sm:gap-2.5">
           <ThemeToggle />
           <SoundToggle />
 
+          <a
+            href={`https://wa.me/${whatsappDigits}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`WhatsApp ${whatsappPhone}`}
+            title={`WhatsApp: ${whatsappPhone}`}
+            className="inline-flex items-center gap-1.5 bg-white dark:bg-[#181824] hover:bg-emerald-50 dark:hover:bg-emerald-500/15 text-black dark:text-zinc-100 font-headline font-bold text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full ring-1 ring-black/15 dark:ring-white/15 hover:ring-emerald-500/60 transition-all duration-150 cursor-pointer whitespace-nowrap"
+          >
+            <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 stroke-[2.2]" />
+            <span className="hidden lg:inline">{whatsappPhone}</span>
+          </a>
+
           <MagneticButton soundType="pop">
             <button
               onClick={() => scrollToStage("stage-04")}
-              className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-bold text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150 cursor-pointer"
+              className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-bold text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150 cursor-pointer whitespace-nowrap"
             >
               <span>{layout.briefCtaText}</span>
               <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
