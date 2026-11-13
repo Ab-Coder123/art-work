@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { soundFX } from "@/utils/soundFX";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
+import { DeliveryProcessTimeline } from "./DeliveryProcessTimeline";
 import type { ContactSectionProps } from "./types";
 
 const DEFAULT_SERVICE_OPTIONS = [
@@ -64,6 +65,33 @@ export const ContactSection = React.memo(function ContactSection({
 
   useEffect(() => {
     formLoadedAtRef.current = Date.now();
+
+    const handleQuickIntake = (e: Event) => {
+      const customEvent = e as CustomEvent<{ fullName?: string; contact?: string }>;
+      if (customEvent.detail) {
+        setFormData((prev) => ({
+          ...prev,
+          fullName: customEvent.detail.fullName || prev.fullName,
+          email: customEvent.detail.contact?.includes("@")
+            ? customEvent.detail.contact
+            : prev.email,
+          brief:
+            !customEvent.detail.contact?.includes("@") && customEvent.detail.contact
+              ? `[Quick WhatsApp / Contact]: ${customEvent.detail.contact}\n${prev.brief}`
+              : prev.brief,
+        }));
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("artwork:quick-intake", handleQuickIntake);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("artwork:quick-intake", handleQuickIntake);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -134,7 +162,10 @@ export const ContactSection = React.memo(function ContactSection({
 
   return (
     <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 flex flex-col justify-start">
-      <div className="rounded-2xl p-6 sm:p-8 lg:p-10 bg-[#0a0a12] ring-1 ring-white/10 hover:ring-[#dcb858]/30 transition-all duration-300 shadow-2xl relative">
+      {/* EKO-Style How We Deliver Framework */}
+      <DeliveryProcessTimeline />
+
+      <div className="rounded-2xl p-6 sm:p-8 lg:p-10 bg-[#0a0a12] ring-1 ring-white/10 hover:ring-[#dcb858]/30 transition-all duration-300 shadow-2xl relative mt-4">
         {/* Stage Eyebrow Pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#dcb858]/15 ring-1 ring-[#dcb858]/40 text-[#dcb858] text-[11px] font-mono font-bold uppercase tracking-wider mb-6">
           <Sparkles className="w-3.5 h-3.5 text-[#dcb858]" />

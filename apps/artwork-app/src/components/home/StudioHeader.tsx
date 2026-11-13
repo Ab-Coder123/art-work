@@ -27,8 +27,8 @@ export const StudioHeader = React.memo(function StudioHeader({
       : `★ ${layout.navGalleryLabel} ↗`;
 
   return (
-    <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md nav-shadow transition-colors duration-200">
-      <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-1.5">
+    <header className="fixed top-0 left-0 w-full z-40 bg-[#08080d]/85 backdrop-blur-xl ring-1 ring-white/10 transition-colors duration-200">
+      <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-2">
         {/* Logo Anchor */}
         <div className="flex items-center gap-2">
           <button
@@ -37,7 +37,7 @@ export const StudioHeader = React.memo(function StudioHeader({
             title={`${layout.footerBrandTitle} — ${layout.navHomeLabel}`}
             aria-label={`${layout.footerBrandTitle} — ${layout.navHomeLabel}`}
           >
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-13 lg:h-13 hover:rotate-3 transition-transform">
+            <div className="relative w-10 h-10 sm:w-12 sm:h-12 hover:scale-105 transition-transform">
               <Image
                 src="/assets/images/artwork_logo.png"
                 alt="Art Work Logo"
@@ -58,14 +58,14 @@ export const StudioHeader = React.memo(function StudioHeader({
           </button>
         </div>
 
-        {/* Desktop Navigation Links (Sticker Buttons) */}
-        <nav className="hidden md:flex items-center gap-2 font-headline text-xs uppercase tracking-wider font-bold">
+        {/* Desktop Navigation Links (EKO Style Modern Glass Capsule Tabs) */}
+        <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-full bg-white/5 ring-1 ring-white/10 backdrop-blur-md font-headline text-xs uppercase tracking-wider font-semibold">
           <button
             onClick={() => scrollToStage("stage-01")}
-            className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+            className={`px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer select-none ${
               activeStage === "stage-01"
-                ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
-                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
+                ? "bg-[#dcb858] text-black font-bold shadow-[0_2px_12px_rgba(220,184,88,0.3)]"
+                : "text-zinc-300 hover:text-white hover:bg-white/10"
             }`}
           >
             {layout.navHomeLabel}
@@ -74,37 +74,37 @@ export const StudioHeader = React.memo(function StudioHeader({
           {/* Standalone /gallery Page Action Pill (located beside Home) */}
           <Link
             href="/gallery"
-            className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:-rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+            className="px-3.5 py-1.5 rounded-full text-zinc-200 hover:text-[#dcb858] hover:bg-white/10 ring-1 ring-white/10 transition-all duration-200 cursor-pointer"
           >
             <span>{galleryVaultLabel}</span>
           </Link>
 
           <button
             onClick={() => scrollToStage("stage-02")}
-            className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+            className={`px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer select-none ${
               activeStage === "stage-02"
-                ? "bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10"
-                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1"
+                ? "bg-[#dcb858] text-black font-bold shadow-[0_2px_12px_rgba(220,184,88,0.3)]"
+                : "text-zinc-300 hover:text-white hover:bg-white/10"
             }`}
           >
             {layout.navWhyUsLabel}
           </button>
           <button
             onClick={() => scrollToStage("stage-03")}
-            className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+            className={`px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer select-none ${
               activeStage === "stage-03"
-                ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
-                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
+                ? "bg-[#dcb858] text-black font-bold shadow-[0_2px_12px_rgba(220,184,88,0.3)]"
+                : "text-zinc-300 hover:text-white hover:bg-white/10"
             }`}
           >
             {layout.navServicesLabel}
           </button>
           <button
             onClick={() => scrollToStage("stage-04")}
-            className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+            className={`px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer select-none ${
               activeStage === "stage-04"
-                ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
-                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1"
+                ? "bg-[#dcb858] text-black font-bold shadow-[0_2px_12px_rgba(220,184,88,0.3)]"
+                : "text-zinc-300 hover:text-white hover:bg-white/10"
             }`}
           >
             {layout.navContactLabel}
@@ -122,16 +122,16 @@ export const StudioHeader = React.memo(function StudioHeader({
             rel="noopener noreferrer"
             aria-label={`WhatsApp ${whatsappPhone}`}
             title={`WhatsApp: ${whatsappPhone}`}
-            className="inline-flex items-center gap-1.5 bg-white dark:bg-[#181824] hover:bg-emerald-50 dark:hover:bg-emerald-500/15 text-black dark:text-zinc-100 font-headline font-bold text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full ring-1 ring-black/15 dark:ring-white/15 hover:ring-emerald-500/60 transition-all duration-150 cursor-pointer whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 bg-white/5 hover:bg-white/10 text-zinc-100 font-headline font-bold text-xs px-3 py-1.5 sm:py-2 rounded-full ring-1 ring-white/15 hover:ring-emerald-500/60 transition-all duration-150 cursor-pointer whitespace-nowrap"
           >
-            <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 stroke-[2.2]" />
+            <MessageCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 stroke-[2.2]" />
             <span className="hidden lg:inline">{whatsappPhone}</span>
           </a>
 
           <MagneticButton soundType="pop">
             <button
               onClick={() => scrollToStage("stage-04")}
-              className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-bold text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150 cursor-pointer whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 bg-[#dcb858] hover:bg-yellow-300 text-black font-headline font-bold text-xs px-4 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-[0_0_20px_rgba(220,184,88,0.3)] hover:scale-105 active:scale-95 transition-all duration-150 cursor-pointer whitespace-nowrap"
             >
               <span>{layout.briefCtaText}</span>
               <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -144,7 +144,7 @@ export const StudioHeader = React.memo(function StudioHeader({
               toggleDoodle();
             }}
             aria-label="Toggle Studio Pen Doodle Mode"
-            className="w-8 h-8 sm:w-9 sm:h-9 border-2 border-black dark:border-zinc-400 rounded-DEFAULT bg-white dark:bg-[#181824] hover:bg-yellow-100 dark:hover:bg-[#222232] comic-shadow-sm active:scale-90 transition-transform cursor-pointer flex items-center justify-center text-black dark:text-yellow-400"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/5 hover:bg-white/10 ring-1 ring-white/15 active:scale-90 transition-transform cursor-pointer flex items-center justify-center text-zinc-300 hover:text-[#dcb858]"
             title="Toggle Studio Pen Doodle Mode"
           >
             <Pencil className="w-4 h-4" />
@@ -152,50 +152,50 @@ export const StudioHeader = React.memo(function StudioHeader({
         </div>
       </div>
 
-      {/* Mobile Stage Navigation Pill Strip (Sticker Buttons) */}
-      <div className="md:hidden flex items-center justify-start gap-2 px-3 py-2 bg-yellow-50/95 dark:bg-[#12121A]/95 border-t border-black/10 dark:border-white/10 overflow-x-auto no-scrollbar">
+      {/* Mobile Stage Navigation Pill Strip (EKO Clean Dark Capsule Strip) */}
+      <div className="md:hidden flex items-center justify-start gap-1.5 px-3 py-1.5 bg-[#0a0a10]/95 ring-t-1 ring-white/10 overflow-x-auto no-scrollbar">
         <button
           onClick={() => scrollToStage("stage-01")}
-          className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+          className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap ${
             activeStage === "stage-01"
-              ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black -rotate-1"
-              : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
+              ? "bg-[#dcb858] text-black"
+              : "text-zinc-300 bg-white/5 ring-1 ring-white/10"
           }`}
         >
           {layout.navHomeLabel}
         </button>
         <Link
           href="/gallery"
-          className="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-black uppercase tracking-wider bg-yellow-300 dark:bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap active:scale-95"
+          className="px-3 py-1 rounded-full text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider text-[#dcb858] bg-[#dcb858]/10 ring-1 ring-[#dcb858]/30 whitespace-nowrap"
         >
           {galleryVaultLabel}
         </Link>
         <button
           onClick={() => scrollToStage("stage-02")}
-          className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+          className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap ${
             activeStage === "stage-02"
-              ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black rotate-1"
-              : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
+              ? "bg-[#dcb858] text-black"
+              : "text-zinc-300 bg-white/5 ring-1 ring-white/10"
           }`}
         >
           {layout.navWhyUsLabel}
         </button>
         <button
           onClick={() => scrollToStage("stage-03")}
-          className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+          className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap ${
             activeStage === "stage-03"
-              ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black -rotate-1"
-              : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
+              ? "bg-[#dcb858] text-black"
+              : "text-zinc-300 bg-white/5 ring-1 ring-white/10"
           }`}
         >
           {layout.navServicesLabel}
         </button>
         <button
           onClick={() => scrollToStage("stage-04")}
-          className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+          className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap ${
             activeStage === "stage-04"
-              ? "bg-yellow-400 text-black border-2 border-black comic-shadow-sm font-black -rotate-1"
-              : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-2 border-black/80 dark:border-zinc-600 comic-shadow-sm hover:bg-yellow-100 hover:text-black dark:hover:text-white"
+              ? "bg-[#dcb858] text-black"
+              : "text-zinc-300 bg-white/5 ring-1 ring-white/10"
           }`}
         >
           {layout.navContactLabel}

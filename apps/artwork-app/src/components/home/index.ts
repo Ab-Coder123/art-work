@@ -8,5 +8,8 @@ export * from "./ContactSection";
 export * from "./StudioHeader";
 export * from "./StudioFooter";
 export * from "./TheaterStageIndicator";
+export * from "./FloatingContactFab";
+export * from "./ProductionMetricsStack";
+export * from "./DeliveryProcessTimeline";
 export * from "./StageLoadingSkeleton";
 export * from "./HomeTheaterController";

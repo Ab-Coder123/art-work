@@ -12,6 +12,7 @@ import {
   ManifestoHero,
   WhyUsTeaser,
   TheaterStageIndicator,
+  FloatingContactFab,
 } from "@/components/home";
 import { StageLoadingSkeleton } from "./StageLoadingSkeleton";
 import type { InitialHomeData } from "./server";
@@ -391,6 +392,12 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
           <StudioFooter scrollToStage={scrollToStage} layout={layoutContent} />
         </div>
       </div>
+
+      {/* Floating EKO-Style Quick Contact Actions (WhatsApp + Brief FABs) */}
+      <FloatingContactFab
+        whatsappPhone={contactContent.phone}
+        onOpenBrief={() => scrollToStage("stage-04")}
+      />
     </>
   );
 }
