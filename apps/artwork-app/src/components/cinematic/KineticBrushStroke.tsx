@@ -35,7 +35,7 @@ export const KineticBrushStroke: React.FC<KineticBrushStrokeProps> = ({
   className = "",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.1 });
+  const isInView = useInView(containerRef, { once: false, amount: 0.1 });
   const [fallbackTriggered, setFallbackTriggered] = useState(false);
   const [replayKey, setReplayKey] = useState(0);
 

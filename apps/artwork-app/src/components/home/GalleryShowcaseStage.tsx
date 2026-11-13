@@ -79,13 +79,13 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
   return (
     <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 flex flex-col justify-start">
       {/* ================= SECTION HEADER (Pages 3 & 4 Reference) ================= */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-4 ring-b-1 ring-white/10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-4 border-b border-zinc-200 dark:border-white/10">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#dcb858]/15 ring-1 ring-[#dcb858]/40 text-[#dcb858] text-[11px] font-mono font-bold uppercase tracking-wider mb-2">
             <span className="w-2 h-2 rounded-full bg-[#dcb858] animate-pulse"></span>
             <span>{content.badge}</span>
           </div>
-          <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight uppercase">
+          <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-zinc-900 dark:text-white tracking-tight uppercase">
             {content.headlinePrefix}{" "}
             <KineticBrushWord
               variant="double"
@@ -95,7 +95,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
               {content.headlineHighlight}
             </KineticBrushWord>
           </h2>
-          <p className="font-body text-xs sm:text-sm text-zinc-400 mt-1.5 leading-relaxed">
+          <p className="font-body text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1.5 leading-relaxed">
             {content.description}
           </p>
         </div>
@@ -103,7 +103,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
         <div className="flex items-center gap-3 shrink-0">
           <Link
             href="/gallery"
-            className="group inline-flex items-center gap-2 font-headline font-bold text-xs uppercase px-4 py-2.5 rounded-xl bg-white/5 hover:bg-[#dcb858] text-white hover:text-black ring-1 ring-white/15 hover:ring-[#dcb858] transition-all duration-200 cursor-pointer"
+            className="group inline-flex items-center gap-2 font-headline font-bold text-xs uppercase px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 hover:bg-[#dcb858] text-zinc-900 dark:text-white hover:text-black ring-1 ring-zinc-300 dark:ring-white/15 hover:ring-[#dcb858] transition-all duration-200 cursor-pointer"
           >
             <span>
               {content.viewAllCtaText} ({projectsList.length})
@@ -130,7 +130,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                 className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl font-headline font-bold text-xs uppercase whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                   isCurrent
                     ? "bg-[#dcb858] text-black font-black shadow-md ring-1 ring-[#dcb858]"
-                    : "bg-[#0f0f18] text-zinc-300 hover:text-white hover:bg-[#161624] ring-1 ring-white/10"
+                    : "bg-zinc-100 dark:bg-[#0f0f18] text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-[#161624] ring-1 ring-zinc-200 dark:ring-white/10"
                 }`}
               >
                 <Play className="w-3 h-3 fill-current" />
@@ -145,7 +145,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
 
       {/* Primary Featured Video Cinema Theater */}
       {activeVideo && activeYt && (
-        <div className="mb-6 p-5 sm:p-7 rounded-2xl ring-1 ring-white/10 hover:ring-[#dcb858]/40 bg-[#0c0c14] shadow-2xl transition-all duration-300">
+        <div className="mb-6 p-5 sm:p-7 rounded-2xl ring-1 ring-white/10 hover:ring-[#dcb858]/40 bg-white dark:bg-[#0c0c14] ring-1 ring-black/10 dark:ring-white/10 shadow-lg dark:shadow-2xl transition-all duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
             {/* Embedded YouTube Player Facade */}
             <div className="lg:col-span-7">
@@ -180,7 +180,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                   </span>
                 </div>
 
-                <h3 className="font-headline font-black text-xl sm:text-2xl text-white tracking-tight mb-2">
+                <h3 className="font-headline font-black text-xl sm:text-2xl text-zinc-900 dark:text-white tracking-tight mb-2">
                   {activeVideo.title}
                 </h3>
 
@@ -191,12 +191,12 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     </div>
                   )}
 
-                <p className="font-body text-xs sm:text-sm text-zinc-300 leading-relaxed line-clamp-4 mb-4">
+                <p className="font-body text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed line-clamp-4 mb-4">
                   {activeVideo.youtubeDescription || activeVideo.description}
                 </p>
               </div>
 
-              <div className="pt-3 ring-t-1 ring-white/10 flex items-center justify-end flex-wrap gap-3">
+              <div className="pt-3 border-t border-zinc-200 dark:border-white/10 flex items-center justify-end flex-wrap gap-3">
                 <a
                   href={activeYt.canonicalUrl}
                   target="_blank"
@@ -259,7 +259,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     </p>
                   </div>
 
-                  <div className="pt-3 mt-3 ring-t-1 ring-white/10 flex items-center justify-between">
+                  <div className="pt-3 mt-3 border-t border-zinc-200 dark:border-white/10 flex items-center justify-between">
                     <span className="text-[11px] font-mono text-zinc-500 uppercase">
                       {p.client}
                     </span>
@@ -303,7 +303,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                       {p.year || 2026}
                     </span>
                   </div>
-                  <h4 className="font-headline font-black text-sm sm:text-base text-white group-hover:text-[#dcb858] transition-colors line-clamp-1 mb-1">
+                  <h4 className="font-headline font-black text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-[#dcb858] transition-colors line-clamp-1 mb-1">
                     {p.title}
                   </h4>
                   <p className="font-body text-xs text-zinc-400 line-clamp-2">
@@ -311,7 +311,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                   </p>
                 </div>
 
-                <div className="pt-3 mt-3 ring-t-1 ring-white/10 flex items-center justify-between">
+                <div className="pt-3 mt-3 border-t border-zinc-200 dark:border-white/10 flex items-center justify-between">
                   <span className="text-[11px] font-mono text-emerald-400 flex items-center gap-1">
                     <Sparkles className="w-3 h-3" />
                     <span>Delivered</span>

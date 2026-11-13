@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import { useTheaterStageController } from "@/hooks/useTheaterStageController";
 
 import {
@@ -231,62 +232,132 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
         </section>
 
         {/* 02: FEATURED INSIGHTS (2 Big Cards: Top Event Studios & Top Turnkey) */}
-        <section id="insights" className="w-full">
+        <motion.section
+          id="insights"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.12 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <FeaturedInsightsSection />
-        </section>
+        </motion.section>
 
         {/* 03: WHY US & METHODOLOGY STAGE */}
-        <section id="stage-02" className="w-full">
+        <motion.section
+          id="stage-02"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.12 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <WhyUsTeaser content={whyUsContent} />
-        </section>
+        </motion.section>
 
         {/* 04: SERVICES YOU GET (Tabbed Bento Grid & Production Engine Stack) */}
-        <section id="stage-03" className="w-full">
+        <motion.section
+          id="stage-03"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.1 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <ServicesStage content={servicesContent} />
-        </section>
+        </motion.section>
 
         {/* 05: SELECTED WORK (Projects That Deliver Results & Video Theater) */}
-        <section id="stage-gallery" className="w-full">
+        <motion.section
+          id="stage-gallery"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.1 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <GalleryShowcaseStage
             content={homeShowcaseContent}
             initialProjects={projects}
           />
-        </section>
+        </motion.section>
 
         {/* 06: CASE STUDIES (Real Clients. Measured Results) */}
-        <section id="case-studies" className="w-full">
+        <motion.section
+          id="case-studies"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.12 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <CaseStudiesStatsSection />
-        </section>
+        </motion.section>
 
         {/* 07: MARKET GUIDES (Egypt & Saudi Arabia Expertise) */}
-        <section id="market-guides" className="w-full">
+        <motion.section
+          id="market-guides"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.12 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <MarketGuidesSection />
-        </section>
+        </motion.section>
 
         {/* 08: LATEST FROM ART WORK (Blog / Annual Reports) */}
-        <section id="blog" className="w-full">
+        <motion.section
+          id="blog"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.12 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <LatestInsightsBlogSection />
-        </section>
+        </motion.section>
 
         {/* 09: INDUSTRY EXPERTISE & OUR OFFICES */}
-        <section id="industries" className="w-full">
+        <motion.section
+          id="industries"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.12 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <IndustryExpertiseSection
             whatsappPhone={contactContent.phone}
             email={contactContent.email}
           />
-        </section>
+        </motion.section>
 
         {/* 10: FREQUENTLY ASKED QUESTIONS (Accordion) */}
-        <section id="faq" className="w-full">
+        <motion.section
+          id="faq"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.12 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <FaqAccordionSection />
-        </section>
+        </motion.section>
 
         {/* 11: GET YOUR CUSTOM EVENT PLAN & DIRECT BRIEF INTAKE */}
-        <section id="stage-04" className="w-full">
+        <motion.section
+          id="stage-04"
+          className="w-full"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.1 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div id="brief-inquiry" className="w-full">
             <ContactSection content={contactContent} />
           </div>
-        </section>
+        </motion.section>
 
         {/* 12: STUDIO FOOTER */}
         <StudioFooter scrollToStage={scrollToStage} layout={layoutContent} />

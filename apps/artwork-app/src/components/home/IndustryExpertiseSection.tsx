@@ -53,7 +53,7 @@ export const IndustryExpertiseSection = React.memo(function IndustryExpertiseSec
                 key={ind}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.3, delay: idx * 0.04 }}
                 className="px-4 py-2 rounded-xl bg-white dark:bg-[#0d0d15] ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 text-xs font-mono text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white shadow-sm dark:shadow-none transition-all duration-200 select-none"
               >
@@ -67,7 +67,7 @@ export const IndustryExpertiseSection = React.memo(function IndustryExpertiseSec
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
+          viewport={{ once: false, amount: 0.15 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className="lg:col-span-5 rounded-2xl p-6 sm:p-7 bg-white dark:bg-[#0d0d15]/90 ring-1 ring-black/10 dark:ring-white/10 shadow-lg dark:shadow-xl space-y-5"
         >

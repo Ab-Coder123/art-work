@@ -62,7 +62,7 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     <motion.div
       initial={initial}
       whileInView={animate}
-      viewport={{ once: true, amount: viewportAmount }}
+      viewport={{ once: false, amount: viewportAmount }}
       transition={{
         duration,
         delay,

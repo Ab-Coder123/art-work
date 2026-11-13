@@ -21,10 +21,10 @@
   --color-dark-surface: #14141C;
   --color-dark-card: #181822;
   --color-dark-border: #282836;
-  --font-headline: var(--font-plus-jakarta), sans-serif;
-  --font-display: var(--font-plus-jakarta), sans-serif;
-  --font-body: var(--font-plus-jakarta), sans-serif;
-  --font-label: var(--font-plus-jakarta), sans-serif;
+  --font-headline: var(--font-outfit), var(--font-plus-jakarta, sans-serif), sans-serif;
+  --font-display: var(--font-outfit), var(--font-plus-jakarta, sans-serif), sans-serif;
+  --font-body: var(--font-outfit), var(--font-plus-jakarta, sans-serif), sans-serif;
+  --font-label: var(--font-outfit), var(--font-plus-jakarta, sans-serif), sans-serif;
   --font-brush: var(--font-permanent-marker), cursive;
 }
 
@@ -57,15 +57,15 @@
 
 /* Font helpers */
 .font-headline {
-  font-family: var(--font-plus-jakarta), sans-serif;
+  font-family: var(--font-outfit), sans-serif;
 }
 
 .font-body {
-  font-family: var(--font-plus-jakarta), sans-serif;
+  font-family: var(--font-outfit), sans-serif;
 }
 
 .font-label {
-  font-family: var(--font-plus-jakarta), sans-serif;
+  font-family: var(--font-outfit), sans-serif;
 }
 
 .font-brush {

@@ -90,7 +90,7 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({
               key={pillar.title}
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
+              viewport={{ once: false, amount: 0.15 }}
               transition={{ duration: 0.4, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="p-5 rounded-2xl bg-white dark:bg-[#0d0d15]/90 hover:bg-zinc-50 dark:hover:bg-[#13131e]/90 ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 flex flex-col justify-between group shadow-lg dark:shadow-xl"
             >
@@ -123,7 +123,7 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({
               key={`${card.number}-${idx}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
+              viewport={{ once: false, amount: 0.12 }}
               transition={{ duration: 0.45, delay: idx * 0.1, ease: [0.22, 1, 0.36, 1] }}
               className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0e0e17]/80 hover:bg-zinc-50 dark:hover:bg-[#141421]/90 ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 flex flex-col justify-between min-h-[190px] group shadow-lg dark:shadow-xl"
             >

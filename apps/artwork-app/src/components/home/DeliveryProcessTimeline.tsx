@@ -79,7 +79,7 @@ export const DeliveryProcessTimeline = React.memo(function DeliveryProcessTimeli
                   <motion.div
                     initial={{ opacity: 0, x: isLeft ? -25 : 25 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
+                    viewport={{ once: false, amount: 0.2 }}
                     transition={{ duration: 0.45, delay: idx * 0.05, ease: [0.16, 1, 0.3, 1] }}
                     className="p-6 rounded-2xl bg-white dark:bg-[#0d0d15]/90 hover:bg-zinc-50 dark:hover:bg-[#13131f]/95 ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 shadow-lg dark:shadow-xl group"
                   >

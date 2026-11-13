@@ -177,7 +177,7 @@ export const ContactSection = React.memo(function ContactSection({
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
+            viewport={{ once: false, amount: 0.15 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-5 space-y-5"
           >
@@ -272,7 +272,7 @@ export const ContactSection = React.memo(function ContactSection({
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
+            viewport={{ once: false, amount: 0.15 }}
             transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-7 bg-white dark:bg-[#0f0f18] ring-1 ring-black/10 dark:ring-white/10 rounded-2xl p-6 sm:p-7 shadow-xl"
           >
