@@ -338,7 +338,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
 
   whyUsTeaser: {
     eyebrow: "WHY WORK WITH ART WORK",
-    headline: "ONE TEAM FROM FIRST IDEA TO FINAL MOMENT.",
+    headline: "YOUR VISION. EXPERTLY DELIVERED.",
     exploreCtaText: "HOW WE WORK",
     bentoCards: [
       {
