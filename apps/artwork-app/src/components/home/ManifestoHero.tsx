@@ -185,6 +185,16 @@ export const ManifestoHero = React.memo(function ManifestoHero({
           }}
         />
 
+        {/* Giant Typographic Background Watermark (Matching EKO Reference) */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0"
+        >
+          <span className="font-headline font-black text-[120px] sm:text-[200px] md:text-[260px] lg:text-[340px] tracking-tight text-white/[0.035] uppercase whitespace-nowrap leading-none">
+            ART WORK
+          </span>
+        </div>
+
         {/* Centered Editorial Content Stack (EKO Innovations Page 1 Hierarchy) */}
         <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center text-center">
           {/* Top Pill Badge */}
