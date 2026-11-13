@@ -464,8 +464,8 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     sceneBadge: "HOW WE WORK",
     sceneTitle: "OUR APPROACH",
     statusBadge: "ONE TEAM // LIVE DELIVERY",
-    heroHeadlineRow1: "ONE TEAM.",
-    heroHeadlineRow2: "FROM FIRST IDEA TO FINAL MOMENT.",
+    heroHeadlineRow1: "WHY",
+    heroHeadlineRow2: "US?",
     roiBadge: "CREATIVE DEVELOPMENT & PLANNING",
     contentCreationBadge: "ON-SITE EVENT PRODUCTION",
     doodleStickers: [
