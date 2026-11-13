@@ -68,6 +68,15 @@ export const StudioHeader = React.memo(function StudioHeader({
           >
             {layout.navHomeLabel}
           </button>
+
+          {/* Standalone /gallery Page Action Pill (located beside Home) */}
+          <Link
+            href="/gallery"
+            className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:-rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+          >
+            <span>{galleryVaultLabel}</span>
+          </Link>
+
           <button
             onClick={() => scrollToStage("stage-02")}
             className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
@@ -98,14 +107,6 @@ export const StudioHeader = React.memo(function StudioHeader({
           >
             {layout.navContactLabel}
           </button>
-
-          {/* Standalone /gallery Page Action Pill (replaces Full Vault) */}
-          <Link
-            href="/gallery"
-            className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:-rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ml-1 cursor-pointer"
-          >
-            <span>{galleryVaultLabel}</span>
-          </Link>
         </nav>
 
         {/* Trailing Primary Actions: Theme Toggle + Sound Toggle + Brief Inquiry + Ink Mode */}
@@ -149,6 +150,12 @@ export const StudioHeader = React.memo(function StudioHeader({
         >
           {layout.navHomeLabel}
         </button>
+        <Link
+          href="/gallery"
+          className="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-black uppercase tracking-wider bg-yellow-300 dark:bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap active:scale-95"
+        >
+          {galleryVaultLabel}
+        </Link>
         <button
           onClick={() => scrollToStage("stage-02")}
           className={`px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
@@ -179,12 +186,6 @@ export const StudioHeader = React.memo(function StudioHeader({
         >
           {layout.navContactLabel}
         </button>
-        <Link
-          href="/gallery"
-          className="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-headline font-black uppercase tracking-wider bg-yellow-300 dark:bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap active:scale-95"
-        >
-          {galleryVaultLabel}
-        </Link>
       </div>
     </header>
   );
