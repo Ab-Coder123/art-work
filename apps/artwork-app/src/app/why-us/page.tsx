@@ -19,6 +19,7 @@ import {
   ArrowRight,
   ArrowLeft,
   ArrowUpRight,
+  MessageCircle,
   TrendingUp,
   Sparkles,
   PenTool,
@@ -48,8 +49,10 @@ function renderCapabilityIcon(icon?: string) {
 }
 
 export default function WhyUsPage() {
-  const [content, setContent] = React.useState<WhyUsPageContent>(DEFAULT_SITE_CONTENT.whyUsPage);
-  const [layout, setLayout] = React.useState<LayoutSectionContent>(DEFAULT_SITE_CONTENT.layout);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [content, setContent] = React.useState<WhyUsPageContent | null>(null);
+  const [layout, setLayout] = React.useState<LayoutSectionContent | null>(null);
+  const [whatsappPhone, setWhatsappPhone] = React.useState<string>(DEFAULT_SITE_CONTENT.contact.phone);
 
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();
@@ -58,17 +61,33 @@ export default function WhyUsPage() {
     let mounted = true;
     fetch("/api/content", { cache: "no-store" })
       .then((response) => (response.ok ? response.json() : Promise.reject()))
-      .then((siteContent: { whyUsPage?: WhyUsPageContent; layout?: LayoutSectionContent }) => {
+      .then((siteContent: { whyUsPage?: WhyUsPageContent; layout?: LayoutSectionContent; contact?: { phone?: string } }) => {
         if (!mounted || !siteContent) return;
         if (siteContent.whyUsPage) {
-          setContent({ ...DEFAULT_SITE_CONTENT.whyUsPage, ...siteContent.whyUsPage });
+          setContent(siteContent.whyUsPage);
+        } else {
+          setContent(DEFAULT_SITE_CONTENT.whyUsPage);
         }
         if (siteContent.layout) {
-          setLayout({ ...DEFAULT_SITE_CONTENT.layout, ...siteContent.layout });
+          setLayout(siteContent.layout);
+        } else {
+          setLayout(DEFAULT_SITE_CONTENT.layout);
+        }
+        if (siteContent.contact?.phone) {
+          setWhatsappPhone(siteContent.contact.phone);
         }
       })
       .catch(() => {
-        // Keep the complete local defaults available when the content API is offline.
+        // Fallback only if offline / server unreachable
+        if (mounted) {
+          setContent(DEFAULT_SITE_CONTENT.whyUsPage);
+          setLayout(DEFAULT_SITE_CONTENT.layout);
+        }
+      })
+      .finally(() => {
+        if (mounted) {
+          setIsLoading(false);
+        }
       });
     return () => {
       mounted = false;
@@ -118,6 +137,76 @@ export default function WhyUsPage() {
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  if (isLoading || !content || !layout) {
+    return (
+      <div className="min-h-screen bg-[#08080d] text-white flex flex-col justify-between items-center relative overflow-hidden select-none">
+        {/* Ambient background glow */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Minimal Studio Top Bar */}
+        <header className="w-full border-b border-white/10 px-4 sm:px-6 max-w-7xl mx-auto py-3 sm:py-4 flex items-center justify-between z-10">
+          <div className="flex items-center gap-3">
+            <div className="relative w-10 h-10 sm:w-11 sm:h-11">
+              <Image
+                src="/assets/images/artwork_logo.png"
+                alt="Art Work Logo"
+                fill
+                priority
+                className="object-contain"
+              />
+            </div>
+            <span className="font-headline font-black text-xs sm:text-sm tracking-wider uppercase text-yellow-400">
+              ART WORK STUDIO
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-[10px] sm:text-xs font-mono font-bold uppercase">
+              <span className="w-2 h-2 rounded-full bg-yellow-400 animate-ping" />
+              LIVE CONTENT SYNC
+            </span>
+          </div>
+        </header>
+
+        {/* Central Brand Loading Engine */}
+        <div className="w-full max-w-md px-6 py-16 flex flex-col items-center text-center z-10">
+          <div className="relative mb-6">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-[#14141E] border-2 border-yellow-400/50 comic-shadow flex items-center justify-center p-3 animate-pulse">
+              <Image
+                src="/assets/images/artwork_logo.png"
+                alt="Art Work"
+                width={64}
+                height={64}
+                className="object-contain"
+              />
+            </div>
+            <div className="absolute -top-2 -right-2 bg-yellow-400 text-black text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm rotate-6 uppercase">
+              LIVE
+            </div>
+          </div>
+
+          <div className="inline-flex items-center gap-2 text-yellow-400 font-headline font-black text-xs uppercase tracking-widest mb-2">
+            <Sparkles className="w-4 h-4 fill-yellow-400 animate-spin" />
+            <span>CONNECTING DASHBOARD CONTENT</span>
+          </div>
+
+          <p className="font-mono text-xs text-zinc-400 max-w-xs leading-relaxed mb-6">
+            Receiving live studio copy & production specifications...
+          </p>
+
+          {/* Animated Loader Bar */}
+          <div className="w-48 sm:w-60 h-1.5 bg-white/10 rounded-full overflow-hidden border border-white/10 relative">
+            <div className="absolute inset-0 bg-yellow-400 animate-pulse" />
+          </div>
+        </div>
+
+        {/* Clean Footer Bar */}
+        <footer className="w-full border-t border-white/10 py-3 text-center font-mono text-[11px] text-zinc-500 z-10">
+          <span>Art Work Creative Marketing Studio • Synchronizing Live Stream</span>
+        </footer>
+      </div>
+    );
+  }
 
   const capabilityCards =
     Array.isArray(content.capabilityCards) && content.capabilityCards.length > 0
@@ -176,6 +265,7 @@ export default function WhyUsPage() {
             </div>
           </Link>
 
+
           {/* Desktop Navigation Links (Sticker Buttons) */}
           <nav className="hidden md:flex items-center gap-2 font-headline text-xs uppercase tracking-wider font-bold">
             <Link
@@ -183,6 +273,12 @@ export default function WhyUsPage() {
               className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
               {layout.navHomeLabel}
+            </Link>
+            <Link
+              href="/gallery"
+              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+            >
+              ★ {layout.navGalleryLabel} ↗
             </Link>
             {/* Active Link: Why Us */}
             <span className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
@@ -200,18 +296,23 @@ export default function WhyUsPage() {
             >
               {layout.navContactLabel}
             </Link>
-            <Link
-              href="/gallery"
-              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ml-1 cursor-pointer"
-            >
-              ★ {layout.navGalleryLabel} ↗
-            </Link>
           </nav>
 
           {/* Trailing Action Button + Theme & Sound FX Controllers */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             <ThemeToggle />
             <SoundToggle />
+            <a
+              href={`https://wa.me/${(whatsappPhone || "+20 (2) 2794-0000").replace(/\D/g, "") || "20227940000"}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`WhatsApp ${whatsappPhone}`}
+              title={`WhatsApp: ${whatsappPhone}`}
+              className="inline-flex items-center gap-1.5 bg-white dark:bg-[#181824] hover:bg-emerald-50 dark:hover:bg-emerald-500/15 text-black dark:text-zinc-100 font-headline font-bold text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full ring-1 ring-black/15 dark:ring-white/15 hover:ring-emerald-500/60 transition-all duration-150 cursor-pointer whitespace-nowrap"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 stroke-[2.2]" />
+              <span className="hidden lg:inline">{whatsappPhone}</span>
+            </a>
             <Link
               href="/#stage-04"
               className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline text-xs md:text-sm font-extrabold uppercase tracking-wider rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150"
@@ -230,6 +331,12 @@ export default function WhyUsPage() {
           >
             ← {layout.navHomeLabel}
           </Link>
+          <Link
+            href="/gallery"
+            className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-300 dark:bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap"
+          >
+            ★ {layout.navGalleryLabel} ↗
+          </Link>
           <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
             {layout.navWhyUsLabel}
           </span>
@@ -244,12 +351,6 @@ export default function WhyUsPage() {
             className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
           >
             {layout.navContactLabel}
-          </Link>
-          <Link
-            href="/gallery"
-            className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-300 dark:bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap"
-          >
-            ★ {layout.navGalleryLabel} ↗
           </Link>
         </div>
       </header>

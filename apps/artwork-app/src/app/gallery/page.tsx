@@ -24,6 +24,7 @@ import {
   Play,
   Smartphone,
   FileText,
+  Sparkles,
 } from "lucide-react";
 import {
   type ContactSectionContent,
@@ -38,6 +39,7 @@ import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content
 import { SEED_PROJECTS } from "@/data/seedContent";
 
 export default function GalleryPage() {
+  const [isLoading, setIsLoading] = useState(true);
   const [projects, setProjects] = useState<ProjectRecord[]>(SEED_PROJECTS);
   const [galleryContent, setGalleryContent] = useState<GalleryPageContent>(
     DEFAULT_SITE_CONTENT.galleryPage
@@ -107,6 +109,10 @@ export default function GalleryPage() {
         }
       } catch {
         // Fallback to defaults when offline
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     })();
     return () => {
@@ -160,6 +166,71 @@ export default function GalleryPage() {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#08080d] text-white flex flex-col justify-between items-center relative overflow-hidden select-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <header className="w-full border-b border-white/10 px-4 sm:px-6 max-w-7xl mx-auto py-3 sm:py-4 flex items-center justify-between z-10">
+          <div className="flex items-center gap-3">
+            <div className="relative w-10 h-10 sm:w-11 sm:h-11">
+              <Image
+                src="/assets/images/artwork_logo.png"
+                alt="Art Work Logo"
+                fill
+                priority
+                className="object-contain"
+              />
+            </div>
+            <span className="font-headline font-black text-xs sm:text-sm tracking-wider uppercase text-yellow-400">
+              ART WORK GALLERY
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-[10px] sm:text-xs font-mono font-bold uppercase">
+              <span className="w-2 h-2 rounded-full bg-yellow-400 animate-ping" />
+              LIVE ARCHIVE SYNC
+            </span>
+          </div>
+        </header>
+
+        <div className="w-full max-w-md px-6 py-16 flex flex-col items-center text-center z-10">
+          <div className="relative mb-6">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-[#14141E] border-2 border-yellow-400/50 comic-shadow flex items-center justify-center p-3 animate-pulse">
+              <Image
+                src="/assets/images/artwork_logo.png"
+                alt="Art Work"
+                width={64}
+                height={64}
+                className="object-contain"
+              />
+            </div>
+            <div className="absolute -top-2 -right-2 bg-yellow-400 text-black text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm rotate-6 uppercase">
+              VAULT
+            </div>
+          </div>
+
+          <div className="inline-flex items-center gap-2 text-yellow-400 font-headline font-black text-xs uppercase tracking-widest mb-2">
+            <Sparkles className="w-4 h-4 fill-yellow-400 animate-spin" />
+            <span>CONNECTING SHOWCASE ARCHIVE</span>
+          </div>
+
+          <p className="font-mono text-xs text-zinc-400 max-w-xs leading-relaxed mb-6">
+            Loading live verified projects, reels & spatial installations...
+          </p>
+
+          <div className="w-48 sm:w-60 h-1.5 bg-white/10 rounded-full overflow-hidden border border-white/10 relative">
+            <div className="absolute inset-0 bg-yellow-400 animate-pulse" />
+          </div>
+        </div>
+
+        <footer className="w-full border-t border-white/10 py-3 text-center font-mono text-[11px] text-zinc-500 z-10">
+          <span>Art Work Creative Marketing Studio • Live Production Vault</span>
+        </footer>
+      </div>
+    );
+  }
 
   const handleFilterClick = (cat: ProjectCategory) => {
     soundFX.playClick();
@@ -290,6 +361,10 @@ export default function GalleryPage() {
             >
               {layout.navHomeLabel}
             </Link>
+            {/* Active Link: Gallery (placed right next to Home) */}
+            <span className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
+              ★ {layout.navGalleryLabel}
+            </span>
             <Link
               href="/why-us"
               className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
@@ -308,10 +383,6 @@ export default function GalleryPage() {
             >
               {layout.navContactLabel}
             </Link>
-            {/* Active Link: Gallery */}
-            <span className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black ml-1">
-              ★ {layout.navGalleryLabel}
-            </span>
           </nav>
 
           {/* Trailing Actions */}
@@ -351,6 +422,9 @@ export default function GalleryPage() {
           >
             ← {layout.navHomeLabel}
           </Link>
+          <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
+            ★ {layout.navGalleryLabel}
+          </span>
           <Link
             href="/why-us"
             className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
@@ -369,9 +443,6 @@ export default function GalleryPage() {
           >
             {layout.navContactLabel}
           </Link>
-          <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
-            ★ {layout.navGalleryLabel}
-          </span>
         </div>
       </header>
 
