@@ -19,6 +19,7 @@ import {
   ArrowRight,
   ArrowLeft,
   ArrowUpRight,
+  MessageCircle,
   TrendingUp,
   Sparkles,
   PenTool,
@@ -50,6 +51,7 @@ function renderCapabilityIcon(icon?: string) {
 export default function WhyUsPage() {
   const [content, setContent] = React.useState<WhyUsPageContent>(DEFAULT_SITE_CONTENT.whyUsPage);
   const [layout, setLayout] = React.useState<LayoutSectionContent>(DEFAULT_SITE_CONTENT.layout);
+  const [whatsappPhone, setWhatsappPhone] = React.useState<string>(DEFAULT_SITE_CONTENT.contact.phone);
 
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();
@@ -58,13 +60,16 @@ export default function WhyUsPage() {
     let mounted = true;
     fetch("/api/content", { cache: "no-store" })
       .then((response) => (response.ok ? response.json() : Promise.reject()))
-      .then((siteContent: { whyUsPage?: WhyUsPageContent; layout?: LayoutSectionContent }) => {
+      .then((siteContent: { whyUsPage?: WhyUsPageContent; layout?: LayoutSectionContent; contact?: { phone?: string } }) => {
         if (!mounted || !siteContent) return;
         if (siteContent.whyUsPage) {
           setContent({ ...DEFAULT_SITE_CONTENT.whyUsPage, ...siteContent.whyUsPage });
         }
         if (siteContent.layout) {
           setLayout({ ...DEFAULT_SITE_CONTENT.layout, ...siteContent.layout });
+        }
+        if (siteContent.contact?.phone) {
+          setWhatsappPhone(siteContent.contact.phone);
         }
       })
       .catch(() => {
@@ -184,6 +189,12 @@ export default function WhyUsPage() {
             >
               {layout.navHomeLabel}
             </Link>
+            <Link
+              href="/gallery"
+              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+            >
+              ★ {layout.navGalleryLabel} ↗
+            </Link>
             {/* Active Link: Why Us */}
             <span className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
               {layout.navWhyUsLabel}
@@ -200,18 +211,23 @@ export default function WhyUsPage() {
             >
               {layout.navContactLabel}
             </Link>
-            <Link
-              href="/gallery"
-              className="inline-flex items-center gap-1 bg-yellow-300 dark:bg-yellow-400 text-black font-headline font-black text-xs uppercase px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 border-black comic-shadow-sm hover:bg-yellow-400 hover:-translate-y-0.5 hover:rotate-1 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all ml-1 cursor-pointer"
-            >
-              ★ {layout.navGalleryLabel} ↗
-            </Link>
           </nav>
 
           {/* Trailing Action Button + Theme & Sound FX Controllers */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             <ThemeToggle />
             <SoundToggle />
+            <a
+              href={`https://wa.me/${(whatsappPhone || "+20 (2) 2794-0000").replace(/\D/g, "") || "20227940000"}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`WhatsApp ${whatsappPhone}`}
+              title={`WhatsApp: ${whatsappPhone}`}
+              className="inline-flex items-center gap-1.5 bg-white dark:bg-[#181824] hover:bg-emerald-50 dark:hover:bg-emerald-500/15 text-black dark:text-zinc-100 font-headline font-bold text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full ring-1 ring-black/15 dark:ring-white/15 hover:ring-emerald-500/60 transition-all duration-150 cursor-pointer whitespace-nowrap"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 stroke-[2.2]" />
+              <span className="hidden lg:inline">{whatsappPhone}</span>
+            </a>
             <Link
               href="/#stage-04"
               className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline text-xs md:text-sm font-extrabold uppercase tracking-wider rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150"
@@ -230,6 +246,12 @@ export default function WhyUsPage() {
           >
             ← {layout.navHomeLabel}
           </Link>
+          <Link
+            href="/gallery"
+            className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-300 dark:bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap"
+          >
+            ★ {layout.navGalleryLabel} ↗
+          </Link>
           <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
             {layout.navWhyUsLabel}
           </span>
@@ -244,12 +266,6 @@ export default function WhyUsPage() {
             className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
           >
             {layout.navContactLabel}
-          </Link>
-          <Link
-            href="/gallery"
-            className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-300 dark:bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap"
-          >
-            ★ {layout.navGalleryLabel} ↗
           </Link>
         </div>
       </header>

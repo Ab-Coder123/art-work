@@ -3,9 +3,19 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { CheckCircle2, AlertCircle, Loader2, Send } from "lucide-react";
+import {
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Send,
+  MessageCircle,
+  Mail,
+  MapPin,
+  Sparkles,
+} from "lucide-react";
 import { soundFX } from "@/utils/soundFX";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
+import { DeliveryProcessTimeline } from "./DeliveryProcessTimeline";
 import type { ContactSectionProps } from "./types";
 
 const DEFAULT_SERVICE_OPTIONS = [
@@ -55,6 +65,33 @@ export const ContactSection = React.memo(function ContactSection({
 
   useEffect(() => {
     formLoadedAtRef.current = Date.now();
+
+    const handleQuickIntake = (e: Event) => {
+      const customEvent = e as CustomEvent<{ fullName?: string; contact?: string }>;
+      if (customEvent.detail) {
+        setFormData((prev) => ({
+          ...prev,
+          fullName: customEvent.detail.fullName || prev.fullName,
+          email: customEvent.detail.contact?.includes("@")
+            ? customEvent.detail.contact
+            : prev.email,
+          brief:
+            !customEvent.detail.contact?.includes("@") && customEvent.detail.contact
+              ? `[Quick WhatsApp / Contact]: ${customEvent.detail.contact}\n${prev.brief}`
+              : prev.brief,
+        }));
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("artwork:quick-intake", handleQuickIntake);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("artwork:quick-intake", handleQuickIntake);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -124,29 +161,38 @@ export const ContactSection = React.memo(function ContactSection({
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
-      <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-3.5 sm:p-4 lg:p-5 comic-shadow relative mt-1.5">
-        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border-2 border-black px-4 py-1 font-headline font-black text-[10px] sm:text-xs uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
-          {content.stageTag}
+    <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 flex flex-col justify-start">
+      {/* EKO-Style How We Deliver Framework */}
+      <DeliveryProcessTimeline />
+
+      <div className="rounded-2xl p-6 sm:p-8 lg:p-10 bg-[#0a0a12] ring-1 ring-white/10 hover:ring-[#dcb858]/30 transition-all duration-300 shadow-2xl relative mt-4">
+        {/* Stage Eyebrow Pill */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#dcb858]/15 ring-1 ring-[#dcb858]/40 text-[#dcb858] text-[11px] font-mono font-bold uppercase tracking-wider mb-6">
+          <Sparkles className="w-3.5 h-3.5 text-[#dcb858]" />
+          <span>{content.stageTag}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start pt-2">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Direct Consultation Details (Pages 4 & 5 Reference) */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
+            viewport={{ once: false, amount: 0.15 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-5 space-y-3"
+            className="lg:col-span-5 space-y-5"
           >
-            <h2 className="font-headline font-black text-xl sm:text-2xl lg:text-3xl text-black dark:text-white tracking-tight leading-tight">
-              {content.headline}
-            </h2>
-            <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed">
-              {content.description}
-            </p>
+            <div>
+              <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-zinc-900 dark:text-white tracking-tight leading-tight mb-2.5">
+                {content.headline}
+              </h2>
+              <p className="font-body text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                {content.description}
+              </p>
+            </div>
 
-            <div className="border-2 border-black dark:border-zinc-700 rounded-xl p-2 bg-yellow-50 dark:bg-[#1C1C28] relative">
-              <div className="aspect-[16/9] min-h-[170px] sm:min-h-[200px] lg:min-h-[220px] rounded-lg overflow-hidden border border-black dark:border-zinc-700 bg-white dark:bg-[#0E0E14] relative">
+            {/* Creative Director / Intake Visual */}
+            <div className="rounded-xl overflow-hidden p-2 bg-zinc-100 dark:bg-[#060609] ring-1 ring-black/10 dark:ring-white/10">
+              <div className="aspect-[16/9] min-h-[160px] sm:min-h-[190px] rounded-lg overflow-hidden bg-zinc-200 dark:bg-[#0a0a0f] ring-1 ring-black/10 dark:ring-white/10 relative">
                 <Image
                   src={content.intakeImage}
                   alt={content.intakeImageAlt}
@@ -159,71 +205,92 @@ export const ContactSection = React.memo(function ContactSection({
                   }
                 />
               </div>
-              <div className="mt-1.5 text-center text-[10px] sm:text-xs font-headline font-bold text-black/70 dark:text-zinc-400">
+              <div className="mt-2 text-center text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400">
                 {content.intakeLabel}
               </div>
             </div>
 
-            <div className="space-y-1.5 text-xs font-headline font-bold text-black dark:text-zinc-200">
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
-                  @
-                </span>
-                <a href={`mailto:${content.email}`} className="hover:underline">
-                  {content.email}
-                </a>
+            {/* Direct Studio Contacts & WhatsApp (Page 5 Reference) */}
+            <div className="space-y-2.5 text-xs font-mono text-zinc-700 dark:text-zinc-300">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10 shadow-sm dark:shadow-none">
+                <div className="w-8 h-8 rounded-lg bg-[#dcb858]/15 ring-1 ring-[#dcb858]/30 flex items-center justify-center text-[#dcb858] shrink-0">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div className="overflow-hidden">
+                  <span className="text-[10px] text-zinc-500 uppercase block">Direct Inbox</span>
+                  <a href={`mailto:${content.email}`} className="text-zinc-900 dark:text-white hover:text-[#dcb858] transition-colors truncate block font-bold">
+                    {content.email}
+                  </a>
+                </div>
               </div>
+
               {content.phone && (
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
-                    ☎
-                  </span>
-                  <a href={`tel:${content.phone}`} className="hover:underline">
-                    {content.phone}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10 shadow-sm dark:shadow-none">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/15 ring-1 ring-emerald-500/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400 shrink-0">
+                      <MessageCircle className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-zinc-500 uppercase block">WhatsApp Direct</span>
+                      <a href={`tel:${content.phone}`} className="text-zinc-900 dark:text-white hover:text-emerald-500 transition-colors font-bold">
+                        {content.phone}
+                      </a>
+                    </div>
+                  </div>
+                  <a
+                    href={`https://wa.me/${content.phone.replace(/\D/g, "") || "20227940000"}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-700 dark:text-emerald-300 hover:text-white dark:hover:text-black ring-1 ring-emerald-500/40 text-[11px] font-bold transition-all"
+                  >
+                    Open Chat ↗
                   </a>
                 </div>
               )}
-              <div className="flex items-start sm:items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5 sm:mt-0">
-                  📍
-                </span>
-                <a
-                  href={`https://maps.google.com/?q=${encodeURIComponent(
-                    content.studioLocations
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline hover:text-yellow-500 transition-colors"
-                  title="View on Google Maps"
-                >
-                  {content.studioLocations}
-                </a>
+
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10 shadow-sm dark:shadow-none">
+                <div className="w-8 h-8 rounded-lg bg-[#dcb858]/15 ring-1 ring-[#dcb858]/30 flex items-center justify-center text-[#dcb858] shrink-0 mt-0.5">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-zinc-500 uppercase block">Studio Headquarters</span>
+                  <a
+                    href={`https://maps.google.com/?q=${encodeURIComponent(content.studioLocations)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-zinc-900 dark:text-white hover:text-[#dcb858] transition-colors text-xs leading-relaxed block"
+                    title="View on Google Maps"
+                  >
+                    {content.studioLocations}
+                  </a>
+                </div>
               </div>
             </div>
           </motion.div>
 
+          {/* Right Column: Brief Intake Form (Page 1 & 4 Reference) */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
+            viewport={{ once: false, amount: 0.15 }}
             transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7 bg-white dark:bg-[#181824] border-2 border-black dark:border-zinc-700 rounded-xl p-4 sm:p-5 comic-shadow-sm"
+            className="lg:col-span-7 bg-white dark:bg-[#0f0f18] ring-1 ring-black/10 dark:ring-white/10 rounded-2xl p-6 sm:p-7 shadow-xl"
           >
             {submitStatus.type === "success" && (
-              <div className="mb-2.5 p-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500 rounded text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+              <div className="mb-4 p-3 bg-emerald-500/10 ring-1 ring-emerald-500/30 rounded-xl text-emerald-400 text-xs flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
                 <p className="font-body">{submitStatus.message}</p>
               </div>
             )}
 
             {submitStatus.type === "error" && (
-              <div className="mb-2.5 p-2.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-500 rounded text-rose-800 dark:text-rose-300 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+              <div className="mb-4 p-3 bg-rose-500/10 ring-1 ring-rose-500/30 rounded-xl text-rose-400 text-xs flex items-center gap-2.5">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
                 <p className="font-body">{submitStatus.message}</p>
               </div>
             )}
 
-            <form className="space-y-2" onSubmit={handleSubmit}>
+            <form className="space-y-4" onSubmit={handleSubmit}>
               {/* Invisible Honeypot field for bot deterrence */}
               <div
                 style={{
@@ -245,13 +312,13 @@ export const ContactSection = React.memo(function ContactSection({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
+                  <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-700 dark:text-zinc-300">
                     {fieldMap.fullName?.label || "Your Name / Title"}
                   </label>
                   <input
-                    className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
+                    className="w-full rounded-xl p-3 font-body text-xs sm:text-sm bg-zinc-50 dark:bg-[#08080d] ring-1 ring-zinc-300 dark:ring-white/15 focus:ring-[#dcb858] focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition-all"
                     placeholder={
                       fieldMap.fullName?.placeholder || "Alex Mercer, Head of Brand"
                     }
@@ -263,13 +330,16 @@ export const ContactSection = React.memo(function ContactSection({
                     }
                   />
                 </div>
+
                 <div>
-                  <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
-                    {fieldMap.email?.label || "Email Address"}
+                  <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-700 dark:text-zinc-300">
+                    {fieldMap.email?.label || "Direct Inbox"}
                   </label>
                   <input
-                    className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
-                    placeholder={fieldMap.email?.placeholder || "alex@company.com"}
+                    className="w-full rounded-xl p-3 font-body text-xs sm:text-sm bg-zinc-50 dark:bg-[#08080d] ring-1 ring-zinc-300 dark:ring-white/15 focus:ring-[#dcb858] focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition-all"
+                    placeholder={
+                      fieldMap.email?.placeholder || "director@brand.com"
+                    }
                     required
                     type="email"
                     value={formData.email}
@@ -280,88 +350,83 @@ export const ContactSection = React.memo(function ContactSection({
                 </div>
               </div>
 
+              {/* Target Service Selection Pills (Page 2 Reference) */}
               <div>
-                <label className="block font-headline font-bold text-xs uppercase mb-1.5 text-black dark:text-zinc-300">
-                  {fieldMap.serviceType?.label || "Target Service"}
+                <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-700 dark:text-zinc-300">
+                  {fieldMap.serviceType?.label || "Target Discipline"}
                 </label>
-                <div className="flex flex-wrap gap-1.5">
-                  {serviceOptions.map((opt) => (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, serviceType: opt })}
-                      className={`text-[10px] sm:text-xs font-headline font-bold px-3 py-1 rounded-lg border transition-all cursor-pointer ${
-                        formData.serviceType === opt
-                          ? "bg-yellow-400 text-black border-black shadow-[2px_2px_0px_#000]"
-                          : "bg-zinc-100 dark:bg-zinc-800 text-black/70 dark:text-zinc-300 border-zinc-300 dark:border-zinc-700 hover:border-black dark:hover:border-white"
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-2">
+                  {content.serviceOptions && content.serviceOptions.length > 0 ? (
+                    content.serviceOptions.map((opt) => (
+                      <button
+                        type="button"
+                        key={opt}
+                        onClick={() => setFormData({ ...formData, serviceType: opt })}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
+                          formData.serviceType === opt
+                            ? "bg-[#dcb858] text-black font-bold ring-1 ring-[#dcb858] shadow-sm"
+                            : "bg-zinc-100 dark:bg-[#08080d] text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white ring-1 ring-zinc-200 dark:ring-white/10"
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    ))
+                  ) : (
+                    serviceOptions.map((opt) => (
+                      <button
+                        type="button"
+                        key={opt}
+                        onClick={() => setFormData({ ...formData, serviceType: opt })}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
+                          formData.serviceType === opt
+                            ? "bg-[#dcb858] text-black font-bold ring-1 ring-[#dcb858] shadow-sm"
+                            : "bg-zinc-100 dark:bg-[#08080d] text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white ring-1 ring-zinc-200 dark:ring-white/10"
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    ))
+                  )}
                 </div>
               </div>
 
+              {/* Brief Parameters Textarea */}
               <div>
-                <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300">
-                  {formData.serviceType === "Exhibition Booths"
-                    ? "Booth Space Dimensions, Design Brief & Spatial Vision"
-                    : fieldMap.brief?.label || "The Core Brief / Vision Constraints"}
+                <label className="block font-mono text-xs uppercase mb-1.5 text-zinc-700 dark:text-zinc-300">
+                  {fieldMap.brief?.label || "Event Parameters & Vision"}
                 </label>
                 <textarea
-                  className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
+                  className="w-full rounded-xl p-3 font-body text-xs sm:text-sm bg-zinc-50 dark:bg-[#08080d] ring-1 ring-zinc-300 dark:ring-white/15 focus:ring-[#dcb858] focus:outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition-all min-h-[90px]"
                   placeholder={
-                    formData.serviceType === "Exhibition Booths"
-                      ? "Specify stand dimensions (e.g. 6x6m island), height limits, custom CNC woodwork, and 3D render needs (min 10 characters)..."
-                      : fieldMap.brief?.placeholder ||
-                        "Describe your arena, product launch, or brand evolution requirements (min 10 characters)..."
+                    fieldMap.brief?.placeholder ||
+                    "Brief your event format, dates, venue specs, or booth vision..."
                   }
                   required
                   rows={3}
                   value={formData.brief}
-                  onChange={(e) => setFormData({ ...formData, brief: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, brief: e.target.value })
+                  }
                 ></textarea>
               </div>
 
-              {formData.serviceType === "Exhibition Booths" && (
-                <div>
-                  <label className="block font-headline font-bold text-xs uppercase mb-1 text-black dark:text-zinc-300 flex items-center justify-between">
-                    <span>Attach Floorplan / 3D Reference (PDF or Image URL)</span>
-                    <span className="text-[10px] text-black/50 dark:text-zinc-500 font-normal lowercase">
-                      (optional)
-                    </span>
-                  </label>
-                  <input
-                    type="url"
-                    placeholder="https://... (Link to your booth floorplan PDF, Google Drive, or render image)"
-                    value={formData.attachmentUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, attachmentUrl: e.target.value })
-                    }
-                    className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
-                  />
-                </div>
-              )}
-
-              <div className="flex items-center justify-between pt-1">
-                <span className="text-[10px] sm:text-xs font-body text-black/60 dark:text-zinc-400">
-                  ⚡ 24h rapid response standard
-                </span>
-                <MagneticButton soundType="pop">
+              {/* Submit Button */}
+              <div className="pt-2">
+                <MagneticButton className="w-full">
                   <button
-                    className="inline-flex items-center gap-2 bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black font-headline font-black text-xs sm:text-sm px-5 py-2.5 rounded-xl border-2 border-black comic-shadow-sm active:scale-95 transition-all cursor-pointer disabled:opacity-50"
-                    type="submit"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#dcb858] hover:bg-[#e6c975] active:scale-[0.99] text-black font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-lg disabled:opacity-50"
                     disabled={isSubmitting}
+                    type="submit"
                   >
                     {isSubmitting ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>DISPATCHING...</span>
+                        <span>DISPATCHING EVENT BRIEF...</span>
                       </>
                     ) : (
                       <>
-                        <span>{content.submitButtonText}</span>
-                        <Send className="w-4 h-4 stroke-[2.5]" />
+                        <span>{content.submitButtonText || "TRANSMIT EVENT BRIEF"}</span>
+                        <Send className="w-4 h-4" />
                       </>
                     )}
                   </button>

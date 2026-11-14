@@ -338,7 +338,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
 
   whyUsTeaser: {
     eyebrow: "WHY WORK WITH ART WORK",
-    headline: "ONE TEAM FROM FIRST IDEA TO FINAL MOMENT.",
+    headline: "YOUR VISION. EXPERTLY DELIVERED.",
     exploreCtaText: "HOW WE WORK",
     bentoCards: [
       {
@@ -464,8 +464,8 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     sceneBadge: "HOW WE WORK",
     sceneTitle: "OUR APPROACH",
     statusBadge: "ONE TEAM // LIVE DELIVERY",
-    heroHeadlineRow1: "ONE TEAM.",
-    heroHeadlineRow2: "FROM FIRST IDEA TO FINAL MOMENT.",
+    heroHeadlineRow1: "WHY",
+    heroHeadlineRow2: "US?",
     roiBadge: "CREATIVE DEVELOPMENT & PLANNING",
     contentCreationBadge: "ON-SITE EVENT PRODUCTION",
     doodleStickers: [

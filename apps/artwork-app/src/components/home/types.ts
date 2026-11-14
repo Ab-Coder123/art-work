@@ -99,6 +99,7 @@ export interface StudioHeaderProps {
   scrollToStage: (stage: StageId) => void;
   onInkBurst: (e: React.MouseEvent<HTMLButtonElement>) => void;
   layout?: LayoutSectionContent;
+  whatsappPhone?: string;
 }
 
 export interface StudioFooterProps {

@@ -1,159 +1,380 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowDown, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  Sparkles,
+  Layers,
+  Zap,
+  Compass,
+  CheckCircle2,
+  Download,
+} from "lucide-react";
 import { DEFAULT_COMPANIES } from "@art-work/types";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
-import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
 import { PartnersMarquee } from "./PartnersMarquee";
 import { DEFAULT_HERO_CONTENT, type ManifestoHeroProps } from "./types";
 
+const STUDIO_BACKDROP_VARIANTS = [
+  "/assets/images/blueprint_stage_scenography.webp",
+  "/assets/images/creative_chief_intake.webp",
+] as const;
+
+const HERO_VALUE_PILLARS = [
+  {
+    icon: Layers,
+    title: "Turnkey Creative",
+    description: "High-end spatial visuals, brand systems, and exhibition concepts engineered to stand out.",
+  },
+  {
+    icon: Compass,
+    title: "Precision Engineering",
+    description: "3D architectural drafting, custom booth fabrication, and rigorous structural safety.",
+  },
+  {
+    icon: Zap,
+    title: "Immersive Technology",
+    description: "Synchronized 4K LED screens, DMX lighting control, and interactive projection mapping.",
+  },
+  {
+    icon: CheckCircle2,
+    title: "360° Live Delivery",
+    description: "Flawless on-site execution, vendor coordination, and 100% on-time show call management.",
+  },
+];
+
 export const ManifestoHero = React.memo(function ManifestoHero({
   onViewCapabilities,
+  onExploreShowreel,
   content = DEFAULT_HERO_CONTENT,
   companies = DEFAULT_COMPANIES,
 }: ManifestoHeroProps) {
   const heroImg = content.heroImage || "/assets/images/hero_studio_collective.jpg";
   const heroAlt = content.heroImageAlt || "Art Work Creative Marketing Studio Collective";
-  const primaryCta = content.primaryCtaText || "VIEW OUR PROJECTS";
-  const secondaryCta = content.secondaryCtaText || "EXPLORE OUR SERVICES";
+  const primaryCta = content.primaryCtaText || "START A PROJECT";
+  const secondaryCta = content.secondaryCtaText || "EXPLORE SERVICES";
   const proofTagline =
     content.proofTagline || "CREATIVE | PLANNING | PRODUCTION | ON-SITE DELIVERY";
-  const performanceBadge = content.performanceBadge || "PERFORMANCE MARKETING";
+  const performanceBadge = content.performanceBadge || "DOWNLOAD PORTFOLIO";
+
+  const backdropImages = useMemo(
+    () => Array.from(new Set([heroImg, ...STUDIO_BACKDROP_VARIANTS])),
+    [heroImg]
+  );
+
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [isGlitching, setIsGlitching] = useState(false);
+  const [quickName, setQuickName] = useState("");
+  const [quickContact, setQuickContact] = useState("");
+
+  useEffect(() => {
+    if (backdropImages.length <= 1) return;
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let glitchTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    const interval = setInterval(() => {
+      if (!prefersReducedMotion) {
+        setIsGlitching(true);
+      }
+      setActiveImageIdx((prev) => (prev + 1) % backdropImages.length);
+
+      if (!prefersReducedMotion) {
+        if (glitchTimeout) clearTimeout(glitchTimeout);
+        glitchTimeout = setTimeout(() => {
+          setIsGlitching(false);
+        }, 360);
+      }
+    }, 3000);
+
+    return () => {
+      clearInterval(interval);
+      if (glitchTimeout) clearTimeout(glitchTimeout);
+    };
+  }, [backdropImages.length]);
+
+  const currentBackdrop = backdropImages[activeImageIdx % backdropImages.length] || heroImg;
+
+  const handleQuickProposal = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("artwork:quick-intake", {
+          detail: { fullName: quickName, contact: quickContact },
+        })
+      );
+      window.dispatchEvent(
+        new CustomEvent("artwork:navigate-stage", { detail: { stage: "stage-04" } })
+      );
+      const briefSec = document.getElementById("brief-inquiry");
+      if (briefSec) {
+        briefSec.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
 
   return (
-    <div className="w-full max-w-7xl mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
-      {/* 2-Column Responsive Hero Grid (Level & Aligned with Studio Canvas) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7 items-start">
-        {/* Left Column: Headline, Paragraph, Actions, Metrics & Badges */}
-        <div className="lg:col-span-6 flex flex-col justify-start">
-          {/* Hero Typography Section */}
-          <div className="relative mb-2 sm:mb-2.5 max-w-xl">
-            <h1 className="font-headline font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] xl:text-[46px] tracking-tight leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
-              <KineticBrushWord variant="wave" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4} delay={0.1}>
-                {content.headlinePart1}
-              </KineticBrushWord>{" "}
-              <br />
-              <span className="relative inline-block mt-1 sm:mt-1.5">
-                {/* Canary Yellow Ink Splash Backdrop */}
-                <motion.span
-                  initial={{ scaleX: 0, originX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-                  className="absolute -inset-0.5 sm:-inset-1 bg-yellow-400 -rotate-1 rounded-DEFAULT -z-10 border-2 border-black comic-shadow"
-                ></motion.span>
-                <span className="text-black relative z-10 px-1.5 sm:px-2.5">{content.headlinePart2}</span>
-                {/* Slender Hand-drawn Paintbrush Stroke */}
-                <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.0} delay={0.35} />
-              </span>
-            </h1>
-          </div>
-
-          {/* Action Cluster & Info */}
-          <div className="space-y-2 sm:space-y-2.5 max-w-lg">
-            <p className="font-body text-sm sm:text-base text-black/85 dark:text-zinc-200 leading-relaxed">
-              {content.introParagraph}
-            </p>
-
-            {/* Primary Action Buttons: View Projects + Explore Services */}
-            <div className="flex flex-wrap items-center gap-2.5 pt-1">
-              <Link
-                href="/gallery"
-                className="relative group inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 cursor-pointer"
-              >
-                <span>{primaryCta}</span>
-                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-              </Link>
-
-              <MagneticButton soundType="click">
-                <button
-                  onClick={onViewCapabilities}
-                  className="inline-flex items-center gap-1.5 bg-white dark:bg-[#161622] text-black dark:text-white hover:bg-black dark:hover:bg-yellow-400 hover:text-white dark:hover:text-black font-headline font-bold text-xs sm:text-sm px-4 sm:px-4.5 py-2.5 sm:py-3 rounded-xl border-2 border-black dark:border-zinc-600 comic-shadow-sm transition-all duration-150 cursor-pointer"
-                >
-                  <span>{secondaryCta}</span>
-                  <ArrowDown className="w-4 h-4 stroke-[2.5]" />
-                </button>
-              </MagneticButton>
-            </div>
-
-            {/* Safe Proof Tagline */}
-            <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/60 dark:text-zinc-400 pt-0.5">
-              {proofTagline}
-            </div>
-
-            {/* Milestone Badges */}
-            <div className="grid grid-cols-3 gap-2 pt-1 max-w-md">
-              {(content.metrics || DEFAULT_HERO_CONTENT.metrics).map((badge, idx) => (
-                <motion.div
-                  key={`${badge.label}-${idx}`}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.4, delay: 0.1 + idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  className="border-2 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] p-2 sm:p-2.5 rounded-DEFAULT comic-shadow-sm text-center"
-                >
-                  <div className="font-headline font-black text-sm sm:text-base md:text-lg text-black dark:text-white">
-                    {badge.num}
-                  </div>
-                  <div className="text-[8px] sm:text-[9px] font-headline font-bold text-black/70 dark:text-zinc-400 uppercase mt-0.5">
-                    {badge.label}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Bottom Floating Badges (Positioned cleanly at bottom of Hero) */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-2">
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: 0.15 }}
-                className="relative bg-white dark:bg-[#151520] border border-black/15 dark:border-zinc-700 px-3 py-1 rounded-lg shadow-sm flex items-center gap-1.5 text-[11px] sm:text-xs font-bold tracking-tight text-black dark:text-zinc-200"
-              >
-                <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
-                <span>{performanceBadge}</span>
-              </motion.div>
-
-              <div className="inline-flex items-center gap-1.5 border border-black/20 bg-yellow-400 text-black px-3.5 py-1 rounded-lg shadow-sm font-headline text-[10px] sm:text-xs font-black uppercase tracking-wider">
-                <span>{content.announcementBadge}</span>
-              </div>
-            </div>
-          </div>
+    <div className="w-full flex flex-col justify-start">
+      {/* Edge-to-Edge Full-Width Hero Stage styled to EKO luxury aesthetic */}
+      <div className="relative w-full overflow-hidden min-h-[100svh] md:min-h-[100vh] flex flex-col items-center justify-center px-4 sm:px-8 lg:px-12 pt-24 sm:pt-28 md:pt-32 pb-12 bg-[#08080d]">
+        {/* Full-Bleed Studio Backdrop Image with 3s Glitch Swapper */}
+        <div
+          key={currentBackdrop}
+          className={`absolute inset-0 pointer-events-none ${isGlitching ? "hero-glitch-base" : ""}`}
+        >
+          <Image
+            src={currentBackdrop}
+            alt={heroAlt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center opacity-45 transition-opacity duration-300"
+            unoptimized={currentBackdrop.startsWith("http") || currentBackdrop.startsWith("data:")}
+          />
         </div>
 
-        {/* Right Visual: Clean, Modern Edge-to-Edge Artwork */}
-        <motion.div
-          initial={{ opacity: 0, x: 25, scale: 0.98 }}
-          whileInView={{ opacity: 1, x: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="lg:col-span-6 relative w-full pt-1"
+        {/* Sliced Chromatic Glitch Burst Layers */}
+        {isGlitching && (
+          <>
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none hero-glitch-slice-a mix-blend-screen"
+            >
+              <Image
+                src={currentBackdrop}
+                alt=""
+                fill
+                sizes="100vw"
+                className="object-cover object-center opacity-65 saturate-150 hue-rotate-15"
+                unoptimized={currentBackdrop.startsWith("http") || currentBackdrop.startsWith("data:")}
+              />
+            </div>
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none hero-glitch-slice-b mix-blend-screen"
+            >
+              <Image
+                src={currentBackdrop}
+                alt=""
+                fill
+                sizes="100vw"
+                className="object-cover object-center opacity-60 brightness-125 -hue-rotate-15"
+                unoptimized={currentBackdrop.startsWith("http") || currentBackdrop.startsWith("data:")}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Balanced Dark Scrim & Warm Brand Accent Ambient Radial Overlay */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-b from-[#08080d]/80 via-[#08080d]/60 to-[#08080d]/95"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(65% 55% at 50% 25%, rgba(220, 184, 88, 0.14) 0%, rgba(8, 8, 13, 0) 80%)",
+          }}
+        />
+
+        {/* Giant Typographic Background Watermark (Matching EKO Reference) */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0"
         >
-          <div className="relative overflow-hidden rounded-2xl aspect-[16/10] min-h-[220px] sm:min-h-[270px] lg:min-h-[320px] xl:min-h-[360px] flex items-center justify-center shadow-2xl">
-            <Image
-              src={heroImg}
-              alt={heroAlt}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 45vw"
-              className="object-cover rounded-2xl"
-              unoptimized={heroImg.startsWith("http") || heroImg.startsWith("data:")}
-            />
+          <span className="font-headline font-black text-[120px] sm:text-[200px] md:text-[260px] lg:text-[340px] tracking-tight text-white/[0.035] uppercase whitespace-nowrap leading-none">
+            ART WORK
+          </span>
+        </div>
+
+        {/* Centered Editorial Content Stack (EKO Innovations Page 1 Hierarchy) */}
+        <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center text-center">
+          {/* Top Pill Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-md ring-1 ring-white/15 text-zinc-200 text-xs font-headline font-semibold tracking-wide mb-4 shadow-lg"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#dcb858] shrink-0" />
+            <span>{content.announcementBadge}</span>
+          </motion.div>
+
+          {/* Centered Display Headline with Art Work Yellow Accent */}
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+            className="font-headline font-black text-3xl sm:text-5xl lg:text-[56px] tracking-tight leading-[1.08] text-white max-w-4xl mb-4"
+          >
+            <span>{content.headlinePart1}</span>{" "}
+            <span className="text-[#dcb858] drop-shadow-[0_2px_24px_rgba(220,184,88,0.32)]">
+              {content.headlinePart2}
+            </span>
+          </motion.h1>
+
+          {/* Centered Subtitle Copy */}
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="font-body text-xs sm:text-sm md:text-base text-zinc-300 max-w-2xl leading-relaxed mb-6"
+          >
+            {content.introParagraph}
+          </motion.p>
+
+          {/* 3 Action Pills (EKO Reference Layout) */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-wrap items-center justify-center gap-3 mb-6"
+          >
+            {/* Primary Solid Yellow Pill */}
+            <button
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(
+                    new CustomEvent("artwork:navigate-stage", { detail: { stage: "stage-04" } })
+                  );
+                  const briefSec = document.getElementById("brief-inquiry");
+                  if (briefSec) briefSec.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              className="group inline-flex items-center justify-center gap-2 bg-[#dcb858] hover:bg-yellow-300 text-black font-headline font-bold text-xs sm:text-sm px-6 py-3 rounded-full shadow-[0_8px_24px_rgba(220,184,88,0.32)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 stroke-[2.2]" />
+              <span>{primaryCta}</span>
+            </button>
+
+            {/* Secondary Translucent Pill */}
+            <MagneticButton soundType="click">
+              <button
+                onClick={onViewCapabilities}
+                className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white font-headline font-bold text-xs sm:text-sm px-6 py-3 rounded-full backdrop-blur-md ring-1 ring-white/15 hover:ring-white/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+              >
+                <span>{secondaryCta}</span>
+                <ArrowRight className="w-4 h-4 stroke-[2.2]" />
+              </button>
+            </MagneticButton>
+
+            {/* Tertiary Action Pill — Blue Glow Download Portfolio */}
+            {onExploreShowreel ? (
+              <button
+                onClick={onExploreShowreel}
+                className="inline-flex items-center justify-center gap-2 font-headline font-bold text-xs sm:text-sm px-7 py-3 rounded-full text-white border-2 border-blue-500 bg-transparent hover:bg-blue-500/10 shadow-[0_0_18px_rgba(37,99,235,0.55),0_0_36px_rgba(37,99,235,0.28)] hover:shadow-[0_0_28px_rgba(37,99,235,0.75),0_0_56px_rgba(37,99,235,0.4)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
+              >
+                <Download className="w-4 h-4 stroke-[2.2]" />
+                <span>{performanceBadge}</span>
+              </button>
+            ) : (
+              <Link
+                href="/gallery"
+                className="inline-flex items-center justify-center gap-2 font-headline font-bold text-xs sm:text-sm px-7 py-3 rounded-full text-white border-2 border-blue-500 bg-transparent hover:bg-blue-500/10 shadow-[0_0_18px_rgba(37,99,235,0.55),0_0_36px_rgba(37,99,235,0.28)] hover:shadow-[0_0_28px_rgba(37,99,235,0.75),0_0_56px_rgba(37,99,235,0.4)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
+              >
+                <Download className="w-4 h-4 stroke-[2.2]" />
+                <span>{performanceBadge}</span>
+              </Link>
+            )}
+          </motion.div>
+
+          {/* Interactive Quick Intake Bar Capsule (EKO Page 1 Reference) */}
+          <motion.form
+            onSubmit={handleQuickProposal}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full max-w-2xl mx-auto mb-6 p-2 rounded-2xl sm:rounded-full bg-white/95 dark:bg-[#0d0d15]/80 backdrop-blur-xl ring-1 ring-black/10 dark:ring-white/15 hover:ring-[#dcb858]/40 transition-all flex flex-col sm:flex-row items-center gap-2 shadow-2xl"
+          >
+            <div className="flex-1 w-full flex items-center px-4 py-2 rounded-full bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-300 dark:ring-white/10 text-xs">
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={quickName}
+                onChange={(e) => setQuickName(e.target.value)}
+                className="w-full bg-transparent text-zinc-900 dark:text-white placeholder:text-zinc-500 focus:outline-none font-body text-xs"
+                id="hero-quick-name"
+              />
+            </div>
+            <div className="flex-1 w-full flex items-center px-4 py-2 rounded-full bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-300 dark:ring-white/10 text-xs">
+              <input
+                type="text"
+                placeholder="Work Email or WhatsApp"
+                value={quickContact}
+                onChange={(e) => setQuickContact(e.target.value)}
+                className="w-full bg-transparent text-zinc-900 dark:text-white placeholder:text-zinc-500 focus:outline-none font-body text-xs"
+                id="hero-quick-contact"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#dcb858] hover:bg-yellow-300 text-black font-headline font-bold text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer shrink-0 shadow-lg hover:scale-105 active:scale-95"
+            >
+              <span>Get Proposal</span>
+              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+            </button>
+          </motion.form>
+
+          {/* 4 EKO-Style Value Pillars Strip at Hero Base — always dark */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full max-w-5xl text-left mt-2"
+          >
+            {HERO_VALUE_PILLARS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  className="p-4 rounded-xl bg-[#0d1225] hover:bg-[#0d1530] ring-1 ring-white/10 hover:ring-blue-500/40 shadow-lg transition-all duration-300 group relative overflow-hidden"
+                >
+                  {/* Top-right label */}
+                  <span className="absolute top-3 right-3 text-[9px] font-mono font-bold tracking-widest uppercase text-zinc-500">
+                    PREMIUM
+                  </span>
+                  <div className="flex items-center gap-2.5 mb-3">
+                    {/* Blue circle icon badge */}
+                    <div className="w-9 h-9 rounded-full bg-blue-600/20 ring-1 ring-blue-500/40 flex items-center justify-center text-blue-400 group-hover:bg-blue-600/35 group-hover:ring-blue-400/60 transition-colors shadow-[0_0_12px_rgba(37,99,235,0.25)]">
+                      <Icon className="w-4 h-4 stroke-[2]" />
+                    </div>
+                  </div>
+                  <div className="font-headline font-bold text-sm text-white mb-2 group-hover:text-blue-300 transition-colors">
+                    {item.title}
+                  </div>
+                  <p className="font-body text-[11px] text-zinc-400 leading-snug">
+                    {item.description}
+                  </p>
+                </div>
+              );
+            })}
+          </motion.div>
+
+          {/* Minimalist Proof Tagline */}
+          <div className="mt-5 text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+            {proofTagline}
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* SECTION 02: PARTNERS & CLIENT NETWORK TICKER */}
-      <PartnersMarquee
-        companies={companies}
-        partnersBadge={content.partnersBadge}
-        partnersHeadlinePrefix={content.partnersHeadlinePrefix}
-        partnersHeadlineHighlight={content.partnersHeadlineHighlight}
-        starburstText={content.starburstText}
-      />
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <PartnersMarquee
+          companies={companies}
+          partnersBadge={content.partnersBadge}
+          partnersHeadlinePrefix={content.partnersHeadlinePrefix}
+          partnersHeadlineHighlight={content.partnersHeadlineHighlight}
+          starburstText={content.starburstText}
+        />
+      </div>
     </div>
   );
 });

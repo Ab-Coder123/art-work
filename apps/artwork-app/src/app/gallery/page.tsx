@@ -18,6 +18,7 @@ import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import {
   ArrowRight,
+  MessageCircle,
   Pencil,
   Send,
   Filter,
@@ -290,6 +291,10 @@ export default function GalleryPage() {
             >
               {layout.navHomeLabel}
             </Link>
+            {/* Active Link: Gallery (located beside Home) */}
+            <span className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
+              ★ {layout.navGalleryLabel}
+            </span>
             <Link
               href="/why-us"
               className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
@@ -308,16 +313,24 @@ export default function GalleryPage() {
             >
               {layout.navContactLabel}
             </Link>
-            {/* Active Link: Gallery */}
-            <span className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black ml-1">
-              ★ {layout.navGalleryLabel}
-            </span>
           </nav>
 
           {/* Trailing Actions */}
           <div className="flex items-center gap-2 sm:gap-2.5">
             <ThemeToggle />
             <SoundToggle />
+
+            <a
+              href={`https://wa.me/${(contact.phone || "+20 (2) 2794-0000").replace(/\D/g, "") || "20227940000"}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`WhatsApp ${contact.phone || "+20 (2) 2794-0000"}`}
+              title={`WhatsApp: ${contact.phone || "+20 (2) 2794-0000"}`}
+              className="inline-flex items-center gap-1.5 bg-white dark:bg-[#181824] hover:bg-emerald-50 dark:hover:bg-emerald-500/15 text-black dark:text-zinc-100 font-headline font-bold text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full ring-1 ring-black/15 dark:ring-white/15 hover:ring-emerald-500/60 transition-all duration-150 cursor-pointer whitespace-nowrap"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 stroke-[2.2]" />
+              <span className="hidden lg:inline">{contact.phone || "+20 (2) 2794-0000"}</span>
+            </a>
 
             <MagneticButton soundType="pop">
               <Link
@@ -351,6 +364,9 @@ export default function GalleryPage() {
           >
             ← {layout.navHomeLabel}
           </Link>
+          <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
+            ★ {layout.navGalleryLabel}
+          </span>
           <Link
             href="/why-us"
             className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
@@ -369,9 +385,6 @@ export default function GalleryPage() {
           >
             {layout.navContactLabel}
           </Link>
-          <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
-            ★ {layout.navGalleryLabel}
-          </span>
         </div>
       </header>
 
