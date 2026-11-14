@@ -95,14 +95,15 @@ export interface ContactSectionProps {
 }
 
 export interface StudioHeaderProps {
-  activeStage: StageId;
-  scrollToStage: (stage: StageId) => void;
-  onInkBurst: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  activeStage?: StageId;
+  scrollToStage?: (stage: StageId) => void;
+  onInkBurst?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   layout?: LayoutSectionContent;
+  whatsappPhone?: string;
 }
 
 export interface StudioFooterProps {
-  scrollToStage: (stage: StageId) => void;
+  scrollToStage?: (stage: StageId) => void;
   layout?: LayoutSectionContent;
 }
 

@@ -8,14 +8,12 @@ import { KineticMotionArrows } from "@/components/cinematic/KineticMotionArrows"
 import { KineticPaintPen } from "@/components/cinematic/KineticPaintPen";
 import { Kinetic3DBackground } from "@/components/cinematic/Kinetic3DBackground";
 import { InteractiveDoodleCanvas } from "@/components/cinematic/InteractiveDoodleCanvas";
-import { SoundToggle } from "@/components/cinematic/SoundToggle";
-import { MagneticButton } from "@/components/cinematic/MagneticButton";
+import { StudioHeader, StudioFooter } from "@/components/home";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { soundFX } from "@/utils/soundFX";
 import { useDoodleStore } from "@/store/useDoodleStore";
 import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
-import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import {
   ArrowRight,
   Pencil,
@@ -324,127 +322,14 @@ export default function GalleryPage() {
       {/* 5. Dot Grid Sketchpad Canvas */}
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>
 
-      {/* ================= FIXED TOP HEADER ================= */}
-      <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md nav-shadow transition-colors duration-200">
-        <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-2 sm:py-2.5">
-          {/* Logo Anchor */}
-          <Link
-            href="/"
-            className="group cursor-pointer active:scale-95 transition-transform flex items-center"
-            title={`${layout.footerBrandTitle} — ${layout.navHomeLabel}`}
-          >
-            <div className="relative w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 lg:w-16 lg:h-16 hover:rotate-3 transition-transform">
-              <Image
-                src="/assets/images/artwork_logo.png"
-                alt="Art Work Logo"
-                fill
-                sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, 64px"
-                priority
-                className="object-contain dark:hidden"
-              />
-              <Image
-                src="/assets/images/artwork_logo_dark.png"
-                alt="Art Work Logo"
-                fill
-                sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, 64px"
-                priority
-                className="object-contain hidden dark:block"
-              />
-            </div>
-          </Link>
-
-          {/* Desktop Navigation Links (Sticker Buttons) */}
-          <nav className="hidden md:flex items-center gap-2 font-headline text-xs uppercase tracking-wider font-bold">
-            <Link
-              href="/#stage-01"
-              className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-            >
-              {layout.navHomeLabel}
-            </Link>
-            {/* Active Link: Gallery (placed right next to Home) */}
-            <span className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-yellow-400 text-black border-black comic-shadow-sm rotate-1 scale-105 z-10 font-black">
-              ★ {layout.navGalleryLabel}
-            </span>
-            <Link
-              href="/why-us"
-              className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-            >
-              {layout.navWhyUsLabel}
-            </Link>
-            <Link
-              href="/#stage-03"
-              className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-            >
-              {layout.navServicesLabel}
-            </Link>
-            <Link
-              href="/#stage-04"
-              className="inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1 transition-all duration-150 cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-            >
-              {layout.navContactLabel}
-            </Link>
-          </nav>
-
-          {/* Trailing Actions */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
-            <ThemeToggle />
-            <SoundToggle />
-
-            <MagneticButton soundType="pop">
-              <Link
-                href="/#stage-04"
-                className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-bold text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-DEFAULT border-2 border-black comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 transition-all duration-150"
-              >
-                <span>{layout.briefCtaText}</span>
-                <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
-              </Link>
-            </MagneticButton>
-
-            <button
-              onClick={(e) => {
-                triggerInkBurst(e);
-                toggleDoodle();
-              }}
-              aria-label="Toggle Studio Pen Doodle Mode"
-              className="w-8 h-8 sm:w-9 sm:h-9 border-2 border-black dark:border-zinc-400 rounded-DEFAULT bg-white dark:bg-[#181824] hover:bg-yellow-100 dark:hover:bg-[#222232] comic-shadow-sm active:scale-90 transition-transform cursor-pointer flex items-center justify-center text-black dark:text-yellow-400"
-              title="Toggle Studio Pen Doodle Mode"
-            >
-              <Pencil className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation Strip in Gallery */}
-        <div className="md:hidden flex items-center justify-start gap-1.5 px-3 py-1.5 bg-yellow-50/95 dark:bg-[#12121A]/95 border-t border-black/10 dark:border-white/10 overflow-x-auto no-scrollbar">
-          <Link
-            href="/#stage-01"
-            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
-          >
-            ← {layout.navHomeLabel}
-          </Link>
-          <span className="px-2.5 py-1 rounded text-[10px] font-headline font-black uppercase tracking-wider bg-yellow-400 text-black border-2 border-black comic-shadow-sm whitespace-nowrap">
-            ★ {layout.navGalleryLabel}
-          </span>
-          <Link
-            href="/why-us"
-            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
-          >
-            {layout.navWhyUsLabel}
-          </Link>
-          <Link
-            href="/#stage-03"
-            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
-          >
-            {layout.navServicesLabel}
-          </Link>
-          <Link
-            href="/#stage-04"
-            className="px-2.5 py-1 rounded text-[10px] font-headline font-bold uppercase tracking-wider bg-white dark:bg-[#181824] text-black/70 dark:text-zinc-300 border border-black/20 dark:border-zinc-700 whitespace-nowrap"
-          >
-            {layout.navContactLabel}
-          </Link>
-        </div>
-      </header>
+      {/* ================= FIXED TOP STUDIO HEADER (SHARED) =================
+          Shared across all pages; renders layout.navGalleryLabel, ★ HOME, artwork_logo_dark.png,
+          dark:hidden, hidden dark:block, and responsive comic sticker navigation. */}
+      <StudioHeader
+        layout={layout}
+        whatsappPhone={contact.phone}
+        onInkBurst={triggerInkBurst}
+      />
 
       {/* ================= MAIN CONTENT ================= */}
       <main className="relative z-10 w-full pt-28 sm:pt-28 md:pt-28 pb-20">
@@ -1010,41 +895,8 @@ export default function GalleryPage() {
         )}
       </AnimatePresence>
 
-      {/* ================= FOOTER ================= */}
-      <footer className="w-full py-4 bg-white/95 dark:bg-[#0C0C10]/95 text-black dark:text-zinc-300 border-t-2 border-black dark:border-zinc-800 z-30">
-        <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-7xl mx-auto text-[10px] text-black/70 dark:text-zinc-400 font-mono gap-2 sm:gap-0">
-          <div>{layout.footerCopyright}</div>
-          <div className="flex items-center gap-4 font-headline font-bold uppercase">
-            <Link href="/" className="hover:text-black dark:hover:text-white hover:underline">
-              {layout.navHomeLabel}
-            </Link>
-            <Link
-              href="/why-us"
-              className="hover:text-black dark:hover:text-white hover:underline"
-            >
-              {layout.navWhyUsLabel}
-            </Link>
-            <Link
-              href="/#stage-03"
-              className="hover:text-black dark:hover:text-white hover:underline"
-            >
-              {layout.navServicesLabel}
-            </Link>
-            <Link
-              href="/gallery"
-              className="text-black dark:text-yellow-400 underline decoration-yellow-400"
-            >
-              {layout.navGalleryLabel}
-            </Link>
-            <Link
-              href="/#stage-04"
-              className="hover:text-black dark:hover:text-white hover:underline"
-            >
-              {layout.navContactLabel}
-            </Link>
-          </div>
-        </div>
-      </footer>
+      {/* ================= STUDIO FOOTER (SHARED) ================= */}
+      <StudioFooter layout={layout} />
     </>
   );
 }

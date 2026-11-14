@@ -207,6 +207,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
         scrollToStage={scrollToStage}
         onInkBurst={triggerInkBurst}
         layout={layoutContent}
+        whatsappPhone={contactContent?.phone}
       />
 
       {/* =========================================================================
