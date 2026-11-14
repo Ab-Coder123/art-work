@@ -25,7 +25,7 @@ import type { ServicesSectionContent, ServiceDisciplineItem } from "@art-work/ty
 import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 
-const renderDisciplineIcon = (icon: string, className = "w-5 h-5 text-[#dcb858]") => {
+const renderDisciplineIcon = (icon: string, className = "w-5 h-5 text-blue-400") => {
   switch (icon) {
     case "brush":
       return <Paintbrush className={className} />;
@@ -77,45 +77,48 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       viewport={{ once: false, amount: 0.12 }}
       transition={{ duration: 0.45, delay: (index % 4) * 0.06, ease: [0.16, 1, 0.3, 1] }}
       onClick={() => onSelect(discipline)}
-      className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0d0d15]/90 hover:bg-zinc-50 dark:hover:bg-[#13131f]/95 ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/60 transition-all duration-300 group cursor-pointer flex flex-col justify-between shadow-lg dark:shadow-xl relative overflow-hidden"
+      className="p-5 sm:p-6 rounded-2xl bg-[#0d1225] hover:bg-[#0d1530] ring-1 ring-white/10 hover:ring-blue-500/40 transition-all duration-300 group cursor-pointer flex flex-col justify-between shadow-xl relative overflow-hidden"
     >
       <div>
-        {/* Top Header: Title and Arrow ↗ */}
+        {/* Top Header: Icon left + Tag top-right */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#dcb858]/10 ring-1 ring-[#dcb858]/30 flex items-center justify-center shrink-0 group-hover:bg-[#dcb858] transition-colors duration-200">
-              {renderDisciplineIcon(discipline.icon, "w-5 h-5 text-[#dcb858] group-hover:text-black transition-colors stroke-[2]")}
+            {/* Blue circle icon badge */}
+            <div className="w-10 h-10 rounded-full bg-blue-600/20 ring-1 ring-blue-500/40 flex items-center justify-center shrink-0 group-hover:bg-blue-600/35 group-hover:ring-blue-400/60 transition-colors duration-200 shadow-[0_0_14px_rgba(37,99,235,0.3)]">
+              {renderDisciplineIcon(discipline.icon, "w-5 h-5 text-blue-400 stroke-[2]")}
             </div>
             <div>
               <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider block">
                 {discipline.tag}
               </span>
-              <h3 className="font-headline font-bold text-base sm:text-lg text-zinc-900 dark:text-white group-hover:text-[#dcb858] transition-colors leading-snug">
+              <h3 className="font-headline font-bold text-base sm:text-lg text-white group-hover:text-blue-300 transition-colors leading-snug">
                 {discipline.title}
               </h3>
             </div>
           </div>
-          <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-200 dark:ring-white/10 flex items-center justify-center text-zinc-500 dark:text-zinc-400 group-hover:text-black group-hover:bg-[#dcb858] group-hover:ring-[#dcb858] transition-all duration-200 shrink-0 mt-0.5">
-            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </div>
+          {/* Top-right label */}
+          <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-zinc-500 whitespace-nowrap shrink-0 mt-0.5">
+            PREMIUM AT SCALE
+          </span>
         </div>
       </div>
 
-      {/* Bottom: Spec Pills & Tap CTA (Paragraph is shown on tap/click modal) */}
-      <div className="pt-3 border-t border-zinc-200 dark:border-white/10 flex items-center justify-between gap-2">
-        <div className="flex flex-wrap gap-1.5">
-          {(discipline.specs || []).slice(0, 2).map((spec, sIdx) => (
-            <span
-              key={sIdx}
-              className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 ring-1 ring-zinc-200 dark:ring-white/10 text-zinc-700 dark:text-zinc-300"
-            >
-              {spec}
-            </span>
-          ))}
+      {/* Bottom: Stats row like EKO reference */}
+      <div className="pt-3 border-t border-white/10 flex items-center gap-6">
+        <div>
+          <span className="text-lg font-black text-white">300+</span>
+          <p className="text-[10px] font-mono text-zinc-400 mt-0.5">Assets / Month</p>
         </div>
-        <span className="text-[11px] font-mono text-[#dcb858] font-bold group-hover:underline whitespace-nowrap">
-          View Details →
-        </span>
+        <div className="w-px h-8 bg-white/10 shrink-0" />
+        <div>
+          <span className="text-lg font-black text-blue-400">+85%</span>
+          <p className="text-[10px] font-mono text-zinc-400 mt-0.5">Avg. Engagement Lift</p>
+        </div>
+        <div className="ml-auto">
+          <span className="text-[11px] font-mono text-blue-400 font-bold group-hover:underline whitespace-nowrap">
+            View Details →
+          </span>
+        </div>
       </div>
     </motion.div>
   );

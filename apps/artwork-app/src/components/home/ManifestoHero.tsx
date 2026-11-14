@@ -266,21 +266,21 @@ export const ManifestoHero = React.memo(function ManifestoHero({
               </button>
             </MagneticButton>
 
-            {/* Tertiary Action Pill */}
+            {/* Tertiary Action Pill — Blue Glow Download Portfolio */}
             {onExploreShowreel ? (
               <button
                 onClick={onExploreShowreel}
-                className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-[#dcb858]/15 text-zinc-200 hover:text-white font-headline font-bold text-xs sm:text-sm px-6 py-3 rounded-full backdrop-blur-md ring-1 ring-[#dcb858]/50 hover:ring-[#dcb858] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 font-headline font-bold text-xs sm:text-sm px-7 py-3 rounded-full text-white border-2 border-blue-500 bg-transparent hover:bg-blue-500/10 shadow-[0_0_18px_rgba(37,99,235,0.55),0_0_36px_rgba(37,99,235,0.28)] hover:shadow-[0_0_28px_rgba(37,99,235,0.75),0_0_56px_rgba(37,99,235,0.4)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
               >
-                <Download className="w-4 h-4 text-[#dcb858] stroke-[2.2]" />
+                <Download className="w-4 h-4 stroke-[2.2]" />
                 <span>{performanceBadge}</span>
               </button>
             ) : (
               <Link
                 href="/gallery"
-                className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-[#dcb858]/15 text-zinc-200 hover:text-white font-headline font-bold text-xs sm:text-sm px-6 py-3 rounded-full backdrop-blur-md ring-1 ring-[#dcb858]/50 hover:ring-[#dcb858] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 font-headline font-bold text-xs sm:text-sm px-7 py-3 rounded-full text-white border-2 border-blue-500 bg-transparent hover:bg-blue-500/10 shadow-[0_0_18px_rgba(37,99,235,0.55),0_0_36px_rgba(37,99,235,0.28)] hover:shadow-[0_0_28px_rgba(37,99,235,0.75),0_0_56px_rgba(37,99,235,0.4)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
               >
-                <Download className="w-4 h-4 text-[#dcb858] stroke-[2.2]" />
+                <Download className="w-4 h-4 stroke-[2.2]" />
                 <span>{performanceBadge}</span>
               </Link>
             )}
@@ -323,7 +323,7 @@ export const ManifestoHero = React.memo(function ManifestoHero({
             </button>
           </motion.form>
 
-          {/* 4 EKO-Style Value Pillars Strip at Hero Base */}
+          {/* 4 EKO-Style Value Pillars Strip at Hero Base — always dark */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -335,17 +335,22 @@ export const ManifestoHero = React.memo(function ManifestoHero({
               return (
                 <div
                   key={item.title}
-                  className="p-4 rounded-xl bg-white dark:bg-white/[0.03] hover:bg-zinc-50 dark:hover:bg-white/[0.06] ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/40 shadow-sm dark:shadow-none transition-all duration-200 group"
+                  className="p-4 rounded-xl bg-[#0d1225] hover:bg-[#0d1530] ring-1 ring-white/10 hover:ring-blue-500/40 shadow-lg transition-all duration-300 group relative overflow-hidden"
                 >
-                  <div className="flex items-center gap-2.5 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-[#dcb858]/10 ring-1 ring-[#dcb858]/30 flex items-center justify-center text-[#dcb858] group-hover:bg-[#dcb858] group-hover:text-black transition-colors">
+                  {/* Top-right label */}
+                  <span className="absolute top-3 right-3 text-[9px] font-mono font-bold tracking-widest uppercase text-zinc-500">
+                    PREMIUM
+                  </span>
+                  <div className="flex items-center gap-2.5 mb-3">
+                    {/* Blue circle icon badge */}
+                    <div className="w-9 h-9 rounded-full bg-blue-600/20 ring-1 ring-blue-500/40 flex items-center justify-center text-blue-400 group-hover:bg-blue-600/35 group-hover:ring-blue-400/60 transition-colors shadow-[0_0_12px_rgba(37,99,235,0.25)]">
                       <Icon className="w-4 h-4 stroke-[2]" />
                     </div>
-                    <div className="font-headline font-bold text-xs text-zinc-900 dark:text-white group-hover:text-[#dcb858] transition-colors">
-                      {item.title}
-                    </div>
                   </div>
-                  <p className="font-body text-[11px] text-zinc-600 dark:text-zinc-400 leading-snug">
+                  <div className="font-headline font-bold text-sm text-white mb-2 group-hover:text-blue-300 transition-colors">
+                    {item.title}
+                  </div>
+                  <p className="font-body text-[11px] text-zinc-400 leading-snug">
                     {item.description}
                   </p>
                 </div>

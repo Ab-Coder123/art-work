@@ -85,7 +85,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-white dark:bg-[#0C0C10] text-black dark:text-[#F3F3F5] font-body selection:bg-yellow-400 selection:text-black antialiased overflow-x-hidden relative transition-colors duration-200">
+      <body className="bg-[#08080d] dark:bg-[#0C0C10] text-[#F3F3F5] dark:text-[#F3F3F5] font-body selection:bg-yellow-400 selection:text-black antialiased overflow-x-hidden relative transition-colors duration-200">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

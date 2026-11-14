@@ -57,13 +57,13 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({
   return (
     <div className="w-full max-w-7xl mx-auto py-4 sm:py-6 flex flex-col justify-start">
       {/* ================= SECTION HEADER ================= */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-4 border-b border-zinc-200 dark:border-white/10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-4 border-b border-white/10">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#dcb858]/15 ring-1 ring-[#dcb858]/40 text-[#dcb858] text-[11px] font-mono font-bold uppercase tracking-wider mb-2.5">
             <Sparkles className="w-3 h-3 text-[#dcb858] fill-[#dcb858]" />
             <span>{content.eyebrow}</span>
           </div>
-          <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-zinc-900 dark:text-white tracking-tight uppercase">
+          <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight uppercase">
             <KineticBrushWord variant="double" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4}>
               {content.headline}
             </KineticBrushWord>
@@ -73,7 +73,7 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({
         <div className="flex items-center gap-3 shrink-0">
           <Link
             href="/why-us"
-            className="group inline-flex items-center gap-2 font-headline font-bold text-xs uppercase px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 hover:bg-[#dcb858] text-zinc-900 dark:text-white hover:text-black ring-1 ring-zinc-300 dark:ring-white/15 hover:ring-[#dcb858] transition-all duration-200 cursor-pointer"
+            className="group inline-flex items-center gap-2 font-headline font-bold text-xs uppercase px-4 py-2.5 rounded-xl bg-white/5 hover:bg-[#dcb858] text-white hover:text-black ring-1 ring-white/15 hover:ring-[#dcb858] transition-all duration-200 cursor-pointer"
           >
             <span>{content.exploreCtaText}</span>
             <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -92,21 +92,23 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.15 }}
               transition={{ duration: 0.4, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="p-5 rounded-2xl bg-white dark:bg-[#0d0d15]/90 hover:bg-zinc-50 dark:hover:bg-[#13131e]/90 ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 flex flex-col justify-between group shadow-lg dark:shadow-xl"
+              className="p-5 rounded-2xl bg-[#0d1225] hover:bg-[#0d1530] ring-1 ring-white/10 hover:ring-blue-500/40 transition-all duration-300 flex flex-col justify-between group shadow-xl relative overflow-hidden"
             >
               <div>
                 <div className="flex items-center justify-between mb-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#dcb858]/10 ring-1 ring-[#dcb858]/30 flex items-center justify-center text-[#dcb858] group-hover:bg-[#dcb858] group-hover:text-black transition-colors duration-200">
+                  {/* Blue circle icon badge */}
+                  <div className="w-10 h-10 rounded-full bg-blue-600/20 ring-1 ring-blue-500/40 flex items-center justify-center text-blue-400 group-hover:bg-blue-600/35 group-hover:ring-blue-400/60 transition-colors duration-200 shadow-[0_0_14px_rgba(37,99,235,0.3)]">
                     <Icon className="w-5 h-5 stroke-[2.2]" />
                   </div>
-                  <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 ring-1 ring-zinc-200 dark:ring-white/10">
+                  {/* Top-right label */}
+                  <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-zinc-500 px-2 py-0.5 rounded-full bg-white/5 ring-1 ring-white/10">
                     {pillar.tag}
                   </span>
                 </div>
-                <h3 className="font-headline font-bold text-sm sm:text-[15px] text-zinc-900 dark:text-white mb-1.5 group-hover:text-[#dcb858] transition-colors">
+                <h3 className="font-headline font-bold text-sm sm:text-[15px] text-white mb-1.5 group-hover:text-blue-300 transition-colors">
                   {pillar.title}
                 </h3>
-                <p className="font-body text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                <p className="font-body text-xs text-zinc-400 leading-relaxed">
                   {pillar.description}
                 </p>
               </div>
@@ -125,7 +127,7 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.12 }}
               transition={{ duration: 0.45, delay: idx * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0e0e17]/80 hover:bg-zinc-50 dark:hover:bg-[#141421]/90 ring-1 ring-black/10 dark:ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 flex flex-col justify-between min-h-[190px] group shadow-lg dark:shadow-xl"
+              className="p-5 sm:p-6 rounded-2xl bg-[#0d1225] hover:bg-[#0d1530] ring-1 ring-white/10 hover:ring-[#dcb858]/50 transition-all duration-300 flex flex-col justify-between min-h-[190px] group shadow-xl"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
