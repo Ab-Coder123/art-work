@@ -138,12 +138,12 @@ export default function WhyUsPage() {
 
   if (isLoading || !content || !layout) {
     return (
-      <div className="min-h-screen bg-[#08080d] text-white flex flex-col justify-between items-center relative overflow-hidden select-none">
+      <div className="min-h-screen bg-white dark:bg-[#08080d] text-black dark:text-white flex flex-col justify-between items-center relative overflow-hidden select-none transition-colors duration-200">
         {/* Ambient background glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yellow-400/20 dark:bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Minimal Studio Top Bar */}
-        <header className="w-full border-b border-white/10 px-4 sm:px-6 max-w-7xl mx-auto py-3 sm:py-4 flex items-center justify-between z-10">
+        <header className="w-full border-b border-black/10 dark:border-white/10 px-4 sm:px-6 max-w-7xl mx-auto py-3 sm:py-4 flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
             <div className="relative w-10 h-10 sm:w-11 sm:h-11">
               <Image
@@ -151,17 +151,24 @@ export default function WhyUsPage() {
                 alt="Art Work Logo"
                 fill
                 priority
-                className="object-contain"
+                className="object-contain dark:hidden"
+              />
+              <Image
+                src="/assets/images/artwork_logo_dark.png"
+                alt="Art Work Logo"
+                fill
+                priority
+                className="object-contain hidden dark:block"
               />
             </div>
-            <span className="font-headline font-black text-xs sm:text-sm tracking-wider uppercase text-yellow-400">
+            <span className="font-headline font-black text-xs sm:text-sm tracking-wider uppercase text-black dark:text-yellow-400">
               ART WORK STUDIO
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-[10px] sm:text-xs font-mono font-bold uppercase">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/20 dark:bg-yellow-400/10 border border-yellow-500/40 dark:border-yellow-400/30 text-black dark:text-yellow-400 text-[10px] sm:text-xs font-mono font-bold uppercase">
               <span className="w-2 h-2 rounded-full bg-yellow-400 animate-ping" />
-              LIVE CONTENT SYNC
+              LOADING...
             </span>
           </div>
         </header>
@@ -169,38 +176,45 @@ export default function WhyUsPage() {
         {/* Central Brand Loading Engine */}
         <div className="w-full max-w-md px-6 py-16 flex flex-col items-center text-center z-10">
           <div className="relative mb-6">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-[#14141E] border-2 border-yellow-400/50 comic-shadow flex items-center justify-center p-3 animate-pulse">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white dark:bg-[#14141E] border-2 border-black dark:border-yellow-400/50 comic-shadow flex items-center justify-center p-3 animate-pulse">
               <Image
                 src="/assets/images/artwork_logo.png"
                 alt="Art Work"
                 width={64}
                 height={64}
-                className="object-contain"
+                className="object-contain dark:hidden"
+              />
+              <Image
+                src="/assets/images/artwork_logo_dark.png"
+                alt="Art Work"
+                width={64}
+                height={64}
+                className="object-contain hidden dark:block"
               />
             </div>
             <div className="absolute -top-2 -right-2 bg-yellow-400 text-black text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm rotate-6 uppercase">
-              LIVE
+              LOADING
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-2 text-yellow-400 font-headline font-black text-xs uppercase tracking-widest mb-2">
-            <Sparkles className="w-4 h-4 fill-yellow-400 animate-spin" />
-            <span>CONNECTING DASHBOARD CONTENT</span>
+          <div className="inline-flex items-center gap-2 text-black dark:text-yellow-400 font-headline font-black text-xs sm:text-sm uppercase tracking-widest mb-2">
+            <Sparkles className="w-4 h-4 fill-yellow-400 text-black dark:text-yellow-400 animate-spin" />
+            <span>LOADING STUDIO EXPERIENCE...</span>
           </div>
 
-          <p className="font-mono text-xs text-zinc-400 max-w-xs leading-relaxed mb-6">
-            Receiving live studio copy & production specifications...
+          <p className="font-mono text-xs text-zinc-600 dark:text-zinc-400 max-w-xs leading-relaxed mb-6">
+            Preparing creative spaces, projects & live visual showcases...
           </p>
 
           {/* Animated Loader Bar */}
-          <div className="w-48 sm:w-60 h-1.5 bg-white/10 rounded-full overflow-hidden border border-white/10 relative">
+          <div className="w-48 sm:w-60 h-1.5 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden border border-black/10 dark:border-white/10 relative">
             <div className="absolute inset-0 bg-yellow-400 animate-pulse" />
           </div>
         </div>
 
         {/* Clean Footer Bar */}
-        <footer className="w-full border-t border-white/10 py-3 text-center font-mono text-[11px] text-zinc-500 z-10">
-          <span>Art Work Creative Marketing Studio • Synchronizing Live Stream</span>
+        <footer className="w-full border-t border-black/10 dark:border-white/10 py-3 text-center font-mono text-[11px] text-zinc-500 dark:text-zinc-500 z-10">
+          <span>Art Work Creative Marketing Studio • Loading content...</span>
         </footer>
       </div>
     );
