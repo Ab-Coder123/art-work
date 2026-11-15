@@ -294,7 +294,8 @@ export function resolveSafeYouTubeEmbed(
         youtubeVideoId?: string | null;
         isShort?: boolean;
       }
-    | null
+    | null,
+  explicitShortArg?: boolean | null
 ): {
   videoId: string;
   embedUrl: string;
@@ -307,7 +308,11 @@ export function resolveSafeYouTubeEmbed(
       ? input
       : input.youtubeUrl || input.youtubeVideoId || "";
   const explicitShort =
-    typeof input === "object" && input !== null ? Boolean(input.isShort) : false;
+    explicitShortArg !== undefined && explicitShortArg !== null
+      ? Boolean(explicitShortArg)
+      : typeof input === "object" && input !== null && "isShort" in input && input.isShort !== undefined && input.isShort !== null
+      ? Boolean(input.isShort)
+      : false;
 
   if (!rawInput || typeof rawInput !== "string") return null;
   const raw = rawInput.trim();
@@ -371,7 +376,7 @@ export function resolveSafeYouTubeEmbed(
     ["embed", "shorts", "live", "v", "e"].includes(segments[0])
   ) {
     candidate = segments[1];
-    if (segments[0] === "shorts") {
+    if (segments[0] === "shorts" && explicitShortArg === undefined) {
       isShort = true;
     }
   }

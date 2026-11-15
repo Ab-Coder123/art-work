@@ -247,7 +247,7 @@ function FacebookVideoFieldCard({
                   <img
                     src={thumbnailUrl}
                     alt="Facebook Video Thumbnail"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain bg-black"
                   />
                 </div>
                 <div>
@@ -918,22 +918,32 @@ export default function GalleryProjectsManager() {
             data.thumbnailUrl && !currentImages.includes(data.thumbnailUrl)
               ? [data.thumbnailUrl, ...currentImages]
               : currentImages;
+          const resolvedIsShort =
+            explicitShort !== undefined
+              ? explicitShort
+              : prev.isShort !== undefined
+              ? prev.isShort
+              : data.isReel !== undefined
+              ? Boolean(data.isReel)
+              : false;
+
           return {
             ...prev,
             facebookUrl: data.canonicalUrl || prev.facebookUrl,
-            isShort:
-              explicitShort !== undefined
-                ? explicitShort
-                : data.isReel !== undefined
-                ? Boolean(data.isReel)
-                : prev.isShort,
+            isShort: resolvedIsShort,
             image: data.thumbnailUrl ? data.thumbnailUrl : prev.image,
             images: nextImages,
           };
         });
+        const currentIsShort =
+          explicitShort !== undefined
+            ? explicitShort
+            : editingProject?.isShort !== undefined
+            ? editingProject.isShort
+            : Boolean(data.isReel);
         setFbStatusMessage(
           `✓ تم التحقق وتجهيز مشغل ${
-            (explicitShort ?? data.isReel) ? "Facebook Reel (9:16)" : "Facebook Video (16:9)"
+            currentIsShort ? "Facebook Reel (9:16)" : "Facebook Video (16:9)"
           } واعتماد صورة غلاف الفيديو بنجاح`
         );
       } else {
@@ -1043,7 +1053,7 @@ export default function GalleryProjectsManager() {
 
   const handleResolveFacebookMetadata = async () => {
     if (!editingProject?.facebookUrl) return;
-    await triggerResolveFacebook(editingProject.facebookUrl);
+    await triggerResolveFacebook(editingProject.facebookUrl, editingProject.isShort);
   };
 
   const handleFetchYouTubeMetadata = async () => {
@@ -1480,7 +1490,7 @@ export default function GalleryProjectsManager() {
                       <img
                         src={project.image}
                         alt={project.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover object-top"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
                         }}
@@ -2034,7 +2044,7 @@ export default function GalleryProjectsManager() {
                                 alt="Behance 3D Booth Preview"
                                 referrerPolicy="no-referrer"
                                 crossOrigin="anonymous"
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-contain bg-black"
                               />
                               <div className="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow uppercase">
                                 ★ BEHANCE 3D COVER
@@ -2078,7 +2088,7 @@ export default function GalleryProjectsManager() {
                                         onClick={() => setEditingProject({ ...editingProject, image: img })}
                                       >
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={img} alt={`Angle ${idx + 1}`} referrerPolicy="no-referrer" crossOrigin="anonymous" className="w-full h-full object-cover" />
+                                        <img src={img} alt={`Angle ${idx + 1}`} referrerPolicy="no-referrer" crossOrigin="anonymous" className="w-full h-full object-contain bg-black" />
                                         {isCover && (
                                           <span className="absolute top-1 left-1 bg-blue-600 text-white font-black text-[8px] px-1 py-0.2 rounded shadow">
                                             Cover
@@ -2222,7 +2232,7 @@ export default function GalleryProjectsManager() {
                                   >
                                     <div className="relative aspect-[16/10] rounded-lg overflow-hidden bg-black">
                                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                                      <img src={img} alt={`Booth preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                      <img src={img} alt={`Booth preview ${idx + 1}`} className="w-full h-full object-contain bg-black" />
                                       {isCover && (
                                         <span className="absolute top-1 left-1 bg-yellow-400 text-black font-black text-[9px] uppercase px-1.5 py-0.5 rounded shadow">
                                           ★ Cover
@@ -2563,7 +2573,7 @@ export default function GalleryProjectsManager() {
                               <img
                                 src={editingProject.image}
                                 alt="Project Card Thumbnail"
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-contain bg-black"
                                 onError={(e) => {
                                   (e.currentTarget as HTMLImageElement).src =
                                     "/assets/images/gallery/project_01_neon_horizon.jpg";

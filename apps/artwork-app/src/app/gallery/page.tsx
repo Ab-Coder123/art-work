@@ -311,10 +311,13 @@ export default function GalleryPage() {
       });
 
   const selectedYtEmbed = selectedProject
-    ? resolveSafeYouTubeEmbed(selectedProject.youtubeVideoId || selectedProject.youtubeUrl)
+    ? resolveSafeYouTubeEmbed(
+        selectedProject.youtubeVideoId || selectedProject.youtubeUrl,
+        selectedProject.isShort
+      )
     : null;
   const selectedFbEmbed = selectedProject
-    ? resolveSafeFacebookEmbed(selectedProject.facebookUrl)
+    ? resolveSafeFacebookEmbed(selectedProject.facebookUrl, selectedProject.isShort)
     : null;
 
   const heroTags =
@@ -489,7 +492,7 @@ export default function GalleryPage() {
                         alt={project.altText || project.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
                         unoptimized={
                           getProjectThumbnailUrl(project).startsWith("http") ||
                           getProjectThumbnailUrl(project).startsWith("data:")
@@ -506,7 +509,7 @@ export default function GalleryPage() {
                           ) : (
                             <>
                               <Play className="w-3 h-3 fill-current" />
-                              <span>SHOWREEL</span>
+                              <span>SHOWREEL 16:9</span>
                             </>
                           )}
                         </div>
@@ -520,7 +523,7 @@ export default function GalleryPage() {
                           ) : (
                             <>
                               <Play className="w-3 h-3 fill-current" />
-                              <span>FB VIDEO</span>
+                              <span>FB VIDEO 16:9</span>
                             </>
                           )}
                         </div>
@@ -822,109 +825,137 @@ export default function GalleryPage() {
                   )}
 
                   {/* Render YouTube Video */}
-                  {selectedYtEmbed && (!selectedFbEmbed || activeMediaTab === "youtube") && (
-                    <>
-                      <div className="flex items-center justify-between">
-                        <span className="inline-flex items-center gap-1.5 bg-red-600 text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
-                          <Play className="w-3 h-3 fill-current" />
-                          <span>
-                            {selectedProject.isShort || selectedYtEmbed.isShort
-                              ? "YOUTUBE REEL / SHORT (9:16)"
-                              : "YOUTUBE SHOWREEL (16:9)"}
+                  {selectedYtEmbed && (!selectedFbEmbed || activeMediaTab === "youtube") && (() => {
+                    const isYtVertical =
+                      selectedProject.isShort !== undefined && selectedProject.isShort !== null
+                        ? Boolean(selectedProject.isShort)
+                        : Boolean(selectedYtEmbed.isShort);
+
+                    return (
+                      <>
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center gap-1.5 bg-red-600 text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
+                            <Play className="w-3 h-3 fill-current" />
+                            <span>
+                              {isYtVertical
+                                ? "YOUTUBE REEL / SHORT (9:16)"
+                                : "YOUTUBE SHOWREEL (16:9)"}
+                            </span>
                           </span>
-                        </span>
-                        <a
-                          href={selectedYtEmbed.canonicalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 font-headline font-bold text-[11px] text-red-600 dark:text-red-400 hover:underline"
-                        >
-                          <span>WATCH ON YOUTUBE</span>
-                          <span>↗</span>
-                        </a>
-                      </div>
+                          <a
+                            href={selectedYtEmbed.canonicalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 font-headline font-bold text-[11px] text-red-600 dark:text-red-400 hover:underline"
+                          >
+                            <span>WATCH ON YOUTUBE</span>
+                            <span>↗</span>
+                          </a>
+                        </div>
 
-                      {selectedProject.youtubeTitle && (
-                        <h3 className="font-headline font-black text-base text-black dark:text-white">
-                          {selectedProject.youtubeTitle}
-                        </h3>
-                      )}
+                        {selectedProject.youtubeTitle && (
+                          <h3 className="font-headline font-black text-base text-black dark:text-white">
+                            {selectedProject.youtubeTitle}
+                          </h3>
+                        )}
 
-                      {selectedProject.youtubeDescription && (
-                        <p className="font-body text-xs text-black/80 dark:text-zinc-300 leading-relaxed">
-                          {selectedProject.youtubeDescription}
-                        </p>
-                      )}
+                        {selectedProject.youtubeDescription && (
+                          <p className="font-body text-xs text-black/80 dark:text-zinc-300 leading-relaxed">
+                            {selectedProject.youtubeDescription}
+                          </p>
+                        )}
 
-                      <div
-                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${selectedProject.isShort || selectedYtEmbed.isShort
-                          ? "aspect-[9/16] max-w-[280px] mx-auto"
-                          : "aspect-video w-full"
+                        <div
+                          className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
+                            isYtVertical
+                              ? "aspect-[9/16] max-w-[320px] mx-auto"
+                              : "aspect-video w-full"
                           }`}
-                      >
-                        <iframe
-                          src={selectedYtEmbed.embedUrl}
-                          title={selectedProject.youtubeTitle || selectedProject.title}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          allowFullScreen
-                          className="w-full h-full border-0 pointer-events-auto cursor-pointer relative z-10"
-                        />
-                      </div>
-                    </>
-                  )}
+                        >
+                          <iframe
+                            src={selectedYtEmbed.embedUrl}
+                            title={selectedProject.youtubeTitle || selectedProject.title}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            allowFullScreen
+                            className="w-full h-full border-0 pointer-events-auto cursor-pointer relative z-10"
+                          />
+                        </div>
+                      </>
+                    );
+                  })()}
 
                   {/* Render Facebook Video */}
-                  {selectedFbEmbed && (!selectedYtEmbed || activeMediaTab === "facebook") && (
-                    <>
-                      <div className="flex items-center justify-between">
-                        <span className="inline-flex items-center gap-1.5 bg-[#1877F2] text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
-                          <Play className="w-3 h-3 fill-current" />
-                          <span>
-                            {selectedFbEmbed.isReel
-                              ? "FACEBOOK REEL (9:16)"
-                              : "FACEBOOK VIDEO"}
-                          </span>
-                        </span>
-                        <a
-                          href={selectedFbEmbed.canonicalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 font-headline font-bold text-[11px] text-blue-600 dark:text-blue-400 hover:underline"
-                        >
-                          <span>WATCH ON FACEBOOK</span>
-                          <span>↗</span>
-                        </a>
-                      </div>
+                  {selectedFbEmbed && (!selectedYtEmbed || activeMediaTab === "facebook") && (() => {
+                    const isFbVertical =
+                      selectedProject.isShort !== undefined && selectedProject.isShort !== null
+                        ? Boolean(selectedProject.isShort)
+                        : Boolean(selectedFbEmbed.isReel);
 
-                      <div
-                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
-                          selectedProject.isShort || selectedFbEmbed.isReel
-                            ? "aspect-[9/16] max-w-[280px] mx-auto"
-                            : "aspect-video w-full"
-                        }`}
-                      >
-                        <iframe
-                          src={selectedFbEmbed.embedUrl}
-                          title={selectedProject.title}
-                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          allowFullScreen
-                          className="w-full h-full border-0 pointer-events-auto cursor-pointer relative z-10"
-                        />
-                      </div>
-                    </>
-                  )}
+                    return (
+                      <>
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center gap-1.5 bg-[#1877F2] text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
+                            <Play className="w-3 h-3 fill-current" />
+                            <span>
+                              {isFbVertical
+                                ? "FACEBOOK REEL (9:16)"
+                                : "FACEBOOK VIDEO (16:9)"}
+                            </span>
+                          </span>
+                          <a
+                            href={selectedFbEmbed.canonicalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 font-headline font-bold text-[11px] text-blue-600 dark:text-blue-400 hover:underline"
+                          >
+                            <span>WATCH ON FACEBOOK</span>
+                            <span>↗</span>
+                          </a>
+                        </div>
+
+                        <div
+                          className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
+                            isFbVertical
+                              ? "aspect-[9/16] max-w-[320px] mx-auto"
+                              : "aspect-video w-full"
+                          }`}
+                        >
+                          <iframe
+                            src={selectedFbEmbed.embedUrl}
+                            title={selectedProject.title}
+                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            allowFullScreen
+                            className="w-full h-full border-0 pointer-events-auto cursor-pointer relative z-10"
+                          />
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               ) : (
                 <div className="space-y-3 mb-4">
-                  {/* Main Display Image */}
-                  <div className="relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 aspect-[16/9] bg-neutral-100 dark:bg-zinc-800">
+                  {/* Main Display Image - 100% Fit & Uncut */}
+                  <div className="relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 aspect-[16/10] sm:aspect-[16/9] bg-neutral-950 flex items-center justify-center">
+                    {/* Ambient blurred backdrop so letterbox edges look intentional & seamless */}
+                    <Image
+                      src={activeModalImage || selectedProject.image}
+                      alt=""
+                      fill
+                      aria-hidden="true"
+                      className="object-cover opacity-20 blur-xl scale-110 pointer-events-none"
+                      unoptimized={
+                        (activeModalImage || selectedProject.image).startsWith("http") ||
+                        (activeModalImage || selectedProject.image).startsWith("data:")
+                      }
+                    />
+                    {/* 100% Fit Foreground Image: zero cropping, nothing eaten from top */}
                     <Image
                       src={activeModalImage || selectedProject.image}
                       alt={selectedProject.altText || selectedProject.title}
                       fill
-                      className="object-cover"
+                      className="object-contain relative z-10"
                       unoptimized={
                         (activeModalImage || selectedProject.image).startsWith("http") ||
                         (activeModalImage || selectedProject.image).startsWith("data:")
@@ -953,7 +984,7 @@ export default function GalleryPage() {
                               src={imgUrl}
                               alt={`Render ${idx + 1}`}
                               fill
-                              className="object-cover"
+                              className="object-cover object-top"
                               unoptimized={
                                 imgUrl.startsWith("http") || imgUrl.startsWith("data:")
                               }

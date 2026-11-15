@@ -73,7 +73,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
   );
 
   const activeFb = useMemo(
-    () => (activeVideo ? resolveSafeFacebookEmbed(activeVideo) : null),
+    () => (activeVideo ? resolveSafeFacebookEmbed(activeVideo, activeVideo.isShort) : null),
     [activeVideo]
   );
 
@@ -166,7 +166,9 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
               ) : activeFb ? (
                 <div
                   className={`relative rounded-xl overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
-                    activeVideo.isShort || activeFb.isReel
+                    (activeVideo.isShort !== undefined && activeVideo.isShort !== null
+                      ? Boolean(activeVideo.isShort)
+                      : Boolean(activeFb.isReel))
                       ? "aspect-[9/16] max-w-[300px] mx-auto"
                       : "aspect-video w-full"
                   }`}
@@ -260,8 +262,8 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
       {gridItems.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-3">
           {gridItems.map((p) => {
-            const ytEmbed = resolveSafeYouTubeEmbed(p);
-            const fbEmbed = resolveSafeFacebookEmbed(p);
+            const ytEmbed = resolveSafeYouTubeEmbed(p, p.isShort);
+            const fbEmbed = resolveSafeFacebookEmbed(p, p.isShort);
             const cardThumb = getProjectThumbnailUrl(p);
 
             // If this additional ★ Starred item is a YouTube Video, render an inline playable video card!
@@ -328,7 +330,9 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     <div className="mb-2.5">
                       <div
                         className={`${
-                          p.isShort || fbEmbed.isReel
+                          (p.isShort !== undefined && p.isShort !== null
+                            ? Boolean(p.isShort)
+                            : Boolean(fbEmbed.isReel))
                             ? "aspect-[9/16] max-w-[220px] mx-auto"
                             : "aspect-video w-full"
                         } rounded-xl overflow-hidden border border-[#262638] bg-black`}
@@ -347,7 +351,11 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                         {p.client}
                       </span>
                       <span className="bg-[#1877F2] text-white text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black shrink-0">
-                        {fbEmbed.isReel ? "★ FB REEL 9:16" : "★ FB VIDEO"}
+                        {(p.isShort !== undefined && p.isShort !== null
+                          ? Boolean(p.isShort)
+                          : Boolean(fbEmbed.isReel))
+                          ? "★ FB REEL 9:16"
+                          : "★ FB VIDEO 16:9"}
                       </span>
                     </div>
                     <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 line-clamp-1">
@@ -393,7 +401,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                       alt={p.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
                       unoptimized={
                         cardThumb.startsWith("http") || cardThumb.startsWith("data:")
                       }

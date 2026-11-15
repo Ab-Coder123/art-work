@@ -155,8 +155,13 @@ export function normalizeProjectInput(
         ? Boolean(rawInput.isShort)
         : rawInput.youtube_is_short !== undefined
         ? Boolean(rawInput.youtube_is_short)
-        : Boolean(existing?.youtube_is_short);
-    const finalShort = explicitShortFlag || inferredShort;
+        : undefined;
+    const finalShort =
+      explicitShortFlag !== undefined
+        ? explicitShortFlag
+        : existing?.youtube_is_short !== undefined
+        ? Boolean(existing.youtube_is_short)
+        : inferredShort;
     youtube_url = finalShort
       ? buildYouTubeShortsUrl(parsedYt.videoId)
       : parsedYt.canonicalUrl;
