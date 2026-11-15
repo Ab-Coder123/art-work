@@ -3,16 +3,44 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { KineticMotionArrows } from "@/components/cinematic/KineticMotionArrows";
-import { KineticPaintPen } from "@/components/cinematic/KineticPaintPen";
-import { Kinetic3DBackground } from "@/components/cinematic/Kinetic3DBackground";
-import { InteractiveDoodleCanvas } from "@/components/cinematic/InteractiveDoodleCanvas";
 import { StudioHeader, StudioFooter } from "@/components/home";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { soundFX } from "@/utils/soundFX";
 import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
+
+// Dynamic imports for heavy decorative canvas and Three.js WebGL scenes
+const DeferredKinetic3DBackground = dynamic(
+  () =>
+    import("@/components/cinematic/DeferredKinetic3DBackground").then(
+      (m) => m.DeferredKinetic3DBackground
+    ),
+  { ssr: false }
+);
+
+const InteractiveDoodleCanvas = dynamic(
+  () =>
+    import("@/components/cinematic/InteractiveDoodleCanvas").then(
+      (m) => m.InteractiveDoodleCanvas
+    ),
+  { ssr: false }
+);
+
+const KineticPaintPen = dynamic(
+  () =>
+    import("@/components/cinematic/KineticPaintPen").then((m) => m.KineticPaintPen),
+  { ssr: false }
+);
+
+const KineticMotionArrows = dynamic(
+  () =>
+    import("@/components/cinematic/KineticMotionArrows").then(
+      (m) => m.KineticMotionArrows
+    ),
+  { ssr: false }
+);
 import {
   ArrowRight,
   Pencil,
@@ -332,8 +360,8 @@ export default function GalleryPage() {
 
   return (
     <>
-      {/* 1. Real 3D Kinetic Three.js Background with characters */}
-      <Kinetic3DBackground />
+      {/* 1. Real 3D Kinetic Three.js Background with characters (Deferred) */}
+      <DeferredKinetic3DBackground />
 
       {/* 2. Kinetic Motion Arrows in background */}
       <KineticMotionArrows />

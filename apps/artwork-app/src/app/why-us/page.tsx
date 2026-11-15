@@ -3,17 +3,45 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { KineticMotionArrows } from "@/components/cinematic/KineticMotionArrows";
-import { KineticPaintPen } from "@/components/cinematic/KineticPaintPen";
-import { Kinetic3DBackground } from "@/components/cinematic/Kinetic3DBackground";
-import { InteractiveDoodleCanvas } from "@/components/cinematic/InteractiveDoodleCanvas";
 import { StudioHeader, StudioFooter } from "@/components/home";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
 import type { LayoutSectionContent, WhyUsPageContent } from "@art-work/types";
+
+// Dynamic imports for heavy canvas and 3D decorative modules
+const DeferredKinetic3DBackground = dynamic(
+  () =>
+    import("@/components/cinematic/DeferredKinetic3DBackground").then(
+      (m) => m.DeferredKinetic3DBackground
+    ),
+  { ssr: false }
+);
+
+const InteractiveDoodleCanvas = dynamic(
+  () =>
+    import("@/components/cinematic/InteractiveDoodleCanvas").then(
+      (m) => m.InteractiveDoodleCanvas
+    ),
+  { ssr: false }
+);
+
+const KineticPaintPen = dynamic(
+  () =>
+    import("@/components/cinematic/KineticPaintPen").then((m) => m.KineticPaintPen),
+  { ssr: false }
+);
+
+const KineticMotionArrows = dynamic(
+  () =>
+    import("@/components/cinematic/KineticMotionArrows").then(
+      (m) => m.KineticMotionArrows
+    ),
+  { ssr: false }
+);
 import {
   ArrowRight,
   ArrowLeft,
@@ -232,8 +260,8 @@ export default function WhyUsPage() {
 
   return (
     <div className="bg-drafting-grid dark:bg-[#0C0C10] text-black dark:text-[#F3F3F5] font-body antialiased min-h-screen selection:bg-yellow-400 selection:text-black relative overflow-x-hidden transition-colors duration-200">
-      {/* Real 3D Kinetic Three.js Background with Scroll-Driven Motion */}
-      <Kinetic3DBackground />
+      {/* Real 3D Kinetic Three.js Background with Scroll-Driven Motion (Deferred) */}
+      <DeferredKinetic3DBackground />
 
       {/* Dot Grid Sketchpad Canvas */}
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>
@@ -439,21 +467,6 @@ export default function WhyUsPage() {
                 <span>{content.secondaryCtaText || "VIEW SELECTED PROJECTS"}</span>
                 <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
               </a>
-            </div>
-
-            {/* Metric Tick Banner */}
-            <div className="mt-8 pt-5 border-t border-black/10 dark:border-zinc-800 flex flex-wrap items-center gap-4 text-xs font-mono text-black/60 dark:text-zinc-400">
-              {(content.metrics || DEFAULT_SITE_CONTENT.whyUsPage.metrics).map((m, idx) => (
-                <React.Fragment key={`${m.label}-${idx}`}>
-                  {idx > 0 && <div>•</div>}
-                  <div className="flex items-center gap-2 uppercase">
-                    {idx === 0 && <span className="w-2.5 h-2.5 rounded-full bg-green-500"></span>}
-                    <span>
-                      {m.num} {m.label}
-                    </span>
-                  </div>
-                </React.Fragment>
-              ))}
             </div>
           </div>
 

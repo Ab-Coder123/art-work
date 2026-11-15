@@ -140,28 +140,32 @@ Every single phase in this roadmap MUST strictly pass through the following **6-
 ---
 
 ### Phase 3: Smart Code-Splitting & Dynamic Imports (`next/dynamic` Bundle Slicing)
-* **Objective:** Drastically cut First Load JS by lazy-loading below-the-fold stages and heavy 3D canvas libraries.
+* **Objective:** Drastically cut First Load JS by lazy-loading below-the-fold stages and heavy 3D canvas libraries across `/`, `/why-us`, and `/gallery`.
 
 #### 1. Read the Skill
 * Consult [vercel-react-best-practices](file:///C:/Users/TaFrA/.agents/skills/vercel-react-best-practices/SKILL.md) (`bundle-dynamic-imports`, `bundle-defer-third-party`).
 
 #### 2. Analyze the File Target
-* **Target File:** `apps/artwork-app/src/components/home/HomeTheaterController.tsx`.
+* **Target Files:**
+  - `apps/artwork-app/src/components/home/HomeTheaterController.tsx`
+  - `apps/artwork-app/src/app/why-us/page.tsx`
+  - `apps/artwork-app/src/app/gallery/page.tsx`
 * **Coupling Points Identified:**
   - Heavy Three.js kinetic canvas (`Kinetic3DBackground`), doodle layers, and downstream stage components bundled directly in the initial chunk.
-  - Initial JS bundle size: ~247 kB.
+  - Statically imported WebGL components on `/why-us` and `/gallery`.
 
 #### 3. Implement
 * Created `StageLoadingSkeleton.tsx` for zero-CLS comic placeholder layout during chunk loading.
 * Applied `next/dynamic` with `ssr: false` or delayed hydration for:
-  - `DeferredKinetic3DBackground` (Three.js WebGL scene)
+  - `DeferredKinetic3DBackground` (Three.js WebGL scene with `requestIdleCallback`)
   - `KineticPaintPen`, `KineticMotionArrows`, `InteractiveDoodleCanvas`
   - `ServicesStage`, `GalleryShowcaseStage`, `ContactSection`
-* Ensured above-the-fold Scene 01 (`ManifestoHero` + `PartnersMarquee`) loads eagerly.
+* Propagated dynamic WebGL and canvas imports across `/why-us` and `/gallery`.
+* Removed deprecated metric ticker banner (`450+ Arena Shows • 99.4% Cue Accuracy • 1.2M+ Live Reach`) from `why-us/page.tsx`, `SceneHero.tsx`, and Supabase database.
 
 #### 4. Use Unit Testing
 * Verified dynamic loader fallback rendering via Playwright component assertions.
-* Monorepo unit suite verified (203/203 passed).
+* Monorepo unit suite verified (263/263 passed across 58 suites).
 
 #### 5. Test All Scenarios
 * **Initial Page Load:** Only Hero and navigation chunks load initially.
@@ -169,7 +173,7 @@ Every single phase in this roadmap MUST strictly pass through the following **6-
 * **Low-End Devices:** WebGL background loads deferred without blocking interactive thread.
 
 #### 6. Report and Check
-* `pnpm run build`: Route `/` First Load JS reduced from ~247 kB to 103 kB.
+* `pnpm run build`: Route `/` First Load JS reduced from ~247 kB to 103 kB; `/why-us` and `/gallery` WebGL chunks completely isolated.
 * Status: **✅ COMPLETED.**
 
 ---
@@ -185,21 +189,22 @@ Every single phase in this roadmap MUST strictly pass through the following **6-
   - `apps/artwork-app/src/components/home/server.ts`
   - `apps/artwork-app/src/app/api/content/route.ts`
   - `apps/artwork-app/src/app/api/companies/route.ts`
+  - `apps/artwork-app/src/app/api/projects/route.ts`
   - `packages/types/src/index.ts` (LRU regex parsing)
 
 #### 3. Implement
-* Configured `unstable_cache` with tags `['site-content', 'companies']` and 60-second revalidation in `server.ts`.
-* Standardized Edge CDN Cache-Control headers:
+* Configured `unstable_cache` with tags `['site-content', 'companies', 'projects']` and 60-second revalidation in `server.ts`.
+* Standardized Edge CDN Cache-Control headers across `/api/content`, `/api/companies`, and `/api/projects`:
   `Cache-Control: public, s-maxage=60, stale-while-revalidate=600`
-* Added in-memory LRU calculation cache (`ytEmbedMemoCache`, `MAX_YT_CACHE_SIZE = 200`) in `@art-work/types` to eliminate repeated regex and URL parsing overhead.
+* Added dual in-memory LRU calculation caches (`ytEmbedMemoCache` and `fbEmbedMemoCache`, capacity 500) in `@art-work/types` to eliminate repeated regex and URL parsing overhead.
 * Memoized partner marquee array duplications via `useMemo`.
 
 #### 4. Use Unit Testing
-* Ran caching and revalidation tests:
+* Ran caching, embed resolution, and revalidation tests:
   ```bash
-  pnpm --filter @art-work/database run test tests/cms-phase6-http-200-requests.spec.ts
+  pnpm --filter @art-work/database run test
   ```
-* Verified LRU cache eviction and hit-rate assertions.
+* Verified LRU cache eviction and hit-rate assertions (263/263 passed).
 
 #### 5. Test All Scenarios
 * **Consecutive API Calls:** Sub-millisecond response from Edge/memory cache.

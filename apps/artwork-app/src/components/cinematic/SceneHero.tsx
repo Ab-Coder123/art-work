@@ -110,22 +110,6 @@ export const SceneHero: React.FC = () => {
               ⚡ Click here to launch!
             </span>
           </div>
-
-          {/* Milestone Metrics Bento */}
-          <div className="grid grid-cols-3 gap-3 pt-2 max-w-md">
-            <div className="border-2 border-black bg-white p-2.5 rounded-xl shadow-[3px_3px_0px_0px_#111111] text-center hover:bg-yellow-50 transition-colors">
-              <div className="font-brush text-2xl text-black">450+</div>
-              <div className="text-[10px] font-mono font-bold text-black/70 uppercase">Arena Shows</div>
-            </div>
-            <div className="border-2 border-black bg-white p-2.5 rounded-xl shadow-[3px_3px_0px_0px_#111111] text-center hover:bg-yellow-50 transition-colors">
-              <div className="font-brush text-2xl text-black">99.4%</div>
-              <div className="text-[10px] font-mono font-bold text-black/70 uppercase">Cue Accuracy</div>
-            </div>
-            <div className="border-2 border-black bg-white p-2.5 rounded-xl shadow-[3px_3px_0px_0px_#111111] text-center hover:bg-yellow-50 transition-colors">
-              <div className="font-brush text-2xl text-black">1.2M+</div>
-              <div className="text-[10px] font-mono font-bold text-black/70 uppercase">Live Reach</div>
-            </div>
-          </div>
         </div>
 
         {/* Right Column: Studio Sketchpad & Team Artwork (Clean, Borderless, No Frame) */}

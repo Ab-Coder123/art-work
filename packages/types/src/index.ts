@@ -891,10 +891,21 @@ export function isUnresolvedFacebookShareUrl(input: unknown): boolean {
   );
 }
 
+const fbEmbedMemoCache = new Map<
+  string,
+  {
+    canonicalUrl: string;
+    embedUrl: string;
+    isReel: boolean;
+  } | null
+>();
+const MAX_FB_CACHE_SIZE = 500;
+
 /**
  * Pure, SSR & client-safe Facebook video embed resolver.
  * Parses Facebook watch links, reels, page videos, fb.watch, and share links,
  * rejects script injection and raw HTML tags, and constructs the official embed URL.
+ * Employs in-memory LRU calculation cache to eliminate repeated regex and URL parsing overhead.
  */
 export function resolveSafeFacebookEmbed(
   input?:
@@ -917,22 +928,56 @@ export function resolveSafeFacebookEmbed(
       ? input
       : input.facebookUrl || input.facebook_url || "";
   if (!rawCandidate || typeof rawCandidate !== "string") return null;
+
+  const explicitShort =
+    explicitIsShort !== undefined && explicitIsShort !== null
+      ? Boolean(explicitIsShort)
+      : typeof input === "object" && input !== null && "isShort" in input && input.isShort !== undefined && input.isShort !== null
+      ? Boolean(input.isShort)
+      : null;
+
+  const cacheKey = `${rawCandidate}:::${explicitShort ?? "auto"}`;
+  if (fbEmbedMemoCache.has(cacheKey)) {
+    return fbEmbedMemoCache.get(cacheKey)!;
+  }
+
   const raw = extractFacebookVideoUrlFromSnippet(rawCandidate).trim();
-  if (!raw || /[<>"'`\s]/.test(raw)) return null;
+  if (!raw || /[<>"'`\s]/.test(raw)) {
+    if (fbEmbedMemoCache.size >= MAX_FB_CACHE_SIZE) {
+      const firstKey = fbEmbedMemoCache.keys().next().value;
+      if (firstKey) fbEmbedMemoCache.delete(firstKey);
+    }
+    fbEmbedMemoCache.set(cacheKey, null);
+    return null;
+  }
 
   let url: URL;
   try {
     const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(raw);
     url = new URL(hasScheme ? raw : `https://${raw}`);
   } catch {
+    if (fbEmbedMemoCache.size >= MAX_FB_CACHE_SIZE) {
+      const firstKey = fbEmbedMemoCache.keys().next().value;
+      if (firstKey) fbEmbedMemoCache.delete(firstKey);
+    }
+    fbEmbedMemoCache.set(cacheKey, null);
     return null;
   }
 
-  if (url.protocol !== "http:" && url.protocol !== "https:") return null;
-  if (url.username || url.password) return null;
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    fbEmbedMemoCache.set(cacheKey, null);
+    return null;
+  }
+  if (url.username || url.password) {
+    fbEmbedMemoCache.set(cacheKey, null);
+    return null;
+  }
 
   const host = url.hostname.toLowerCase();
-  if (!FACEBOOK_HOSTS.has(host)) return null;
+  if (!FACEBOOK_HOSTS.has(host)) {
+    fbEmbedMemoCache.set(cacheKey, null);
+    return null;
+  }
 
   const path = url.pathname.toLowerCase();
   const inferredReel =
@@ -940,23 +985,26 @@ export function resolveSafeFacebookEmbed(
     path.includes("/reels/") ||
     path.includes("/share/r/");
 
-  const isReel =
-    explicitIsShort !== undefined && explicitIsShort !== null
-      ? Boolean(explicitIsShort)
-      : typeof input === "object" && input !== null && "isShort" in input && input.isShort !== undefined && input.isShort !== null
-      ? Boolean(input.isShort)
-      : inferredReel;
+  const isReel = explicitShort !== null ? explicitShort : inferredReel;
 
   const canonicalUrl = url.toString();
   const embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(
     canonicalUrl
   )}&show_text=0`;
 
-  return {
+  const result = {
     canonicalUrl,
     embedUrl,
     isReel,
   };
+
+  if (fbEmbedMemoCache.size >= MAX_FB_CACHE_SIZE) {
+    const firstKey = fbEmbedMemoCache.keys().next().value;
+    if (firstKey) fbEmbedMemoCache.delete(firstKey);
+  }
+  fbEmbedMemoCache.set(cacheKey, result);
+
+  return result;
 }
 
 /**
