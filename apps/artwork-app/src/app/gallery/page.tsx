@@ -312,9 +312,9 @@ export default function GalleryPage() {
 
   const selectedYtEmbed = selectedProject
     ? resolveSafeYouTubeEmbed(
-        selectedProject.youtubeVideoId || selectedProject.youtubeUrl,
-        selectedProject.isShort
-      )
+      selectedProject.youtubeVideoId || selectedProject.youtubeUrl,
+      selectedProject.isShort
+    )
     : null;
   const selectedFbEmbed = selectedProject
     ? resolveSafeFacebookEmbed(selectedProject.facebookUrl, selectedProject.isShort)
@@ -866,11 +866,10 @@ export default function GalleryPage() {
                         )}
 
                         <div
-                          className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
-                            isYtVertical
+                          className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${isYtVertical
                               ? "aspect-[9/16] max-w-[320px] mx-auto"
                               : "aspect-video w-full"
-                          }`}
+                            }`}
                         >
                           <iframe
                             src={selectedYtEmbed.embedUrl}
@@ -915,11 +914,10 @@ export default function GalleryPage() {
                         </div>
 
                         <div
-                          className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
-                            isFbVertical
+                          className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${isFbVertical
                               ? "aspect-[9/16] max-w-[320px] mx-auto"
                               : "aspect-video w-full"
-                          }`}
+                            }`}
                         >
                           <iframe
                             src={selectedFbEmbed.embedUrl}

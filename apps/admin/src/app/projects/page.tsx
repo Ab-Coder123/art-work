@@ -25,9 +25,6 @@ import {
   ProjectCategory,
   resolveSafeYouTubeEmbed,
   resolveSafeFacebookEmbed,
-  isValidFacebookVideoUrl,
-  isUnresolvedFacebookShareUrl,
-  extractFacebookVideoUrlFromSnippet,
   isGenericYouTubeDescription,
 } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
@@ -53,237 +50,6 @@ function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
     </svg>
-  );
-}
-
-/** Shared Facebook Video / Reel field with inline verification and live iframe embed preview. */
-function FacebookVideoFieldCard({
-  facebookUrl,
-  isShort = false,
-  onToggleShort,
-  thumbnailUrl,
-  onApplyThumbnailAsCover,
-  onChange,
-  onVerify,
-  isVerifying,
-  statusMessage,
-  variant = "standard",
-}: {
-  facebookUrl?: string | null;
-  isShort?: boolean;
-  onToggleShort?: (isShort: boolean) => void;
-  thumbnailUrl?: string | null;
-  onApplyThumbnailAsCover?: (url: string) => void;
-  onChange: (value: string) => void;
-  onVerify: () => void;
-  isVerifying: boolean;
-  statusMessage: string | null;
-  variant?: "booth" | "standard";
-}) {
-  const isUnresolvedShare = facebookUrl ? isUnresolvedFacebookShareUrl(facebookUrl) : false;
-  const resolvedFb = facebookUrl ? resolveSafeFacebookEmbed(facebookUrl, isShort) : null;
-  const isBooth = variant === "booth";
-
-  return (
-    <div
-      className={`p-4 rounded-xl space-y-3 border ${
-        isBooth ? "bg-[#0d0d14] border-blue-500/30" : "bg-[#0d0d12] border-blue-500/35"
-      }`}
-    >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-md bg-blue-600/20 text-[#1877F2] border border-blue-500/30 flex items-center justify-center">
-            <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-white uppercase tracking-wider font-mono block">
-                Facebook Video / Reel Link
-              </span>
-              <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-sans font-bold">
-                اختياري (Optional)
-              </span>
-            </div>
-            <span className="text-[10px] text-zinc-400 font-mono">
-              حقل اختياري — اختر التنسيق (16:9 أفقي أو 9:16 رأسي) واعتمد صورة الغلاف
-            </span>
-          </div>
-        </div>
-
-        {/* Format Switcher: 16:9 Horizontal vs 9:16 Vertical Reel */}
-        {onToggleShort && (
-          <div className="flex items-center gap-1 bg-[#161622] p-1 rounded-lg border border-[#262638]">
-            <button
-              type="button"
-              onClick={() => onToggleShort(false)}
-              className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
-                !isShort
-                  ? "bg-[#1877F2] text-white font-bold shadow"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-              title="عرض كفيديو أفقي عادي 16:9"
-            >
-              16:9 أفقي (Horizontal)
-            </button>
-            <button
-              type="button"
-              onClick={() => onToggleShort(true)}
-              className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
-                isShort
-                  ? "bg-[#1877F2] text-white font-bold shadow"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-              title="عرض كفيديو ريلز رأسي 9:16"
-            >
-              9:16 رأسي (Vertical Reel)
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-2">
-        <input
-          type="text"
-          placeholder="https://www.facebook.com/watch/?v=... or /reel/... or /share/... (أو كود iframe)"
-          value={facebookUrl || ""}
-          onChange={(e) => onChange(e.target.value)}
-          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500 text-xs font-mono"
-        />
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onVerify}
-            disabled={!facebookUrl || isVerifying}
-            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 font-bold text-[11px] disabled:opacity-40 cursor-pointer whitespace-nowrap"
-          >
-            {isVerifying ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              <Sparkles className="w-3.5 h-3.5" />
-            )}
-            <span>Verify &amp; Preview</span>
-          </button>
-          {facebookUrl && (
-            <button
-              type="button"
-              onClick={() => onChange("")}
-              className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
-            >
-              Clear
-            </button>
-          )}
-        </div>
-      </div>
-
-      {statusMessage && (
-        <div
-          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
-            statusMessage.startsWith("✓")
-              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
-              : statusMessage.startsWith("⏳")
-              ? "text-blue-300 bg-blue-500/10 border-blue-500/30"
-              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
-          }`}
-        >
-          <span>{statusMessage}</span>
-        </div>
-      )}
-
-      {isVerifying || isUnresolvedShare ? (
-        <div className="p-6 rounded-lg border border-blue-500/25 bg-[#10101c] flex flex-col items-center justify-center text-center gap-2">
-          <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
-          <span className="text-xs font-bold text-blue-200 font-mono">
-            جاري فك اختصار رابط فيسبوك وتجهيز المشغل...
-          </span>
-          <span className="text-[10px] text-zinc-400 font-mono">
-            Resolving canonical Reel &amp; embedded video preview
-          </span>
-        </div>
-      ) : resolvedFb ? (
-        <div className="space-y-3 pt-2 border-t border-[#222232]">
-          <div className="text-[10px] font-mono text-blue-400 flex items-center justify-between">
-            <span className="flex items-center gap-1.5">
-              <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
-              <span>Facebook Embed Preview</span>
-            </span>
-            <div className="flex items-center gap-3">
-              <a
-                href={resolvedFb.canonicalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1"
-              >
-                <span>مشاهدة على Facebook</span>
-                <span>↗</span>
-              </a>
-              <span className="font-bold">
-                {isShort ? "9:16 VERTICAL REEL" : "16:9 HORIZONTAL VIDEO"}
-              </span>
-            </div>
-          </div>
-          <div
-            className={`${
-              isShort
-                ? "aspect-[9/16] max-w-[240px] mx-auto"
-                : isBooth
-                ? "aspect-video w-full max-w-md mx-auto"
-                : "aspect-video w-full"
-            } rounded-lg overflow-hidden border border-[#262638] bg-black`}
-          >
-            <iframe
-              src={resolvedFb.embedUrl}
-              title={isBooth ? "Booth Facebook Video" : "Facebook Video Preview"}
-              className="w-full h-full border-0"
-              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
-
-          {thumbnailUrl && onApplyThumbnailAsCover && (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-2.5 rounded-lg bg-blue-500/10 border border-blue-500/25">
-              <div className="flex items-center gap-2.5">
-                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-blue-400/40 bg-black shrink-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={thumbnailUrl}
-                    alt="Facebook Video Thumbnail"
-                    className="w-full h-full object-contain bg-black"
-                  />
-                </div>
-                <div>
-                  <span className="text-xs font-bold text-blue-200 block font-sans">
-                    صورة غلاف الفيديو متوفرة من فيسبوك
-                  </span>
-                  <span className="text-[10px] text-zinc-400 font-sans">
-                    اضغط لاعتمادها كصورة الغلاف الأساسية للكرت في الموقع
-                  </span>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => onApplyThumbnailAsCover(thumbnailUrl)}
-                className="px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold rounded-lg transition-all cursor-pointer shadow flex items-center gap-1 font-sans shrink-0"
-              >
-                <span>تعيين كغلاف للمشروع 🖼️</span>
-              </button>
-            </div>
-          )}
-        </div>
-      ) : facebookUrl ? (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-200">
-          <p className="text-[11px] font-sans">
-            ⚠️ الرابط المدخل غير صالح. (ملاحظة: هذا الحقل اختياري تماماً، يمكنك تركه فارغاً إذا كنت لا ترغب بإضافة فيديو فيسبوك).
-          </p>
-          <button
-            type="button"
-            onClick={() => onChange("")}
-            className="px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition-colors shrink-0 cursor-pointer self-start sm:self-center"
-          >
-            مسح الرابط (بدون فيديو فيسبوك)
-          </button>
-        </div>
-      ) : null}
-    </div>
   );
 }
 
@@ -323,13 +89,13 @@ function humanizeAdminError(rawError: string): { title: string; detail: string }
   if (err.includes("youtube") || err.includes("iframe")) {
     return {
       title: "رابط اليوتيوب غير صالح (Invalid YouTube URL)",
-      detail: "حقل فيديو YouTube اختياري تماماً. إذا كنت ترغب بإضافته، يرجى إدخال رابط فيديو صحيح من YouTube مباشرة.",
+      detail: "يرجى إدخال رابط فيديو صحيح من YouTube مباشرة (تأكد من عدم استخدام كود تضمين iframe).",
     };
   }
   if (err.includes("facebook")) {
     return {
-      title: "رابط فيديو فيسبوك غير صالح (Facebook Video is Optional)",
-      detail: "حقل فيديو فيسبوك اختياري تماماً. إذا كنت لا ترغب بإضافة فيديو فيسبوك لهذا المشروع، يرجى مسح الرابط بالضغط على زر Clear أو الزر بالأسفل.",
+      title: "رابط فيديو فيسبوك غير صالح (Invalid Facebook URL)",
+      detail: "يرجى إدخال رابط فيديو صالح من Facebook أو fb.watch مباشرة (تأكد من عدم استخدام كود تضمين iframe).",
     };
   }
   if (err.includes("cover image")) {
@@ -491,27 +257,7 @@ export default function GalleryProjectsManager() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [resolvingYt, setResolvingYt] = useState(false);
   const [ytStatusMessage, setYtStatusMessage] = useState<string | null>(null);
-  const [resolvingFb, setResolvingFb] = useState(false);
   const [fbStatusMessage, setFbStatusMessage] = useState<string | null>(null);
-  const [fbThumbnailUrl, setFbThumbnailUrl] = useState<string | null>(null);
-
-  const applyThumbnailAsCover = (thumbUrl: string) => {
-    if (!editingProject || !thumbUrl) return;
-    const currentImages = editingProject.images || [];
-    const nextImages = currentImages.includes(thumbUrl)
-      ? currentImages
-      : [thumbUrl, ...currentImages];
-    setEditingProject({
-      ...editingProject,
-      image: thumbUrl,
-      images: nextImages,
-    });
-    setNotification({
-      type: "success",
-      title: "تم تعيين صورة الغلاف بنجاح",
-      detail: "تم اعتماد صورة غلاف الفيديو كصورة الغلاف الرئيسية للمشروع بنجاح.",
-    });
-  };
   const [notification, setNotification] = useState<AdminNotification | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -691,10 +437,10 @@ export default function GalleryProjectsManager() {
         setEditingProject((prev) =>
           prev
             ? {
-                ...prev,
-                pdfUrl: data.url,
-                pdfTitle: prev.pdfTitle || autoTitle,
-              }
+              ...prev,
+              pdfUrl: data.url,
+              pdfTitle: prev.pdfTitle || autoTitle,
+            }
             : null
         );
       } else {
@@ -754,10 +500,10 @@ export default function GalleryProjectsManager() {
       prev.map((p) =>
         p.id === id
           ? {
-              ...p,
-              featured: nextFeatured,
-              status: shouldAutoPublish ? "published" : p.status,
-            }
+            ...p,
+            featured: nextFeatured,
+            status: shouldAutoPublish ? "published" : p.status,
+          }
           : p
       )
     );
@@ -765,19 +511,19 @@ export default function GalleryProjectsManager() {
     try {
       const res = shouldAutoPublish
         ? await apiFetchWithCsrf(`/api/projects/${encodeURIComponent(id)}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...target,
-              featured: true,
-              status: "published",
-            }),
-          })
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...target,
+            featured: true,
+            status: "published",
+          }),
+        })
         : await apiFetchWithCsrf(`/api/projects/${encodeURIComponent(id)}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ featured: nextFeatured }),
-          });
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ featured: nextFeatured }),
+        });
 
       if (res.ok) {
         const data = await res.json();
@@ -890,98 +636,10 @@ export default function GalleryProjectsManager() {
     }
   };
 
-  const triggerResolveFacebook = async (targetUrl: string, explicitShort?: boolean) => {
-    if (!targetUrl || !targetUrl.trim()) return;
-    setResolvingFb(true);
-
-    try {
-      const res = await apiFetchWithCsrf("/api/media/facebook/resolve", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          input: targetUrl,
-          isShort: explicitShort !== undefined ? explicitShort : editingProject?.isShort,
-        }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.thumbnailUrl) {
-          setFbThumbnailUrl(data.thumbnailUrl);
-        }
-        setEditingProject((prev) => {
-          if (!prev) return null;
-          const currentImages = prev.images || [];
-          const nextImages =
-            data.thumbnailUrl && !currentImages.includes(data.thumbnailUrl)
-              ? [data.thumbnailUrl, ...currentImages]
-              : currentImages;
-          const resolvedIsShort =
-            explicitShort !== undefined
-              ? explicitShort
-              : prev.isShort !== undefined
-              ? prev.isShort
-              : data.isReel !== undefined
-              ? Boolean(data.isReel)
-              : false;
-
-          return {
-            ...prev,
-            facebookUrl: data.canonicalUrl || prev.facebookUrl,
-            isShort: resolvedIsShort,
-            image: data.thumbnailUrl ? data.thumbnailUrl : prev.image,
-            images: nextImages,
-          };
-        });
-        const currentIsShort =
-          explicitShort !== undefined
-            ? explicitShort
-            : editingProject?.isShort !== undefined
-            ? editingProject.isShort
-            : Boolean(data.isReel);
-        setFbStatusMessage(
-          `✓ تم التحقق وتجهيز مشغل ${
-            currentIsShort ? "Facebook Reel (9:16)" : "Facebook Video (16:9)"
-          } واعتماد صورة غلاف الفيديو بنجاح`
-        );
-      } else {
-        setFbStatusMessage("⚠️ رابط فيديو فيسبوك غير صالح. تأكد أن الرابط عام ومن Facebook أو fb.watch");
-      }
-    } catch {
-      setFbStatusMessage("⚠️ تعذر التحقق من رابط Facebook حالياً، يمكنك الحفظ وسيتم عرضه عبر المشغل");
-    } finally {
-      setResolvingFb(false);
-    }
-  };
-
   const handleYouTubeInputChange = (rawInput: string) => {
     if (!editingProject) return;
     setYtStatusMessage(null);
-
-    const cleanInput = extractFacebookVideoUrlFromSnippet(rawInput).trim();
-
-    if (isValidFacebookVideoUrl(cleanInput)) {
-      const resolvedFb = resolveSafeFacebookEmbed(cleanInput);
-      setEditingProject((prev) =>
-        prev
-          ? {
-              ...prev,
-              youtubeUrl:
-                prev.youtubeUrl && !isValidFacebookVideoUrl(prev.youtubeUrl)
-                  ? prev.youtubeUrl
-                  : "",
-              facebookUrl: resolvedFb ? resolvedFb.canonicalUrl : cleanInput,
-            }
-          : null
-      );
-      setFbStatusMessage("✓ تم التعرف على رابط فيسبوك تلقائياً ونقله إلى حقل Facebook Video");
-      triggerResolveFacebook(cleanInput);
-      return;
-    }
-
-    const resolved = resolveSafeYouTubeEmbed(cleanInput);
+    const resolved = resolveSafeYouTubeEmbed(rawInput);
     if (resolved) {
       const isGeneric =
         !editingProject.image ||
@@ -991,7 +649,7 @@ export default function GalleryProjectsManager() {
 
       setEditingProject({
         ...editingProject,
-        youtubeUrl: resolved.canonicalUrl,
+        youtubeUrl: rawInput,
         youtubeVideoId: resolved.videoId,
         isShort: resolved.isShort,
         image: isGeneric ? ytThumbnail : editingProject.image,
@@ -999,7 +657,7 @@ export default function GalleryProjectsManager() {
     } else {
       setEditingProject({
         ...editingProject,
-        youtubeUrl: cleanInput,
+        youtubeUrl: rawInput,
         youtubeVideoId: null,
       });
     }
@@ -1008,52 +666,28 @@ export default function GalleryProjectsManager() {
   const handleFacebookInputChange = (rawInput: string) => {
     if (!editingProject) return;
     setFbStatusMessage(null);
-    const cleanInput = extractFacebookVideoUrlFromSnippet(rawInput).trim();
-    if (!cleanInput) {
-      setEditingProject((prev) =>
-        prev
-          ? {
-              ...prev,
-              facebookUrl: null,
-            }
-          : null
-      );
+    const trimmed = rawInput.trim();
+    if (!trimmed) {
+      setEditingProject({
+        ...editingProject,
+        facebookUrl: null,
+      });
       return;
     }
-    const resolved = resolveSafeFacebookEmbed(cleanInput);
+    const resolved = resolveSafeFacebookEmbed(trimmed);
     if (resolved) {
-      const isUnresolved = isUnresolvedFacebookShareUrl(cleanInput);
-      setEditingProject((prev) =>
-        prev
-          ? {
-              ...prev,
-              facebookUrl: cleanInput,
-            }
-          : null
-      );
-      if (isUnresolved) {
-        setFbStatusMessage("⏳ جاري التحقق من الرابط وفك اختصار Facebook...");
-        triggerResolveFacebook(cleanInput);
-      } else {
-        setFbStatusMessage("✓ تم التحقق من رابط فيديو Facebook بنجاح");
-        triggerResolveFacebook(resolved.canonicalUrl);
-      }
+      setEditingProject({
+        ...editingProject,
+        facebookUrl: resolved.canonicalUrl,
+      });
+      setFbStatusMessage("✓ تم التحقق من رابط فيديو Facebook بنجاح");
     } else {
-      setEditingProject((prev) =>
-        prev
-          ? {
-              ...prev,
-              facebookUrl: cleanInput,
-            }
-          : null
-      );
+      setEditingProject({
+        ...editingProject,
+        facebookUrl: rawInput,
+      });
       setFbStatusMessage("⚠️ رابط فيديو فيسبوك غير صالح. يرجى إدخال رابط فيديو صالح من Facebook أو fb.watch");
     }
-  };
-
-  const handleResolveFacebookMetadata = async () => {
-    if (!editingProject?.facebookUrl) return;
-    await triggerResolveFacebook(editingProject.facebookUrl, editingProject.isShort);
   };
 
   const handleFetchYouTubeMetadata = async () => {
@@ -1088,8 +722,8 @@ export default function GalleryProjectsManager() {
           const ytDesc = hasFreshYtDesc
             ? rawYtDesc
             : (prev.youtubeDescription && !isGenericYouTubeDescription(prev.youtubeDescription)
-                ? prev.youtubeDescription
-                : "");
+              ? prev.youtubeDescription
+              : "");
 
           const prevDescIsGeneric = isGenericYouTubeDescription(prev.description);
 
@@ -1182,38 +816,10 @@ export default function GalleryProjectsManager() {
     setIsSaving(true);
     setNotification(null);
 
-    let resolvedFacebookUrl = editingProject.facebookUrl?.trim() || null;
-    if (resolvedFacebookUrl) {
-      if (!isValidFacebookVideoUrl(resolvedFacebookUrl)) {
-        setIsSaving(false);
-        const err = humanizeAdminError("facebook url is invalid");
-        setModalError(`${err.title}: ${err.detail}`);
-        return;
-      }
-      if (isUnresolvedFacebookShareUrl(resolvedFacebookUrl)) {
-        try {
-          const fbRes = await apiFetchWithCsrf("/api/media/facebook/resolve", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ input: resolvedFacebookUrl }),
-          });
-          if (fbRes.ok) {
-            const fbData = await fbRes.json();
-            if (fbData.canonicalUrl) {
-              resolvedFacebookUrl = fbData.canonicalUrl;
-            }
-          }
-        } catch {
-          // Fall back to current facebookUrl
-        }
-      }
-    }
-
     const exists = !isCreatingNew && projects.some((p) => p.id === editingProject.id);
 
     const projectToSave: ProjectRecord = {
       ...editingProject,
-      facebookUrl: resolvedFacebookUrl,
       stamp: editingProject.stamp || String(editingProject.year || 2026),
       cadId: editingProject.cadId || "CAD-REV-01",
       stats: editingProject.stats || "",
@@ -1326,12 +932,6 @@ export default function GalleryProjectsManager() {
                 featured: false,
                 order: projects.length + 1,
                 isShort: false,
-                facebookUrl: null,
-                youtubeUrl: null,
-                youtubeVideoId: null,
-                behanceUrl: null,
-                pdfUrl: null,
-                pdfTitle: null,
               });
             }}
             className="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold font-mono uppercase tracking-wider rounded-xl transition-all shadow-[2px_2px_0px_#ffffff] cursor-pointer"
@@ -1345,13 +945,12 @@ export default function GalleryProjectsManager() {
       <main className="p-8 max-w-6xl space-y-6">
         {notification && (
           <div
-            className={`p-4 rounded-xl border flex items-start justify-between gap-3 transition-all ${
-              notification.type === "success"
-                ? "bg-emerald-950/70 border-emerald-500/40 text-emerald-200"
-                : notification.type === "error"
+            className={`p-4 rounded-xl border flex items-start justify-between gap-3 transition-all ${notification.type === "success"
+              ? "bg-emerald-950/70 border-emerald-500/40 text-emerald-200"
+              : notification.type === "error"
                 ? "bg-rose-950/70 border-rose-500/50 text-rose-200"
                 : "bg-amber-950/70 border-amber-500/50 text-amber-200"
-            }`}
+              }`}
           >
             <div className="flex items-start gap-3">
               {notification.type === "success" ? (
@@ -1360,9 +959,8 @@ export default function GalleryProjectsManager() {
                 </span>
               ) : (
                 <AlertTriangle
-                  className={`w-5 h-5 shrink-0 mt-0.5 ${
-                    notification.type === "error" ? "text-rose-400" : "text-amber-400"
-                  }`}
+                  className={`w-5 h-5 shrink-0 mt-0.5 ${notification.type === "error" ? "text-rose-400" : "text-amber-400"
+                    }`}
                 />
               )}
               <div>
@@ -1403,11 +1001,10 @@ export default function GalleryProjectsManager() {
           <button
             type="button"
             onClick={() => setShowHomeStarredOnly((v) => !v)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase flex items-center gap-1.5 shrink-0 transition-all cursor-pointer border ${
-              showHomeStarredOnly
-                ? "bg-yellow-400 text-black border-yellow-300"
-                : "bg-[#151520] text-yellow-400 border-yellow-400/40 hover:bg-yellow-400/20"
-            }`}
+            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase flex items-center gap-1.5 shrink-0 transition-all cursor-pointer border ${showHomeStarredOnly
+              ? "bg-yellow-400 text-black border-yellow-300"
+              : "bg-[#151520] text-yellow-400 border-yellow-400/40 hover:bg-yellow-400/20"
+              }`}
           >
             <Star className={`w-3.5 h-3.5 ${showHomeStarredOnly ? "fill-black" : "fill-yellow-400"}`} />
             <span>{showHomeStarredOnly ? "Showing ★ Home Only" : `Filter ★ Home (${homeStarredCount})`}</span>
@@ -1431,17 +1028,16 @@ export default function GalleryProjectsManager() {
             {[
               { key: "all", label: "ALL" },
               { key: "conferences", label: "CONFERENCES & MEDICAL" },
-              { key: "booths", label: "EXHIBITION BOOTHS" },
+              { key: "booths", label: "EXHIBITION & BOOTHS" },
               { key: "branding", label: "BRANDING & PRINT & GIVEAWAYS" },
             ].map((cat) => (
               <button
                 key={cat.key}
                 onClick={() => setActiveCategory(cat.key as ProjectCategory)}
-                className={`px-3 py-1.5 rounded-lg uppercase transition-all whitespace-nowrap cursor-pointer ${
-                  activeCategory === cat.key
-                    ? "bg-yellow-400 text-black font-bold"
-                    : "text-zinc-400 hover:text-white bg-[#0d0d12] border border-[#262638]"
-                }`}
+                className={`px-3 py-1.5 rounded-lg uppercase transition-all whitespace-nowrap cursor-pointer ${activeCategory === cat.key
+                  ? "bg-yellow-400 text-black font-bold"
+                  : "text-zinc-400 hover:text-white bg-[#0d0d12] border border-[#262638]"
+                  }`}
               >
                 {cat.label}
               </button>
@@ -1490,7 +1086,7 @@ export default function GalleryProjectsManager() {
                       <img
                         src={project.image}
                         alt={project.title}
-                        className="w-full h-full object-cover object-top"
+                        className="w-full h-full object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
                         }}
@@ -1571,27 +1167,24 @@ export default function GalleryProjectsManager() {
                         ? "Currently featured on Home Page — Click to remove from Home"
                         : "Click ★ Star to feature this video/project on the Home Page"
                     }
-                    className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
-                      project.featured
-                        ? "bg-yellow-400 text-black border-yellow-300 shadow-[0_0_12px_rgba(250,204,21,0.25)]"
-                        : "bg-[#20202e] text-zinc-400 border-[#2b2b3d] hover:text-yellow-400 hover:border-yellow-400/50"
-                    }`}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${project.featured
+                      ? "bg-yellow-400 text-black border-yellow-300 shadow-[0_0_12px_rgba(250,204,21,0.25)]"
+                      : "bg-[#20202e] text-zinc-400 border-[#2b2b3d] hover:text-yellow-400 hover:border-yellow-400/50"
+                      }`}
                   >
                     <Star
-                      className={`w-3.5 h-3.5 ${
-                        project.featured ? "fill-black text-black" : ""
-                      }`}
+                      className={`w-3.5 h-3.5 ${project.featured ? "fill-black text-black" : ""
+                        }`}
                     />
                     <span>{project.featured ? "★ On Home" : "☆ Add to Home"}</span>
                   </button>
 
                   <button
                     onClick={() => handleToggleStatus(project.id)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold uppercase transition-colors cursor-pointer border ${
-                      project.status === "published"
-                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
-                        : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:bg-zinc-700"
-                    }`}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold uppercase transition-colors cursor-pointer border ${project.status === "published"
+                      ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
+                      : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:bg-zinc-700"
+                      }`}
                   >
                     {project.status}
                   </button>
@@ -1756,15 +1349,15 @@ export default function GalleryProjectsManager() {
                           category: newCat,
                           metaBadge:
                             isNowBooth &&
-                            (!editingProject.metaBadge ||
-                              editingProject.metaBadge.includes("2026") ||
-                              editingProject.metaBadge.includes("GATHERING"))
+                              (!editingProject.metaBadge ||
+                                editingProject.metaBadge.includes("2026") ||
+                                editingProject.metaBadge.includes("GATHERING"))
                               ? "36M² CUSTOM BUILD"
                               : editingProject.metaBadge,
                           image:
                             isNowBooth &&
-                            (!editingProject.image ||
-                              editingProject.image.includes("neon_horizon"))
+                              (!editingProject.image ||
+                                editingProject.image.includes("neon_horizon"))
                               ? "/assets/images/gallery/project_06_sensory_expo.jpg"
                               : editingProject.image,
                         });
@@ -1855,8 +1448,8 @@ export default function GalleryProjectsManager() {
                       Array.isArray(editingProject.tags)
                         ? editingProject.tags.join(", ")
                         : typeof editingProject.tags === "string"
-                        ? editingProject.tags
-                        : ""
+                          ? editingProject.tags
+                          : ""
                     }
                     onChange={(e) => {
                       const tagsArray = e.target.value
@@ -1878,11 +1471,10 @@ export default function GalleryProjectsManager() {
                       {editingProject.tags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full border ${
-                            idx === 0
-                              ? "bg-yellow-400/20 text-yellow-300 border-yellow-400/40"
-                              : "bg-zinc-800 text-zinc-400 border-zinc-700"
-                          }`}
+                          className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full border ${idx === 0
+                            ? "bg-yellow-400/20 text-yellow-300 border-yellow-400/40"
+                            : "bg-zinc-800 text-zinc-400 border-zinc-700"
+                            }`}
                         >
                           {tag}
                         </span>
@@ -1908,11 +1500,10 @@ export default function GalleryProjectsManager() {
                       <button
                         type="button"
                         onClick={() => setMediaSourceTab("behance")}
-                        className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                          mediaSourceTab === "behance"
-                            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-black"
-                            : "text-zinc-400 hover:text-white hover:bg-[#181824]"
-                        }`}
+                        className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${mediaSourceTab === "behance"
+                          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-black"
+                          : "text-zinc-400 hover:text-white hover:bg-[#181824]"
+                          }`}
                       >
                         <BehanceIcon className="w-4 h-4" />
                         <span>Behance 3D Project Sync</span>
@@ -1924,11 +1515,10 @@ export default function GalleryProjectsManager() {
                       <button
                         type="button"
                         onClick={() => setMediaSourceTab("upload")}
-                        className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                          mediaSourceTab === "upload"
-                            ? "bg-yellow-400 text-black shadow-lg shadow-yellow-400/20 font-black"
-                            : "text-zinc-400 hover:text-white hover:bg-[#181824]"
-                        }`}
+                        className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${mediaSourceTab === "upload"
+                          ? "bg-yellow-400 text-black shadow-lg shadow-yellow-400/20 font-black"
+                          : "text-zinc-400 hover:text-white hover:bg-[#181824]"
+                          }`}
                       >
                         <UploadCloud className="w-4 h-4" />
                         <span>Manual 3D Renders &amp; File Upload</span>
@@ -2013,11 +1603,10 @@ export default function GalleryProjectsManager() {
                         {/* Status Message */}
                         {behanceStatusMessage && (
                           <div
-                            className={`text-xs font-mono px-3.5 py-2 rounded-xl border flex items-center gap-2 ${
-                              behanceStatusMessage.startsWith("✓")
-                                ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
-                                : "text-rose-300 bg-rose-500/10 border-rose-500/30"
-                            }`}
+                            className={`text-xs font-mono px-3.5 py-2 rounded-xl border flex items-center gap-2 ${behanceStatusMessage.startsWith("✓")
+                              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+                              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
+                              }`}
                           >
                             <span>{behanceStatusMessage}</span>
                           </div>
@@ -2044,7 +1633,7 @@ export default function GalleryProjectsManager() {
                                 alt="Behance 3D Booth Preview"
                                 referrerPolicy="no-referrer"
                                 crossOrigin="anonymous"
-                                className="w-full h-full object-contain bg-black"
+                                className="w-full h-full object-cover"
                               />
                               <div className="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow uppercase">
                                 ★ BEHANCE 3D COVER
@@ -2082,13 +1671,12 @@ export default function GalleryProjectsManager() {
                                     return (
                                       <div
                                         key={idx}
-                                        className={`relative aspect-[16/10] rounded-lg overflow-hidden border p-0.5 bg-black cursor-pointer group ${
-                                          isCover ? "border-blue-400 ring-1 ring-blue-400" : "border-[#2b2b3d]"
-                                        }`}
+                                        className={`relative aspect-[16/10] rounded-lg overflow-hidden border p-0.5 bg-black cursor-pointer group ${isCover ? "border-blue-400 ring-1 ring-blue-400" : "border-[#2b2b3d]"
+                                          }`}
                                         onClick={() => setEditingProject({ ...editingProject, image: img })}
                                       >
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={img} alt={`Angle ${idx + 1}`} referrerPolicy="no-referrer" crossOrigin="anonymous" className="w-full h-full object-contain bg-black" />
+                                        <img src={img} alt={`Angle ${idx + 1}`} referrerPolicy="no-referrer" crossOrigin="anonymous" className="w-full h-full object-cover" />
                                         {isCover && (
                                           <span className="absolute top-1 left-1 bg-blue-600 text-white font-black text-[8px] px-1 py-0.2 rounded shadow">
                                             Cover
@@ -2115,402 +1703,449 @@ export default function GalleryProjectsManager() {
                     ) : (
                       /* 2. DIRECT FILE UPLOAD TAB (INCLUDES MANUAL RENDERS, ARCHITECTURAL BLUEPRINT & VIDEO HUB) */
                       <div className="space-y-4">
-                      <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
-                        <div className="flex items-center justify-between flex-wrap gap-2">
-                          <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-md bg-yellow-400/20 text-yellow-400 border border-yellow-400/30 flex items-center justify-center">
-                              <Sparkles className="w-3.5 h-3.5" />
-                            </div>
-                            <div>
-                              <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                                Manual 3D Spatial Renders &amp; Photos
-                              </span>
-                              <span className="text-[10px] text-zinc-500 block font-mono">
-                                Upload 3D perspectives, elevations or paste direct image links
-                              </span>
-                            </div>
-                          </div>
-                          {(editingProject.images?.length || editingProject.image) ? (
-                            <span className="text-[10px] text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 px-2 py-0.5 rounded-full font-mono">
-                              {(editingProject.images?.length || 1)} Renders Attached
-                            </span>
-                          ) : null}
-                        </div>
-
-                        {/* Drag & Drop Booth Images Zone */}
-                        <div
-                          onDragOver={(e) => {
-                            e.preventDefault();
-                            setIsBoothImagesDragging(true);
-                          }}
-                          onDragLeave={() => setIsBoothImagesDragging(false)}
-                          onDrop={(e) => {
-                            e.preventDefault();
-                            setIsBoothImagesDragging(false);
-                            if (e.dataTransfer.files) handleUploadImages(e.dataTransfer.files);
-                          }}
-                          onClick={() => !isUploadingImages && boothImagesInputRef.current?.click()}
-                          className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 ${
-                            isBoothImagesDragging
-                              ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
-                              : "border-[#2b2b3d] bg-[#12121c] hover:border-yellow-400/60 hover:bg-[#151522]"
-                          }`}
-                        >
-                          <input
-                            ref={boothImagesInputRef}
-                            type="file"
-                            accept="image/png, image/jpeg, image/webp"
-                            multiple
-                            disabled={isUploadingImages}
-                            onChange={(e) => {
-                              handleUploadImages(e.target.files);
-                              e.target.value = "";
-                            }}
-                            className="hidden"
-                          />
-                          {isUploadingImages ? (
-                            <div className="py-2 flex flex-col items-center gap-2">
-                              <Loader2 className="w-6 h-6 text-yellow-400 animate-spin" />
-                              <span className="font-mono text-zinc-400 text-xs">
-                                Uploading spatial renders to Supabase...
-                              </span>
-                            </div>
-                          ) : (
-                            <>
-                              <div className="w-10 h-10 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.15)]">
-                                <UploadCloud className="w-5 h-5" />
+                        <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-md bg-yellow-400/20 text-yellow-400 border border-yellow-400/30 flex items-center justify-center">
+                                <Sparkles className="w-3.5 h-3.5" />
                               </div>
                               <div>
-                                <p className="text-white text-xs font-bold">
-                                  Drag &amp; drop booth images here, or <span className="text-yellow-400 underline">browse</span>
-                                </p>
-                                <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
-                                  Select single or multiple perspectives (PNG, JPG, WebP)
-                                </p>
+                                <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                                  Manual 3D Spatial Renders &amp; Photos
+                                </span>
+                                <span className="text-[10px] text-zinc-500 block font-mono">
+                                  Upload 3D perspectives, elevations or paste direct image links
+                                </span>
                               </div>
-                            </>
+                            </div>
+                            {(editingProject.images?.length || editingProject.image) ? (
+                              <span className="text-[10px] text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 px-2 py-0.5 rounded-full font-mono">
+                                {(editingProject.images?.length || 1)} Renders Attached
+                              </span>
+                            ) : null}
+                          </div>
+
+                          {/* Drag & Drop Booth Images Zone */}
+                          <div
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setIsBoothImagesDragging(true);
+                            }}
+                            onDragLeave={() => setIsBoothImagesDragging(false)}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              setIsBoothImagesDragging(false);
+                              if (e.dataTransfer.files) handleUploadImages(e.dataTransfer.files);
+                            }}
+                            onClick={() => !isUploadingImages && boothImagesInputRef.current?.click()}
+                            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 ${isBoothImagesDragging
+                              ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
+                              : "border-[#2b2b3d] bg-[#12121c] hover:border-yellow-400/60 hover:bg-[#151522]"
+                              }`}
+                          >
+                            <input
+                              ref={boothImagesInputRef}
+                              type="file"
+                              accept="image/png, image/jpeg, image/webp"
+                              multiple
+                              disabled={isUploadingImages}
+                              onChange={(e) => {
+                                handleUploadImages(e.target.files);
+                                e.target.value = "";
+                              }}
+                              className="hidden"
+                            />
+                            {isUploadingImages ? (
+                              <div className="py-2 flex flex-col items-center gap-2">
+                                <Loader2 className="w-6 h-6 text-yellow-400 animate-spin" />
+                                <span className="font-mono text-zinc-400 text-xs">
+                                  Uploading spatial renders to Supabase...
+                                </span>
+                              </div>
+                            ) : (
+                              <>
+                                <div className="w-10 h-10 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.15)]">
+                                  <UploadCloud className="w-5 h-5" />
+                                </div>
+                                <div>
+                                  <p className="text-white text-xs font-bold">
+                                    Drag &amp; drop booth images here, or <span className="text-yellow-400 underline">browse</span>
+                                  </p>
+                                  <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
+                                    Select single or multiple perspectives (PNG, JPG, WebP)
+                                  </p>
+                                </div>
+                              </>
+                            )}
+                          </div>
+
+                          {/* Direct Image URL input */}
+                          <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-[#1e1e2d]">
+                            <input
+                              type="url"
+                              placeholder="Or paste direct image URL (e.g. Behance CDN link, Unsplash, etc.)..."
+                              value={manualImageUrl}
+                              onChange={(e) => setManualImageUrl(e.target.value)}
+                              className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-1.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400 text-xs font-mono"
+                            />
+                            <button
+                              type="button"
+                              onClick={handleAddManualImage}
+                              disabled={!manualImageUrl.trim()}
+                              className="px-3.5 py-1.5 rounded-xl bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 border border-yellow-400/30 text-xs font-bold disabled:opacity-40 cursor-pointer whitespace-nowrap"
+                            >
+                              + Add Image URL
+                            </button>
+                          </div>
+
+                          {/* Images Previews Grid */}
+                          {(() => {
+                            const imagesList =
+                              editingProject.images && editingProject.images.length > 0
+                                ? editingProject.images
+                                : editingProject.image
+                                  ? [editingProject.image]
+                                  : [];
+                            return imagesList.length > 0 ? (
+                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                                {imagesList.map((img, idx) => {
+                                  const isCover = img === editingProject.image;
+                                  return (
+                                    <div
+                                      key={idx}
+                                      className={`relative rounded-xl border p-1.5 bg-[#151520] flex flex-col gap-1.5 ${isCover ? "border-yellow-400 ring-1 ring-yellow-400" : "border-[#2b2b3d]"
+                                        }`}
+                                    >
+                                      <div className="relative aspect-[16/10] rounded-lg overflow-hidden bg-black">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src={img} alt={`Booth preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                        {isCover && (
+                                          <span className="absolute top-1 left-1 bg-yellow-400 text-black font-black text-[9px] uppercase px-1.5 py-0.5 rounded shadow">
+                                            ★ Cover
+                                          </span>
+                                        )}
+                                      </div>
+                                      <div className="flex items-center justify-between gap-1 text-[10px]">
+                                        <button
+                                          type="button"
+                                          onClick={() => setEditingProject({ ...editingProject, image: img })}
+                                          className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${isCover
+                                            ? "bg-yellow-400 text-black"
+                                            : "text-zinc-400 hover:text-white bg-[#20202e]"
+                                            }`}
+                                        >
+                                          {isCover ? "Primary Cover" : "Set as Cover"}
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            const filtered = imagesList.filter((_, i) => i !== idx);
+                                            const nextCover = isCover ? filtered[0] || "" : editingProject.image;
+                                            setEditingProject({
+                                              ...editingProject,
+                                              images: filtered,
+                                              image: nextCover,
+                                            });
+                                          }}
+                                          className="text-zinc-500 hover:text-red-400 p-1 cursor-pointer"
+                                          title="Remove Image"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <p className="text-[11px] text-zinc-500 italic">No images attached yet. Add at least 1 image.</p>
+                            );
+                          })()}
+                        </div>
+
+                        {/* 3. ARCHITECTURAL BLUEPRINT & TECHNICAL SPEC (PDF) */}
+                        <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+                                <FileText className="w-3.5 h-3.5" />
+                              </div>
+                              <div>
+                                <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                                  Architectural Blueprint &amp; Specs (PDF)
+                                </span>
+                                <span className="text-[10px] text-zinc-500 block font-mono">
+                                  Floor plans, 3D technical elevation &amp; spatial layout sheets
+                                </span>
+                              </div>
+                            </div>
+                            {editingProject.pdfUrl && (
+                              <span className="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                                ✓ Blueprint Attached
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Dropzone */}
+                          <div
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setIsBoothPdfDragging(true);
+                            }}
+                            onDragLeave={() => setIsBoothPdfDragging(false)}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              setIsBoothPdfDragging(false);
+                              const file = e.dataTransfer.files?.[0];
+                              if (file) handleUploadPdf(file);
+                            }}
+                            onClick={() => !isUploadingPdf && boothPdfInputRef.current?.click()}
+                            className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 ${isBoothPdfDragging
+                              ? "border-amber-400 bg-amber-400/10 scale-[1.01]"
+                              : "border-[#2b2b3d] bg-[#12121c] hover:border-amber-400/50 hover:bg-[#141420]"
+                              }`}
+                          >
+                            <input
+                              ref={boothPdfInputRef}
+                              type="file"
+                              accept="application/pdf,.pdf"
+                              disabled={isUploadingPdf}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleUploadPdf(file);
+                                e.target.value = "";
+                              }}
+                              className="hidden"
+                            />
+                            {isUploadingPdf ? (
+                              <div className="py-2 flex flex-col items-center gap-2">
+                                <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
+                                <span className="font-mono text-zinc-400 text-[11px]">
+                                  Uploading PDF blueprint...
+                                </span>
+                              </div>
+                            ) : (
+                              <>
+                                <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                                  <FileText className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <p className="text-white text-xs font-bold">
+                                    Drag &amp; drop architectural PDF here, or <span className="text-amber-400 underline">browse</span>
+                                  </p>
+                                  <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
+                                    CAD drawings, spatial specs &amp; 3D axonometric sheets (Max 25MB)
+                                  </p>
+                                </div>
+                              </>
+                            )}
+                          </div>
+
+                          {/* Attached PDF Preview Card */}
+                          {editingProject.pdfUrl && (
+                            <div className="p-3 bg-amber-950/20 border border-amber-500/30 rounded-xl flex flex-wrap items-center justify-between gap-3">
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
+                                  <FileText className="w-5 h-5" />
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="font-bold text-white text-xs truncate">
+                                    {editingProject.pdfTitle || "Architectural Blueprint (PDF)"}
+                                  </div>
+                                  <div className="text-[10px] text-zinc-400 font-mono truncate">{editingProject.pdfUrl}</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0 ml-auto">
+                                <a
+                                  href={editingProject.pdfUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="px-2.5 py-1 text-[11px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 rounded-lg flex items-center gap-1 font-bold"
+                                >
+                                  <span>View Blueprint ↗</span>
+                                </a>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingProject({ ...editingProject, pdfUrl: null, pdfTitle: null });
+                                    if (boothPdfInputRef.current) boothPdfInputRef.current.value = "";
+                                  }}
+                                  className="px-2.5 py-1 text-[11px] bg-red-600/20 hover:bg-red-600/40 text-red-300 border border-red-500/40 rounded-lg flex items-center gap-1 font-bold cursor-pointer transition-colors"
+                                  title="Delete Attached PDF"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>Remove</span>
+                                </button>
+                              </div>
+                            </div>
                           )}
                         </div>
 
-                        {/* Direct Image URL input */}
-                        <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-[#1e1e2d]">
-                          <input
-                            type="url"
-                            placeholder="Or paste direct image URL (e.g. Behance CDN link, Unsplash, etc.)..."
-                            value={manualImageUrl}
-                            onChange={(e) => setManualImageUrl(e.target.value)}
-                            className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-1.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400 text-xs font-mono"
-                          />
-                          <button
-                            type="button"
-                            onClick={handleAddManualImage}
-                            disabled={!manualImageUrl.trim()}
-                            className="px-3.5 py-1.5 rounded-xl bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 border border-yellow-400/30 text-xs font-bold disabled:opacity-40 cursor-pointer whitespace-nowrap"
-                          >
-                            + Add Image URL
-                          </button>
-                        </div>
-
-                        {/* Images Previews Grid */}
-                        {(() => {
-                          const imagesList =
-                            editingProject.images && editingProject.images.length > 0
-                              ? editingProject.images
-                              : editingProject.image
-                              ? [editingProject.image]
-                              : [];
-                          return imagesList.length > 0 ? (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-                              {imagesList.map((img, idx) => {
-                                const isCover = img === editingProject.image;
-                                return (
-                                  <div
-                                    key={idx}
-                                    className={`relative rounded-xl border p-1.5 bg-[#151520] flex flex-col gap-1.5 ${
-                                      isCover ? "border-yellow-400 ring-1 ring-yellow-400" : "border-[#2b2b3d]"
-                                    }`}
-                                  >
-                                    <div className="relative aspect-[16/10] rounded-lg overflow-hidden bg-black">
-                                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                                      <img src={img} alt={`Booth preview ${idx + 1}`} className="w-full h-full object-contain bg-black" />
-                                      {isCover && (
-                                        <span className="absolute top-1 left-1 bg-yellow-400 text-black font-black text-[9px] uppercase px-1.5 py-0.5 rounded shadow">
-                                          ★ Cover
-                                        </span>
-                                      )}
-                                    </div>
-                                    <div className="flex items-center justify-between gap-1 text-[10px]">
-                                      <button
-                                        type="button"
-                                        onClick={() => setEditingProject({ ...editingProject, image: img })}
-                                        className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
-                                          isCover
-                                            ? "bg-yellow-400 text-black"
-                                            : "text-zinc-400 hover:text-white bg-[#20202e]"
-                                        }`}
-                                      >
-                                        {isCover ? "Primary Cover" : "Set as Cover"}
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          const filtered = imagesList.filter((_, i) => i !== idx);
-                                          const nextCover = isCover ? filtered[0] || "" : editingProject.image;
-                                          setEditingProject({
-                                            ...editingProject,
-                                            images: filtered,
-                                            image: nextCover,
-                                          });
-                                        }}
-                                        className="text-zinc-500 hover:text-red-400 p-1 cursor-pointer"
-                                        title="Remove Image"
-                                      >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                      </button>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <p className="text-[11px] text-zinc-500 italic">No images attached yet. Add at least 1 image.</p>
-                          );
-                        })()}
-                      </div>
-
-                    {/* 3. ARCHITECTURAL BLUEPRINT & TECHNICAL SPEC (PDF) */}
-                    <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
-                            <FileText className="w-3.5 h-3.5" />
-                          </div>
-                          <div>
-                            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                              Architectural Blueprint &amp; Specs (PDF)
-                            </span>
-                            <span className="text-[10px] text-zinc-500 block font-mono">
-                              Floor plans, 3D technical elevation &amp; spatial layout sheets
-                            </span>
-                          </div>
-                        </div>
-                        {editingProject.pdfUrl && (
-                          <span className="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
-                            ✓ Blueprint Attached
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Dropzone */}
-                      <div
-                        onDragOver={(e) => {
-                          e.preventDefault();
-                          setIsBoothPdfDragging(true);
-                        }}
-                        onDragLeave={() => setIsBoothPdfDragging(false)}
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          setIsBoothPdfDragging(false);
-                          const file = e.dataTransfer.files?.[0];
-                          if (file) handleUploadPdf(file);
-                        }}
-                        onClick={() => !isUploadingPdf && boothPdfInputRef.current?.click()}
-                        className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 ${
-                          isBoothPdfDragging
-                            ? "border-amber-400 bg-amber-400/10 scale-[1.01]"
-                            : "border-[#2b2b3d] bg-[#12121c] hover:border-amber-400/50 hover:bg-[#141420]"
-                        }`}
-                      >
-                        <input
-                          ref={boothPdfInputRef}
-                          type="file"
-                          accept="application/pdf,.pdf"
-                          disabled={isUploadingPdf}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleUploadPdf(file);
-                            e.target.value = "";
-                          }}
-                          className="hidden"
-                        />
-                        {isUploadingPdf ? (
-                          <div className="py-2 flex flex-col items-center gap-2">
-                            <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
-                            <span className="font-mono text-zinc-400 text-[11px]">
-                              Uploading PDF blueprint...
-                            </span>
-                          </div>
-                        ) : (
-                          <>
-                            <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                              <FileText className="w-4 h-4" />
-                            </div>
-                            <div>
-                              <p className="text-white text-xs font-bold">
-                                Drag &amp; drop architectural PDF here, or <span className="text-amber-400 underline">browse</span>
-                              </p>
-                              <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
-                                CAD drawings, spatial specs &amp; 3D axonometric sheets (Max 25MB)
-                              </p>
-                            </div>
-                          </>
-                        )}
-                      </div>
-
-                      {/* Attached PDF Preview Card */}
-                      {editingProject.pdfUrl && (
-                        <div className="p-3 bg-amber-950/20 border border-amber-500/30 rounded-xl flex flex-wrap items-center justify-between gap-3">
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
-                              <FileText className="w-5 h-5" />
-                            </div>
-                            <div className="min-w-0">
-                              <div className="font-bold text-white text-xs truncate">
-                                {editingProject.pdfTitle || "Architectural Blueprint (PDF)"}
+                        {/* 4. VIDEO & WALKTHROUGH HUB */}
+                        <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-md bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center">
+                                <Video className="w-3.5 h-3.5" />
                               </div>
-                              <div className="text-[10px] text-zinc-400 font-mono truncate">{editingProject.pdfUrl}</div>
+                              <div>
+                                <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                                  Booth Walkthrough &amp; Video Tour
+                                </span>
+                                <span className="text-[10px] text-zinc-500 block font-mono">
+                                  Optional YouTube showreel, spatial animation or vertical short
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Format Switcher Badge */}
+                            <div className="flex items-center gap-1 bg-[#161622] p-1 rounded-lg border border-[#262638]">
+                              <button
+                                type="button"
+                                onClick={() => setEditingProject({ ...editingProject, isShort: false })}
+                                className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${!editingProject.isShort
+                                  ? "bg-red-500 text-white font-bold"
+                                  : "text-zinc-400 hover:text-white"
+                                  }`}
+                              >
+                                16:9 Showcase
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditingProject({ ...editingProject, isShort: true })}
+                                className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${editingProject.isShort
+                                  ? "bg-red-500 text-white font-bold"
+                                  : "text-zinc-400 hover:text-white"
+                                  }`}
+                              >
+                                9:16 Reel/Shorts
+                              </button>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 shrink-0 ml-auto">
-                            <a
-                              href={editingProject.pdfUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="px-2.5 py-1 text-[11px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 rounded-lg flex items-center gap-1 font-bold"
-                            >
-                              <span>View Blueprint ↗</span>
-                            </a>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditingProject({ ...editingProject, pdfUrl: null, pdfTitle: null });
-                                if (boothPdfInputRef.current) boothPdfInputRef.current.value = "";
-                              }}
-                              className="px-2.5 py-1 text-[11px] bg-red-600/20 hover:bg-red-600/40 text-red-300 border border-red-500/40 rounded-lg flex items-center gap-1 font-bold cursor-pointer transition-colors"
-                              title="Delete Attached PDF"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                              <span>Remove</span>
-                            </button>
+
+                          {/* Video Input + Embed */}
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <input
+                              type="text"
+                              placeholder="Paste YouTube video or Shorts link (e.g. youtube.com/watch?v=... or shorts/...)"
+                              value={editingProject.youtubeUrl || ""}
+                              onChange={(e) => handleYouTubeInputChange(e.target.value)}
+                              className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-red-500/60 text-xs font-mono"
+                            />
+                            {editingProject.youtubeUrl && (
+                              <button
+                                type="button"
+                                onClick={() => handleYouTubeInputChange("")}
+                                className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
+                              >
+                                Clear
+                              </button>
+                            )}
                           </div>
+
+                          {/* Live Embed Preview if valid */}
+                          {(() => {
+                            const resolved = editingProject.youtubeUrl ? resolveSafeYouTubeEmbed(editingProject.youtubeUrl) : null;
+                            if (!resolved) return null;
+                            return (
+                              <div className="mt-2 pt-2 border-t border-[#1e1e2d] space-y-2">
+                                <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                                  <span className="flex items-center gap-1.5 text-emerald-400">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                                    Valid YouTube Embed (ID: {resolved.videoId})
+                                  </span>
+                                  <span>{editingProject.isShort ? "9:16 Vertical Reel" : "16:9 Cinematic Video"}</span>
+                                </div>
+                                <div
+                                  className={`rounded-xl overflow-hidden border border-[#2b2b3d] bg-black ${editingProject.isShort
+                                    ? "aspect-[9/16] max-w-[220px] mx-auto"
+                                    : "aspect-video w-full max-w-md mx-auto"
+                                    }`}
+                                >
+                                  <iframe
+                                    src={resolved.embedUrl}
+                                    title="Booth Video Walkthrough"
+                                    className="w-full h-full"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })()}
                         </div>
-                      )}
-                    </div>
+
+                        {/* Facebook Video / Reel for Booth */}
+                        <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-md bg-blue-600/20 text-[#1877F2] border border-blue-500/30 flex items-center justify-center">
+                                <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
+                              </div>
+                              <div>
+                                <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                                  Facebook Video / Reel
+                                </span>
+                                <span className="text-[10px] text-zinc-500 block font-mono">
+                                  Optional Facebook showreel, live video or reel link
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <input
+                              type="text"
+                              placeholder="Paste Facebook video link (e.g. facebook.com/watch, fb.watch, or /reel/...)"
+                              value={editingProject.facebookUrl || ""}
+                              onChange={(e) => handleFacebookInputChange(e.target.value)}
+                              className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500 text-xs font-mono"
+                            />
+                            {editingProject.facebookUrl && (
+                              <button
+                                type="button"
+                                onClick={() => handleFacebookInputChange("")}
+                                className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
+                              >
+                                Clear
+                              </button>
+                            )}
+                          </div>
+
+                          {(() => {
+                            const resolvedFb = editingProject.facebookUrl
+                              ? resolveSafeFacebookEmbed(editingProject.facebookUrl)
+                              : null;
+                            if (!resolvedFb) return null;
+                            return (
+                              <div className="mt-2 pt-2 border-t border-[#1e1e2d] space-y-2">
+                                <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                                  <span className="flex items-center gap-1.5 text-blue-400">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping" />
+                                    Valid Facebook Video
+                                  </span>
+                                  <span>{resolvedFb.isReel ? "9:16 Vertical Reel" : "16:9 Video"}</span>
+                                </div>
+                                <div
+                                  className={`rounded-xl overflow-hidden border border-[#2b2b3d] bg-black ${resolvedFb.isReel
+                                    ? "aspect-[9/16] max-w-[220px] mx-auto"
+                                    : "aspect-video w-full max-w-md mx-auto"
+                                    }`}
+                                >
+                                  <iframe
+                                    src={resolvedFb.embedUrl}
+                                    title="Booth Facebook Video"
+                                    className="w-full h-full border-0"
+                                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                    allowFullScreen
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
                       </div>
                     )}
-
-                    {/* 4. VIDEO & WALKTHROUGH HUB (SHARED ACROSS BOTH BOOTH TABS) */}
-                    <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-md bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center">
-                            <Video className="w-3.5 h-3.5" />
-                          </div>
-                          <div>
-                            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                              Booth Walkthrough &amp; Video Tour
-                            </span>
-                            <span className="text-[10px] text-zinc-500 block font-mono">
-                              Optional YouTube showreel, spatial animation or vertical short
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Format Switcher Badge */}
-                        <div className="flex items-center gap-1 bg-[#161622] p-1 rounded-lg border border-[#262638]">
-                          <button
-                            type="button"
-                            onClick={() => setEditingProject({ ...editingProject, isShort: false })}
-                            className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
-                              !editingProject.isShort
-                                ? "bg-red-500 text-white font-bold"
-                                : "text-zinc-400 hover:text-white"
-                            }`}
-                          >
-                            16:9 Showcase
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setEditingProject({ ...editingProject, isShort: true })}
-                            className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
-                              editingProject.isShort
-                                ? "bg-red-500 text-white font-bold"
-                                : "text-zinc-400 hover:text-white"
-                            }`}
-                          >
-                            9:16 Reel/Shorts
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Video Input + Embed */}
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                          type="text"
-                          placeholder="Paste YouTube video or Shorts link (e.g. youtube.com/watch?v=... or shorts/...)"
-                          value={editingProject.youtubeUrl || ""}
-                          onChange={(e) => handleYouTubeInputChange(e.target.value)}
-                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-red-500/60 text-xs font-mono"
-                        />
-                        {editingProject.youtubeUrl && (
-                          <button
-                            type="button"
-                            onClick={() => handleYouTubeInputChange("")}
-                            className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
-                          >
-                            Clear
-                          </button>
-                        )}
-                      </div>
-
-                      {/* Live Embed Preview if valid */}
-                      {(() => {
-                        const resolved = editingProject.youtubeUrl ? resolveSafeYouTubeEmbed(editingProject.youtubeUrl) : null;
-                        if (!resolved) return null;
-                        return (
-                          <div className="mt-2 pt-2 border-t border-[#1e1e2d] space-y-2">
-                            <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
-                              <span className="flex items-center gap-1.5 text-emerald-400">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                                Valid YouTube Embed (ID: {resolved.videoId})
-                              </span>
-                              <span>{editingProject.isShort ? "9:16 Vertical Reel" : "16:9 Cinematic Video"}</span>
-                            </div>
-                            <div
-                              className={`rounded-xl overflow-hidden border border-[#2b2b3d] bg-black ${
-                                editingProject.isShort
-                                  ? "aspect-[9/16] max-w-[220px] mx-auto"
-                                  : "aspect-video w-full max-w-md mx-auto"
-                              }`}
-                            >
-                              <iframe
-                                src={resolved.embedUrl}
-                                title="Booth Video Walkthrough"
-                                className="w-full h-full"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                              />
-                            </div>
-                          </div>
-                        );
-                      })()}
-                    </div>
-
-                    {/* Facebook Video / Reel for Booth (SHARED ACROSS BOTH BOOTH TABS) */}
-                    <FacebookVideoFieldCard
-                      facebookUrl={editingProject.facebookUrl}
-                      isShort={Boolean(editingProject.isShort)}
-                      onToggleShort={(short) =>
-                        setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null))
-                      }
-                      thumbnailUrl={fbThumbnailUrl}
-                      onApplyThumbnailAsCover={applyThumbnailAsCover}
-                      onChange={handleFacebookInputChange}
-                      onVerify={handleResolveFacebookMetadata}
-                      isVerifying={resolvingFb}
-                      statusMessage={fbStatusMessage}
-                      variant="booth"
-                    />
                   </div>
                 ) : (
                   /* STANDARD STAGE & CONFERENCES YOUTUBE ENGINE */
@@ -2536,21 +2171,6 @@ export default function GalleryProjectsManager() {
                               Sync Thumbnail from YouTube
                             </button>
                           )}
-                          {editingProject.facebookUrl && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (fbThumbnailUrl) {
-                                  applyThumbnailAsCover(fbThumbnailUrl);
-                                } else {
-                                  handleResolveFacebookMetadata();
-                                }
-                              }}
-                              className="px-2.5 py-1 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-[10px] font-bold border border-blue-500/30 cursor-pointer transition-colors"
-                            >
-                              Sync Thumbnail from Facebook
-                            </button>
-                          )}
                           {editingProject.image && (
                             <button
                               type="button"
@@ -2573,7 +2193,7 @@ export default function GalleryProjectsManager() {
                               <img
                                 src={editingProject.image}
                                 alt="Project Card Thumbnail"
-                                className="w-full h-full object-contain bg-black"
+                                className="w-full h-full object-cover"
                                 onError={(e) => {
                                   (e.currentTarget as HTMLImageElement).src =
                                     "/assets/images/gallery/project_01_neon_horizon.jpg";
@@ -2605,11 +2225,10 @@ export default function GalleryProjectsManager() {
                             if (file) handleUploadCoverFile(file);
                           }}
                           onClick={() => !isUploadingCover && coverInputRef.current?.click()}
-                          className={`sm:col-span-8 border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 ${
-                            isCoverDragging
-                              ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
-                              : "border-[#2b2b3d] bg-[#12121c] hover:border-yellow-400/60 hover:bg-[#151522]"
-                          }`}
+                          className={`sm:col-span-8 border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 ${isCoverDragging
+                            ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
+                            : "border-[#2b2b3d] bg-[#12121c] hover:border-yellow-400/60 hover:bg-[#151522]"
+                            }`}
                         >
                           <input
                             ref={coverInputRef}
@@ -2686,11 +2305,10 @@ export default function GalleryProjectsManager() {
 
                       {ytStatusMessage && (
                         <div
-                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
-                            ytStatusMessage.startsWith("✓")
-                              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
-                              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
-                          }`}
+                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${ytStatusMessage.startsWith("✓")
+                            ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+                            : "text-rose-300 bg-rose-500/10 border-rose-500/30"
+                            }`}
                         >
                           <span>{ytStatusMessage}</span>
                         </div>
@@ -2791,11 +2409,10 @@ export default function GalleryProjectsManager() {
                               </span>
                             </div>
                             <div
-                              className={`${
-                                editingProject.isShort
-                                  ? "aspect-[9/16] max-w-[240px] mx-auto"
-                                  : "aspect-video w-full"
-                              } rounded-lg overflow-hidden border border-[#262638] bg-black`}
+                              className={`${editingProject.isShort
+                                ? "aspect-[9/16] max-w-[240px] mx-auto"
+                                : "aspect-video w-full"
+                                } rounded-lg overflow-hidden border border-[#262638] bg-black`}
                             >
                               <iframe
                                 src={resolvedPreview.embedUrl}
@@ -2817,20 +2434,87 @@ export default function GalleryProjectsManager() {
                     </div>
 
                     {/* Facebook Video & Reel Engine */}
-                    <FacebookVideoFieldCard
-                      facebookUrl={editingProject.facebookUrl}
-                      isShort={Boolean(editingProject.isShort)}
-                      onToggleShort={(short) =>
-                        setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null))
-                      }
-                      thumbnailUrl={fbThumbnailUrl}
-                      onApplyThumbnailAsCover={applyThumbnailAsCover}
-                      onChange={handleFacebookInputChange}
-                      onVerify={handleResolveFacebookMetadata}
-                      isVerifying={resolvingFb}
-                      statusMessage={fbStatusMessage}
-                      variant="standard"
-                    />
+                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <label className="text-zinc-200 font-bold flex items-center gap-2 text-xs">
+                          <FacebookIcon className="w-4 h-4 text-[#1877F2]" />
+                          <span>Facebook Video / Reel Link</span>
+                        </label>
+                        <span className="text-[10px] text-zinc-400 font-mono">
+                          Supports facebook.com/watch, fb.watch, and facebook.com/reel
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          placeholder="https://www.facebook.com/watch/?v=... or https://fb.watch/... or /reel/..."
+                          value={editingProject.facebookUrl || ""}
+                          onChange={(e) => handleFacebookInputChange(e.target.value)}
+                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500 text-xs font-mono"
+                        />
+                        {editingProject.facebookUrl && (
+                          <button
+                            type="button"
+                            onClick={() => handleFacebookInputChange("")}
+                            className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
+                          >
+                            Clear
+                          </button>
+                        )}
+                      </div>
+
+                      {fbStatusMessage && (
+                        <div
+                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${fbStatusMessage.startsWith("✓")
+                            ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+                            : "text-rose-300 bg-rose-500/10 border-rose-500/30"
+                            }`}
+                        >
+                          <span>{fbStatusMessage}</span>
+                        </div>
+                      )}
+
+                      {/* Live Facebook Embed Preview */}
+                      {(() => {
+                        const resolvedFb = editingProject.facebookUrl
+                          ? resolveSafeFacebookEmbed(editingProject.facebookUrl)
+                          : null;
+                        if (!resolvedFb) {
+                          return editingProject.facebookUrl ? (
+                            <p className="text-[10px] text-amber-400/90 font-mono">
+                              * Enter a valid Facebook video, watch or reel URL (raw &lt;iframe&gt; HTML is blocked for security).
+                            </p>
+                          ) : null;
+                        }
+
+                        return (
+                          <div className="space-y-2 pt-2 border-t border-[#222232]">
+                            <div className="text-[10px] font-mono text-blue-400 flex items-center justify-between">
+                              <span className="flex items-center gap-1.5">
+                                <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
+                                <span>Facebook Embed Preview</span>
+                              </span>
+                              <span>{resolvedFb.isReel ? "9:16 VERTICAL REEL" : "16:9 VIDEO"}</span>
+                            </div>
+                            <div
+                              className={`${resolvedFb.isReel
+                                ? "aspect-[9/16] max-w-[240px] mx-auto"
+                                : "aspect-video w-full"
+                                } rounded-lg overflow-hidden border border-[#262638] bg-black`}
+                            >
+                              <iframe
+                                src={resolvedFb.embedUrl}
+                                title="Facebook Video Preview"
+                                className="w-full h-full border-0"
+                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                allowFullScreen
+                              />
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
 
                     {/* Optional Behance Link for Standard Projects */}
                     <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-2">
@@ -2868,19 +2552,6 @@ export default function GalleryProjectsManager() {
                     <div>
                       <span className="font-bold block mb-0.5 font-sans">تنبيه التحقق من البيانات:</span>
                       <p className="leading-relaxed opacity-90 font-sans">{modalError}</p>
-                      {(modalError.toLowerCase().includes("facebook") || modalError.includes("فيسبوك")) && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingProject((prev) => (prev ? { ...prev, facebookUrl: null } : null));
-                            setModalError(null);
-                            setFbStatusMessage(null);
-                          }}
-                          className="mt-2.5 px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold rounded-lg transition-all cursor-pointer shadow flex items-center gap-1.5 font-sans"
-                        >
-                          <span>مسح رابط فيسبوك (حفظ المشروع بدون فيديو فيسبوك) ↗</span>
-                        </button>
-                      )}
                     </div>
                   </div>
                   <button
