@@ -59,6 +59,10 @@ function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
 /** Shared Facebook Video / Reel field with inline verification and live iframe embed preview. */
 function FacebookVideoFieldCard({
   facebookUrl,
+  isShort = false,
+  onToggleShort,
+  thumbnailUrl,
+  onApplyThumbnailAsCover,
   onChange,
   onVerify,
   isVerifying,
@@ -66,6 +70,10 @@ function FacebookVideoFieldCard({
   variant = "standard",
 }: {
   facebookUrl?: string | null;
+  isShort?: boolean;
+  onToggleShort?: (isShort: boolean) => void;
+  thumbnailUrl?: string | null;
+  onApplyThumbnailAsCover?: (url: string) => void;
   onChange: (value: string) => void;
   onVerify: () => void;
   isVerifying: boolean;
@@ -73,7 +81,7 @@ function FacebookVideoFieldCard({
   variant?: "booth" | "standard";
 }) {
   const isUnresolvedShare = facebookUrl ? isUnresolvedFacebookShareUrl(facebookUrl) : false;
-  const resolvedFb = facebookUrl ? resolveSafeFacebookEmbed(facebookUrl) : null;
+  const resolvedFb = facebookUrl ? resolveSafeFacebookEmbed(facebookUrl, isShort) : null;
   const isBooth = variant === "booth";
 
   return (
@@ -97,10 +105,40 @@ function FacebookVideoFieldCard({
               </span>
             </div>
             <span className="text-[10px] text-zinc-400 font-mono">
-              حقل اختياري — اتركه فارغاً إذا كنت لا ترغب بإضافة فيديو فيسبوك لهذا المشروع
+              حقل اختياري — اختر التنسيق (16:9 أفقي أو 9:16 رأسي) واعتمد صورة الغلاف
             </span>
           </div>
         </div>
+
+        {/* Format Switcher: 16:9 Horizontal vs 9:16 Vertical Reel */}
+        {onToggleShort && (
+          <div className="flex items-center gap-1 bg-[#161622] p-1 rounded-lg border border-[#262638]">
+            <button
+              type="button"
+              onClick={() => onToggleShort(false)}
+              className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
+                !isShort
+                  ? "bg-[#1877F2] text-white font-bold shadow"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+              title="عرض كفيديو أفقي عادي 16:9"
+            >
+              16:9 أفقي (Horizontal)
+            </button>
+            <button
+              type="button"
+              onClick={() => onToggleShort(true)}
+              className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
+                isShort
+                  ? "bg-[#1877F2] text-white font-bold shadow"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+              title="عرض كفيديو ريلز رأسي 9:16"
+            >
+              9:16 رأسي (Vertical Reel)
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-2">
@@ -162,7 +200,7 @@ function FacebookVideoFieldCard({
           </span>
         </div>
       ) : resolvedFb ? (
-        <div className="space-y-2 pt-2 border-t border-[#222232]">
+        <div className="space-y-3 pt-2 border-t border-[#222232]">
           <div className="text-[10px] font-mono text-blue-400 flex items-center justify-between">
             <span className="flex items-center gap-1.5">
               <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
@@ -178,12 +216,14 @@ function FacebookVideoFieldCard({
                 <span>مشاهدة على Facebook</span>
                 <span>↗</span>
               </a>
-              <span>{resolvedFb.isReel ? "9:16 VERTICAL REEL" : "16:9 VIDEO"}</span>
+              <span className="font-bold">
+                {isShort ? "9:16 VERTICAL REEL" : "16:9 HORIZONTAL VIDEO"}
+              </span>
             </div>
           </div>
           <div
             className={`${
-              resolvedFb.isReel
+              isShort
                 ? "aspect-[9/16] max-w-[240px] mx-auto"
                 : isBooth
                 ? "aspect-video w-full max-w-md mx-auto"
@@ -198,6 +238,36 @@ function FacebookVideoFieldCard({
               allowFullScreen
             />
           </div>
+
+          {thumbnailUrl && onApplyThumbnailAsCover && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-2.5 rounded-lg bg-blue-500/10 border border-blue-500/25">
+              <div className="flex items-center gap-2.5">
+                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-blue-400/40 bg-black shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={thumbnailUrl}
+                    alt="Facebook Video Thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-blue-200 block font-sans">
+                    صورة غلاف الفيديو متوفرة من فيسبوك
+                  </span>
+                  <span className="text-[10px] text-zinc-400 font-sans">
+                    اضغط لاعتمادها كصورة الغلاف الأساسية للكرت في الموقع
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => onApplyThumbnailAsCover(thumbnailUrl)}
+                className="px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold rounded-lg transition-all cursor-pointer shadow flex items-center gap-1 font-sans shrink-0"
+              >
+                <span>تعيين كغلاف للمشروع 🖼️</span>
+              </button>
+            </div>
+          )}
         </div>
       ) : facebookUrl ? (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-200">
@@ -423,6 +493,25 @@ export default function GalleryProjectsManager() {
   const [ytStatusMessage, setYtStatusMessage] = useState<string | null>(null);
   const [resolvingFb, setResolvingFb] = useState(false);
   const [fbStatusMessage, setFbStatusMessage] = useState<string | null>(null);
+  const [fbThumbnailUrl, setFbThumbnailUrl] = useState<string | null>(null);
+
+  const applyThumbnailAsCover = (thumbUrl: string) => {
+    if (!editingProject || !thumbUrl) return;
+    const currentImages = editingProject.images || [];
+    const nextImages = currentImages.includes(thumbUrl)
+      ? currentImages
+      : [thumbUrl, ...currentImages];
+    setEditingProject({
+      ...editingProject,
+      image: thumbUrl,
+      images: nextImages,
+    });
+    setNotification({
+      type: "success",
+      title: "تم تعيين صورة الغلاف بنجاح",
+      detail: "تم اعتماد صورة غلاف الفيديو كصورة الغلاف الرئيسية للمشروع بنجاح.",
+    });
+  };
   const [notification, setNotification] = useState<AdminNotification | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -801,7 +890,7 @@ export default function GalleryProjectsManager() {
     }
   };
 
-  const triggerResolveFacebook = async (targetUrl: string) => {
+  const triggerResolveFacebook = async (targetUrl: string, explicitShort?: boolean) => {
     if (!targetUrl || !targetUrl.trim()) return;
     setResolvingFb(true);
 
@@ -813,26 +902,39 @@ export default function GalleryProjectsManager() {
         },
         body: JSON.stringify({
           input: targetUrl,
+          isShort: explicitShort !== undefined ? explicitShort : editingProject?.isShort,
         }),
       });
 
       if (res.ok) {
         const data = await res.json();
+        if (data.thumbnailUrl) {
+          setFbThumbnailUrl(data.thumbnailUrl);
+        }
         setEditingProject((prev) => {
           if (!prev) return null;
-          const isGeneric =
-            !prev.image ||
-            prev.image.includes("project_01_neon_horizon.jpg") ||
-            prev.image.includes("placeholder");
-          const shouldUpdateCover = isGeneric && data.thumbnailUrl;
+          const currentImages = prev.images || [];
+          const nextImages =
+            data.thumbnailUrl && !currentImages.includes(data.thumbnailUrl)
+              ? [data.thumbnailUrl, ...currentImages]
+              : currentImages;
           return {
             ...prev,
             facebookUrl: data.canonicalUrl || prev.facebookUrl,
-            image: shouldUpdateCover ? data.thumbnailUrl : prev.image,
+            isShort:
+              explicitShort !== undefined
+                ? explicitShort
+                : data.isReel !== undefined
+                ? Boolean(data.isReel)
+                : prev.isShort,
+            image: data.thumbnailUrl ? data.thumbnailUrl : prev.image,
+            images: nextImages,
           };
         });
         setFbStatusMessage(
-          `✓ تم التحقق وتجهيز مشغل ${data.isReel ? "Facebook Reel (9:16)" : "Facebook Video (16:9)"} بنجاح`
+          `✓ تم التحقق وتجهيز مشغل ${
+            (explicitShort ?? data.isReel) ? "Facebook Reel (9:16)" : "Facebook Video (16:9)"
+          } واعتماد صورة غلاف الفيديو بنجاح`
         );
       } else {
         setFbStatusMessage("⚠️ رابط فيديو فيسبوك غير صالح. تأكد أن الرابط عام ومن Facebook أو fb.watch");
@@ -2387,6 +2489,12 @@ export default function GalleryProjectsManager() {
                     {/* Facebook Video / Reel for Booth (SHARED ACROSS BOTH BOOTH TABS) */}
                     <FacebookVideoFieldCard
                       facebookUrl={editingProject.facebookUrl}
+                      isShort={Boolean(editingProject.isShort)}
+                      onToggleShort={(short) =>
+                        setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null))
+                      }
+                      thumbnailUrl={fbThumbnailUrl}
+                      onApplyThumbnailAsCover={applyThumbnailAsCover}
                       onChange={handleFacebookInputChange}
                       onVerify={handleResolveFacebookMetadata}
                       isVerifying={resolvingFb}
@@ -2416,6 +2524,21 @@ export default function GalleryProjectsManager() {
                               className="px-2.5 py-1 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 text-[10px] font-bold border border-yellow-400/30 cursor-pointer transition-colors"
                             >
                               Sync Thumbnail from YouTube
+                            </button>
+                          )}
+                          {editingProject.facebookUrl && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (fbThumbnailUrl) {
+                                  applyThumbnailAsCover(fbThumbnailUrl);
+                                } else {
+                                  handleResolveFacebookMetadata();
+                                }
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-[10px] font-bold border border-blue-500/30 cursor-pointer transition-colors"
+                            >
+                              Sync Thumbnail from Facebook
                             </button>
                           )}
                           {editingProject.image && (
@@ -2686,6 +2809,12 @@ export default function GalleryProjectsManager() {
                     {/* Facebook Video & Reel Engine */}
                     <FacebookVideoFieldCard
                       facebookUrl={editingProject.facebookUrl}
+                      isShort={Boolean(editingProject.isShort)}
+                      onToggleShort={(short) =>
+                        setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null))
+                      }
+                      thumbnailUrl={fbThumbnailUrl}
+                      onApplyThumbnailAsCover={applyThumbnailAsCover}
                       onChange={handleFacebookInputChange}
                       onVerify={handleResolveFacebookMetadata}
                       isVerifying={resolvingFb}

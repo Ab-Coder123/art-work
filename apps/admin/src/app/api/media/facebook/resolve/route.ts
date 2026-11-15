@@ -82,10 +82,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const payload = body as { input?: unknown; url?: unknown } | null;
+  const payload = body as { input?: unknown; url?: unknown; isShort?: unknown } | null;
   const rawInput = (payload?.input || payload?.url) as string | undefined;
+  const explicitIsShort =
+    payload?.isShort !== undefined && payload.isShort !== null
+      ? Boolean(payload.isShort)
+      : undefined;
 
-  const result = parseFacebookVideoInput(rawInput);
+  const result = parseFacebookVideoInput(rawInput, explicitIsShort);
   if (!result.ok) {
     return NextResponse.json(
       { error: "Invalid Facebook video URL", reason: result.reason },
@@ -94,7 +98,7 @@ export async function POST(request: NextRequest) {
   }
 
   let finalCanonical = result.canonicalUrl;
-  let isReel = result.isReel;
+  let isReel = explicitIsShort !== undefined ? explicitIsShort : result.isReel;
   let thumbnailUrl: string | null = null;
   let headline: string | null = null;
   let paragraph: string | null = null;
@@ -119,10 +123,13 @@ export async function POST(request: NextRequest) {
       const ogUrl = ogUrlMatch ? ogUrlMatch[1] : null;
 
       const ogImageMatch =
-        html.match(/property=["']og:image["'][^>]*content=["']([^"']+)["']/i) ||
-        html.match(/content=["']([^"']+)["'][^>]*property=["']og:image["']/i);
+        html.match(/property=["']og:image(?::secure_url)?["'][^>]*content=["']([^"']+)["']/i) ||
+        html.match(/content=["']([^"']+)["'][^>]*property=["']og:image(?::secure_url)?["']/i) ||
+        html.match(/name=["']twitter:image["'][^>]*content=["']([^"']+)["']/i) ||
+        html.match(/content=["']([^"']+)["'][^>]*name=["']twitter:image["']/i) ||
+        html.match(/<link[^>]*rel=["']image_src["'][^>]*href=["']([^"']+)["']/i);
       if (ogImageMatch && ogImageMatch[1]) {
-        thumbnailUrl = ogImageMatch[1].replace(/&amp;/g, "&");
+        thumbnailUrl = decodeHtmlEntities(ogImageMatch[1]).replace(/&amp;/g, "&");
       }
 
       const ogTitleMatch =
@@ -154,7 +161,7 @@ export async function POST(request: NextRequest) {
             }
           }
           finalCanonical = cleanedUrl.toString();
-          isReel = parsedCandidate.isReel || isReel;
+          isReel = explicitIsShort !== undefined ? explicitIsShort : (parsedCandidate.isReel || isReel);
         }
       }
     }

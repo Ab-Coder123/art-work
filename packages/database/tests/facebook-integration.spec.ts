@@ -167,6 +167,20 @@ describe("Facebook Video & Reel Media Engine Integration", () => {
       assert.ok(embedFromObj);
       assert.equal(embedFromObj?.isReel, false);
     });
+
+    it("should allow explicit isShort toggle to switch between vertical 9:16 and horizontal 16:9", () => {
+      const forcedVertical = resolveSafeFacebookEmbed({
+        facebookUrl: "https://www.facebook.com/watch/?v=123456789",
+        isShort: true,
+      });
+      assert.equal(forcedVertical?.isReel, true);
+
+      const forcedHorizontal = resolveSafeFacebookEmbed({
+        facebookUrl: "https://www.facebook.com/reel/9988776655",
+        isShort: false,
+      });
+      assert.equal(forcedHorizontal?.isReel, false);
+    });
   });
 
   describe("3. Schema & Normalization Integration", () => {

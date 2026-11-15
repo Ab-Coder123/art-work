@@ -166,7 +166,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
               ) : activeFb ? (
                 <div
                   className={`relative rounded-xl overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
-                    activeFb.isReel
+                    activeVideo.isShort || activeFb.isReel
                       ? "aspect-[9/16] max-w-[300px] mx-auto"
                       : "aspect-video w-full"
                   }`}
@@ -328,7 +328,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     <div className="mb-2.5">
                       <div
                         className={`${
-                          fbEmbed.isReel
+                          p.isShort || fbEmbed.isReel
                             ? "aspect-[9/16] max-w-[220px] mx-auto"
                             : "aspect-video w-full"
                         } rounded-xl overflow-hidden border border-[#262638] bg-black`}

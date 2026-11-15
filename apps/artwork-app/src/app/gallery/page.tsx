@@ -512,8 +512,17 @@ export default function GalleryPage() {
                         </div>
                       ) : project.facebookUrl ? (
                         <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-[#1877F2]/90 backdrop-blur-sm text-white font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
-                          <Play className="w-3 h-3 fill-current" />
-                          <span>FB VIDEO</span>
+                          {project.isShort ? (
+                            <>
+                              <Smartphone className="w-3 h-3" />
+                              <span>FB REEL 9:16</span>
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-3 h-3 fill-current" />
+                              <span>FB VIDEO</span>
+                            </>
+                          )}
                         </div>
                       ) : project.pdfUrl || project.category === "booths" ? (
                         <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-yellow-400/95 backdrop-blur-sm text-black font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
@@ -549,7 +558,9 @@ export default function GalleryPage() {
                     ) : project.facebookUrl ? (
                       <>
                         <Play className="w-3.5 h-3.5 fill-current" />
-                        <span>WATCH FB VIDEO ↗</span>
+                        <span>
+                          {project.isShort ? "WATCH FB REEL ↗" : "WATCH FB VIDEO ↗"}
+                        </span>
                       </>
                     ) : project.pdfUrl ? (
                       <>
@@ -887,10 +898,11 @@ export default function GalleryPage() {
                       </div>
 
                       <div
-                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${selectedFbEmbed.isReel
-                          ? "aspect-[9/16] max-w-[280px] mx-auto"
-                          : "aspect-video w-full"
-                          }`}
+                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
+                          selectedProject.isShort || selectedFbEmbed.isReel
+                            ? "aspect-[9/16] max-w-[280px] mx-auto"
+                            : "aspect-video w-full"
+                        }`}
                       >
                         <iframe
                           src={selectedFbEmbed.embedUrl}

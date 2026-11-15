@@ -54,7 +54,10 @@ export function buildFacebookEmbedUrl(canonicalUrl: string): string {
  * Accepts full URLs (with or without protocol) from approved Facebook hosts.
  * Never throws on malformed or unexpected inputs.
  */
-export function parseFacebookVideoInput(input: unknown): FacebookParseResult {
+export function parseFacebookVideoInput(
+  input: unknown,
+  explicitIsShort?: boolean | null
+): FacebookParseResult {
   if (typeof input !== "string") return { ok: false, reason: "empty" };
   const raw = extractFacebookVideoUrlFromSnippet(input).trim();
   if (!raw) return { ok: false, reason: "empty" };
@@ -94,7 +97,7 @@ export function parseFacebookVideoInput(input: unknown): FacebookParseResult {
   // 5. /share/v/... or /share/r/...
   // 6. /posts/... (often contains videos)
   const isWatch = path.includes("/watch") && search.includes("v=");
-  const isReel =
+  const inferredReel =
     path.includes("/reel/") ||
     path.includes("/reels/") ||
     path.includes("/share/r/");
@@ -102,11 +105,16 @@ export function parseFacebookVideoInput(input: unknown): FacebookParseResult {
   const isFbWatch = hostname.includes("fb.watch");
   const isPost = path.includes("/posts/") || path.includes("/videos");
 
-  const isRecognizedVideo = isWatch || isReel || isVideoPath || isFbWatch || isPost;
+  const isRecognizedVideo = isWatch || inferredReel || isVideoPath || isFbWatch || isPost;
 
   if (!isRecognizedVideo && path === "/") {
     return { ok: false, reason: "not_a_video_link" };
   }
+
+  const isReel =
+    explicitIsShort !== undefined && explicitIsShort !== null
+      ? Boolean(explicitIsShort)
+      : inferredReel;
 
   const canonicalUrl = parsed.toString();
   const embedUrl = buildFacebookEmbedUrl(canonicalUrl);

@@ -897,8 +897,10 @@ export function resolveSafeFacebookEmbed(
     | {
         facebookUrl?: string | null;
         facebook_url?: string | null;
+        isShort?: boolean | null;
       }
-    | null
+    | null,
+  explicitIsShort?: boolean | null
 ): {
   canonicalUrl: string;
   embedUrl: string;
@@ -928,10 +930,17 @@ export function resolveSafeFacebookEmbed(
   if (!FACEBOOK_HOSTS.has(host)) return null;
 
   const path = url.pathname.toLowerCase();
-  const isReel =
+  const inferredReel =
     path.includes("/reel/") ||
     path.includes("/reels/") ||
     path.includes("/share/r/");
+
+  const isReel =
+    explicitIsShort !== undefined && explicitIsShort !== null
+      ? Boolean(explicitIsShort)
+      : typeof input === "object" && input !== null && "isShort" in input && input.isShort !== undefined && input.isShort !== null
+      ? Boolean(input.isShort)
+      : inferredReel;
 
   const canonicalUrl = url.toString();
   const embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(

@@ -31,6 +31,8 @@ export function buildContentSecurityPolicy(options: SecurityHeaderOptions = {}):
       "https://mir-s3-cdn-cf.behance.net",
       "https://*.behance.net",
       "https://a5.behance.net",
+      "https://*.fbcdn.net",
+      "https://*.facebook.com",
     ],
     "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
     "frame-src": [
