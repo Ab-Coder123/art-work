@@ -24,9 +24,18 @@ import {
   ProjectRecord,
   ProjectCategory,
   resolveSafeYouTubeEmbed,
+  resolveSafeFacebookEmbed,
   isGenericYouTubeDescription,
 } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
+
+function FacebookIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  );
+}
 
 function BehanceIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -81,6 +90,12 @@ function humanizeAdminError(rawError: string): { title: string; detail: string }
     return {
       title: "رابط اليوتيوب غير صالح (Invalid YouTube URL)",
       detail: "يرجى إدخال رابط فيديو صحيح من YouTube مباشرة (تأكد من عدم استخدام كود تضمين iframe).",
+    };
+  }
+  if (err.includes("facebook")) {
+    return {
+      title: "رابط فيديو فيسبوك غير صالح (Invalid Facebook URL)",
+      detail: "يرجى إدخال رابط فيديو صالح من Facebook أو fb.watch مباشرة (تأكد من عدم استخدام كود تضمين iframe).",
     };
   }
   if (err.includes("cover image")) {
@@ -242,6 +257,7 @@ export default function GalleryProjectsManager() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [resolvingYt, setResolvingYt] = useState(false);
   const [ytStatusMessage, setYtStatusMessage] = useState<string | null>(null);
+  const [fbStatusMessage, setFbStatusMessage] = useState<string | null>(null);
   const [notification, setNotification] = useState<AdminNotification | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -647,6 +663,33 @@ export default function GalleryProjectsManager() {
     }
   };
 
+  const handleFacebookInputChange = (rawInput: string) => {
+    if (!editingProject) return;
+    setFbStatusMessage(null);
+    const trimmed = rawInput.trim();
+    if (!trimmed) {
+      setEditingProject({
+        ...editingProject,
+        facebookUrl: null,
+      });
+      return;
+    }
+    const resolved = resolveSafeFacebookEmbed(trimmed);
+    if (resolved) {
+      setEditingProject({
+        ...editingProject,
+        facebookUrl: resolved.canonicalUrl,
+      });
+      setFbStatusMessage("✓ تم التحقق من رابط فيديو Facebook بنجاح");
+    } else {
+      setEditingProject({
+        ...editingProject,
+        facebookUrl: rawInput,
+      });
+      setFbStatusMessage("⚠️ رابط فيديو فيسبوك غير صالح. يرجى إدخال رابط فيديو صالح من Facebook أو fb.watch");
+    }
+  };
+
   const handleFetchYouTubeMetadata = async () => {
     if (!editingProject?.youtubeUrl) return;
     setResolvingYt(true);
@@ -862,6 +905,7 @@ export default function GalleryProjectsManager() {
             onClick={() => {
               const newId = `project-${Date.now()}`;
               setYtStatusMessage(null);
+              setFbStatusMessage(null);
               setModalError(null);
               setIsCreatingNew(true);
               setMediaSourceTab("upload");
@@ -1096,6 +1140,12 @@ export default function GalleryProjectsManager() {
                           <span>{project.isShort ? "YouTube Reel (9:16)" : "YouTube Showreel"}</span>
                         </span>
                       )}
+                      {project.facebookUrl && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-mono text-blue-400 bg-blue-600/10 border border-blue-500/30 px-1.5 py-0.5 rounded">
+                          <FacebookIcon className="w-3 h-3 text-[#1877F2]" />
+                          <span>Facebook Video</span>
+                        </span>
+                      )}
                     </div>
                     <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-400 font-mono">
                       <span>{project.client}</span>
@@ -1149,6 +1199,7 @@ export default function GalleryProjectsManager() {
                   <button
                     onClick={() => {
                       setYtStatusMessage(null);
+                      setFbStatusMessage(null);
                       setModalError(null);
                       setIsCreatingNew(false);
                       setMediaSourceTab(project.behanceUrl ? "behance" : "upload");
@@ -2042,6 +2093,77 @@ export default function GalleryProjectsManager() {
                         );
                       })()}
                     </div>
+
+                    {/* Facebook Video / Reel for Booth */}
+                    <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-md bg-blue-600/20 text-[#1877F2] border border-blue-500/30 flex items-center justify-center">
+                            <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
+                          </div>
+                          <div>
+                            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                              Facebook Video / Reel
+                            </span>
+                            <span className="text-[10px] text-zinc-500 block font-mono">
+                              Optional Facebook showreel, live video or reel link
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          placeholder="Paste Facebook video link (e.g. facebook.com/watch, fb.watch, or /reel/...)"
+                          value={editingProject.facebookUrl || ""}
+                          onChange={(e) => handleFacebookInputChange(e.target.value)}
+                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500 text-xs font-mono"
+                        />
+                        {editingProject.facebookUrl && (
+                          <button
+                            type="button"
+                            onClick={() => handleFacebookInputChange("")}
+                            className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
+                          >
+                            Clear
+                          </button>
+                        )}
+                      </div>
+
+                      {(() => {
+                        const resolvedFb = editingProject.facebookUrl
+                          ? resolveSafeFacebookEmbed(editingProject.facebookUrl)
+                          : null;
+                        if (!resolvedFb) return null;
+                        return (
+                          <div className="mt-2 pt-2 border-t border-[#1e1e2d] space-y-2">
+                            <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                              <span className="flex items-center gap-1.5 text-blue-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping" />
+                                Valid Facebook Video
+                              </span>
+                              <span>{resolvedFb.isReel ? "9:16 Vertical Reel" : "16:9 Video"}</span>
+                            </div>
+                            <div
+                              className={`rounded-xl overflow-hidden border border-[#2b2b3d] bg-black ${
+                                resolvedFb.isReel
+                                  ? "aspect-[9/16] max-w-[220px] mx-auto"
+                                  : "aspect-video w-full max-w-md mx-auto"
+                              }`}
+                            >
+                              <iframe
+                                src={resolvedFb.embedUrl}
+                                title="Booth Facebook Video"
+                                className="w-full h-full border-0"
+                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                allowFullScreen
+                              />
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
                       </div>
                     )}
                   </div>
@@ -2332,6 +2454,91 @@ export default function GalleryProjectsManager() {
                           blocked for security).
                         </p>
                       ) : null}
+                    </div>
+
+                    {/* Facebook Video & Reel Engine */}
+                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <label className="text-zinc-200 font-bold flex items-center gap-2 text-xs">
+                          <FacebookIcon className="w-4 h-4 text-[#1877F2]" />
+                          <span>Facebook Video / Reel Link</span>
+                        </label>
+                        <span className="text-[10px] text-zinc-400 font-mono">
+                          Supports facebook.com/watch, fb.watch, and facebook.com/reel
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          placeholder="https://www.facebook.com/watch/?v=... or https://fb.watch/... or /reel/..."
+                          value={editingProject.facebookUrl || ""}
+                          onChange={(e) => handleFacebookInputChange(e.target.value)}
+                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500 text-xs font-mono"
+                        />
+                        {editingProject.facebookUrl && (
+                          <button
+                            type="button"
+                            onClick={() => handleFacebookInputChange("")}
+                            className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
+                          >
+                            Clear
+                          </button>
+                        )}
+                      </div>
+
+                      {fbStatusMessage && (
+                        <div
+                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
+                            fbStatusMessage.startsWith("✓")
+                              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+                              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
+                          }`}
+                        >
+                          <span>{fbStatusMessage}</span>
+                        </div>
+                      )}
+
+                      {/* Live Facebook Embed Preview */}
+                      {(() => {
+                        const resolvedFb = editingProject.facebookUrl
+                          ? resolveSafeFacebookEmbed(editingProject.facebookUrl)
+                          : null;
+                        if (!resolvedFb) {
+                          return editingProject.facebookUrl ? (
+                            <p className="text-[10px] text-amber-400/90 font-mono">
+                              * Enter a valid Facebook video, watch or reel URL (raw &lt;iframe&gt; HTML is blocked for security).
+                            </p>
+                          ) : null;
+                        }
+
+                        return (
+                          <div className="space-y-2 pt-2 border-t border-[#222232]">
+                            <div className="text-[10px] font-mono text-blue-400 flex items-center justify-between">
+                              <span className="flex items-center gap-1.5">
+                                <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
+                                <span>Facebook Embed Preview</span>
+                              </span>
+                              <span>{resolvedFb.isReel ? "9:16 VERTICAL REEL" : "16:9 VIDEO"}</span>
+                            </div>
+                            <div
+                              className={`${
+                                resolvedFb.isReel
+                                  ? "aspect-[9/16] max-w-[240px] mx-auto"
+                                  : "aspect-video w-full"
+                              } rounded-lg overflow-hidden border border-[#262638] bg-black`}
+                            >
+                              <iframe
+                                src={resolvedFb.embedUrl}
+                                title="Facebook Video Preview"
+                                className="w-full h-full border-0"
+                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                allowFullScreen
+                              />
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Optional Behance Link for Standard Projects */}

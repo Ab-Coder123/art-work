@@ -309,7 +309,7 @@ export default function WhyUsPage() {
                 initial={{ opacity: 0, y: -10, rotate: -4 }}
                 animate={{ opacity: 1, y: 0, rotate: -3 }}
                 transition={{ duration: 0.4, delay: 0.15 }}
-                className="relative bg-white dark:bg-[#151520] border-2 border-black dark:border-zinc-700 px-3 py-1 rounded-lg shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 text-[11px] font-bold tracking-tight text-black dark:text-zinc-200"
+                className="relative bg-white dark:bg-[#151520] border-2 border-black dark:border-zinc-700 px-3 py-1 rounded-lg comic-shadow-sm flex items-center gap-1.5 text-[11px] font-bold tracking-tight text-black dark:text-zinc-200"
               >
                 <div className="washi-tape"></div>
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
@@ -320,7 +320,7 @@ export default function WhyUsPage() {
                 initial={{ opacity: 0, y: -10, rotate: 4 }}
                 animate={{ opacity: 1, y: 0, rotate: 2 }}
                 transition={{ duration: 0.4, delay: 0.25 }}
-                className="bg-yellow-300 border-2 border-black px-3 py-1 rounded-lg shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 text-[11px] font-extrabold uppercase text-black"
+                className="bg-yellow-300 border-2 border-black px-3 py-1 rounded-lg comic-shadow-sm flex items-center gap-1.5 text-[11px] font-extrabold uppercase text-black"
               >
                 <Sparkles className="w-3.5 h-3.5 text-black fill-yellow-500" />
                 <span>{content.contentCreationBadge}</span>
@@ -331,7 +331,7 @@ export default function WhyUsPage() {
             <div className="relative my-3 inline-block select-none">
               <div className="absolute -top-8 left-36 sm:left-44 transform -rotate-12 z-20 pointer-events-none">
                 <svg
-                  className="w-12 h-10 text-yellow-500 drop-shadow-[0_2px_0_#000]"
+                  className="w-12 h-10 text-yellow-500"
                   fill="currentColor"
                   stroke="black"
                   strokeLinecap="round"
@@ -351,7 +351,7 @@ export default function WhyUsPage() {
               </div>
 
               <div className="relative inline-block mt-1 font-brush text-7xl sm:text-8xl md:text-9xl text-black leading-none brush-swipe-bg">
-                <span className="relative z-10 drop-shadow-[2px_3px_0px_rgba(255,255,255,0.8)]">
+                <span className="relative z-10">
                   {content.heroHeadlineRow2}
                 </span>
               </div>
@@ -376,7 +376,7 @@ export default function WhyUsPage() {
               {stickers[0] && (
                 <motion.div
                   whileHover={{ scale: 1.05, rotate: 0 }}
-                  className="relative bg-yellow-400 text-black border-2 border-black font-brush text-xs tracking-wider px-3 py-1.5 rounded rotate-[-2deg] shadow-[2px_2px_0px_#111111] cursor-pointer"
+                  className="relative bg-yellow-400 text-black border-2 border-black font-brush text-xs tracking-wider px-3 py-1.5 rounded rotate-[-2deg] comic-shadow-sm cursor-pointer"
                 >
                   <div className="washi-tape !w-8 !h-2.5"></div>
                   ★ {stickers[0]}
@@ -386,7 +386,7 @@ export default function WhyUsPage() {
               {stickers[1] && (
                 <motion.div
                   whileHover={{ scale: 1.05, rotate: 0 }}
-                  className="relative bg-white dark:bg-[#161622] text-black dark:text-zinc-200 border-2 border-dashed border-black dark:border-zinc-700 font-headline text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded rotate-[1.5deg] shadow-[2px_2px_0px_#FACC15] cursor-pointer"
+                  className="relative bg-white dark:bg-[#161622] text-black dark:text-zinc-200 border-2 border-dashed border-black dark:border-zinc-700 font-headline text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded rotate-[1.5deg] comic-shadow-sm cursor-pointer"
                 >
                   {stickers[1]}
                 </motion.div>
@@ -395,7 +395,7 @@ export default function WhyUsPage() {
               {stickers[2] && (
                 <motion.div
                   whileHover={{ scale: 1.05, rotate: 0 }}
-                  className="relative bg-yellow-300 text-black border-2 border-black font-headline text-xs font-black uppercase tracking-wide px-3 py-1.5 rounded rotate-[-1deg] shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 cursor-pointer"
+                  className="relative bg-yellow-300 text-black border-2 border-black font-headline text-xs font-black uppercase tracking-wide px-3 py-1.5 rounded rotate-[-1deg] comic-shadow-sm flex items-center gap-1.5 cursor-pointer"
                 >
                   <PenTool className="w-3.5 h-3.5 text-black" />
                   <span>{stickers[2]}</span>
@@ -405,7 +405,7 @@ export default function WhyUsPage() {
               {stickers[3] && (
                 <motion.div
                   whileHover={{ scale: 1.05, rotate: 0 }}
-                  className="relative bg-white dark:bg-[#161622] text-black dark:text-zinc-200 border-2 border-black dark:border-zinc-700 font-headline text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded rotate-[2deg] shadow-[2px_2px_0px_#111111] flex items-center gap-1.5 cursor-pointer"
+                  className="relative bg-white dark:bg-[#161622] text-black dark:text-zinc-200 border-2 border-black dark:border-zinc-700 font-headline text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded rotate-[2deg] comic-shadow-sm flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>{stickers[3]}</span>
                   <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5] text-black dark:text-zinc-200" />
@@ -426,14 +426,14 @@ export default function WhyUsPage() {
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-3.5">
               <a
-                className="inline-flex items-center gap-2.5 px-6 py-3 bg-yellow-400 hover:bg-yellow-300 text-black font-headline text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black hover-brutal-lift active:scale-95 transition-all shadow-[3px_3px_0px_#111111]"
+                className="inline-flex items-center gap-2.5 px-6 py-3 bg-yellow-400 hover:bg-yellow-300 text-black font-headline text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black hover-brutal-lift active:scale-95 transition-all comic-shadow"
                 href="#matrix"
               >
                 <span>{content.primaryCtaText || "EXPLORE OUR SERVICES"}</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </a>
               <a
-                className="inline-flex items-center gap-2 px-5 py-3 bg-white dark:bg-[#181824] hover:bg-black hover:text-white dark:hover:bg-yellow-400 dark:hover:text-black text-black dark:text-white font-headline text-sm font-bold uppercase tracking-wider rounded-xl border-2 border-black dark:border-zinc-700 hover-brutal-clean active:scale-95 transition-all shadow-[2px_2px_0px_#111111]"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-white dark:bg-[#181824] hover:bg-black hover:text-white dark:hover:bg-yellow-400 dark:hover:text-black text-black dark:text-white font-headline text-sm font-bold uppercase tracking-wider rounded-xl border-2 border-black dark:border-zinc-700 hover-brutal-clean active:scale-95 transition-all comic-shadow-sm"
                 href="/gallery"
               >
                 <span>{content.secondaryCtaText || "VIEW SELECTED PROJECTS"}</span>
@@ -459,7 +459,7 @@ export default function WhyUsPage() {
 
           {/* RIGHT COLUMN: CAD Drafting Easel & Real Presentation Blueprint Illustration */}
           <ScrollReveal direction="left" distance={30} className="lg:col-span-5 relative mt-4 lg:mt-0">
-            <div className="relative bg-white dark:bg-[#151520] border-2 border-black dark:border-zinc-700 rounded-2xl p-4 sm:p-5 shadow-[6px_6px_0px_#111111]">
+            <div className="relative bg-white dark:bg-[#151520] border-2 border-black dark:border-zinc-700 rounded-2xl p-4 sm:p-5 comic-shadow">
               {/* Top Ribbon */}
               <div className="flex items-center justify-between border-b-2 border-black dark:border-zinc-700 pb-3 mb-4 font-mono text-[11px] text-black dark:text-zinc-300">
                 <div className="flex items-center gap-2">
@@ -475,7 +475,7 @@ export default function WhyUsPage() {
 
               {/* Sticky Note Taped on Top Right */}
               <div className="absolute -top-5 right-4 sm:right-6 z-20 rotate-2 hidden sm:block">
-                <div className="bg-yellow-300 border-2 border-black p-2.5 rounded-md shadow-[3px_3px_0px_#111111] max-w-[185px]">
+                <div className="bg-yellow-300 border-2 border-black p-2.5 rounded-md comic-shadow-sm max-w-[185px]">
                   <div className="washi-tape !w-10 !h-2.5"></div>
                   <p className="font-brush text-[11px] leading-tight text-black">
                     &quot;
@@ -499,7 +499,7 @@ export default function WhyUsPage() {
                     content.presentationImage.startsWith("data:")
                   }
                 />
-                <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-[#181824]/95 text-black dark:text-zinc-200 border-2 border-black dark:border-zinc-700 px-3 py-1.5 rounded-lg flex items-center gap-2 text-xs font-mono font-bold z-10 shadow-[2px_2px_0px_#111111]">
+                <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-[#181824]/95 text-black dark:text-zinc-200 border-2 border-black dark:border-zinc-700 px-3 py-1.5 rounded-lg flex items-center gap-2 text-xs font-mono font-bold z-10 comic-shadow-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 fill-emerald-100 stroke-[2.5]" />
                   <span>{content.tailoredStamp || "100% TAILORED ENGINEERING"}</span>
                 </div>
@@ -524,7 +524,7 @@ export default function WhyUsPage() {
 
             {/* Floating Badge: 0% COOKIE CUTTER */}
             <div className="absolute -bottom-4 left-6 z-20 transform -rotate-2">
-              <div className="bg-yellow-400 text-black border-2 border-black font-headline text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-xl shadow-[3px_3px_0px_#111111] flex items-center gap-2">
+              <div className="bg-yellow-400 text-black border-2 border-black font-headline text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-xl comic-shadow-sm flex items-center gap-2">
                 <XCircle className="w-4 h-4 text-black stroke-[2.5]" />
                 <span>{content.zeroTemplatesBadge || "0% COOKIE-CUTTER TEMPLATES"}</span>
               </div>
@@ -598,7 +598,7 @@ export default function WhyUsPage() {
         {/* ================= STAGE 02 INTERACTIVE BRIEF CALLOUT ================= */}
         <ScrollReveal direction="pop" distance={30} className="mb-20">
           <section
-            className="bg-yellow-400 border-2 border-black rounded-2xl p-6 sm:p-10 shadow-[8px_8px_0px_#111111] relative overflow-hidden"
+            className="bg-yellow-400 border-2 border-black rounded-2xl p-6 sm:p-10 comic-shadow relative overflow-hidden"
             id="brief"
           >
             <div className="washi-tape !w-24 !h-5 !bg-black/20"></div>
@@ -620,14 +620,14 @@ export default function WhyUsPage() {
               </div>
               <div className="flex flex-wrap sm:flex-nowrap items-center gap-3.5 shrink-0 w-full sm:w-auto">
                 <Link
-                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-black text-white hover:bg-white hover:text-black font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black shadow-[4px_4px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_#111111] active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-black text-white hover:bg-white hover:text-black font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black comic-shadow-sm hover:-translate-y-0.5 active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
                   href="/#brief-inquiry"
                 >
                   <span>{content.calloutPrimaryCta || "SEND YOUR EVENT BRIEF"}</span>
                   <Send className="w-4 h-4 stroke-[2.5]" />
                 </Link>
                 <Link
-                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-white text-black hover:bg-black hover:text-white font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black shadow-[4px_4px_0px_#111111] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_#111111] active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 bg-white text-black hover:bg-black hover:text-white font-headline text-xs sm:text-sm font-black uppercase tracking-wider rounded-xl border-2 border-black comic-shadow-sm hover:-translate-y-0.5 active:scale-95 transition-all whitespace-nowrap cursor-pointer text-center w-full sm:w-auto"
                   href="/#stage-03"
                 >
                   <span>{content.calloutSecondaryCta || "EXPLORE SERVICES"}</span>

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { parseYouTubeInput } from "../media/youtube";
-import { isValidBehanceUrl } from "@art-work/types";
+import { isValidBehanceUrl, isValidFacebookVideoUrl } from "@art-work/types";
 
 export const PROJECT_CATEGORIES = [
   "stage",
@@ -57,6 +57,18 @@ export const BehanceUrlSchema = z
   .nullable()
   .optional();
 
+/**
+ * Validates optional Facebook video or reel links.
+ */
+export const FacebookUrlSchema = z
+  .string()
+  .refine(
+    (url) => !url || isValidFacebookVideoUrl(url),
+    "Facebook video link must be a valid link on facebook.com or fb.watch"
+  )
+  .nullable()
+  .optional();
+
 export const SlugSchema = z
   .string()
   .min(2, "Slug must contain at least 2 characters")
@@ -95,6 +107,7 @@ export const ProjectInputSchema = z.object({
   pdf_url: z.string().nullable().optional(),
   pdf_title: z.string().max(200).nullable().optional(),
   behance_url: BehanceUrlSchema,
+  facebook_url: FacebookUrlSchema,
   status: ContentStatusEnum.default("draft"),
   order_index: z.number().int().default(0),
   featured: z.boolean().default(false),

@@ -56,6 +56,8 @@ export interface ProjectRecord {
   pdfTitle?: string | null;
   /** Optional Behance project showcase or portfolio link */
   behanceUrl?: string | null;
+  /** Optional Facebook video or reel link */
+  facebookUrl?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -89,6 +91,7 @@ export interface DbProjectRecord {
   pdf_url?: string | null;
   pdf_title?: string | null;
   behance_url?: string | null;
+  facebook_url?: string | null;
   status: PublicationStatus;
   order_index: number;
   featured: boolean;
@@ -176,6 +179,7 @@ export function mapDbProjectToRecord(row: DbProjectRecord): ProjectRecord {
     pdfUrl: row.pdf_url ?? null,
     pdfTitle: row.pdf_title ?? null,
     behanceUrl: row.behance_url ?? null,
+    facebookUrl: row.facebook_url ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -223,6 +227,7 @@ export function mapRecordToDbProject(
     pdf_url: record.pdfUrl ?? null,
     pdf_title: record.pdfTitle ?? null,
     behance_url: record.behanceUrl ? String(record.behanceUrl).trim() : null,
+    facebook_url: record.facebookUrl ? String(record.facebookUrl).trim() : null,
     status: record.status,
     order_index: record.order,
     featured: Boolean(record.featured),
@@ -826,6 +831,83 @@ export function isValidBehanceUrl(input: unknown): boolean {
   }
 }
 
+/** Approved Facebook video hostnames */
+export const FACEBOOK_HOSTS = new Set([
+  "facebook.com",
+  "www.facebook.com",
+  "web.facebook.com",
+  "m.facebook.com",
+  "fb.watch",
+  "www.fb.watch",
+]);
+
+/**
+ * Pure, SSR & client-safe Facebook video embed resolver.
+ * Parses Facebook watch links, reels, page videos, fb.watch, and share links,
+ * rejects script injection and raw HTML tags, and constructs the official embed URL.
+ */
+export function resolveSafeFacebookEmbed(
+  input?:
+    | string
+    | {
+        facebookUrl?: string | null;
+        facebook_url?: string | null;
+      }
+    | null
+): {
+  canonicalUrl: string;
+  embedUrl: string;
+  isReel: boolean;
+} | null {
+  if (!input) return null;
+  const rawInput =
+    typeof input === "string"
+      ? input
+      : input.facebookUrl || input.facebook_url || "";
+  if (!rawInput || typeof rawInput !== "string") return null;
+  const raw = rawInput.trim();
+  if (!raw || /[<>"'`\s]/.test(raw)) return null;
+
+  let url: URL;
+  try {
+    const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(raw);
+    url = new URL(hasScheme ? raw : `https://${raw}`);
+  } catch {
+    return null;
+  }
+
+  if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+  if (url.username || url.password) return null;
+
+  const host = url.hostname.toLowerCase();
+  if (!FACEBOOK_HOSTS.has(host)) return null;
+
+  const path = url.pathname.toLowerCase();
+  const isReel =
+    path.includes("/reel/") ||
+    path.includes("/reels/") ||
+    path.includes("/share/r/");
+
+  const canonicalUrl = url.toString();
+  const embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(
+    canonicalUrl
+  )}&show_text=0`;
+
+  return {
+    canonicalUrl,
+    embedUrl,
+    isReel,
+  };
+}
+
+/**
+ * Validates whether an input is a valid Facebook video link.
+ */
+export function isValidFacebookVideoUrl(input: unknown): boolean {
+  if (typeof input !== "string") return false;
+  return resolveSafeFacebookEmbed(input) !== null;
+}
+
 
 export interface HomeShowcaseResolution {
   hasExplicitStarred: boolean;
@@ -837,7 +919,7 @@ export interface HomeShowcaseResolution {
 }
 
 /**
- * Resolves the projects and YouTube videos to showcase on the Home page (`/`).
+ * Resolves the projects and YouTube/Facebook videos to showcase on the Home page (`/`).
  * - Prioritizes all published projects marked with ★ Star (`featured: true`), ordered by `order` ascending.
  * - Allows 1, 2, 3, or N starred videos to appear on the Home page without artificial truncation.
  * - Gracefully falls back to the top 3 published projects only when zero projects are starred.
@@ -854,10 +936,10 @@ export function resolveHomeShowcaseItems(
   const showcaseItems = hasExplicitStarred ? starred : published.slice(0, 3);
 
   const featuredVideos = showcaseItems.filter(
-    (p) => resolveSafeYouTubeEmbed(p) !== null
+    (p) => resolveSafeYouTubeEmbed(p) !== null || resolveSafeFacebookEmbed(p) !== null
   );
   const nonVideoItems = showcaseItems.filter(
-    (p) => resolveSafeYouTubeEmbed(p) === null
+    (p) => resolveSafeYouTubeEmbed(p) === null && resolveSafeFacebookEmbed(p) === null
   );
 
   return {

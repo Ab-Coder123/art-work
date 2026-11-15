@@ -37,6 +37,8 @@ export function buildContentSecurityPolicy(options: SecurityHeaderOptions = {}):
       "'self'",
       "https://www.youtube.com",
       "https://www.youtube-nocookie.com",
+      "https://www.facebook.com",
+      "https://web.facebook.com",
     ],
     "connect-src": [
       "'self'",

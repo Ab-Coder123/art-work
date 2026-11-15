@@ -11,7 +11,6 @@ import { InteractiveDoodleCanvas } from "@/components/cinematic/InteractiveDoodl
 import { StudioHeader, StudioFooter } from "@/components/home";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { soundFX } from "@/utils/soundFX";
-import { useDoodleStore } from "@/store/useDoodleStore";
 import { KineticBrushWord, KineticBrushStroke } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import {
@@ -31,6 +30,7 @@ import {
   type ProjectCategory,
   type ProjectRecord,
   resolveSafeYouTubeEmbed,
+  resolveSafeFacebookEmbed,
   getProjectThumbnailUrl,
 } from "@art-work/types";
 import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
@@ -51,7 +51,7 @@ export default function GalleryPage() {
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
   const [activeModalImage, setActiveModalImage] = useState<string | null>(null);
-  const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
+  const [activeMediaTab, setActiveMediaTab] = useState<"youtube" | "facebook">("youtube");
   const modalScrollRef = useRef<HTMLDivElement>(null);
 
   // Activate Lenis luxury virtual smooth scroll
@@ -253,6 +253,11 @@ export default function GalleryPage() {
     soundFX.playPop();
     setSelectedProject(project);
     setActiveModalImage(project.image);
+    if (project.youtubeVideoId || project.youtubeUrl) {
+      setActiveMediaTab("youtube");
+    } else if (project.facebookUrl) {
+      setActiveMediaTab("facebook");
+    }
   };
 
   const triggerInkBurst = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -307,6 +312,9 @@ export default function GalleryPage() {
 
   const selectedYtEmbed = selectedProject
     ? resolveSafeYouTubeEmbed(selectedProject.youtubeVideoId || selectedProject.youtubeUrl)
+    : null;
+  const selectedFbEmbed = selectedProject
+    ? resolveSafeFacebookEmbed(selectedProject.facebookUrl)
     : null;
 
   const heroTags =
@@ -503,6 +511,11 @@ export default function GalleryPage() {
                             </>
                           )}
                         </div>
+                      ) : project.facebookUrl ? (
+                        <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-[#1877F2]/90 backdrop-blur-sm text-white font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>FB VIDEO</span>
+                        </div>
                       ) : project.pdfUrl || project.category === "booths" ? (
                         <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-yellow-400/95 backdrop-blur-sm text-black font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
                           <FileText className="w-3 h-3" />
@@ -533,6 +546,11 @@ export default function GalleryPage() {
                             ? "WATCH REEL ↗"
                             : "WATCH SHOWREEL ↗"}
                         </span>
+                      </>
+                    ) : project.facebookUrl ? (
+                      <>
+                        <Play className="w-3.5 h-3.5 fill-current" />
+                        <span>WATCH FB VIDEO ↗</span>
                       </>
                     ) : project.pdfUrl ? (
                       <>
@@ -764,57 +782,132 @@ export default function GalleryPage() {
                 {selectedProject.description}
               </p>
 
-              {/* YouTube Video or Reel/Short Embed + Headline + Paragraph */}
-              {selectedYtEmbed ? (
+              {/* YouTube and/or Facebook Video Embed */}
+              {selectedYtEmbed || selectedFbEmbed ? (
                 <div className="mb-5 p-4 rounded-xl border-2 border-black dark:border-zinc-700 bg-neutral-50 dark:bg-[#0e0e16] space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 bg-red-600 text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
-                      <Play className="w-3 h-3 fill-current" />
-                      <span>
-                        {selectedProject.isShort || selectedYtEmbed.isShort
-                          ? "YOUTUBE REEL / SHORT (9:16)"
-                          : "YOUTUBE SHOWREEL (16:9)"}
-                      </span>
-                    </span>
-                    <a
-                      href={selectedYtEmbed.canonicalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 font-headline font-bold text-[11px] text-red-600 dark:text-red-400 hover:underline"
-                    >
-                      <span>WATCH ON YOUTUBE</span>
-                      <span>↗</span>
-                    </a>
-                  </div>
-
-                  {selectedProject.youtubeTitle && (
-                    <h3 className="font-headline font-black text-base text-black dark:text-white">
-                      {selectedProject.youtubeTitle}
-                    </h3>
+                  {/* Tab Switcher if BOTH YouTube and Facebook exist */}
+                  {selectedYtEmbed && selectedFbEmbed && (
+                    <div className="flex items-center gap-2 pb-2 border-b border-black/10 dark:border-white/10">
+                      <button
+                        type="button"
+                        onClick={() => setActiveMediaTab("youtube")}
+                        className={`px-3 py-1 rounded-lg text-xs font-headline font-black uppercase transition-all cursor-pointer ${
+                          activeMediaTab === "youtube"
+                            ? "bg-red-600 text-white border border-black shadow"
+                            : "bg-black/5 dark:bg-white/5 text-black dark:text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        YouTube Video
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveMediaTab("facebook")}
+                        className={`px-3 py-1 rounded-lg text-xs font-headline font-black uppercase transition-all cursor-pointer ${
+                          activeMediaTab === "facebook"
+                            ? "bg-[#1877F2] text-white border border-black shadow"
+                            : "bg-black/5 dark:bg-white/5 text-black dark:text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        Facebook Video
+                      </button>
+                    </div>
                   )}
 
-                  {selectedProject.youtubeDescription && (
-                    <p className="font-body text-xs text-black/80 dark:text-zinc-300 leading-relaxed">
-                      {selectedProject.youtubeDescription}
-                    </p>
+                  {/* Render YouTube Video */}
+                  {selectedYtEmbed && (!selectedFbEmbed || activeMediaTab === "youtube") && (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <span className="inline-flex items-center gap-1.5 bg-red-600 text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>
+                            {selectedProject.isShort || selectedYtEmbed.isShort
+                              ? "YOUTUBE REEL / SHORT (9:16)"
+                              : "YOUTUBE SHOWREEL (16:9)"}
+                          </span>
+                        </span>
+                        <a
+                          href={selectedYtEmbed.canonicalUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-headline font-bold text-[11px] text-red-600 dark:text-red-400 hover:underline"
+                        >
+                          <span>WATCH ON YOUTUBE</span>
+                          <span>↗</span>
+                        </a>
+                      </div>
+
+                      {selectedProject.youtubeTitle && (
+                        <h3 className="font-headline font-black text-base text-black dark:text-white">
+                          {selectedProject.youtubeTitle}
+                        </h3>
+                      )}
+
+                      {selectedProject.youtubeDescription && (
+                        <p className="font-body text-xs text-black/80 dark:text-zinc-300 leading-relaxed">
+                          {selectedProject.youtubeDescription}
+                        </p>
+                      )}
+
+                      <div
+                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
+                          selectedProject.isShort || selectedYtEmbed.isShort
+                            ? "aspect-[9/16] max-w-[280px] mx-auto"
+                            : "aspect-video w-full"
+                        }`}
+                      >
+                        <iframe
+                          src={selectedYtEmbed.embedUrl}
+                          title={selectedProject.youtubeTitle || selectedProject.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                          className="w-full h-full border-0 pointer-events-auto cursor-pointer relative z-10"
+                        />
+                      </div>
+                    </>
                   )}
 
-                  <div
-                    className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
-                      selectedProject.isShort || selectedYtEmbed.isShort
-                        ? "aspect-[9/16] max-w-[280px] mx-auto"
-                        : "aspect-video w-full"
-                    }`}
-                  >
-                    <iframe
-                      src={selectedYtEmbed.embedUrl}
-                      title={selectedProject.youtubeTitle || selectedProject.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                      className="w-full h-full border-0 pointer-events-auto cursor-pointer relative z-10"
-                    />
-                  </div>
+                  {/* Render Facebook Video */}
+                  {selectedFbEmbed && (!selectedYtEmbed || activeMediaTab === "facebook") && (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <span className="inline-flex items-center gap-1.5 bg-[#1877F2] text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>
+                            {selectedFbEmbed.isReel
+                              ? "FACEBOOK REEL (9:16)"
+                              : "FACEBOOK VIDEO"}
+                          </span>
+                        </span>
+                        <a
+                          href={selectedFbEmbed.canonicalUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-headline font-bold text-[11px] text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          <span>WATCH ON FACEBOOK</span>
+                          <span>↗</span>
+                        </a>
+                      </div>
+
+                      <div
+                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
+                          selectedFbEmbed.isReel
+                            ? "aspect-[9/16] max-w-[280px] mx-auto"
+                            : "aspect-video w-full"
+                        }`}
+                      >
+                        <iframe
+                          src={selectedFbEmbed.embedUrl}
+                          title={selectedProject.title}
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                          className="w-full h-full border-0 pointer-events-auto cursor-pointer relative z-10"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-3 mb-4">
