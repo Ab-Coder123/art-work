@@ -50,24 +50,24 @@ export const YouTubeUrlSchema = z
  */
 export const BehanceUrlSchema = z
   .string()
+  .trim()
+  .nullish()
   .refine(
-    (url) => !url || isValidBehanceUrl(url),
+    (url) => !url || url.length === 0 || isValidBehanceUrl(url),
     "Behance URL must be a valid link on behance.net"
-  )
-  .nullable()
-  .optional();
+  );
 
 /**
  * Validates optional Facebook video or reel links.
  */
 export const FacebookUrlSchema = z
   .string()
+  .trim()
+  .nullish()
   .refine(
-    (url) => !url || isValidFacebookVideoUrl(url),
+    (url) => !url || url.length === 0 || isValidFacebookVideoUrl(url),
     "Facebook video link must be a valid link on facebook.com or fb.watch"
-  )
-  .nullable()
-  .optional();
+  );
 
 export const SlugSchema = z
   .string()

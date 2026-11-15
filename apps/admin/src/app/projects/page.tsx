@@ -88,11 +88,16 @@ function FacebookVideoFieldCard({
             <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
           </div>
           <div>
-            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono block">
-              Facebook Video / Reel Link
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-white uppercase tracking-wider font-mono block">
+                Facebook Video / Reel Link
+              </span>
+              <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-sans font-bold">
+                اختياري (Optional)
+              </span>
+            </div>
             <span className="text-[10px] text-zinc-400 font-mono">
-              Supports facebook.com/watch, /reel/, /share/r/, /share/v/, and fb.watch
+              حقل اختياري — اتركه فارغاً إذا كنت لا ترغب بإضافة فيديو فيسبوك لهذا المشروع
             </span>
           </div>
         </div>
@@ -195,9 +200,18 @@ function FacebookVideoFieldCard({
           </div>
         </div>
       ) : facebookUrl ? (
-        <p className="text-[10px] text-amber-400/90 font-mono">
-          * Enter a valid Facebook video, watch, share, or reel URL (raw &lt;iframe&gt; HTML is sanitized automatically).
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-200">
+          <p className="text-[11px] font-sans">
+            ⚠️ الرابط المدخل غير صالح. (ملاحظة: هذا الحقل اختياري تماماً، يمكنك تركه فارغاً إذا كنت لا ترغب بإضافة فيديو فيسبوك).
+          </p>
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition-colors shrink-0 cursor-pointer self-start sm:self-center"
+          >
+            مسح الرابط (بدون فيديو فيسبوك)
+          </button>
+        </div>
       ) : null}
     </div>
   );
@@ -239,13 +253,13 @@ function humanizeAdminError(rawError: string): { title: string; detail: string }
   if (err.includes("youtube") || err.includes("iframe")) {
     return {
       title: "رابط اليوتيوب غير صالح (Invalid YouTube URL)",
-      detail: "يرجى إدخال رابط فيديو صحيح من YouTube مباشرة (تأكد من عدم استخدام كود تضمين iframe).",
+      detail: "حقل فيديو YouTube اختياري تماماً. إذا كنت ترغب بإضافته، يرجى إدخال رابط فيديو صحيح من YouTube مباشرة.",
     };
   }
   if (err.includes("facebook")) {
     return {
-      title: "رابط فيديو فيسبوك غير صالح (Invalid Facebook URL)",
-      detail: "يرجى إدخال رابط فيديو صالح من Facebook أو fb.watch مباشرة (تأكد من عدم استخدام كود تضمين iframe).",
+      title: "رابط فيديو فيسبوك غير صالح (Facebook Video is Optional)",
+      detail: "حقل فيديو فيسبوك اختياري تماماً. إذا كنت لا ترغب بإضافة فيديو فيسبوك لهذا المشروع، يرجى مسح الرابط بالضغط على زر Clear أو الزر بالأسفل.",
     };
   }
   if (err.includes("cover image")) {
@@ -1056,22 +1070,30 @@ export default function GalleryProjectsManager() {
     setIsSaving(true);
     setNotification(null);
 
-    let resolvedFacebookUrl = editingProject.facebookUrl;
-    if (resolvedFacebookUrl && isUnresolvedFacebookShareUrl(resolvedFacebookUrl)) {
-      try {
-        const fbRes = await apiFetchWithCsrf("/api/media/facebook/resolve", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ input: resolvedFacebookUrl }),
-        });
-        if (fbRes.ok) {
-          const fbData = await fbRes.json();
-          if (fbData.canonicalUrl) {
-            resolvedFacebookUrl = fbData.canonicalUrl;
+    let resolvedFacebookUrl = editingProject.facebookUrl?.trim() || null;
+    if (resolvedFacebookUrl) {
+      if (!isValidFacebookVideoUrl(resolvedFacebookUrl)) {
+        setIsSaving(false);
+        const err = humanizeAdminError("facebook url is invalid");
+        setModalError(`${err.title}: ${err.detail}`);
+        return;
+      }
+      if (isUnresolvedFacebookShareUrl(resolvedFacebookUrl)) {
+        try {
+          const fbRes = await apiFetchWithCsrf("/api/media/facebook/resolve", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ input: resolvedFacebookUrl }),
+          });
+          if (fbRes.ok) {
+            const fbData = await fbRes.json();
+            if (fbData.canonicalUrl) {
+              resolvedFacebookUrl = fbData.canonicalUrl;
+            }
           }
+        } catch {
+          // Fall back to current facebookUrl
         }
-      } catch {
-        // Fall back to current facebookUrl
       }
     }
 
@@ -1192,6 +1214,12 @@ export default function GalleryProjectsManager() {
                 featured: false,
                 order: projects.length + 1,
                 isShort: false,
+                facebookUrl: null,
+                youtubeUrl: null,
+                youtubeVideoId: null,
+                behanceUrl: null,
+                pdfUrl: null,
+                pdfTitle: null,
               });
             }}
             className="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold font-mono uppercase tracking-wider rounded-xl transition-all shadow-[2px_2px_0px_#ffffff] cursor-pointer"
@@ -2701,6 +2729,19 @@ export default function GalleryProjectsManager() {
                     <div>
                       <span className="font-bold block mb-0.5 font-sans">تنبيه التحقق من البيانات:</span>
                       <p className="leading-relaxed opacity-90 font-sans">{modalError}</p>
+                      {(modalError.toLowerCase().includes("facebook") || modalError.includes("فيسبوك")) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingProject((prev) => (prev ? { ...prev, facebookUrl: null } : null));
+                            setModalError(null);
+                            setFbStatusMessage(null);
+                          }}
+                          className="mt-2.5 px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold rounded-lg transition-all cursor-pointer shadow flex items-center gap-1.5 font-sans"
+                        >
+                          <span>مسح رابط فيسبوك (حفظ المشروع بدون فيديو فيسبوك) ↗</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                   <button
