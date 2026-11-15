@@ -109,65 +109,66 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
     triggerInkBurst,
   } = useTheaterStageController();
 
-  const [heroContent, setHeroContent] = useState(initialData.heroContent);
-  const [whyUsContent, setWhyUsContent] = useState(initialData.whyUsContent);
-  const [servicesContent, setServicesContent] = useState(initialData.servicesContent);
-  const [homeShowcaseContent, setHomeShowcaseContent] = useState(initialData.homeShowcaseContent);
-  const [contactContent, setContactContent] = useState(initialData.contactContent);
-  const [layoutContent, setLayoutContent] = useState(initialData.layoutContent);
-  const [companies, setCompanies] = useState(initialData.companies);
-  const [projects, setProjects] = useState(initialData.projects);
+  const [homeData, setHomeData] = useState<InitialHomeData>(initialData);
 
-  // Background content & ★ Starred projects freshness re-synchronization
+  const {
+    heroContent,
+    whyUsContent,
+    servicesContent,
+    homeShowcaseContent,
+    contactContent,
+    layoutContent,
+    companies,
+    projects,
+  } = homeData;
+
+  // Background content & ★ Starred projects freshness re-synchronization in a single parallel batch
   useEffect(() => {
     let mounted = true;
 
-    fetch("/api/content", { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((siteContent) => {
-        if (!mounted || !siteContent) return;
-        if (siteContent.manifesto) {
-          setHeroContent((prev) => ({ ...prev, ...siteContent.manifesto }));
-        }
-        if (siteContent.whyUsTeaser) {
-          setWhyUsContent((prev) => ({
-            ...prev,
-            ...siteContent.whyUsTeaser,
-            blueprint: { ...prev.blueprint, ...(siteContent.whyUsTeaser.blueprint || {}) },
-          }));
-        }
-        if (siteContent.services) {
-          setServicesContent((prev) => ({ ...prev, ...siteContent.services }));
-        }
-        if (siteContent.homeShowcase) {
-          setHomeShowcaseContent((prev) => ({ ...prev, ...siteContent.homeShowcase }));
-        }
-        if (siteContent.contact) {
-          setContactContent((prev) => ({ ...prev, ...siteContent.contact }));
-        }
-        if (siteContent.layout) {
-          setLayoutContent((prev) => ({ ...prev, ...siteContent.layout }));
-        }
-      })
-      .catch(() => {});
+    Promise.allSettled([
+      fetch("/api/content", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
+      fetch("/api/companies", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
+      fetch("/api/projects?limit=24", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
+    ]).then(([contentRes, companiesRes, projectsRes]) => {
+      if (!mounted) return;
 
-    fetch("/api/companies", { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((json) => {
-        if (mounted && json?.ok && Array.isArray(json.data) && json.data.length > 0) {
-          setCompanies(json.data);
-        }
-      })
-      .catch(() => {});
+      const siteContent = contentRes.status === "fulfilled" ? contentRes.value : null;
+      const companiesPayload = companiesRes.status === "fulfilled" ? companiesRes.value : null;
+      const projectsPayload = projectsRes.status === "fulfilled" ? projectsRes.value : null;
 
-    fetch("/api/projects?limit=24", { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((json) => {
-        if (mounted && Array.isArray(json?.items) && json.items.length > 0) {
-          setProjects(json.items);
-        }
-      })
-      .catch(() => {});
+      const newCompanies =
+        companiesPayload?.ok && Array.isArray(companiesPayload.data) && companiesPayload.data.length > 0
+          ? companiesPayload.data
+          : null;
+      const newProjects =
+        Array.isArray(projectsPayload?.items) && projectsPayload.items.length > 0
+          ? projectsPayload.items
+          : null;
+
+      if (!siteContent && !newCompanies && !newProjects) return;
+
+      setHomeData((prev) => ({
+        ...prev,
+        heroContent: siteContent?.manifesto ? { ...prev.heroContent, ...siteContent.manifesto } : prev.heroContent,
+        whyUsContent: siteContent?.whyUsTeaser
+          ? {
+              ...prev.whyUsContent,
+              ...siteContent.whyUsTeaser,
+              blueprint: {
+                ...prev.whyUsContent.blueprint,
+                ...(siteContent.whyUsTeaser.blueprint || {}),
+              },
+            }
+          : prev.whyUsContent,
+        servicesContent: siteContent?.services ? { ...prev.servicesContent, ...siteContent.services } : prev.servicesContent,
+        homeShowcaseContent: siteContent?.homeShowcase ? { ...prev.homeShowcaseContent, ...siteContent.homeShowcase } : prev.homeShowcaseContent,
+        contactContent: siteContent?.contact ? { ...prev.contactContent, ...siteContent.contact } : prev.contactContent,
+        layoutContent: siteContent?.layout ? { ...prev.layoutContent, ...siteContent.layout } : prev.layoutContent,
+        companies: newCompanies || prev.companies,
+        projects: newProjects || prev.projects,
+      }));
+    });
 
     return () => {
       mounted = false;
