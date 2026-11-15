@@ -320,6 +320,8 @@ function normalizeContact(value: unknown): ContactSectionContent {
   const raw = asRecord(value);
   const defaults = DEFAULT_SITE_CONTENT.contact;
   const legacy = { ...defaults, ...raw } as ContactSectionContent;
+  const rawPhone = readString(raw, "phone", defaults.phone);
+  const phone = rawPhone.includes("2794") ? defaults.phone : rawPhone;
   return {
     ...legacy,
     stageTag: readString(raw, "stageTag", defaults.stageTag),
@@ -327,7 +329,7 @@ function normalizeContact(value: unknown): ContactSectionContent {
     description: readString(raw, "description", defaults.description),
     intakeLabel: readString(raw, "intakeLabel", defaults.intakeLabel),
     email: readString(raw, "email", defaults.email),
-    phone: readString(raw, "phone", defaults.phone),
+    phone,
     intakeImage: normalizeSiteMediaPath(
       readString(raw, "intakeImage", defaults.intakeImage),
       defaults.intakeImage

@@ -418,7 +418,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     intakeImage: SITE_MEDIA.creativeChiefIntake,
     intakeImageAlt: "Art Work Event Producer On-Call Intake",
     email: "ahmed.artwork2026@gmail.com",
-    phone: "+20 109 261 1230",
+    phone: "01092611230",
     studioLocations: '380 Maadi Corniche - Jawharet Maadi Towers - Tower "B", 35th floor - Cairo',
     submitButtonText: "SEND YOUR EVENT BRIEF",
     serviceOptions: [

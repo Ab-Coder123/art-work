@@ -16,7 +16,7 @@ export const StudioHeader = React.memo(function StudioHeader({
   scrollToStage,
   onInkBurst,
   layout = DEFAULT_LAYOUT_CONTENT,
-  whatsappPhone = "+20 109 261 1230",
+  whatsappPhone = "01092611230",
 }: StudioHeaderProps) {
   const pathname = usePathname();
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
@@ -31,7 +31,11 @@ export const StudioHeader = React.memo(function StudioHeader({
       ? layout.fullVaultCtaText
       : `★ ${layout.navGalleryLabel} ↗`;
 
-  const rawPhone = (whatsappPhone || "+20 109 261 1230").replace(/\D/g, "");
+  const effectivePhone =
+    !whatsappPhone || whatsappPhone.includes("2794")
+      ? "01092611230"
+      : whatsappPhone;
+  const rawPhone = effectivePhone.replace(/\D/g, "");
   const phoneClean = rawPhone.startsWith("01")
     ? `2${rawPhone}`
     : rawPhone.startsWith("201")

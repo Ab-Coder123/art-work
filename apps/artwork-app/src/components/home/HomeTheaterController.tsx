@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { motion, AnimatePresence } from "framer-motion";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import { useTheaterStageController } from "@/hooks/useTheaterStageController";
 
@@ -106,7 +105,6 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
     activeStage,
     scrollToStage,
     trackRef,
-    theaterRef,
     mainContainerRef,
     triggerInkBurst,
   } = useTheaterStageController();
@@ -211,181 +209,88 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
       />
 
       {/* =========================================================================
-          MOBILE RESPONSIVE SEQUENTIAL FLOW (Natural Unhindered Scrolling)
-          ========================================================================= */}
-      <div className="block md:hidden w-full relative z-10 pt-36 sm:pt-40">
-        {/* Stage 01 Mobile */}
-        <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
-          <section
-            id="stage-01-mobile"
-            className="w-full min-h-[calc(100vh-8rem)] py-8 px-4 flex flex-col justify-center"
-          >
-            <ManifestoHero
-              content={heroContent}
-              companies={companies}
-              onExploreShowreel={() => scrollToStage("stage-gallery")}
-              onViewCapabilities={() => scrollToStage("stage-03")}
-            />
-          </section>
-        </ScrollReveal>
-
-        {/* Stage 02 Mobile */}
-        <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
-          <section
-            id="stage-02-mobile"
-            className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
-          >
-            <WhyUsTeaser content={whyUsContent} />
-          </section>
-        </ScrollReveal>
-
-        {/* Stage 03 Mobile */}
-        <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
-          <section
-            id="stage-03-mobile"
-            className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
-          >
-            <ServicesStage content={servicesContent} />
-          </section>
-        </ScrollReveal>
-
-        {/* Stage Gallery Mobile (Featured Projects & ★ Star Videos Showcase) */}
-        <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
-          <section
-            id="stage-gallery-mobile"
-            className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
-          >
-            <GalleryShowcaseStage
-              content={homeShowcaseContent}
-              initialProjects={projects}
-            />
-          </section>
-        </ScrollReveal>
-
-        {/* Stage 04 Mobile */}
-        <ScrollReveal direction="up" distance={30} viewportAmount={0.08}>
-          <section
-            id="stage-04-mobile"
-            className="w-full min-h-screen py-10 px-4 flex flex-col justify-center border-t-2 border-black/10"
-          >
-            <div id="brief-inquiry" className="w-full">
-              <ContactSection content={contactContent} />
-            </div>
-          </section>
-        </ScrollReveal>
-
-        {/* Mobile Page Footer */}
-        <StudioFooter scrollToStage={scrollToStage} layout={layoutContent} />
-      </div>
-
-      {/* =========================================================================
-          DESKTOP PINNED SCROLLYTELLING THEATER CONTAINER (Large Screens)
+          UNIFIED CONTINUOUS SMOOTH SCROLLING FLOW (Desktop & Mobile)
           ========================================================================= */}
       <div
         ref={trackRef}
-        className="hidden md:block relative w-full h-[400vh]"
         id="pinned-stage-track"
+        className="w-full relative z-10 pt-24 sm:pt-28 lg:pt-32 no-scrollbar"
       >
-        {/* STICKY FIXED VIEWPORT THEATER */}
-        <div
-          ref={theaterRef}
-          className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between z-10 pt-[92px] sm:pt-[102px] lg:pt-[110px] pb-2"
-        >
-          {/* PINNED SCROLLYTELLING VERTICAL STAGE INDICATOR (Right Dock) */}
+        {/* VERTICAL STAGE INDICATOR (Desktop Right Dock) */}
+        <div className="hidden md:block">
           <TheaterStageIndicator
             activeStage={activeStage}
             scrollToStage={scrollToStage}
           />
-
-          {/* MAIN DYNAMIC SCENE CANVAS (Desktop Pinned & Morphing with AnimatePresence) */}
-          <main
-            ref={mainContainerRef}
-            data-lenis-prevent="true"
-            style={{ overscrollBehaviorY: "contain" }}
-            className="flex-1 w-full min-h-0 relative overflow-y-auto overflow-x-hidden flex flex-col items-center px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-6 no-scrollbar"
-          >
-            <AnimatePresence mode="wait">
-              {activeStage === "stage-01" && (
-                <motion.div
-                  key="scene-01"
-                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
-                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-start"
-                >
-                  <ManifestoHero
-                    content={heroContent}
-                    companies={companies}
-                    onExploreShowreel={() => scrollToStage("stage-gallery")}
-                    onViewCapabilities={() => scrollToStage("stage-03")}
-                  />
-                </motion.div>
-              )}
-
-              {activeStage === "stage-02" && (
-                <motion.div
-                  key="scene-02"
-                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
-                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-start"
-                >
-                  <WhyUsTeaser content={whyUsContent} />
-                </motion.div>
-              )}
-
-              {activeStage === "stage-03" && (
-                <motion.div
-                  key="scene-03"
-                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
-                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-start"
-                >
-                  <ServicesStage content={servicesContent} />
-                </motion.div>
-              )}
-
-              {activeStage === "stage-gallery" && (
-                <motion.div
-                  key="scene-gallery"
-                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
-                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-start"
-                >
-                  <GalleryShowcaseStage
-                    content={homeShowcaseContent}
-                    initialProjects={projects}
-                  />
-                </motion.div>
-              )}
-
-              {activeStage === "stage-04" && (
-                <motion.div
-                  key="scene-04"
-                  id="stage-04"
-                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
-                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex-1 flex flex-col items-center justify-start"
-                >
-                  <div id="brief-inquiry" className="w-full">
-                    <ContactSection content={contactContent} />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </main>
-
-          {/* Desktop Compact Footer */}
-          <StudioFooter scrollToStage={scrollToStage} layout={layoutContent} />
         </div>
+
+        <main
+          ref={mainContainerRef}
+          className="w-full flex flex-col items-center px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16 pb-12 no-scrollbar"
+        >
+          {/* Stage 01: Hero Manifesto */}
+          <ScrollReveal direction="up" distance={30} viewportAmount={0.08} className="w-full">
+            <section
+              id="stage-01"
+              className="w-full min-h-[calc(100vh-7rem)] py-6 sm:py-8 flex flex-col justify-center"
+            >
+              <ManifestoHero
+                content={heroContent}
+                companies={companies}
+                onExploreShowreel={() => scrollToStage("stage-gallery")}
+                onViewCapabilities={() => scrollToStage("stage-03")}
+              />
+            </section>
+          </ScrollReveal>
+
+          {/* Stage 02: Why Us Teaser */}
+          <ScrollReveal direction="up" distance={30} viewportAmount={0.08} className="w-full">
+            <section
+              id="stage-02"
+              className="w-full py-10 sm:py-14 flex flex-col justify-center"
+            >
+              <WhyUsTeaser content={whyUsContent} />
+            </section>
+          </ScrollReveal>
+
+          {/* Stage 03: Services Matrix */}
+          <ScrollReveal direction="up" distance={30} viewportAmount={0.08} className="w-full">
+            <section
+              id="stage-03"
+              className="w-full py-10 sm:py-14 flex flex-col justify-center"
+            >
+              <ServicesStage content={servicesContent} />
+            </section>
+          </ScrollReveal>
+
+          {/* Stage Gallery: Featured Projects & Star Videos Showcase */}
+          <ScrollReveal direction="up" distance={30} viewportAmount={0.08} className="w-full">
+            <section
+              id="stage-gallery"
+              className="w-full py-10 sm:py-14 flex flex-col justify-center"
+            >
+              <GalleryShowcaseStage
+                content={homeShowcaseContent}
+                initialProjects={projects}
+              />
+            </section>
+          </ScrollReveal>
+
+          {/* Stage 04: Brief Intake & Contact */}
+          <ScrollReveal direction="up" distance={30} viewportAmount={0.08} className="w-full">
+            <section
+              id="stage-04"
+              className="w-full py-10 sm:py-14 flex flex-col justify-center"
+            >
+              <div id="brief-inquiry" className="w-full">
+                <ContactSection content={contactContent} />
+              </div>
+            </section>
+          </ScrollReveal>
+        </main>
+
+        {/* Unified Smooth Page Footer */}
+        <StudioFooter scrollToStage={scrollToStage} layout={layoutContent} />
       </div>
     </>
   );

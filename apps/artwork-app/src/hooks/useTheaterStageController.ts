@@ -5,7 +5,6 @@ import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { soundFX } from "@/utils/soundFX";
 import {
   type StageId,
-  STAGE_ORDER,
   resolveHashToStage,
 } from "@/components/home/types";
 
@@ -19,9 +18,9 @@ export interface TheaterStageControllerResult {
 }
 
 /**
- * Phase 5: High-Performance Scrollytelling Stage Progression & Wheel Engine Hook.
- * Encapsulates all scrollytelling state, wheel thresholds, RAF synchronizers,
- * global hash routing, and keyboard accessibility navigation.
+ * Continuous Smooth Scrollytelling Hook.
+ * Pairs Lenis virtual smooth scroll with RAF scroll-spy stage tracking,
+ * global hash routing, and Home/End accessibility navigation across all viewports.
  */
 export function useTheaterStageController(): TheaterStageControllerResult {
   const [activeStage, setActiveStage] = useState<StageId>("stage-01");
@@ -30,67 +29,33 @@ export function useTheaterStageController(): TheaterStageControllerResult {
   const theaterRef = useRef<HTMLDivElement | null>(null);
   const mainContainerRef = useRef<HTMLElement | null>(null);
 
-  const isTransitioningRef = useRef(false);
-  const accumulatedDeltaRef = useRef(0);
-  const boundaryReachedTimeRef = useRef(0);
-  const activeStageRef = useRef<StageId>(activeStage);
-
-  useEffect(() => {
-    activeStageRef.current = activeStage;
-  }, [activeStage]);
-
   // Activate Lenis luxury virtual smooth scrolling
   useSmoothScroll();
 
   const scrollToStage = useCallback((stage: StageId) => {
     soundFX.playWhoosh();
-    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    if (typeof window === "undefined") return;
 
-    if (isMobile) {
-      const targetEl =
-        document.getElementById(`${stage}-mobile`) ||
-        document.getElementById(stage) ||
-        (stage === "stage-04" ? document.getElementById("brief-inquiry") : null);
-      if (targetEl) {
-        const headerOffset = 104; // Height of fixed header + mobile pill bar
-        const elementPosition = targetEl.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        const targetTop = Math.max(0, offsetPosition);
+    const targetEl =
+      document.getElementById(stage) ||
+      document.getElementById(`${stage}-mobile`) ||
+      (stage === "stage-04" ? document.getElementById("brief-inquiry") : null);
 
-        if (window.__lenis) {
-          window.__lenis.scrollTo(targetTop);
-        } else {
-          window.scrollTo({
-            top: targetTop,
-            behavior: "smooth",
-          });
-        }
-        setActiveStage(stage);
-        return;
+    if (targetEl) {
+      const elementPosition = targetEl.getBoundingClientRect().top;
+      const targetTop = Math.max(0, elementPosition + window.scrollY - 96);
+
+      if (window.__lenis) {
+        window.__lenis.scrollTo(targetTop, { duration: 1.1 });
+      } else {
+        window.scrollTo({
+          top: targetTop,
+          behavior: "smooth",
+        });
       }
     }
 
-    // Desktop: Update active stage & reset internal component scroll
     setActiveStage(stage);
-    if (mainContainerRef.current) {
-      mainContainerRef.current.scrollTop = 0;
-    }
-
-    // Sync 3D background / parallax track position
-    if (!trackRef.current) return;
-    const maxScroll = trackRef.current.scrollHeight - window.innerHeight;
-    let target = 0;
-    if (stage === "stage-01") target = 0;
-    if (stage === "stage-02") target = maxScroll * 0.25;
-    if (stage === "stage-03") target = maxScroll * 0.5;
-    if (stage === "stage-gallery") target = maxScroll * 0.75;
-    if (stage === "stage-04") target = maxScroll * 1.0;
-
-    if (window.__lenis) {
-      window.__lenis.scrollTo(target);
-    } else {
-      window.scrollTo({ top: target, behavior: "smooth" });
-    }
   }, []);
 
   // GLOBAL HASH ROUTER & INTERNAL ANCHOR NAVIGATION SYNCHRONIZER
@@ -144,17 +109,23 @@ export function useTheaterStageController(): TheaterStageControllerResult {
     };
   }, [scrollToStage]);
 
-  // HIGH-PERFORMANCE MOBILE SCROLL SYNCHRONIZER (RAF Throttled)
+  // HIGH-PERFORMANCE UNIFIED SCROLL-SPY SYNCHRONIZER (RAF Throttled, All Viewports)
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
-      if (window.innerWidth >= 768) return;
-
-      const s2 = document.getElementById("stage-02-mobile");
-      const s3 = document.getElementById("stage-03-mobile");
-      const sGallery = document.getElementById("stage-gallery-mobile");
-      const s4 = document.getElementById("stage-04-mobile");
-      const threshold = window.innerHeight * 0.38;
+      const s2 =
+        document.getElementById("stage-02") ||
+        document.getElementById("stage-02-mobile");
+      const s3 =
+        document.getElementById("stage-03") ||
+        document.getElementById("stage-03-mobile");
+      const sGallery =
+        document.getElementById("stage-gallery") ||
+        document.getElementById("stage-gallery-mobile");
+      const s4 =
+        document.getElementById("stage-04") ||
+        document.getElementById("stage-04-mobile");
+      const threshold = window.innerHeight * 0.4;
 
       let nextStage: StageId = "stage-01";
       if (s4 && s4.getBoundingClientRect().top <= threshold) {
@@ -190,110 +161,9 @@ export function useTheaterStageController(): TheaterStageControllerResult {
     };
   }, []);
 
-  // DESKTOP INTERNAL SCROLL-Y COMPLETION & PROGRESSION WHEEL ENGINE
-  useEffect(() => {
-    const theater = theaterRef.current;
-    if (!theater) return;
-
-    const handleWheel = (e: WheelEvent) => {
-      if (window.innerWidth < 768) return;
-
-      const main = mainContainerRef.current;
-      if (!main) return;
-
-      if (isTransitioningRef.current) {
-        e.preventDefault();
-        return;
-      }
-
-      const { scrollTop, scrollHeight, clientHeight } = main;
-      const maxScroll = Math.max(0, scrollHeight - clientHeight);
-      const isAtBottom = scrollTop >= maxScroll - 6;
-      const isAtTop = scrollTop <= 6;
-      const now = Date.now();
-
-      // Scrolling downwards
-      if (e.deltaY > 0) {
-        if (!isAtBottom) {
-          accumulatedDeltaRef.current = 0;
-          boundaryReachedTimeRef.current = 0;
-          return;
-        }
-
-        e.preventDefault();
-
-        if (boundaryReachedTimeRef.current === 0) {
-          boundaryReachedTimeRef.current = now;
-          accumulatedDeltaRef.current = 0;
-          return;
-        }
-
-        if (maxScroll > 15 && now - boundaryReachedTimeRef.current < 160) {
-          return;
-        }
-
-        accumulatedDeltaRef.current += e.deltaY;
-        if (accumulatedDeltaRef.current >= 45) {
-          const currentIndex = STAGE_ORDER.indexOf(activeStageRef.current);
-          if (currentIndex < STAGE_ORDER.length - 1) {
-            isTransitioningRef.current = true;
-            accumulatedDeltaRef.current = 0;
-            boundaryReachedTimeRef.current = 0;
-            const nextStage = STAGE_ORDER[currentIndex + 1];
-            scrollToStage(nextStage);
-            setTimeout(() => {
-              isTransitioningRef.current = false;
-            }, 600);
-          }
-        }
-      }
-      // Scrolling upwards
-      else if (e.deltaY < 0) {
-        if (!isAtTop) {
-          accumulatedDeltaRef.current = 0;
-          boundaryReachedTimeRef.current = 0;
-          return;
-        }
-
-        e.preventDefault();
-
-        if (boundaryReachedTimeRef.current === 0) {
-          boundaryReachedTimeRef.current = now;
-          accumulatedDeltaRef.current = 0;
-          return;
-        }
-
-        if (maxScroll > 15 && now - boundaryReachedTimeRef.current < 160) {
-          return;
-        }
-
-        accumulatedDeltaRef.current += e.deltaY;
-        if (accumulatedDeltaRef.current <= -45) {
-          const currentIndex = STAGE_ORDER.indexOf(activeStageRef.current);
-          if (currentIndex > 0) {
-            isTransitioningRef.current = true;
-            accumulatedDeltaRef.current = 0;
-            boundaryReachedTimeRef.current = 0;
-            const prevStage = STAGE_ORDER[currentIndex - 1];
-            scrollToStage(prevStage);
-            setTimeout(() => {
-              isTransitioningRef.current = false;
-            }, 600);
-          }
-        }
-      }
-    };
-
-    theater.addEventListener("wheel", handleWheel, { passive: false });
-    return () => {
-      theater.removeEventListener("wheel", handleWheel);
-    };
-  }, [scrollToStage]);
-
-  // KEYBOARD ACCESSIBILITY STAGE NAVIGATION
+  // KEYBOARD ACCESSIBILITY HOME/END JUMP NAVIGATION
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't intercept when user is typing in form inputs or textareas
       const activeEl = document.activeElement;
       if (
         activeEl &&
@@ -304,30 +174,7 @@ export function useTheaterStageController(): TheaterStageControllerResult {
         return;
       }
 
-      if (window.innerWidth < 768) return;
-
-      const currentIndex = STAGE_ORDER.indexOf(activeStageRef.current);
-
-      if (e.key === "ArrowDown" || e.key === "PageDown") {
-        const main = mainContainerRef.current;
-        if (main) {
-          const maxScroll = Math.max(0, main.scrollHeight - main.clientHeight);
-          const isAtBottom = main.scrollTop >= maxScroll - 6;
-          if (isAtBottom && currentIndex < STAGE_ORDER.length - 1) {
-            e.preventDefault();
-            scrollToStage(STAGE_ORDER[currentIndex + 1]);
-          }
-        }
-      } else if (e.key === "ArrowUp" || e.key === "PageUp") {
-        const main = mainContainerRef.current;
-        if (main) {
-          const isAtTop = main.scrollTop <= 6;
-          if (isAtTop && currentIndex > 0) {
-            e.preventDefault();
-            scrollToStage(STAGE_ORDER[currentIndex - 1]);
-          }
-        }
-      } else if (e.key === "Home") {
+      if (e.key === "Home") {
         e.preventDefault();
         scrollToStage("stage-01");
       } else if (e.key === "End") {

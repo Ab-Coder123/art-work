@@ -18,7 +18,7 @@ if (typeof window !== "undefined") {
 
 /**
  * Custom hook to initialize Lenis smooth virtual scroll with zero sluggishness.
- * Uses lerp: 0.12 for instantaneous wheel response and silky deceleration.
+ * Uses lerp: 0.09 for instantaneous wheel response and silky deceleration.
  */
 export function useSmoothScroll() {
   useEffect(() => {
@@ -28,8 +28,8 @@ export function useSmoothScroll() {
     }
 
     const lenis = new Lenis({
-      lerp: 0.12, // Responsive & agile: no sluggish 1s drag
-      wheelMultiplier: 1.15, // Natural travel distance per wheel notch
+      lerp: 0.09, // Silky-smooth luxurious glide with responsive deceleration
+      wheelMultiplier: 1.0, // Natural balanced travel distance per wheel notch
       touchMultiplier: 1.4,
       smoothWheel: true,
       infinite: false,
