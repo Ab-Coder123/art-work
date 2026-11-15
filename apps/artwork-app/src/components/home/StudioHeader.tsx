@@ -32,17 +32,24 @@ export const StudioHeader = React.memo(function StudioHeader({
       : `★ ${layout.navGalleryLabel} ↗`;
 
   const effectivePhone =
-    !whatsappPhone || whatsappPhone.includes("2794")
+    !whatsappPhone ||
+    whatsappPhone.includes("2794") ||
+    whatsappPhone.includes("ART-WORK") ||
+    whatsappPhone.includes("1800") ||
+    whatsappPhone.includes("DMX-EXT")
       ? "01092611230"
       : whatsappPhone;
-  const rawPhone = effectivePhone.replace(/\D/g, "");
-  const phoneClean = rawPhone.startsWith("01")
-    ? `2${rawPhone}`
-    : rawPhone.startsWith("201")
-    ? rawPhone
-    : rawPhone.startsWith("1") && rawPhone.length === 10
-    ? `20${rawPhone}`
-    : rawPhone || "201092611230";
+  const rawDigits = effectivePhone.replace(/\D/g, "");
+  const phoneClean =
+    rawDigits.length < 9
+      ? "201092611230"
+      : rawDigits.startsWith("01") && rawDigits.length === 11
+      ? `2${rawDigits}`
+      : rawDigits.startsWith("201") && rawDigits.length === 12
+      ? rawDigits
+      : rawDigits.startsWith("1") && rawDigits.length === 10
+      ? `20${rawDigits}`
+      : rawDigits || "201092611230";
   const whatsappUrl = `https://wa.me/${phoneClean}`;
 
   return (

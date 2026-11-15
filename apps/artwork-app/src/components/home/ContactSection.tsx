@@ -178,8 +178,25 @@ export const ContactSection = React.memo(function ContactSection({
                   <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
                     ☎
                   </span>
-                  <a href={`tel:${content.phone}`} className="hover:underline">
-                    {content.phone}
+                  <a
+                    href={`tel:${
+                      !content.phone ||
+                      content.phone.includes("2794") ||
+                      content.phone.includes("ART-WORK") ||
+                      content.phone.includes("1800") ||
+                      content.phone.includes("DMX-EXT")
+                        ? "01092611230"
+                        : content.phone
+                    }`}
+                    className="hover:underline"
+                  >
+                    {!content.phone ||
+                    content.phone.includes("2794") ||
+                    content.phone.includes("ART-WORK") ||
+                    content.phone.includes("1800") ||
+                    content.phone.includes("DMX-EXT")
+                      ? "01092611230"
+                      : content.phone}
                   </a>
                 </div>
               )}

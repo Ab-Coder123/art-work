@@ -297,18 +297,18 @@ export default function GalleryPage() {
     activeFilter === "all"
       ? projects
       : projects.filter((p) => {
-          if (activeFilter === "branding") {
-            return p.category === "branding" || p.category === "tech";
-          }
-          if (activeFilter === "conferences") {
-            return (
-              p.category === "conferences" ||
-              p.category === "stage" ||
-              p.category === "led"
-            );
-          }
-          return p.category === activeFilter;
-        });
+        if (activeFilter === "branding") {
+          return p.category === "branding" || p.category === "tech";
+        }
+        if (activeFilter === "conferences") {
+          return (
+            p.category === "conferences" ||
+            p.category === "stage" ||
+            p.category === "led"
+          );
+        }
+        return p.category === activeFilter;
+      });
 
   const selectedYtEmbed = selectedProject
     ? resolveSafeYouTubeEmbed(selectedProject.youtubeVideoId || selectedProject.youtubeUrl)
@@ -415,11 +415,10 @@ export default function GalleryPage() {
               <button
                 key={chip.key}
                 onClick={() => handleFilterClick(chip.key as ProjectCategory)}
-                className={`px-3 py-1.5 font-headline font-bold text-xs uppercase tracking-wider rounded border-2 transition-all cursor-pointer ${
-                  activeFilter === chip.key
-                    ? "bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black border-black comic-shadow-sm scale-105"
-                    : "bg-white dark:bg-[#161622] text-black dark:text-zinc-200 border-black dark:border-zinc-700 hover:bg-yellow-100 dark:hover:bg-[#202030]"
-                }`}
+                className={`px-3 py-1.5 font-headline font-bold text-xs uppercase tracking-wider rounded border-2 transition-all cursor-pointer ${activeFilter === chip.key
+                  ? "bg-black dark:bg-yellow-400 text-yellow-400 dark:text-black border-black comic-shadow-sm scale-105"
+                  : "bg-white dark:bg-[#161622] text-black dark:text-zinc-200 border-black dark:border-zinc-700 hover:bg-yellow-100 dark:hover:bg-[#202030]"
+                  }`}
               >
                 {chip.label}
               </button>
@@ -560,7 +559,7 @@ export default function GalleryPage() {
                     ) : (
                       <>
                         <Pencil className="w-3.5 h-3.5" />
-                        <span>INSPECT BLUEPRINT ↗</span>
+                        <span>SEE MORE</span>
                       </>
                     )}
                   </button>
@@ -791,22 +790,20 @@ export default function GalleryPage() {
                       <button
                         type="button"
                         onClick={() => setActiveMediaTab("youtube")}
-                        className={`px-3 py-1 rounded-lg text-xs font-headline font-black uppercase transition-all cursor-pointer ${
-                          activeMediaTab === "youtube"
-                            ? "bg-red-600 text-white border border-black shadow"
-                            : "bg-black/5 dark:bg-white/5 text-black dark:text-zinc-400 hover:text-white"
-                        }`}
+                        className={`px-3 py-1 rounded-lg text-xs font-headline font-black uppercase transition-all cursor-pointer ${activeMediaTab === "youtube"
+                          ? "bg-red-600 text-white border border-black shadow"
+                          : "bg-black/5 dark:bg-white/5 text-black dark:text-zinc-400 hover:text-white"
+                          }`}
                       >
                         YouTube Video
                       </button>
                       <button
                         type="button"
                         onClick={() => setActiveMediaTab("facebook")}
-                        className={`px-3 py-1 rounded-lg text-xs font-headline font-black uppercase transition-all cursor-pointer ${
-                          activeMediaTab === "facebook"
-                            ? "bg-[#1877F2] text-white border border-black shadow"
-                            : "bg-black/5 dark:bg-white/5 text-black dark:text-zinc-400 hover:text-white"
-                        }`}
+                        className={`px-3 py-1 rounded-lg text-xs font-headline font-black uppercase transition-all cursor-pointer ${activeMediaTab === "facebook"
+                          ? "bg-[#1877F2] text-white border border-black shadow"
+                          : "bg-black/5 dark:bg-white/5 text-black dark:text-zinc-400 hover:text-white"
+                          }`}
                       >
                         Facebook Video
                       </button>
@@ -849,11 +846,10 @@ export default function GalleryPage() {
                       )}
 
                       <div
-                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
-                          selectedProject.isShort || selectedYtEmbed.isShort
-                            ? "aspect-[9/16] max-w-[280px] mx-auto"
-                            : "aspect-video w-full"
-                        }`}
+                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${selectedProject.isShort || selectedYtEmbed.isShort
+                          ? "aspect-[9/16] max-w-[280px] mx-auto"
+                          : "aspect-video w-full"
+                          }`}
                       >
                         <iframe
                           src={selectedYtEmbed.embedUrl}
@@ -891,11 +887,10 @@ export default function GalleryPage() {
                       </div>
 
                       <div
-                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
-                          selectedFbEmbed.isReel
-                            ? "aspect-[9/16] max-w-[280px] mx-auto"
-                            : "aspect-video w-full"
-                        }`}
+                        className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${selectedFbEmbed.isReel
+                          ? "aspect-[9/16] max-w-[280px] mx-auto"
+                          : "aspect-video w-full"
+                          }`}
                       >
                         <iframe
                           src={selectedFbEmbed.embedUrl}
@@ -937,11 +932,10 @@ export default function GalleryPage() {
                             key={idx}
                             type="button"
                             onClick={() => setActiveModalImage(imgUrl)}
-                            className={`relative w-20 h-14 rounded-md overflow-hidden border-2 shrink-0 transition-all cursor-pointer ${
-                              (activeModalImage || selectedProject.image) === imgUrl
-                                ? "border-yellow-400 scale-105 comic-shadow-sm"
-                                : "border-black/30 dark:border-zinc-700 opacity-70 hover:opacity-100"
-                            }`}
+                            className={`relative w-20 h-14 rounded-md overflow-hidden border-2 shrink-0 transition-all cursor-pointer ${(activeModalImage || selectedProject.image) === imgUrl
+                              ? "border-yellow-400 scale-105 comic-shadow-sm"
+                              : "border-black/30 dark:border-zinc-700 opacity-70 hover:opacity-100"
+                              }`}
                           >
                             <Image
                               src={imgUrl}
@@ -970,9 +964,7 @@ export default function GalleryPage() {
                             {selectedProject.pdfTitle ||
                               "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET"}
                           </div>
-                          <div className="font-mono text-[10px] text-black/70">
-                            Downloadable PDF • 100% CAD Specs
-                          </div>
+
                         </div>
                       </div>
                       <a
@@ -981,7 +973,7 @@ export default function GalleryPage() {
                         rel="noopener noreferrer"
                         className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border border-black flex items-center gap-1.5 active:scale-95 transition-transform shrink-0"
                       >
-                        <span>VIEW PDF</span>
+
                         <ArrowRight className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -994,7 +986,7 @@ export default function GalleryPage() {
                   href="/#stage-04"
                   className="w-full sm:w-auto px-6 py-2.5 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-300 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors text-center"
                 >
-                  REQUEST SIMILAR STAGE ↗
+                  REQUEST SIMILAR
                 </Link>
               </div>
             </motion.div>
