@@ -7,9 +7,21 @@
  *  - Constructs official privacy-safe embed URLs using Facebook's embedded video player plugin.
  */
 
-import { FACEBOOK_HOSTS, isValidFacebookVideoUrl, resolveSafeFacebookEmbed } from "@art-work/types";
+import {
+  FACEBOOK_HOSTS,
+  isValidFacebookVideoUrl,
+  resolveSafeFacebookEmbed,
+  extractFacebookVideoUrlFromSnippet,
+  isUnresolvedFacebookShareUrl,
+} from "@art-work/types";
 
-export { FACEBOOK_HOSTS, isValidFacebookVideoUrl, resolveSafeFacebookEmbed };
+export {
+  FACEBOOK_HOSTS,
+  isValidFacebookVideoUrl,
+  resolveSafeFacebookEmbed,
+  extractFacebookVideoUrlFromSnippet,
+  isUnresolvedFacebookShareUrl,
+};
 
 export type FacebookParseFailure =
   | "empty"
@@ -44,7 +56,7 @@ export function buildFacebookEmbedUrl(canonicalUrl: string): string {
  */
 export function parseFacebookVideoInput(input: unknown): FacebookParseResult {
   if (typeof input !== "string") return { ok: false, reason: "empty" };
-  const raw = input.trim();
+  const raw = extractFacebookVideoUrlFromSnippet(input).trim();
   if (!raw) return { ok: false, reason: "empty" };
 
   // Reject markup or script injection

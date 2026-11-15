@@ -326,7 +326,13 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                 >
                   <div>
                     <div className="mb-2.5">
-                      <div className="aspect-video w-full rounded-xl overflow-hidden border border-[#262638] bg-black">
+                      <div
+                        className={`${
+                          fbEmbed.isReel
+                            ? "aspect-[9/16] max-w-[220px] mx-auto"
+                            : "aspect-video w-full"
+                        } rounded-xl overflow-hidden border border-[#262638] bg-black`}
+                      >
                         <iframe
                           src={fbEmbed.embedUrl}
                           title={p.title}
@@ -341,7 +347,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                         {p.client}
                       </span>
                       <span className="bg-[#1877F2] text-white text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black shrink-0">
-                        ★ FB VIDEO
+                        {fbEmbed.isReel ? "★ FB REEL 9:16" : "★ FB VIDEO"}
                       </span>
                     </div>
                     <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 line-clamp-1">

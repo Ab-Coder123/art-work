@@ -353,6 +353,20 @@ export function createSupabaseProjectsRepository(
         .select("*")
         .single();
 
+      if (error && /facebook_url.*schema cache/i.test(error.message)) {
+        const { facebook_url: _omitted, ...fallbackPayload } = payload;
+        void _omitted;
+        const retry = await supabase
+          .from("projects")
+          .insert(fallbackPayload)
+          .select("*")
+          .single();
+        if (retry.error || !retry.data) {
+          throw new Error(retry.error?.message || "Failed to insert project");
+        }
+        return retry.data as DbProjectRecord;
+      }
+
       if (error || !data) {
         throw new Error(error?.message || "Failed to insert project");
       }
@@ -366,6 +380,21 @@ export function createSupabaseProjectsRepository(
         .eq("id", id)
         .select("*")
         .single();
+
+      if (error && /facebook_url.*schema cache/i.test(error.message)) {
+        const { facebook_url: _omitted, ...fallbackPayload } = payload;
+        void _omitted;
+        const retry = await supabase
+          .from("projects")
+          .update(fallbackPayload)
+          .eq("id", id)
+          .select("*")
+          .single();
+        if (retry.error || !retry.data) {
+          throw new Error(retry.error?.message || "Failed to update project");
+        }
+        return retry.data as DbProjectRecord;
+      }
 
       if (error || !data) {
         throw new Error(error?.message || "Failed to update project");

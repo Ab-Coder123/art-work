@@ -26,6 +26,8 @@ import {
   resolveSafeYouTubeEmbed,
   resolveSafeFacebookEmbed,
   isValidFacebookVideoUrl,
+  isUnresolvedFacebookShareUrl,
+  extractFacebookVideoUrlFromSnippet,
   isGenericYouTubeDescription,
 } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
@@ -70,6 +72,7 @@ function FacebookVideoFieldCard({
   statusMessage: string | null;
   variant?: "booth" | "standard";
 }) {
+  const isUnresolvedShare = facebookUrl ? isUnresolvedFacebookShareUrl(facebookUrl) : false;
   const resolvedFb = facebookUrl ? resolveSafeFacebookEmbed(facebookUrl) : null;
   const isBooth = variant === "booth";
 
@@ -89,7 +92,7 @@ function FacebookVideoFieldCard({
               Facebook Video / Reel Link
             </span>
             <span className="text-[10px] text-zinc-400 font-mono">
-              Supports facebook.com/watch, /reel/, /share/r/, and fb.watch
+              Supports facebook.com/watch, /reel/, /share/r/, /share/v/, and fb.watch
             </span>
           </div>
         </div>
@@ -98,7 +101,7 @@ function FacebookVideoFieldCard({
       <div className="flex flex-col sm:flex-row gap-2">
         <input
           type="text"
-          placeholder="https://www.facebook.com/watch/?v=... or /reel/... or /share/r/..."
+          placeholder="https://www.facebook.com/watch/?v=... or /reel/... or /share/... (أو كود iframe)"
           value={facebookUrl || ""}
           onChange={(e) => onChange(e.target.value)}
           className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500 text-xs font-mono"
@@ -134,6 +137,8 @@ function FacebookVideoFieldCard({
           className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
             statusMessage.startsWith("✓")
               ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+              : statusMessage.startsWith("⏳")
+              ? "text-blue-300 bg-blue-500/10 border-blue-500/30"
               : "text-rose-300 bg-rose-500/10 border-rose-500/30"
           }`}
         >
@@ -141,14 +146,35 @@ function FacebookVideoFieldCard({
         </div>
       )}
 
-      {resolvedFb ? (
+      {isVerifying || isUnresolvedShare ? (
+        <div className="p-6 rounded-lg border border-blue-500/25 bg-[#10101c] flex flex-col items-center justify-center text-center gap-2">
+          <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
+          <span className="text-xs font-bold text-blue-200 font-mono">
+            جاري فك اختصار رابط فيسبوك وتجهيز المشغل...
+          </span>
+          <span className="text-[10px] text-zinc-400 font-mono">
+            Resolving canonical Reel &amp; embedded video preview
+          </span>
+        </div>
+      ) : resolvedFb ? (
         <div className="space-y-2 pt-2 border-t border-[#222232]">
           <div className="text-[10px] font-mono text-blue-400 flex items-center justify-between">
             <span className="flex items-center gap-1.5">
               <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
               <span>Facebook Embed Preview</span>
             </span>
-            <span>{resolvedFb.isReel ? "9:16 VERTICAL REEL" : "16:9 VIDEO"}</span>
+            <div className="flex items-center gap-3">
+              <a
+                href={resolvedFb.canonicalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1"
+              >
+                <span>مشاهدة على Facebook</span>
+                <span>↗</span>
+              </a>
+              <span>{resolvedFb.isReel ? "9:16 VERTICAL REEL" : "16:9 VIDEO"}</span>
+            </div>
           </div>
           <div
             className={`${
@@ -170,7 +196,7 @@ function FacebookVideoFieldCard({
         </div>
       ) : facebookUrl ? (
         <p className="text-[10px] text-amber-400/90 font-mono">
-          * Enter a valid Facebook video, watch, share, or reel URL (raw &lt;iframe&gt; HTML is blocked for security).
+          * Enter a valid Facebook video, watch, share, or reel URL (raw &lt;iframe&gt; HTML is sanitized automatically).
         </p>
       ) : null}
     </div>
@@ -761,12 +787,57 @@ export default function GalleryProjectsManager() {
     }
   };
 
+  const triggerResolveFacebook = async (targetUrl: string) => {
+    if (!targetUrl || !targetUrl.trim()) return;
+    setResolvingFb(true);
+
+    try {
+      const res = await apiFetchWithCsrf("/api/media/facebook/resolve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          input: targetUrl,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setEditingProject((prev) => {
+          if (!prev) return null;
+          const isGeneric =
+            !prev.image ||
+            prev.image.includes("project_01_neon_horizon.jpg") ||
+            prev.image.includes("placeholder");
+          const shouldUpdateCover = isGeneric && data.thumbnailUrl;
+          return {
+            ...prev,
+            facebookUrl: data.canonicalUrl || prev.facebookUrl,
+            image: shouldUpdateCover ? data.thumbnailUrl : prev.image,
+          };
+        });
+        setFbStatusMessage(
+          `✓ تم التحقق وتجهيز مشغل ${data.isReel ? "Facebook Reel (9:16)" : "Facebook Video (16:9)"} بنجاح`
+        );
+      } else {
+        setFbStatusMessage("⚠️ رابط فيديو فيسبوك غير صالح. تأكد أن الرابط عام ومن Facebook أو fb.watch");
+      }
+    } catch {
+      setFbStatusMessage("⚠️ تعذر التحقق من رابط Facebook حالياً، يمكنك الحفظ وسيتم عرضه عبر المشغل");
+    } finally {
+      setResolvingFb(false);
+    }
+  };
+
   const handleYouTubeInputChange = (rawInput: string) => {
     if (!editingProject) return;
     setYtStatusMessage(null);
 
-    if (isValidFacebookVideoUrl(rawInput)) {
-      const resolvedFb = resolveSafeFacebookEmbed(rawInput.trim());
+    const cleanInput = extractFacebookVideoUrlFromSnippet(rawInput).trim();
+
+    if (isValidFacebookVideoUrl(cleanInput)) {
+      const resolvedFb = resolveSafeFacebookEmbed(cleanInput);
       setEditingProject((prev) =>
         prev
           ? {
@@ -775,15 +846,16 @@ export default function GalleryProjectsManager() {
                 prev.youtubeUrl && !isValidFacebookVideoUrl(prev.youtubeUrl)
                   ? prev.youtubeUrl
                   : "",
-              facebookUrl: resolvedFb ? resolvedFb.canonicalUrl : rawInput,
+              facebookUrl: resolvedFb ? resolvedFb.canonicalUrl : cleanInput,
             }
           : null
       );
       setFbStatusMessage("✓ تم التعرف على رابط فيسبوك تلقائياً ونقله إلى حقل Facebook Video");
+      triggerResolveFacebook(cleanInput);
       return;
     }
 
-    const resolved = resolveSafeYouTubeEmbed(rawInput);
+    const resolved = resolveSafeYouTubeEmbed(cleanInput);
     if (resolved) {
       const isGeneric =
         !editingProject.image ||
@@ -793,7 +865,7 @@ export default function GalleryProjectsManager() {
 
       setEditingProject({
         ...editingProject,
-        youtubeUrl: rawInput,
+        youtubeUrl: resolved.canonicalUrl,
         youtubeVideoId: resolved.videoId,
         isShort: resolved.isShort,
         image: isGeneric ? ytThumbnail : editingProject.image,
@@ -801,7 +873,7 @@ export default function GalleryProjectsManager() {
     } else {
       setEditingProject({
         ...editingProject,
-        youtubeUrl: rawInput,
+        youtubeUrl: cleanInput,
         youtubeVideoId: null,
       });
     }
@@ -810,8 +882,8 @@ export default function GalleryProjectsManager() {
   const handleFacebookInputChange = (rawInput: string) => {
     if (!editingProject) return;
     setFbStatusMessage(null);
-    const trimmed = rawInput.trim();
-    if (!trimmed) {
+    const cleanInput = extractFacebookVideoUrlFromSnippet(rawInput).trim();
+    if (!cleanInput) {
       setEditingProject((prev) =>
         prev
           ? {
@@ -822,23 +894,30 @@ export default function GalleryProjectsManager() {
       );
       return;
     }
-    const resolved = resolveSafeFacebookEmbed(trimmed);
+    const resolved = resolveSafeFacebookEmbed(cleanInput);
     if (resolved) {
+      const isUnresolved = isUnresolvedFacebookShareUrl(cleanInput);
       setEditingProject((prev) =>
         prev
           ? {
               ...prev,
-              facebookUrl: resolved.canonicalUrl,
+              facebookUrl: cleanInput,
             }
           : null
       );
-      setFbStatusMessage("✓ تم التحقق من رابط فيديو Facebook بنجاح");
+      if (isUnresolved) {
+        setFbStatusMessage("⏳ جاري التحقق من الرابط وفك اختصار Facebook...");
+        triggerResolveFacebook(cleanInput);
+      } else {
+        setFbStatusMessage("✓ تم التحقق من رابط فيديو Facebook بنجاح");
+        triggerResolveFacebook(resolved.canonicalUrl);
+      }
     } else {
       setEditingProject((prev) =>
         prev
           ? {
               ...prev,
-              facebookUrl: rawInput,
+              facebookUrl: cleanInput,
             }
           : null
       );
@@ -848,41 +927,7 @@ export default function GalleryProjectsManager() {
 
   const handleResolveFacebookMetadata = async () => {
     if (!editingProject?.facebookUrl) return;
-    setResolvingFb(true);
-    setFbStatusMessage(null);
-
-    try {
-      const res = await apiFetchWithCsrf("/api/media/facebook/resolve", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          input: editingProject.facebookUrl,
-        }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setEditingProject((prev) =>
-          prev
-            ? {
-                ...prev,
-                facebookUrl: data.canonicalUrl || prev.facebookUrl,
-              }
-            : null
-        );
-        setFbStatusMessage(
-          `✓ تم التحقق وتجهيز معاينة ${data.isReel ? "Facebook Reel (9:16)" : "Facebook Video (16:9)"} بنجاح`
-        );
-      } else {
-        setFbStatusMessage("⚠️ رابط فيديو فيسبوك غير صالح. تأكد أن الرابط عام ومن Facebook أو fb.watch");
-      }
-    } catch {
-      setFbStatusMessage("⚠️ تعذر التحقق من رابط Facebook حالياً، يمكنك الحفظ وسيتم عرضه عبر المشغل");
-    } finally {
-      setResolvingFb(false);
-    }
+    await triggerResolveFacebook(editingProject.facebookUrl);
   };
 
   const handleFetchYouTubeMetadata = async () => {
@@ -1011,10 +1056,30 @@ export default function GalleryProjectsManager() {
     setIsSaving(true);
     setNotification(null);
 
+    let resolvedFacebookUrl = editingProject.facebookUrl;
+    if (resolvedFacebookUrl && isUnresolvedFacebookShareUrl(resolvedFacebookUrl)) {
+      try {
+        const fbRes = await apiFetchWithCsrf("/api/media/facebook/resolve", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input: resolvedFacebookUrl }),
+        });
+        if (fbRes.ok) {
+          const fbData = await fbRes.json();
+          if (fbData.canonicalUrl) {
+            resolvedFacebookUrl = fbData.canonicalUrl;
+          }
+        }
+      } catch {
+        // Fall back to current facebookUrl
+      }
+    }
+
     const exists = !isCreatingNew && projects.some((p) => p.id === editingProject.id);
 
     const projectToSave: ProjectRecord = {
       ...editingProject,
+      facebookUrl: resolvedFacebookUrl,
       stamp: editingProject.stamp || String(editingProject.year || 2026),
       cadId: editingProject.cadId || "CAD-REV-01",
       stats: editingProject.stats || "",

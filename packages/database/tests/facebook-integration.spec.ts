@@ -93,14 +93,29 @@ describe("Facebook Video & Reel Media Engine Integration", () => {
       assert.equal(resM.ok, true);
     });
 
-    it("should reject raw HTML tags and <iframe> injection attempts", () => {
-      const injection = '<iframe src="https://www.facebook.com/plugins/video.php?href=..."></iframe>';
+    it("should reject raw HTML tags and script injection attempts", () => {
+      const injection = '<script>alert("xss")</script>';
       const result = parseFacebookVideoInput(injection);
 
       assert.equal(result.ok, false);
       if (!result.ok) {
         assert.equal(result.reason, "contains_html");
       }
+    });
+
+    it("should extract canonical Facebook URL from pasted <iframe> embed codes and reject unapproved iframes", () => {
+      const validIframe =
+        '<iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1120918597318558%2F&show_text=false&width=267&t=0" width="267" height="476" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>';
+      const validResult = parseFacebookVideoInput(validIframe);
+      assert.equal(validResult.ok, true);
+      if (validResult.ok) {
+        assert.equal(validResult.canonicalUrl, "https://www.facebook.com/reel/1120918597318558/");
+        assert.equal(validResult.isReel, true);
+      }
+
+      const invalidIframe = '<iframe src="https://evil-phishing.com/video"></iframe>';
+      const invalidResult = parseFacebookVideoInput(invalidIframe);
+      assert.equal(invalidResult.ok, false);
     });
 
     it("should reject unapproved and phishing look-alike domains", () => {

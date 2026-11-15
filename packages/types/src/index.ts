@@ -842,6 +842,51 @@ export const FACEBOOK_HOSTS = new Set([
 ]);
 
 /**
+ * Extracts a Facebook video URL if the input is an pasted <iframe> embed code snippet.
+ * Otherwise returns the input string as-is.
+ */
+export function extractFacebookVideoUrlFromSnippet(input: unknown): string {
+  if (typeof input !== "string") return "";
+  const raw = input.trim();
+  if (!raw) return "";
+
+  if (/<iframe/i.test(raw)) {
+    const srcMatch = raw.match(/src=["']([^"']+)["']/i);
+    if (srcMatch && srcMatch[1]) {
+      const src = srcMatch[1].replace(/&amp;/g, "&");
+      try {
+        const parsed = new URL(src);
+        const hrefParam = parsed.searchParams.get("href");
+        if (hrefParam) {
+          return hrefParam.trim();
+        }
+        return parsed.toString();
+      } catch {
+        return src.trim();
+      }
+    }
+  }
+
+  return raw;
+}
+
+/**
+ * Returns true if a Facebook URL is an unresolved share/short link
+ * (/share/v/, /share/r/, /share/, or fb.watch) that requires backend redirect resolution
+ * to play properly in Facebook's embedded video player.
+ */
+export function isUnresolvedFacebookShareUrl(input: unknown): boolean {
+  if (typeof input !== "string") return false;
+  const lower = input.toLowerCase();
+  return (
+    lower.includes("/share/r/") ||
+    lower.includes("/share/v/") ||
+    lower.includes("/share/") ||
+    lower.includes("fb.watch")
+  );
+}
+
+/**
  * Pure, SSR & client-safe Facebook video embed resolver.
  * Parses Facebook watch links, reels, page videos, fb.watch, and share links,
  * rejects script injection and raw HTML tags, and constructs the official embed URL.
@@ -860,12 +905,12 @@ export function resolveSafeFacebookEmbed(
   isReel: boolean;
 } | null {
   if (!input) return null;
-  const rawInput =
+  const rawCandidate =
     typeof input === "string"
       ? input
       : input.facebookUrl || input.facebook_url || "";
-  if (!rawInput || typeof rawInput !== "string") return null;
-  const raw = rawInput.trim();
+  if (!rawCandidate || typeof rawCandidate !== "string") return null;
+  const raw = extractFacebookVideoUrlFromSnippet(rawCandidate).trim();
   if (!raw || /[<>"'`\s]/.test(raw)) return null;
 
   let url: URL;
