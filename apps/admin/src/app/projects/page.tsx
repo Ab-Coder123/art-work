@@ -25,6 +25,9 @@ import {
   ProjectCategory,
   resolveSafeYouTubeEmbed,
   resolveSafeFacebookEmbed,
+  isValidFacebookVideoUrl,
+  isUnresolvedFacebookShareUrl,
+  extractFacebookVideoUrlFromSnippet,
   isGenericYouTubeDescription,
 } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
@@ -50,6 +53,238 @@ function YouTubeIcon({ className = "w-4 h-4" }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
     </svg>
+  );
+}
+
+/** Shared Facebook Video / Reel field with inline format toggle, cover image sync, verification, and live iframe embed preview. */
+function FacebookVideoFieldCard({
+  facebookUrl,
+  isShort = false,
+  onToggleShort,
+  thumbnailUrl,
+  onApplyThumbnailAsCover,
+  onChange,
+  onVerify,
+  isVerifying,
+  statusMessage,
+  variant = "standard",
+}: {
+  facebookUrl?: string | null;
+  isShort?: boolean;
+  onToggleShort?: (isShort: boolean) => void;
+  thumbnailUrl?: string | null;
+  onApplyThumbnailAsCover?: (url: string) => void;
+  onChange: (value: string) => void;
+  onVerify: () => void;
+  isVerifying: boolean;
+  statusMessage: string | null;
+  variant?: "booth" | "standard";
+}) {
+  const isUnresolvedShare = facebookUrl ? isUnresolvedFacebookShareUrl(facebookUrl) : false;
+  const resolvedFb = facebookUrl ? resolveSafeFacebookEmbed(facebookUrl, isShort) : null;
+  const isBooth = variant === "booth";
+
+  return (
+    <div
+      className={`p-4 rounded-xl space-y-3 border ${
+        isBooth ? "bg-[#0d0d14] border-blue-500/30" : "bg-[#0d0d12] border-blue-500/35"
+      }`}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md bg-blue-600/20 text-[#1877F2] border border-blue-500/30 flex items-center justify-center">
+            <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-white uppercase tracking-wider font-mono block">
+                Facebook Video / Reel Link
+              </span>
+              <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-sans font-bold">
+                اختياري (Optional)
+              </span>
+            </div>
+            <span className="text-[10px] text-zinc-400 font-mono">
+              حقل اختياري — اختر التنسيق (16:9 أفقي أو 9:16 رأسي) واعتمد صورة الغلاف
+            </span>
+          </div>
+        </div>
+
+        {/* Format Switcher: 16:9 Horizontal vs 9:16 Vertical Reel */}
+        {onToggleShort && (
+          <div className="flex items-center gap-1 bg-[#161622] p-1 rounded-lg border border-[#262638]">
+            <button
+              type="button"
+              onClick={() => onToggleShort(false)}
+              className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
+                !isShort
+                  ? "bg-[#1877F2] text-white font-bold shadow"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+              title="عرض كفيديو أفقي عادي 16:9"
+            >
+              16:9 أفقي (Horizontal)
+            </button>
+            <button
+              type="button"
+              onClick={() => onToggleShort(true)}
+              className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
+                isShort
+                  ? "bg-[#1877F2] text-white font-bold shadow"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+              title="عرض كفيديو ريلز رأسي 9:16"
+            >
+              9:16 رأسي (Vertical Reel)
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-2">
+        <input
+          type="text"
+          placeholder="https://www.facebook.com/watch/?v=... or https://fb.watch/... or /reel/..."
+          value={facebookUrl || ""}
+          onChange={(e) => onChange(e.target.value)}
+          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500 text-xs font-mono"
+        />
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={onVerify}
+            disabled={!facebookUrl || isVerifying}
+            className="px-3 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
+            title="التحقق من الرابط واستخراج صورة الغلاف وتجهيز المشغل"
+          >
+            {isVerifying ? (
+              <Loader2 className="w-3.5 h-3.5 text-blue-400 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+            )}
+            <span>Verify &amp; Preview</span>
+          </button>
+          {facebookUrl && (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      </div>
+
+      {statusMessage && (
+        <div
+          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${
+            statusMessage.startsWith("✓")
+              ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+              : statusMessage.startsWith("⏳")
+              ? "text-blue-300 bg-blue-500/10 border-blue-500/30"
+              : "text-rose-300 bg-rose-500/10 border-rose-500/30"
+          }`}
+        >
+          <span>{statusMessage}</span>
+        </div>
+      )}
+
+      {isVerifying || isUnresolvedShare ? (
+        <div className="p-6 rounded-lg border border-blue-500/25 bg-[#10101c] flex flex-col items-center justify-center text-center gap-2">
+          <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
+          <span className="text-xs font-bold text-blue-200 font-mono">
+            جاري فك اختصار رابط فيسبوك وتجهيز المشغل...
+          </span>
+          <span className="text-[10px] text-zinc-400 font-mono">
+            Resolving canonical Reel &amp; embedded video preview
+          </span>
+        </div>
+      ) : resolvedFb ? (
+        <div className="space-y-3 pt-2 border-t border-[#222232]">
+          <div className="text-[10px] font-mono text-blue-400 flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
+              <span>Facebook Embed Preview</span>
+            </span>
+            <div className="flex items-center gap-3">
+              <a
+                href={resolvedFb.canonicalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1"
+              >
+                <span>مشاهدة على Facebook</span>
+                <span>↗</span>
+              </a>
+              <span className="font-bold">
+                {isShort ? "9:16 VERTICAL REEL" : "16:9 HORIZONTAL VIDEO"}
+              </span>
+            </div>
+          </div>
+          <div
+            className={`${
+              isShort
+                ? "aspect-[9/16] max-w-[240px] mx-auto"
+                : isBooth
+                ? "aspect-video w-full max-w-md mx-auto"
+                : "aspect-video w-full"
+            } rounded-lg overflow-hidden border border-[#262638] bg-black`}
+          >
+            <iframe
+              src={resolvedFb.embedUrl}
+              title={isBooth ? "Booth Facebook Video" : "Facebook Video Preview"}
+              className="w-full h-full border-0"
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+
+          {thumbnailUrl && onApplyThumbnailAsCover && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-2.5 rounded-lg bg-blue-500/10 border border-blue-500/25">
+              <div className="flex items-center gap-2.5">
+                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-blue-400/40 bg-black shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={thumbnailUrl}
+                    alt="Facebook Video Thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-blue-200 block font-sans">
+                    صورة غلاف الفيديو متوفرة من فيسبوك
+                  </span>
+                  <span className="text-[10px] text-zinc-400 font-sans">
+                    اضغط لاعتمادها كصورة الغلاف الأساسية للكرت في الموقع
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => onApplyThumbnailAsCover(thumbnailUrl)}
+                className="px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold rounded-lg transition-all cursor-pointer shadow flex items-center gap-1 font-sans shrink-0"
+              >
+                <span>تعيين كغلاف للمشروع 🖼️</span>
+              </button>
+            </div>
+          )}
+        </div>
+      ) : facebookUrl ? (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-200">
+          <p className="text-[11px] font-sans">
+            ⚠️ الرابط المدخل غير صالح. (ملاحظة: هذا الحقل اختياري تماماً، يمكنك تركه فارغاً إذا كنت لا ترغب بإضافة فيديو فيسبوك).
+          </p>
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition-colors shrink-0 cursor-pointer self-start sm:self-center"
+          >
+            مسح الرابط (بدون فيديو فيسبوك)
+          </button>
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -257,7 +492,9 @@ export default function GalleryProjectsManager() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [resolvingYt, setResolvingYt] = useState(false);
   const [ytStatusMessage, setYtStatusMessage] = useState<string | null>(null);
+  const [resolvingFb, setResolvingFb] = useState(false);
   const [fbStatusMessage, setFbStatusMessage] = useState<string | null>(null);
+  const [fbThumbnailUrl, setFbThumbnailUrl] = useState<string | null>(null);
   const [notification, setNotification] = useState<AdminNotification | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -266,6 +503,19 @@ export default function GalleryProjectsManager() {
   const [behanceStatusMessage, setBehanceStatusMessage] = useState<string | null>(null);
   const [mediaSourceTab, setMediaSourceTab] = useState<"behance" | "upload">("upload");
   const [manualImageUrl, setManualImageUrl] = useState("");
+
+  const applyThumbnailAsCover = (url: string) => {
+    setEditingProject((prev) => {
+      if (!prev) return null;
+      const currentImages = prev.images || [];
+      const nextImages = !currentImages.includes(url) ? [url, ...currentImages] : currentImages;
+      return {
+        ...prev,
+        image: url,
+        images: nextImages,
+      };
+    });
+  };
 
   const handleAddManualImage = () => {
     if (!manualImageUrl.trim() || !editingProject) return;
@@ -636,10 +886,88 @@ export default function GalleryProjectsManager() {
     }
   };
 
+  const triggerResolveFacebook = async (targetUrl: string, explicitShort?: boolean) => {
+    if (!targetUrl || !targetUrl.trim()) return;
+    setResolvingFb(true);
+
+    try {
+      const res = await apiFetchWithCsrf("/api/media/facebook/resolve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          input: targetUrl,
+          isShort: explicitShort !== undefined ? explicitShort : editingProject?.isShort,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.thumbnailUrl) {
+          setFbThumbnailUrl(data.thumbnailUrl);
+        }
+        setEditingProject((prev) => {
+          if (!prev) return null;
+          const currentImages = prev.images || [];
+          const nextImages =
+            data.thumbnailUrl && !currentImages.includes(data.thumbnailUrl)
+              ? [data.thumbnailUrl, ...currentImages]
+              : currentImages;
+          return {
+            ...prev,
+            facebookUrl: data.canonicalUrl || prev.facebookUrl,
+            isShort:
+              explicitShort !== undefined
+                ? explicitShort
+                : data.isReel !== undefined
+                ? Boolean(data.isReel)
+                : prev.isShort,
+            image: data.thumbnailUrl ? data.thumbnailUrl : prev.image,
+            images: nextImages,
+          };
+        });
+        setFbStatusMessage(
+          `✓ تم التحقق وتجهيز مشغل ${
+            (explicitShort ?? data.isReel) ? "Facebook Reel (9:16)" : "Facebook Video (16:9)"
+          } واعتماد صورة غلاف الفيديو بنجاح`
+        );
+      } else {
+        setFbStatusMessage("⚠️ رابط فيديو فيسبوك غير صالح. تأكد أن الرابط عام ومن Facebook أو fb.watch");
+      }
+    } catch {
+      setFbStatusMessage("⚠️ تعذر التحقق من الرابط عبر السيرفر. تم اعتماد الرابط كما هو.");
+    } finally {
+      setResolvingFb(false);
+    }
+  };
+
   const handleYouTubeInputChange = (rawInput: string) => {
     if (!editingProject) return;
     setYtStatusMessage(null);
-    const resolved = resolveSafeYouTubeEmbed(rawInput);
+
+    const cleanInput = extractFacebookVideoUrlFromSnippet(rawInput).trim();
+
+    if (isValidFacebookVideoUrl(cleanInput)) {
+      const resolvedFb = resolveSafeFacebookEmbed(cleanInput, editingProject.isShort);
+      setEditingProject((prev) =>
+        prev
+          ? {
+              ...prev,
+              youtubeUrl:
+                prev.youtubeUrl && !isValidFacebookVideoUrl(prev.youtubeUrl)
+                  ? prev.youtubeUrl
+                  : "",
+              facebookUrl: resolvedFb ? resolvedFb.canonicalUrl : cleanInput,
+            }
+          : null
+      );
+      setFbStatusMessage("✓ تم التعرف على رابط فيسبوك تلقائياً ونقله إلى حقل Facebook Video");
+      triggerResolveFacebook(cleanInput);
+      return;
+    }
+
+    const resolved = resolveSafeYouTubeEmbed(cleanInput);
     if (resolved) {
       const isGeneric =
         !editingProject.image ||
@@ -649,7 +977,7 @@ export default function GalleryProjectsManager() {
 
       setEditingProject({
         ...editingProject,
-        youtubeUrl: rawInput,
+        youtubeUrl: resolved.canonicalUrl,
         youtubeVideoId: resolved.videoId,
         isShort: resolved.isShort,
         image: isGeneric ? ytThumbnail : editingProject.image,
@@ -666,28 +994,53 @@ export default function GalleryProjectsManager() {
   const handleFacebookInputChange = (rawInput: string) => {
     if (!editingProject) return;
     setFbStatusMessage(null);
-    const trimmed = rawInput.trim();
-    if (!trimmed) {
-      setEditingProject({
-        ...editingProject,
-        facebookUrl: null,
-      });
+    const cleanInput = extractFacebookVideoUrlFromSnippet(rawInput).trim();
+    if (!cleanInput) {
+      setEditingProject((prev) =>
+        prev
+          ? {
+              ...prev,
+              facebookUrl: null,
+            }
+          : null
+      );
+      setFbThumbnailUrl(null);
       return;
     }
-    const resolved = resolveSafeFacebookEmbed(trimmed);
+    const resolved = resolveSafeFacebookEmbed(cleanInput, editingProject.isShort);
     if (resolved) {
-      setEditingProject({
-        ...editingProject,
-        facebookUrl: resolved.canonicalUrl,
-      });
-      setFbStatusMessage("✓ تم التحقق من رابط فيديو Facebook بنجاح");
+      const isUnresolved = isUnresolvedFacebookShareUrl(cleanInput);
+      setEditingProject((prev) =>
+        prev
+          ? {
+              ...prev,
+              facebookUrl: cleanInput,
+            }
+          : null
+      );
+      if (isUnresolved) {
+        setFbStatusMessage("⏳ جاري التحقق من الرابط وفك اختصار Facebook...");
+        triggerResolveFacebook(cleanInput);
+      } else {
+        setFbStatusMessage("✓ تم التحقق من رابط فيديو Facebook بنجاح");
+        triggerResolveFacebook(resolved.canonicalUrl);
+      }
     } else {
-      setEditingProject({
-        ...editingProject,
-        facebookUrl: rawInput,
-      });
+      setEditingProject((prev) =>
+        prev
+          ? {
+              ...prev,
+              facebookUrl: cleanInput,
+            }
+          : null
+      );
       setFbStatusMessage("⚠️ رابط فيديو فيسبوك غير صالح. يرجى إدخال رابط فيديو صالح من Facebook أو fb.watch");
     }
+  };
+
+  const handleResolveFacebookMetadata = async () => {
+    if (!editingProject?.facebookUrl) return;
+    await triggerResolveFacebook(editingProject.facebookUrl);
   };
 
   const handleFetchYouTubeMetadata = async () => {
@@ -906,6 +1259,7 @@ export default function GalleryProjectsManager() {
               const newId = `project-${Date.now()}`;
               setYtStatusMessage(null);
               setFbStatusMessage(null);
+              setFbThumbnailUrl(null);
               setModalError(null);
               setIsCreatingNew(true);
               setMediaSourceTab("upload");
@@ -1193,6 +1547,7 @@ export default function GalleryProjectsManager() {
                     onClick={() => {
                       setYtStatusMessage(null);
                       setFbStatusMessage(null);
+                      setFbThumbnailUrl(project.facebookUrl && project.image ? project.image : null);
                       setModalError(null);
                       setIsCreatingNew(false);
                       setMediaSourceTab(project.behanceUrl ? "behance" : "upload");
@@ -2075,75 +2430,21 @@ export default function GalleryProjectsManager() {
                           })()}
                         </div>
 
-                        {/* Facebook Video / Reel for Booth */}
-                        <div className="p-4 bg-[#0d0d14] border border-[#262638] rounded-xl space-y-3">
-                          <div className="flex items-center justify-between flex-wrap gap-2">
-                            <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-md bg-blue-600/20 text-[#1877F2] border border-blue-500/30 flex items-center justify-center">
-                                <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
-                              </div>
-                              <div>
-                                <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                                  Facebook Video / Reel
-                                </span>
-                                <span className="text-[10px] text-zinc-500 block font-mono">
-                                  Optional Facebook showreel, live video or reel link
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-col sm:flex-row gap-2">
-                            <input
-                              type="text"
-                              placeholder="Paste Facebook video link (e.g. facebook.com/watch, fb.watch, or /reel/...)"
-                              value={editingProject.facebookUrl || ""}
-                              onChange={(e) => handleFacebookInputChange(e.target.value)}
-                              className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500 text-xs font-mono"
-                            />
-                            {editingProject.facebookUrl && (
-                              <button
-                                type="button"
-                                onClick={() => handleFacebookInputChange("")}
-                                className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
-                              >
-                                Clear
-                              </button>
-                            )}
-                          </div>
-
-                          {(() => {
-                            const resolvedFb = editingProject.facebookUrl
-                              ? resolveSafeFacebookEmbed(editingProject.facebookUrl)
-                              : null;
-                            if (!resolvedFb) return null;
-                            return (
-                              <div className="mt-2 pt-2 border-t border-[#1e1e2d] space-y-2">
-                                <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
-                                  <span className="flex items-center gap-1.5 text-blue-400">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping" />
-                                    Valid Facebook Video
-                                  </span>
-                                  <span>{resolvedFb.isReel ? "9:16 Vertical Reel" : "16:9 Video"}</span>
-                                </div>
-                                <div
-                                  className={`rounded-xl overflow-hidden border border-[#2b2b3d] bg-black ${resolvedFb.isReel
-                                    ? "aspect-[9/16] max-w-[220px] mx-auto"
-                                    : "aspect-video w-full max-w-md mx-auto"
-                                    }`}
-                                >
-                                  <iframe
-                                    src={resolvedFb.embedUrl}
-                                    title="Booth Facebook Video"
-                                    className="w-full h-full border-0"
-                                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                    allowFullScreen
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })()}
-                        </div>
+                        {/* Facebook Video / Reel for Booth (SHARED ACROSS BOTH BOOTH TABS) */}
+                        <FacebookVideoFieldCard
+                          facebookUrl={editingProject.facebookUrl}
+                          isShort={Boolean(editingProject.isShort)}
+                          onToggleShort={(short) =>
+                            setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null))
+                          }
+                          thumbnailUrl={fbThumbnailUrl}
+                          onApplyThumbnailAsCover={applyThumbnailAsCover}
+                          onChange={handleFacebookInputChange}
+                          onVerify={handleResolveFacebookMetadata}
+                          isVerifying={resolvingFb}
+                          statusMessage={fbStatusMessage}
+                          variant="booth"
+                        />
                       </div>
                     )}
                   </div>
@@ -2169,6 +2470,21 @@ export default function GalleryProjectsManager() {
                               className="px-2.5 py-1 rounded-lg bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 text-[10px] font-bold border border-yellow-400/30 cursor-pointer transition-colors"
                             >
                               Sync Thumbnail from YouTube
+                            </button>
+                          )}
+                          {editingProject.facebookUrl && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (fbThumbnailUrl) {
+                                  applyThumbnailAsCover(fbThumbnailUrl);
+                                } else {
+                                  handleResolveFacebookMetadata();
+                                }
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-[10px] font-bold border border-blue-500/30 cursor-pointer transition-colors"
+                            >
+                              Sync Thumbnail from Facebook
                             </button>
                           )}
                           {editingProject.image && (
@@ -2434,87 +2750,20 @@ export default function GalleryProjectsManager() {
                     </div>
 
                     {/* Facebook Video & Reel Engine */}
-                    <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-3">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <label className="text-zinc-200 font-bold flex items-center gap-2 text-xs">
-                          <FacebookIcon className="w-4 h-4 text-[#1877F2]" />
-                          <span>Facebook Video / Reel Link</span>
-                        </label>
-                        <span className="text-[10px] text-zinc-400 font-mono">
-                          Supports facebook.com/watch, fb.watch, and facebook.com/reel
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                          type="text"
-                          placeholder="https://www.facebook.com/watch/?v=... or https://fb.watch/... or /reel/..."
-                          value={editingProject.facebookUrl || ""}
-                          onChange={(e) => handleFacebookInputChange(e.target.value)}
-                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500 text-xs font-mono"
-                        />
-                        {editingProject.facebookUrl && (
-                          <button
-                            type="button"
-                            onClick={() => handleFacebookInputChange("")}
-                            className="px-3 py-2 rounded-xl bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 text-xs font-bold cursor-pointer"
-                          >
-                            Clear
-                          </button>
-                        )}
-                      </div>
-
-                      {fbStatusMessage && (
-                        <div
-                          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg border flex items-center gap-2 ${fbStatusMessage.startsWith("✓")
-                            ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
-                            : "text-rose-300 bg-rose-500/10 border-rose-500/30"
-                            }`}
-                        >
-                          <span>{fbStatusMessage}</span>
-                        </div>
-                      )}
-
-                      {/* Live Facebook Embed Preview */}
-                      {(() => {
-                        const resolvedFb = editingProject.facebookUrl
-                          ? resolveSafeFacebookEmbed(editingProject.facebookUrl)
-                          : null;
-                        if (!resolvedFb) {
-                          return editingProject.facebookUrl ? (
-                            <p className="text-[10px] text-amber-400/90 font-mono">
-                              * Enter a valid Facebook video, watch or reel URL (raw &lt;iframe&gt; HTML is blocked for security).
-                            </p>
-                          ) : null;
-                        }
-
-                        return (
-                          <div className="space-y-2 pt-2 border-t border-[#222232]">
-                            <div className="text-[10px] font-mono text-blue-400 flex items-center justify-between">
-                              <span className="flex items-center gap-1.5">
-                                <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
-                                <span>Facebook Embed Preview</span>
-                              </span>
-                              <span>{resolvedFb.isReel ? "9:16 VERTICAL REEL" : "16:9 VIDEO"}</span>
-                            </div>
-                            <div
-                              className={`${resolvedFb.isReel
-                                ? "aspect-[9/16] max-w-[240px] mx-auto"
-                                : "aspect-video w-full"
-                                } rounded-lg overflow-hidden border border-[#262638] bg-black`}
-                            >
-                              <iframe
-                                src={resolvedFb.embedUrl}
-                                title="Facebook Video Preview"
-                                className="w-full h-full border-0"
-                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                allowFullScreen
-                              />
-                            </div>
-                          </div>
-                        );
-                      })()}
-                    </div>
+                    <FacebookVideoFieldCard
+                      facebookUrl={editingProject.facebookUrl}
+                      isShort={Boolean(editingProject.isShort)}
+                      onToggleShort={(short) =>
+                        setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null))
+                      }
+                      thumbnailUrl={fbThumbnailUrl}
+                      onApplyThumbnailAsCover={applyThumbnailAsCover}
+                      onChange={handleFacebookInputChange}
+                      onVerify={handleResolveFacebookMetadata}
+                      isVerifying={resolvingFb}
+                      statusMessage={fbStatusMessage}
+                      variant="standard"
+                    />
 
                     {/* Optional Behance Link for Standard Projects */}
                     <div className="p-4 bg-[#0d0d12] border border-[#2b2b3d] rounded-xl space-y-2">

@@ -25,13 +25,28 @@ export function FloatingContactWidget() {
     };
   }, []);
 
-  const phoneClean = phone.replace(/[^0-9]/g, "");
-  const normalizedPhone = phoneClean.startsWith("0")
-    ? `20${phoneClean.slice(1)}`
-    : phoneClean.startsWith("20")
-    ? phoneClean
-    : `20${phoneClean || "201092611230"}`;
-  const whatsappUrl = `https://wa.me/${normalizedPhone}`;
+  const effectivePhone =
+    !phone ||
+    phone.includes("2794") ||
+    phone.includes("ART-WORK") ||
+    phone.includes("1800") ||
+    phone.includes("DMX-EXT")
+      ? "01092611230"
+      : phone;
+
+  const rawDigits = effectivePhone.replace(/\D/g, "");
+  const phoneClean =
+    rawDigits.length < 9
+      ? "201092611230"
+      : rawDigits.startsWith("01") && rawDigits.length === 11
+      ? `2${rawDigits}`
+      : rawDigits.startsWith("201") && rawDigits.length === 12
+      ? rawDigits
+      : rawDigits.startsWith("1") && rawDigits.length === 10
+      ? `20${rawDigits}`
+      : "201092611230";
+
+  const whatsappUrl = `https://wa.me/${phoneClean}`;
 
   const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (pathname === "/") {
