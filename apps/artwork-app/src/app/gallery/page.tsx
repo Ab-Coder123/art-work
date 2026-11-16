@@ -79,6 +79,7 @@ export default function GalleryPage() {
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
   const [activeModalImage, setActiveModalImage] = useState<string | null>(null);
+  const [modalFbOrientationOverride, setModalFbOrientationOverride] = useState<boolean | null>(null);
   const [activeMediaTab, setActiveMediaTab] = useState<"youtube" | "facebook">("youtube");
   const modalScrollRef = useRef<HTMLDivElement>(null);
 
@@ -90,6 +91,8 @@ export default function GalleryPage() {
     if (selectedProject) {
       window.__lenis?.stop();
       document.body.style.overflow = "hidden";
+      setActiveModalImage(null);
+      setModalFbOrientationOverride(null);
       if (modalScrollRef.current) {
         modalScrollRef.current.scrollTop = 0;
       }
@@ -915,21 +918,54 @@ export default function GalleryPage() {
                   {/* Render Facebook Video */}
                   {selectedFbEmbed && (!selectedYtEmbed || activeMediaTab === "facebook") && (() => {
                     const isFbVertical =
-                      selectedProject.isShort !== undefined && selectedProject.isShort !== null
+                      modalFbOrientationOverride !== null
+                        ? modalFbOrientationOverride
+                        : selectedProject.isShort !== undefined && selectedProject.isShort !== null
                         ? Boolean(selectedProject.isShort)
                         : Boolean(selectedFbEmbed.isReel);
 
                     return (
                       <>
-                        <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center gap-1.5 bg-[#1877F2] text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
-                            <Play className="w-3 h-3 fill-current" />
-                            <span>
-                              {isFbVertical
-                                ? "FACEBOOK REEL (9:16)"
-                                : "FACEBOOK VIDEO (16:9)"}
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center gap-1.5 bg-[#1877F2] text-white font-mono text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-black">
+                              <Play className="w-3 h-3 fill-current" />
+                              <span>
+                                {isFbVertical
+                                  ? "FACEBOOK REEL (9:16)"
+                                  : "FACEBOOK VIDEO (16:9)"}
+                              </span>
                             </span>
-                          </span>
+
+                            {/* 1-Click Interactive Orientation Switcher */}
+                            <div className="inline-flex items-center rounded-md border border-black/20 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-800 p-0.5">
+                              <button
+                                type="button"
+                                onClick={() => setModalFbOrientationOverride(false)}
+                                className={`px-2 py-0.5 rounded text-[10px] font-headline font-bold cursor-pointer transition-colors ${
+                                  !isFbVertical
+                                    ? "bg-[#1877F2] text-white shadow-sm"
+                                    : "text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white"
+                                }`}
+                                title="عرض كفيديو أفقي كامل 16:9 بدون حواف سوداء"
+                              >
+                                16:9 أفقي
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setModalFbOrientationOverride(true)}
+                                className={`px-2 py-0.5 rounded text-[10px] font-headline font-bold cursor-pointer transition-colors ${
+                                  isFbVertical
+                                    ? "bg-[#1877F2] text-white shadow-sm"
+                                    : "text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white"
+                                }`}
+                                title="عرض كفيديو ريلز رأسي 9:16"
+                              >
+                                9:16 رأسي
+                              </button>
+                            </div>
+                          </div>
+
                           <a
                             href={selectedFbEmbed.canonicalUrl}
                             target="_blank"
@@ -942,7 +978,7 @@ export default function GalleryPage() {
                         </div>
 
                         <div
-                          className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${isFbVertical
+                          className={`relative rounded-lg overflow-hidden border-2 border-black dark:border-zinc-700 bg-black transition-all duration-300 ${isFbVertical
                               ? "aspect-[9/16] max-w-[320px] mx-auto"
                               : "aspect-video w-full"
                             }`}

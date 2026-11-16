@@ -16,6 +16,7 @@ import {
   Sparkles,
   Loader2,
   Smartphone,
+  Monitor,
   FileText,
   UploadCloud,
   Star,
@@ -104,42 +105,95 @@ function FacebookVideoFieldCard({
                 اختياري (Optional)
               </span>
             </div>
-            <span className="text-[10px] text-zinc-400 font-mono">
-              حقل اختياري — اختر التنسيق (16:9 أفقي أو 9:16 رأسي) واعتمد صورة الغلاف
+            <span className="text-[10px] text-zinc-400 font-sans">
+              يدعم فيديوهات فيسبوك العادية والريلز — يمكنك التبديل بين العرض الأفقي (16:9) والرأسي (9:16) وسحب الغلاف
             </span>
           </div>
         </div>
 
-        {/* Format Switcher: 16:9 Horizontal vs 9:16 Vertical Reel */}
+        {/* Quick Format Switcher in Card Header */}
         {onToggleShort && (
           <div className="flex items-center gap-1 bg-[#161622] p-1 rounded-lg border border-[#262638]">
             <button
               type="button"
               onClick={() => onToggleShort(false)}
-              className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
+              className={`px-2.5 py-1 rounded text-xs font-bold cursor-pointer transition-colors flex items-center gap-1 ${
                 !isShort
-                  ? "bg-[#1877F2] text-white font-bold shadow"
+                  ? "bg-[#1877F2] text-white shadow"
                   : "text-zinc-400 hover:text-white"
               }`}
               title="عرض كفيديو أفقي عادي 16:9"
             >
-              16:9 أفقي (Horizontal)
+              <Monitor className="w-3 h-3" />
+              <span>16:9 أفقي</span>
             </button>
             <button
               type="button"
               onClick={() => onToggleShort(true)}
-              className={`px-2 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
+              className={`px-2.5 py-1 rounded text-xs font-bold cursor-pointer transition-colors flex items-center gap-1 ${
                 isShort
-                  ? "bg-[#1877F2] text-white font-bold shadow"
+                  ? "bg-[#1877F2] text-white shadow"
                   : "text-zinc-400 hover:text-white"
               }`}
               title="عرض كفيديو ريلز رأسي 9:16"
             >
-              9:16 رأسي (Vertical Reel)
+              <Smartphone className="w-3 h-3" />
+              <span>9:16 رأسي</span>
             </button>
           </div>
         )}
       </div>
+
+      {/* Prominent Format Switcher Cards */}
+      {onToggleShort && (
+        <div className="grid grid-cols-2 gap-2 pt-1">
+          <button
+            type="button"
+            onClick={() => onToggleShort(false)}
+            className={`p-2.5 rounded-lg border text-right transition-all cursor-pointer flex items-center justify-between gap-2 ${
+              !isShort
+                ? "bg-blue-600/20 border-blue-500 text-white shadow-[0_0_12px_rgba(24,119,242,0.25)]"
+                : "bg-[#14141e] border-[#252535] text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+            }`}
+          >
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-1.5 font-bold text-xs">
+                <Monitor className={`w-3.5 h-3.5 ${!isShort ? "text-blue-400" : "text-zinc-500"}`} />
+                <span>16:9 أفقي (Horizontal)</span>
+              </div>
+              <p className="text-[10px] text-zinc-400">
+                للفيديوهات والشاشات الأفقية (Full Width)
+              </p>
+            </div>
+            {!isShort && (
+              <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onToggleShort(true)}
+            className={`p-2.5 rounded-lg border text-right transition-all cursor-pointer flex items-center justify-between gap-2 ${
+              isShort
+                ? "bg-blue-600/20 border-blue-500 text-white shadow-[0_0_12px_rgba(24,119,242,0.25)]"
+                : "bg-[#14141e] border-[#252535] text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+            }`}
+          >
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-1.5 font-bold text-xs">
+                <Smartphone className={`w-3.5 h-3.5 ${isShort ? "text-blue-400" : "text-zinc-500"}`} />
+                <span>9:16 رأسي (Vertical Reel)</span>
+              </div>
+              <p className="text-[10px] text-zinc-400">
+                لفيديوهات الريلز والقصص الرأسية
+              </p>
+            </div>
+            {isShort && (
+              <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
+            )}
+          </button>
+        </div>
+      )}
 
       <div className="flex flex-col sm:flex-row gap-2">
         <input
@@ -240,10 +294,10 @@ function FacebookVideoFieldCard({
             />
           </div>
 
-          {thumbnailUrl && onApplyThumbnailAsCover && (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-2.5 rounded-lg bg-blue-500/10 border border-blue-500/25">
+          {thumbnailUrl && onApplyThumbnailAsCover ? (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
               <div className="flex items-center gap-2.5">
-                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-blue-400/40 bg-black shrink-0">
+                <div className="relative w-14 h-14 rounded-lg overflow-hidden border border-blue-400/40 bg-black shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={thumbnailUrl}
@@ -253,7 +307,7 @@ function FacebookVideoFieldCard({
                 </div>
                 <div>
                   <span className="text-xs font-bold text-blue-200 block font-sans">
-                    صورة غلاف الفيديو متوفرة من فيسبوك
+                    ✓ صورة غلاف الفيديو متوفرة من فيسبوك
                   </span>
                   <span className="text-[10px] text-zinc-400 font-sans">
                     اضغط لاعتمادها كصورة الغلاف الأساسية للكرت في الموقع
@@ -265,7 +319,27 @@ function FacebookVideoFieldCard({
                 onClick={() => onApplyThumbnailAsCover(thumbnailUrl)}
                 className="px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold rounded-lg transition-all cursor-pointer shadow flex items-center gap-1 font-sans shrink-0"
               >
+                <Sparkles className="w-3.5 h-3.5 text-black" />
                 <span>تعيين كغلاف للمشروع 🖼️</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between gap-2 p-2.5 rounded-lg bg-[#14141e] border border-[#262638]">
+              <span className="text-[11px] text-zinc-400 font-sans">
+                💡 صورة الغلاف: اضغط لجلب صورة الغلاف تلقائياً من فيسبوك واعتمادها
+              </span>
+              <button
+                type="button"
+                onClick={onVerify}
+                disabled={isVerifying}
+                className="px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 text-xs font-bold cursor-pointer disabled:opacity-40 shrink-0 flex items-center gap-1"
+              >
+                {isVerifying ? (
+                  <Loader2 className="w-3 h-3 animate-spin text-blue-400" />
+                ) : (
+                  <Sparkles className="w-3 h-3 text-blue-400" />
+                )}
+                <span>جلب صورة الغلاف الآن</span>
               </button>
             </div>
           )}
@@ -914,23 +988,34 @@ export default function GalleryProjectsManager() {
             data.thumbnailUrl && !currentImages.includes(data.thumbnailUrl)
               ? [data.thumbnailUrl, ...currentImages]
               : currentImages;
+          const targetIsShort =
+            explicitShort !== undefined
+              ? explicitShort
+              : prev.isShort !== undefined && prev.isShort !== null
+              ? prev.isShort
+              : data.isReel !== undefined
+              ? Boolean(data.isReel)
+              : false;
+
           return {
             ...prev,
             facebookUrl: data.canonicalUrl || prev.facebookUrl,
-            isShort:
-              explicitShort !== undefined
-                ? explicitShort
-                : data.isReel !== undefined
-                ? Boolean(data.isReel)
-                : prev.isShort,
+            isShort: targetIsShort,
             image: data.thumbnailUrl ? data.thumbnailUrl : prev.image,
             images: nextImages,
           };
         });
+        const finalFormatText = (
+          explicitShort !== undefined
+            ? explicitShort
+            : editingProject?.isShort !== undefined && editingProject?.isShort !== null
+            ? editingProject.isShort
+            : data.isReel
+        )
+          ? "Facebook Reel (9:16)"
+          : "Facebook Video (16:9)";
         setFbStatusMessage(
-          `✓ تم التحقق وتجهيز مشغل ${
-            (explicitShort ?? data.isReel) ? "Facebook Reel (9:16)" : "Facebook Video (16:9)"
-          } واعتماد صورة غلاف الفيديو بنجاح`
+          `✓ تم التحقق وتجهيز مشغل ${finalFormatText} واعتماد صورة غلاف الفيديو بنجاح`
         );
       } else {
         setFbStatusMessage("⚠️ رابط فيديو فيسبوك غير صالح. تأكد أن الرابط عام ومن Facebook أو fb.watch");
@@ -1020,10 +1105,10 @@ export default function GalleryProjectsManager() {
       );
       if (isUnresolved) {
         setFbStatusMessage("⏳ جاري التحقق من الرابط وفك اختصار Facebook...");
-        triggerResolveFacebook(cleanInput);
+        triggerResolveFacebook(cleanInput, editingProject.isShort);
       } else {
         setFbStatusMessage("✓ تم التحقق من رابط فيديو Facebook بنجاح");
-        triggerResolveFacebook(resolved.canonicalUrl);
+        triggerResolveFacebook(resolved.canonicalUrl, editingProject.isShort);
       }
     } else {
       setEditingProject((prev) =>
@@ -1040,7 +1125,7 @@ export default function GalleryProjectsManager() {
 
   const handleResolveFacebookMetadata = async () => {
     if (!editingProject?.facebookUrl) return;
-    await triggerResolveFacebook(editingProject.facebookUrl);
+    await triggerResolveFacebook(editingProject.facebookUrl, editingProject.isShort);
   };
 
   const handleFetchYouTubeMetadata = async () => {
@@ -2434,9 +2519,14 @@ export default function GalleryProjectsManager() {
                         <FacebookVideoFieldCard
                           facebookUrl={editingProject.facebookUrl}
                           isShort={Boolean(editingProject.isShort)}
-                          onToggleShort={(short) =>
-                            setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null))
-                          }
+                          onToggleShort={(short) => {
+                            setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null));
+                            setFbStatusMessage(
+                              short
+                                ? "تم ضبط المشغل على 9:16 رأسي (Vertical Reel)"
+                                : "تم ضبط المشغل على 16:9 أفقي (Horizontal Video)"
+                            );
+                          }}
                           thumbnailUrl={fbThumbnailUrl}
                           onApplyThumbnailAsCover={applyThumbnailAsCover}
                           onChange={handleFacebookInputChange}
@@ -2753,9 +2843,14 @@ export default function GalleryProjectsManager() {
                     <FacebookVideoFieldCard
                       facebookUrl={editingProject.facebookUrl}
                       isShort={Boolean(editingProject.isShort)}
-                      onToggleShort={(short) =>
-                        setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null))
-                      }
+                      onToggleShort={(short) => {
+                        setEditingProject((prev) => (prev ? { ...prev, isShort: short } : null));
+                        setFbStatusMessage(
+                          short
+                            ? "تم ضبط المشغل على 9:16 رأسي (Vertical Reel)"
+                            : "تم ضبط المشغل على 16:9 أفقي (Horizontal Video)"
+                        );
+                      }}
                       thumbnailUrl={fbThumbnailUrl}
                       onApplyThumbnailAsCover={applyThumbnailAsCover}
                       onChange={handleFacebookInputChange}

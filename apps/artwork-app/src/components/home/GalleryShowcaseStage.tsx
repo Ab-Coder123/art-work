@@ -26,6 +26,11 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
       : (rawProjects as ProjectRecord[])
   );
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+  const [stageFbOrientationOverride, setStageFbOrientationOverride] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setStageFbOrientationOverride(null);
+  }, [selectedVideoId]);
 
   useEffect(() => {
     if (Array.isArray(initialProjects) && initialProjects.length > 0) {
@@ -163,26 +168,66 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                   isShort={activeYt.isShort}
                   sizes="(max-width: 1024px) 100vw, 55vw"
                 />
-              ) : activeFb ? (
-                <div
-                  className={`relative rounded-xl overflow-hidden border-2 border-black dark:border-zinc-700 bg-black ${
-                    (activeVideo.isShort !== undefined && activeVideo.isShort !== null
-                      ? Boolean(activeVideo.isShort)
-                      : Boolean(activeFb.isReel))
-                      ? "aspect-[9/16] max-w-[300px] mx-auto"
-                      : "aspect-video w-full"
-                  }`}
-                >
-                  <iframe
-                    src={activeFb.embedUrl}
-                    title={activeVideo.title}
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                    className="w-full h-full border-0"
-                  />
-                </div>
-              ) : null}
+              ) : activeFb ? (() => {
+                const isFbVertical =
+                  stageFbOrientationOverride !== null
+                    ? stageFbOrientationOverride
+                    : activeVideo.isShort !== undefined && activeVideo.isShort !== null
+                    ? Boolean(activeVideo.isShort)
+                    : Boolean(activeFb.isReel);
+
+                return (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[10px] font-mono text-zinc-500 font-bold">
+                        {isFbVertical ? "FACEBOOK REEL (9:16)" : "FACEBOOK VIDEO (16:9)"}
+                      </span>
+                      <div className="inline-flex items-center rounded-md border border-black/10 dark:border-zinc-700 bg-neutral-100 dark:bg-zinc-800 p-0.5">
+                        <button
+                          type="button"
+                          onClick={() => setStageFbOrientationOverride(false)}
+                          className={`px-2 py-0.5 rounded text-[10px] font-headline font-bold cursor-pointer transition-colors ${
+                            !isFbVertical
+                              ? "bg-[#1877F2] text-white shadow-sm"
+                              : "text-zinc-500 hover:text-black dark:hover:text-white"
+                          }`}
+                          title="عرض كفيديو أفقي كامل 16:9"
+                        >
+                          16:9 أفقي
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setStageFbOrientationOverride(true)}
+                          className={`px-2 py-0.5 rounded text-[10px] font-headline font-bold cursor-pointer transition-colors ${
+                            isFbVertical
+                              ? "bg-[#1877F2] text-white shadow-sm"
+                              : "text-zinc-500 hover:text-black dark:hover:text-white"
+                          }`}
+                          title="عرض كفيديو رأسي 9:16"
+                        >
+                          9:16 رأسي
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      className={`relative rounded-xl overflow-hidden border-2 border-black dark:border-zinc-700 bg-black transition-all duration-300 ${
+                        isFbVertical
+                          ? "aspect-[9/16] max-w-[300px] mx-auto"
+                          : "aspect-video w-full"
+                      }`}
+                    >
+                      <iframe
+                        src={activeFb.embedUrl}
+                        title={activeVideo.title}
+                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                        className="w-full h-full border-0"
+                      />
+                    </div>
+                  </div>
+                );
+              })() : null}
             </div>
 
             {/* Video Info & Metadata */}
