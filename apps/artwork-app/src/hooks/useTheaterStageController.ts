@@ -6,11 +6,16 @@ import { soundFX } from "@/utils/soundFX";
 import {
   type StageId,
   resolveHashToStage,
+  getNextStage,
+  getPrevStage,
+  calculateActiveStageFromTops,
 } from "@/components/home/types";
 
 export interface TheaterStageControllerResult {
   activeStage: StageId;
   scrollToStage: (stage: StageId) => void;
+  nextStage: () => void;
+  prevStage: () => void;
   trackRef: React.RefObject<HTMLDivElement | null>;
   theaterRef: React.RefObject<HTMLDivElement | null>;
   mainContainerRef: React.RefObject<HTMLElement | null>;
@@ -57,6 +62,22 @@ export function useTheaterStageController(): TheaterStageControllerResult {
 
     setActiveStage(stage);
   }, []);
+
+  const nextStage = useCallback(() => {
+    setActiveStage((current) => {
+      const next = getNextStage(current);
+      scrollToStage(next);
+      return next;
+    });
+  }, [scrollToStage]);
+
+  const prevStage = useCallback(() => {
+    setActiveStage((current) => {
+      const prev = getPrevStage(current);
+      scrollToStage(prev);
+      return prev;
+    });
+  }, [scrollToStage]);
 
   // GLOBAL HASH ROUTER & INTERNAL ANCHOR NAVIGATION SYNCHRONIZER
   useEffect(() => {
@@ -113,30 +134,34 @@ export function useTheaterStageController(): TheaterStageControllerResult {
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
+      const sectionTops: { id: StageId; top: number }[] = [];
+      const s1 =
+        document.getElementById("stage-01") ||
+        document.getElementById("stage-01-mobile");
+      if (s1) sectionTops.push({ id: "stage-01", top: s1.getBoundingClientRect().top });
+
       const s2 =
         document.getElementById("stage-02") ||
         document.getElementById("stage-02-mobile");
+      if (s2) sectionTops.push({ id: "stage-02", top: s2.getBoundingClientRect().top });
+
       const s3 =
         document.getElementById("stage-03") ||
         document.getElementById("stage-03-mobile");
+      if (s3) sectionTops.push({ id: "stage-03", top: s3.getBoundingClientRect().top });
+
       const sGallery =
         document.getElementById("stage-gallery") ||
         document.getElementById("stage-gallery-mobile");
+      if (sGallery) sectionTops.push({ id: "stage-gallery", top: sGallery.getBoundingClientRect().top });
+
       const s4 =
         document.getElementById("stage-04") ||
         document.getElementById("stage-04-mobile");
-      const threshold = window.innerHeight * 0.4;
+      if (s4) sectionTops.push({ id: "stage-04", top: s4.getBoundingClientRect().top });
 
-      let nextStage: StageId = "stage-01";
-      if (s4 && s4.getBoundingClientRect().top <= threshold) {
-        nextStage = "stage-04";
-      } else if (sGallery && sGallery.getBoundingClientRect().top <= threshold) {
-        nextStage = "stage-gallery";
-      } else if (s3 && s3.getBoundingClientRect().top <= threshold) {
-        nextStage = "stage-03";
-      } else if (s2 && s2.getBoundingClientRect().top <= threshold) {
-        nextStage = "stage-02";
-      }
+      const threshold = window.innerHeight * 0.4;
+      const nextStage = calculateActiveStageFromTops(sectionTops, threshold);
 
       setActiveStage((prev) => (prev === nextStage ? prev : nextStage));
     };
@@ -161,7 +186,7 @@ export function useTheaterStageController(): TheaterStageControllerResult {
     };
   }, []);
 
-  // KEYBOARD ACCESSIBILITY HOME/END JUMP NAVIGATION
+  // KEYBOARD ACCESSIBILITY HOME/END & PAGING JUMP NAVIGATION
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const activeEl = document.activeElement;
@@ -180,6 +205,12 @@ export function useTheaterStageController(): TheaterStageControllerResult {
       } else if (e.key === "End") {
         e.preventDefault();
         scrollToStage("stage-04");
+      } else if (e.key === "PageDown" || (e.altKey && e.key === "ArrowDown")) {
+        e.preventDefault();
+        nextStage();
+      } else if (e.key === "PageUp" || (e.altKey && e.key === "ArrowUp")) {
+        e.preventDefault();
+        prevStage();
       }
     };
 
@@ -187,7 +218,7 @@ export function useTheaterStageController(): TheaterStageControllerResult {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [scrollToStage]);
+  }, [scrollToStage, nextStage, prevStage]);
 
   const triggerInkBurst = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     soundFX.playPop();
@@ -207,6 +238,8 @@ export function useTheaterStageController(): TheaterStageControllerResult {
   return {
     activeStage,
     scrollToStage,
+    nextStage,
+    prevStage,
     trackRef,
     theaterRef,
     mainContainerRef,

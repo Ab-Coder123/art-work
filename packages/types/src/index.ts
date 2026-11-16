@@ -1058,3 +1058,197 @@ export function resolveHomeShowcaseItems(
     nonVideoItems,
   };
 }
+
+// ============================================================================
+// PHASE 05: SCROLLYTELLING & STAGE TRANSITION ENGINE
+// ============================================================================
+
+export type StageId =
+  | "stage-01"
+  | "stage-02"
+  | "stage-03"
+  | "stage-gallery"
+  | "stage-04";
+
+export const STAGE_ORDER: readonly StageId[] = [
+  "stage-01",
+  "stage-02",
+  "stage-03",
+  "stage-gallery",
+  "stage-04",
+] as const;
+
+export const STAGE_HASH_MAP: Record<string, StageId> = {
+  "stage-01": "stage-01",
+  hero: "stage-01",
+  home: "stage-01",
+  "stage-02": "stage-02",
+  "why-us": "stage-02",
+  whyus: "stage-02",
+  about: "stage-02",
+  "stage-03": "stage-03",
+  services: "stage-03",
+  capabilities: "stage-03",
+  "stage-gallery": "stage-gallery",
+  gallery: "stage-gallery",
+  showcase: "stage-gallery",
+  work: "stage-gallery",
+  portfolio: "stage-gallery",
+  "stage-04": "stage-04",
+  "brief-inquiry": "stage-04",
+  contact: "stage-04",
+  brief: "stage-04",
+  intake: "stage-04",
+};
+
+/**
+ * Normalizes URL hash string (e.g. "#stage-03", "#/services", "brief") into a canonical StageId.
+ */
+export function resolveHashToStage(hash?: string | null): StageId | null {
+  if (!hash) return null;
+  const clean = hash.replace(/^#\/?/, "").toLowerCase().trim();
+  return STAGE_HASH_MAP[clean] ?? null;
+}
+
+/**
+ * Returns the next stage in STAGE_ORDER, or the last stage if already at the boundary.
+ */
+export function getNextStage(current: StageId): StageId {
+  const index = STAGE_ORDER.indexOf(current);
+  if (index === -1 || index >= STAGE_ORDER.length - 1) {
+    return STAGE_ORDER[STAGE_ORDER.length - 1];
+  }
+  return STAGE_ORDER[index + 1];
+}
+
+/**
+ * Returns the previous stage in STAGE_ORDER, or the first stage if already at the boundary.
+ */
+export function getPrevStage(current: StageId): StageId {
+  const index = STAGE_ORDER.indexOf(current);
+  if (index <= 0) {
+    return STAGE_ORDER[0];
+  }
+  return STAGE_ORDER[index - 1];
+}
+
+/**
+ * Calculates current active stage given an array of section bounding box top offsets and viewport threshold.
+ */
+export function calculateActiveStageFromTops(
+  sectionTops: { id: StageId; top: number }[],
+  thresholdY: number
+): StageId {
+  let matched: StageId = STAGE_ORDER[0];
+  for (const item of sectionTops) {
+    if (item.top <= thresholdY) {
+      matched = item.id;
+    }
+  }
+  return matched;
+}
+
+// ============================================================================
+// PHASE 06: GPU CANVAS PARTICLE STRUCT POOLING ENGINE (ZERO-GC)
+// ============================================================================
+
+export interface ParticleStruct {
+  active: boolean;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  color: string;
+  borderColor: string;
+  alpha: number;
+  life: number;
+  maxLife: number;
+}
+
+export const DEFAULT_PARTICLE_POOL_SIZE = 120;
+
+/**
+ * Pre-allocates a fixed array of ParticleStruct items to completely eliminate heap allocation during animation.
+ */
+export function createParticlePool(size: number = DEFAULT_PARTICLE_POOL_SIZE): ParticleStruct[] {
+  const count = Math.max(1, Math.floor(size));
+  const pool: ParticleStruct[] = new Array(count);
+  for (let i = 0; i < count; i++) {
+    pool[i] = {
+      active: false,
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      size: 6,
+      color: "#dcb858",
+      borderColor: "#111111",
+      alpha: 1,
+      life: 0,
+      maxLife: 24,
+    };
+  }
+  return pool;
+}
+
+/**
+ * Advances the life and physics of all active particles in the pool.
+ * Automatically deactivates expired particles and returns the count of currently active particles.
+ * If 0 is returned, the caller can put the requestAnimationFrame loop to sleep.
+ */
+export function updateParticlePool(pool: ParticleStruct[]): number {
+  let currentlyActive = 0;
+  for (let i = 0; i < pool.length; i++) {
+    const p = pool[i];
+    if (!p.active) continue;
+
+    p.life++;
+    if (p.life >= p.maxLife) {
+      p.active = false;
+      continue;
+    }
+
+    currentlyActive++;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha = Math.max(0, 1 - p.life / p.maxLife);
+  }
+  return currentlyActive;
+}
+
+/**
+ * Activates a particle in the pool at the given index, mutating the existing struct without allocating memory.
+ * Returns the next circular pool index.
+ */
+export function spawnParticleInPool(
+  pool: ParticleStruct[],
+  index: number,
+  params: {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    size: number;
+    maxLife: number;
+    color?: string;
+    borderColor?: string;
+  }
+): number {
+  if (pool.length === 0) return 0;
+  const safeIndex = index % pool.length;
+  const p = pool[safeIndex];
+  p.active = true;
+  p.x = params.x;
+  p.y = params.y;
+  p.vx = params.vx;
+  p.vy = params.vy;
+  p.size = params.size;
+  p.alpha = 1;
+  p.life = 0;
+  p.maxLife = Math.max(1, params.maxLife);
+  p.color = params.color ?? "#dcb858";
+  p.borderColor = params.borderColor ?? "#111111";
+
+  return (safeIndex + 1) % pool.length;
+}

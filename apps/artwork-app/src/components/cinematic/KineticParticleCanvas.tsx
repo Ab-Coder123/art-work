@@ -1,22 +1,12 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-
-interface Particle {
-  active: boolean;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  color: string;
-  borderColor: string;
-  alpha: number;
-  life: number;
-  maxLife: number;
-}
-
-const POOL_SIZE = 120;
+import {
+  createParticlePool,
+  updateParticlePool,
+  spawnParticleInPool,
+  DEFAULT_PARTICLE_POOL_SIZE,
+} from "@art-work/types";
 
 /**
  * Phase 6: Pooled 2D Canvas Particle System (Zero-DOM Garbage Collection Spike).
@@ -37,19 +27,7 @@ export const KineticParticleCanvas = React.memo(function KineticParticleCanvas()
     if (!ctx) return;
 
     // Pre-allocated particle pool (Zero GC allocation during interaction)
-    const pool: Particle[] = Array.from({ length: POOL_SIZE }, () => ({
-      active: false,
-      x: 0,
-      y: 0,
-      vx: 0,
-      vy: 0,
-      size: 6,
-      color: "#dcb858",
-      borderColor: "#111111",
-      alpha: 1,
-      life: 0,
-      maxLife: 24,
-    }));
+    const pool = createParticlePool(DEFAULT_PARTICLE_POOL_SIZE);
 
     let nextIndex = 0;
     let animFrameId: number | null = null;
@@ -57,37 +35,27 @@ export const KineticParticleCanvas = React.memo(function KineticParticleCanvas()
     const render = () => {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-      let currentlyActive = 0;
-
-      for (let i = 0; i < POOL_SIZE; i++) {
-        const p = pool[i];
-        if (!p.active) continue;
-
-        p.life++;
-        if (p.life >= p.maxLife) {
-          p.active = false;
-          continue;
-        }
-
-        currentlyActive++;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha = Math.max(0, 1 - p.life / p.maxLife);
-        const currentSize = Math.max(0.5, p.size * p.alpha);
-
-        ctx.save();
-        ctx.globalAlpha = p.alpha;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = p.borderColor;
-        ctx.stroke();
-        ctx.restore();
-      }
+      const currentlyActive = updateParticlePool(pool);
 
       if (currentlyActive > 0) {
+        for (let i = 0; i < pool.length; i++) {
+          const p = pool[i];
+          if (!p.active) continue;
+
+          const currentSize = Math.max(0.5, p.size * p.alpha);
+
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = p.borderColor;
+          ctx.stroke();
+          ctx.restore();
+        }
+
         animFrameId = requestAnimationFrame(render);
       } else {
         animFrameId = null;
@@ -105,20 +73,16 @@ export const KineticParticleCanvas = React.memo(function KineticParticleCanvas()
       color = "#dcb858",
       borderColor = "#111111"
     ) => {
-      const p = pool[nextIndex];
-      p.active = true;
-      p.x = x;
-      p.y = y;
-      p.vx = vx;
-      p.vy = vy;
-      p.size = size;
-      p.alpha = 1;
-      p.life = 0;
-      p.maxLife = maxLife;
-      p.color = color;
-      p.borderColor = borderColor;
-
-      nextIndex = (nextIndex + 1) % POOL_SIZE;
+      nextIndex = spawnParticleInPool(pool, nextIndex, {
+        x,
+        y,
+        vx,
+        vy,
+        size,
+        maxLife,
+        color,
+        borderColor,
+      });
 
       if (animFrameId === null) {
         animFrameId = requestAnimationFrame(render);
