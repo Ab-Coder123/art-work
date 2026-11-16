@@ -94,6 +94,12 @@
   border-color: transparent !important;
 }
 
+/* Stage Indicator Dot - Explicit Solid Black Border (Restored) */
+.stage-indicator-dot {
+  border: 2px solid #000000 !important;
+  box-sizing: border-box !important;
+}
+
 /* Eliminate washi-tape decorations across all components */
 .washi-tape,
 .washi-tape-yellow {

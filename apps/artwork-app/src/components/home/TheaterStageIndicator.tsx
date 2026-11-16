@@ -34,7 +34,7 @@ export const TheaterStageIndicator = React.memo(function TheaterStageIndicator({
               {item.label}
             </span>
             <div
-              className={`w-3 h-3 rounded-full border-2 border-black dark:border-zinc-400 transition-all ${
+              className={`w-3.5 h-3.5 rounded-full stage-indicator-dot transition-all duration-200 ${
                 isActive
                   ? "bg-yellow-400 ring-4 ring-yellow-400/30 scale-125"
                   : "bg-white dark:bg-[#1A1A24] group-hover:bg-yellow-400"

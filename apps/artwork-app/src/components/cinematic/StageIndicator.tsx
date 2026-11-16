@@ -27,10 +27,10 @@ export const StageIndicator: React.FC = () => {
 
               {/* Indicator Dot */}
               <div
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`w-3.5 h-3.5 rounded-full stage-indicator-dot transition-all duration-300 ${
                   isActive
                     ? "bg-yellow-400 scale-125 ring-4 ring-yellow-400/30"
-                    : "bg-black/20 hover:bg-black/40 scale-100"
+                    : "bg-white hover:bg-yellow-400 scale-100"
                 }`}
               />
             </div>
