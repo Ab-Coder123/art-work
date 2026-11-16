@@ -124,7 +124,7 @@ export const ContactSection = React.memo(function ContactSection({
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
+    <div className="w-full max-w-[1360px] mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
       <div className="border-3 border-black dark:border-zinc-700 bg-white dark:bg-[#151520] rounded-2xl p-3.5 sm:p-4 lg:p-5 comic-shadow relative mt-1.5">
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-yellow-300 text-black border-2 border-black px-4 py-1 font-headline font-black text-[10px] sm:text-xs uppercase tracking-widest comic-shadow-sm -rotate-1 z-20">
           {content.stageTag}

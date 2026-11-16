@@ -25,7 +25,7 @@ export const ManifestoHero = React.memo(function ManifestoHero({
   const performanceBadge = content.performanceBadge || "PERFORMANCE MARKETING";
 
   return (
-    <div className="w-full max-w-7xl mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
+    <div className="w-full max-w-[1360px] mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
       {/* 2-Column Responsive Hero Grid (Level & Aligned with Studio Canvas) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7 items-start">
         {/* Left Column: Headline, Paragraph, Actions, Metrics & Badges */}

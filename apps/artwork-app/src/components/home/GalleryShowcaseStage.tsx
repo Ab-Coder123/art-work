@@ -83,7 +83,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
   }, [showcase, activeVideo]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto pt-2 pb-6 flex flex-col justify-start">
+    <div className="w-full max-w-[1360px] mx-auto pt-2 pb-6 flex flex-col justify-start">
       {/* Comic Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 mb-2 sm:mb-2.5 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>

@@ -227,7 +227,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
 
         <main
           ref={mainContainerRef}
-          className="w-full flex flex-col items-center px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16 pb-12 no-scrollbar"
+          className="w-full flex flex-col items-center px-3 sm:px-5 lg:px-6 space-y-12 sm:space-y-16 pb-12 no-scrollbar"
         >
           {/* Stage 01: Hero Manifesto */}
           <ScrollReveal direction="up" distance={30} viewportAmount={0.08} className="w-full">

@@ -65,6 +65,7 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { FloatingContactWidget } from "@/components/home/FloatingContactWidget";
 
 export default function RootLayout({
   children,
@@ -85,7 +86,10 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-white dark:bg-[#0C0C10] text-black dark:text-[#F3F3F5] font-body selection:bg-yellow-400 selection:text-black antialiased overflow-x-hidden relative transition-colors duration-200">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          <FloatingContactWidget />
+        </ThemeProvider>
       </body>
     </html>
   );

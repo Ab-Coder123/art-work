@@ -9,4 +9,5 @@ export * from "./StudioHeader";
 export * from "./StudioFooter";
 export * from "./TheaterStageIndicator";
 export * from "./StageLoadingSkeleton";
+export * from "./FloatingContactWidget";
 export * from "./HomeTheaterController";

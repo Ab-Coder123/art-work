@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import { Pencil } from "lucide-react";
 import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import { SoundToggle } from "@/components/cinematic/SoundToggle";
-import { MagneticButton } from "@/components/cinematic/MagneticButton";
 import { useDoodleStore } from "@/store/useDoodleStore";
 import { DEFAULT_LAYOUT_CONTENT, type StudioHeaderProps } from "./types";
 
@@ -16,7 +15,6 @@ export const StudioHeader = React.memo(function StudioHeader({
   scrollToStage,
   onInkBurst,
   layout = DEFAULT_LAYOUT_CONTENT,
-  whatsappPhone = "01092611230",
 }: StudioHeaderProps) {
   const pathname = usePathname();
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
@@ -31,30 +29,9 @@ export const StudioHeader = React.memo(function StudioHeader({
       ? layout.fullVaultCtaText
       : `★ ${layout.navGalleryLabel} ↗`;
 
-  const effectivePhone =
-    !whatsappPhone ||
-    whatsappPhone.includes("2794") ||
-    whatsappPhone.includes("ART-WORK") ||
-    whatsappPhone.includes("1800") ||
-    whatsappPhone.includes("DMX-EXT")
-      ? "01092611230"
-      : whatsappPhone;
-  const rawDigits = effectivePhone.replace(/\D/g, "");
-  const phoneClean =
-    rawDigits.length < 9
-      ? "201092611230"
-      : rawDigits.startsWith("01") && rawDigits.length === 11
-      ? `2${rawDigits}`
-      : rawDigits.startsWith("201") && rawDigits.length === 12
-      ? rawDigits
-      : rawDigits.startsWith("1") && rawDigits.length === 10
-      ? `20${rawDigits}`
-      : rawDigits || "201092611230";
-  const whatsappUrl = `https://wa.me/${phoneClean}`;
-
   return (
     <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md nav-shadow transition-colors duration-200">
-      <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-7xl mx-auto py-1.5 sm:py-2">
+      <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-[1360px] mx-auto py-1.5 sm:py-2">
         {/* Logo Anchor */}
         <div className="flex items-center gap-2">
           {isHome && scrollToStage ? (
@@ -201,6 +178,8 @@ export const StudioHeader = React.memo(function StudioHeader({
           {isHome && scrollToStage ? (
             <button
               onClick={() => scrollToStage("stage-04")}
+              title={layout.briefCtaText || layout.navContactLabel}
+              aria-label={layout.briefCtaText || layout.navContactLabel}
               className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
                 activeStage === "stage-04"
                   ? "bg-yellow-400 text-black border-black comic-shadow-sm -rotate-1 scale-105 z-10"
@@ -212,6 +191,8 @@ export const StudioHeader = React.memo(function StudioHeader({
           ) : (
             <Link
               href="/#stage-04"
+              title={layout.briefCtaText || layout.navContactLabel}
+              aria-label={layout.briefCtaText || layout.navContactLabel}
               className={`inline-flex items-center justify-center px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg border-2 font-headline font-black text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer select-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black/80 dark:border-zinc-500 comic-shadow-sm hover:bg-yellow-200 dark:hover:bg-[#252538] hover:text-black dark:hover:text-yellow-300 hover:-translate-y-0.5 -rotate-1`}
             >
               {layout.navContactLabel}
@@ -219,30 +200,10 @@ export const StudioHeader = React.memo(function StudioHeader({
           )}
         </nav>
 
-        {/* Trailing Primary Actions: Theme Toggle + Sound Toggle + WhatsApp Icon ONLY + Studio Pen */}
+        {/* Trailing Primary Actions: Theme Toggle + Sound Toggle + Studio Pen */}
         <div className="flex items-center gap-2 sm:gap-2.5">
           <ThemeToggle />
           <SoundToggle />
-
-          {/* WHATSAPP ICON BUTTON (ONLY ICON, REPLACING BRIEF INQUIRY) */}
-          <MagneticButton soundType="pop">
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={layout.briefCtaText || "Chat on WhatsApp"}
-              title={layout.briefCtaText || "Chat on WhatsApp"}
-              className="w-8 h-8 sm:w-9 sm:h-9 border-2 border-black dark:border-zinc-400 rounded-DEFAULT bg-[#25D366] hover:bg-[#20bd5a] text-white comic-shadow-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-90 transition-all duration-150 cursor-pointer flex items-center justify-center"
-            >
-              <svg
-                className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-current"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-              </svg>
-            </a>
-          </MagneticButton>
 
           {/* STUDIO DOODLE PEN */}
           <button
