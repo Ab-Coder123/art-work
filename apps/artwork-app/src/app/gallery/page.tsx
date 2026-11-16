@@ -61,20 +61,20 @@ import {
   resolveSafeFacebookEmbed,
   getProjectThumbnailUrl,
 } from "@art-work/types";
-import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
+import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
 import { SEED_PROJECTS } from "@/data/seedContent";
 
 export default function GalleryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [projects, setProjects] = useState<ProjectRecord[]>(SEED_PROJECTS);
   const [galleryContent, setGalleryContent] = useState<GalleryPageContent>(
-    DEFAULT_SITE_CONTENT.galleryPage
+    CANONICAL_SITE_CONTENT.galleryPage
   );
   const [layout, setLayout] = useState<LayoutSectionContent>(
-    DEFAULT_SITE_CONTENT.layout
+    CANONICAL_SITE_CONTENT.layout
   );
   const [contact, setContact] = useState<ContactSectionContent>(
-    DEFAULT_SITE_CONTENT.contact
+    CANONICAL_SITE_CONTENT.contact
   );
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
@@ -354,12 +354,12 @@ export default function GalleryPage() {
   const heroTags =
     Array.isArray(galleryContent.heroTags) && galleryContent.heroTags.length > 0
       ? galleryContent.heroTags
-      : DEFAULT_SITE_CONTENT.galleryPage.heroTags;
+      : CANONICAL_SITE_CONTENT.galleryPage.heroTags;
 
   const workflowSteps =
     Array.isArray(galleryContent.workflowSteps) && galleryContent.workflowSteps.length > 0
       ? galleryContent.workflowSteps
-      : DEFAULT_SITE_CONTENT.galleryPage.workflowSteps;
+      : CANONICAL_SITE_CONTENT.galleryPage.workflowSteps;
 
   return (
     <>

@@ -312,9 +312,9 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     headlinePart1: "WE TURN IDEAS",
     headlinePart2: "INTO LIVE EXPERIENCES.",
     starburstText: {
-      top: "TOP TIER",
-      middle: "TRUSTED",
-      bottom: "PARTNERS",
+      top: "LIVE",
+      middle: "EVENTS",
+      bottom: "2026",
     },
     introParagraph:
       "From the initial concept to the final execution, we create memorable experiences that bring brands to life. Our team plans, designs and delivers events with the details, production and coordination needed to make every moment count.",
@@ -347,6 +347,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
         description:
           "From creative concepts and production to on-site management, we bring every element together through one coordinated team.",
         badge: "ONE TEAM",
+        iconName: "layers",
       },
       {
         number: "02",
@@ -354,6 +355,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
         description:
           "We create stages, booths, and branded environments that reflect your identity, engage your audience, and make your presence stand out.",
         badge: "BRAND BUILT",
+        iconName: "sparkles",
       },
       {
         number: "03",
@@ -361,6 +363,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
         description:
           "Clear planning, careful coordination, and hands-on supervision keep every detail aligned—from the first brief to the final delivery.",
         badge: "METICULOUS",
+        iconName: "palette",
       },
     ],
     blueprint: {
@@ -429,29 +432,30 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     formFields: [
       {
         name: "fullName",
-        label: "Full Name / Producer",
-        placeholder: "Alex Mercer",
+        label: "YOUR NAME",
+        placeholder: "e.g. Alex Mercer",
         type: "text",
         required: true,
       },
       {
         name: "email",
-        label: "Email Address",
-        placeholder: "alex@brand.com",
+        label: "WORK EMAIL",
+        placeholder: "alex@company.com",
         type: "email",
         required: true,
       },
       {
         name: "serviceType",
-        label: "Target Discipline",
+        label: "SERVICE NEEDED",
         placeholder: "Select service needed...",
         type: "select",
         required: true,
       },
       {
         name: "brief",
-        label: "Project Brief & Scale",
-        placeholder: "Tell us about your venue, timeline, and creative vision...",
+        label: "TELL US ABOUT YOUR EVENT",
+        placeholder:
+          "Tell us about your event format, audience, objectives, and timing...",
         type: "textarea",
         required: true,
       },

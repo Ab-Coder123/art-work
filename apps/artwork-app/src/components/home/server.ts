@@ -1,3 +1,4 @@
+import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
 import { unstable_cache } from "next/cache";
 import {
   createBrowserClient,
@@ -5,7 +6,6 @@ import {
   createSupabaseProjectsRepository,
   fetchSiteContent,
   listPublicProjects,
-  DEFAULT_SITE_CONTENT,
   normalizeSiteContent,
   listCompanies,
 } from "@art-work/database";
@@ -38,7 +38,7 @@ export interface InitialHomeData {
  * with Next.js Data Cache tag binding and deterministic fallback guarantees.
  */
 async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
-  let contentData = normalizeSiteContent(DEFAULT_SITE_CONTENT);
+  let contentData = CANONICAL_SITE_CONTENT;
   let companiesData: CompanyRecord[] = DEFAULT_COMPANIES;
   let projectsData: ProjectRecord[] = SEED_PROJECTS;
 
@@ -54,7 +54,10 @@ async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
     ]);
 
     if (contentRes.status === "fulfilled" && contentRes.value.ok) {
-      contentData = normalizeSiteContent(contentRes.value.data);
+      contentData = normalizeSiteContent({
+        ...CANONICAL_SITE_CONTENT,
+        ...contentRes.value.data,
+      });
     }
 
     if (

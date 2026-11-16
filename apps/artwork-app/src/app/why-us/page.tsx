@@ -9,7 +9,7 @@ import { StudioHeader, StudioFooter } from "@/components/home";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
-import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
+import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
 import type { LayoutSectionContent, WhyUsPageContent } from "@art-work/types";
 
 // Dynamic imports for heavy canvas and 3D decorative modules
@@ -78,7 +78,7 @@ export default function WhyUsPage() {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [content, setContent] = React.useState<WhyUsPageContent | null>(null);
   const [layout, setLayout] = React.useState<LayoutSectionContent | null>(null);
-  const [whatsappPhone, setWhatsappPhone] = React.useState<string>(DEFAULT_SITE_CONTENT.contact.phone);
+  const [whatsappPhone, setWhatsappPhone] = React.useState<string>(CANONICAL_SITE_CONTENT.contact.phone);
 
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();
@@ -92,12 +92,12 @@ export default function WhyUsPage() {
         if (siteContent.whyUsPage) {
           setContent(siteContent.whyUsPage);
         } else {
-          setContent(DEFAULT_SITE_CONTENT.whyUsPage);
+          setContent(CANONICAL_SITE_CONTENT.whyUsPage);
         }
         if (siteContent.layout) {
           setLayout(siteContent.layout);
         } else {
-          setLayout(DEFAULT_SITE_CONTENT.layout);
+          setLayout(CANONICAL_SITE_CONTENT.layout);
         }
         if (siteContent.contact?.phone) {
           setWhatsappPhone(siteContent.contact.phone);
@@ -106,8 +106,8 @@ export default function WhyUsPage() {
       .catch(() => {
         // Fallback only if offline / server unreachable
         if (mounted) {
-          setContent(DEFAULT_SITE_CONTENT.whyUsPage);
-          setLayout(DEFAULT_SITE_CONTENT.layout);
+          setContent(CANONICAL_SITE_CONTENT.whyUsPage);
+          setLayout(CANONICAL_SITE_CONTENT.layout);
         }
       })
       .finally(() => {
@@ -251,12 +251,12 @@ export default function WhyUsPage() {
   const capabilityCards =
     Array.isArray(content.capabilityCards) && content.capabilityCards.length > 0
       ? content.capabilityCards
-      : DEFAULT_SITE_CONTENT.whyUsPage.capabilityCards || [];
+      : CANONICAL_SITE_CONTENT.whyUsPage.capabilityCards || [];
 
   const stickers =
     Array.isArray(content.doodleStickers) && content.doodleStickers.length > 0
       ? content.doodleStickers
-      : DEFAULT_SITE_CONTENT.whyUsPage.doodleStickers;
+      : CANONICAL_SITE_CONTENT.whyUsPage.doodleStickers;
 
   return (
     <div className="bg-drafting-grid dark:bg-[#0C0C10] text-black dark:text-[#F3F3F5] font-body antialiased min-h-screen selection:bg-yellow-400 selection:text-black relative overflow-x-hidden transition-colors duration-200">

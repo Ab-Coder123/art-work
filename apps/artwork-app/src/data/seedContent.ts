@@ -1,5 +1,5 @@
 import type { SiteContent, ProjectRecord } from "@art-work/types";
-import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
+import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
 
 export const SEED_PROJECTS: ProjectRecord[] = [
   {
@@ -122,4 +122,4 @@ export const SEED_PROJECTS: ProjectRecord[] = [
   },
 ];
 
-export const SEED_SITE_CONTENT: SiteContent = DEFAULT_SITE_CONTENT;
+export const SEED_SITE_CONTENT: SiteContent = CANONICAL_SITE_CONTENT;

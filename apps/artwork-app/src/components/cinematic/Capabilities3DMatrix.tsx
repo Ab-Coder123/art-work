@@ -21,7 +21,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import type { ServicesSectionContent, ServiceDisciplineItem } from "@art-work/types";
-import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
+import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 
@@ -177,7 +177,7 @@ export interface Capabilities3DMatrixProps {
 }
 
 export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
-  content = DEFAULT_SITE_CONTENT.services,
+  content = CANONICAL_SITE_CONTENT.services,
 }) => {
   const [selectedDiscipline, setSelectedDiscipline] = useState<Discipline | null>(null);
   const [activeFilter, setActiveFilter] = useState<ServiceCategory>("all");
@@ -185,7 +185,7 @@ export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
   const disciplines =
     Array.isArray(content.disciplines) && content.disciplines.length > 0
       ? content.disciplines
-      : DEFAULT_SITE_CONTENT.services.disciplines;
+      : CANONICAL_SITE_CONTENT.services.disciplines;
 
   const navigateToBrief = (e: React.MouseEvent) => {
     e.preventDefault();

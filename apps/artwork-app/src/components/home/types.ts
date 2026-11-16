@@ -1,4 +1,4 @@
-import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
+import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
 import type {
   CompanyRecord,
   ContactSectionContent,
@@ -21,11 +21,11 @@ export {
   calculateActiveStageFromTops,
 } from "@art-work/types";
 
-export const DEFAULT_HERO_CONTENT: HeroManifestoContent = DEFAULT_SITE_CONTENT.manifesto;
-export const DEFAULT_WHY_US_CONTENT: WhyUsTeaserContent = DEFAULT_SITE_CONTENT.whyUsTeaser;
-export const DEFAULT_SERVICES_CONTENT: ServicesSectionContent = DEFAULT_SITE_CONTENT.services;
-export const DEFAULT_HOME_SHOWCASE_CONTENT: HomeShowcaseSectionContent = DEFAULT_SITE_CONTENT.homeShowcase;
-export const DEFAULT_LAYOUT_CONTENT: LayoutSectionContent = DEFAULT_SITE_CONTENT.layout;
+export const DEFAULT_HERO_CONTENT: HeroManifestoContent = CANONICAL_SITE_CONTENT.manifesto;
+export const DEFAULT_WHY_US_CONTENT: WhyUsTeaserContent = CANONICAL_SITE_CONTENT.whyUsTeaser;
+export const DEFAULT_SERVICES_CONTENT: ServicesSectionContent = CANONICAL_SITE_CONTENT.services;
+export const DEFAULT_HOME_SHOWCASE_CONTENT: HomeShowcaseSectionContent = CANONICAL_SITE_CONTENT.homeShowcase;
+export const DEFAULT_LAYOUT_CONTENT: LayoutSectionContent = CANONICAL_SITE_CONTENT.layout;
 
 export type HeroContentData = HeroManifestoContent;
 export type WhyUsContentData = WhyUsTeaserContent;

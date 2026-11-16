@@ -6,13 +6,15 @@ import { motion } from "framer-motion";
 import { CheckCircle2, AlertCircle, Loader2, Send } from "lucide-react";
 import { soundFX } from "@/utils/soundFX";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
+import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
 import type { ContactSectionProps } from "./types";
 
-const DEFAULT_SERVICE_OPTIONS = [
-  "Event Planning & Managment",
-  "Exhibition Booth design & Production",
-  "Promotional Giveaways",
-];
+const DEFAULT_SERVICE_OPTIONS =
+  CANONICAL_SITE_CONTENT.contact.serviceOptions || [
+    "Event Planning & Managment",
+    "Exhibition Booth design & Production",
+    "Promotional Giveaways",
+  ];
 
 export const ContactSection = React.memo(function ContactSection({
   content,
