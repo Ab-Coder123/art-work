@@ -27,7 +27,7 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({
       : DEFAULT_WHY_US_CONTENT.bentoCards;
 
   return (
-    <div className="w-full max-w-[1360px] mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
+    <div className="w-full max-w-[1216px] mx-auto pt-3 sm:pt-6 pb-6 flex flex-col justify-start">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 mb-2.5 pb-1.5 border-b-2 border-black dark:border-zinc-700">
         <div>
           <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 border border-black comic-shadow-sm text-xs font-headline font-black uppercase mb-1">

@@ -14,7 +14,7 @@ export const StudioFooter = React.memo(function StudioFooter({
 
   return (
     <footer className="w-full py-3 bg-white/95 dark:bg-[#0D0D12]/95 text-black dark:text-white border-t border-black/10 dark:border-white/10 z-30 transition-colors duration-200">
-      <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-[1360px] mx-auto text-[10px] text-black/70 dark:text-zinc-400 font-mono gap-2 sm:gap-0">
+      <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 max-w-[1216px] mx-auto text-[10px] text-black/70 dark:text-zinc-400 font-mono gap-2 sm:gap-0">
         <div>{layout.footerCopyright}</div>
         <div className="flex items-center gap-3 font-headline font-bold flex-wrap justify-center uppercase">
           {/* 1. Home */}

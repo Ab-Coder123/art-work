@@ -66,12 +66,6 @@ const InteractiveDoodleCanvas = dynamic(
   { ssr: false }
 );
 
-const KineticPaintPen = dynamic(
-  () =>
-    import("@/components/cinematic/KineticPaintPen").then((m) => m.KineticPaintPen),
-  { ssr: false }
-);
-
 const KineticDoodlesLayer = dynamic(
   () =>
     import("@/components/cinematic/KineticDoodlesLayer").then(
@@ -188,9 +182,6 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
       {/* Kinetic Motion Arrows Layer in Background */}
       <KineticMotionArrows />
 
-      {/* Interactive Studio Paint Pen with Dynamic Brush Stroke */}
-      <KineticPaintPen />
-
       {/* High-Performance 60FPS Disappearing Ink Doodle Canvas */}
       <InteractiveDoodleCanvas />
 
@@ -215,7 +206,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
       <div
         ref={trackRef}
         id="pinned-stage-track"
-        className="w-full relative z-10 pt-24 sm:pt-28 lg:pt-32 no-scrollbar"
+        className="w-full relative z-10 pt-[89px] sm:pt-[104px] lg:pt-[119px] no-scrollbar"
       >
         {/* VERTICAL STAGE INDICATOR (Desktop Right Dock) */}
         <div className="hidden md:block">
@@ -227,13 +218,13 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
 
         <main
           ref={mainContainerRef}
-          className="w-full flex flex-col items-center px-3 sm:px-5 lg:px-6 space-y-12 sm:space-y-16 pb-12 no-scrollbar"
+          className="w-full flex flex-col items-center px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16 pb-12 no-scrollbar"
         >
           {/* Stage 01: Hero Manifesto */}
           <ScrollReveal direction="up" distance={30} viewportAmount={0.08} className="w-full">
             <section
               id="stage-01"
-              className="w-full min-h-[calc(100vh-7rem)] py-6 sm:py-8 flex flex-col justify-center"
+              className="w-full min-h-[calc(100vh-7rem)] pt-5 sm:pt-7 pb-6 sm:pb-8 flex flex-col justify-center"
             >
               <ManifestoHero
                 content={heroContent}

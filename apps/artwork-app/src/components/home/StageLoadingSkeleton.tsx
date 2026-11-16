@@ -9,7 +9,7 @@ export const StageLoadingSkeleton = React.memo(function StageLoadingSkeleton({
   title?: string;
 }) {
   return (
-    <div className="w-full max-w-[1360px] mx-auto py-12 px-4 flex flex-col items-center justify-center min-h-[340px] sm:min-h-[420px]">
+    <div className="w-full max-w-[1216px] mx-auto py-12 px-4 flex flex-col items-center justify-center min-h-[340px] sm:min-h-[420px]">
       <div className="relative border-2 border-black dark:border-zinc-700 bg-white/90 dark:bg-[#151520]/90 rounded-2xl p-6 sm:p-8 comic-shadow flex flex-col items-center text-center max-w-md w-full animate-pulse backdrop-blur-sm">
         <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-black px-3 py-1 rounded-full border border-black font-headline font-black text-xs uppercase comic-shadow-sm mb-4 -rotate-1">
           <Sparkles className="w-3.5 h-3.5 fill-black" />

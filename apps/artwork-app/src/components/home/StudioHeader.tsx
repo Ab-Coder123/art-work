@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Pencil } from "lucide-react";
+import { PenTool } from "lucide-react";
 import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import { SoundToggle } from "@/components/cinematic/SoundToggle";
 import { useDoodleStore } from "@/store/useDoodleStore";
@@ -17,6 +17,7 @@ export const StudioHeader = React.memo(function StudioHeader({
   layout = DEFAULT_LAYOUT_CONTENT,
 }: StudioHeaderProps) {
   const pathname = usePathname();
+  const isDoodleActive = useDoodleStore((state) => state.isDoodleActive);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
 
   const isHome = pathname === "/";
@@ -31,7 +32,7 @@ export const StudioHeader = React.memo(function StudioHeader({
 
   return (
     <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md nav-shadow transition-colors duration-200">
-      <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-[1360px] mx-auto py-1.5 sm:py-2">
+      <div className="flex justify-between items-center w-full px-4 sm:px-6 max-w-[1216px] mx-auto py-1.5 sm:py-2">
         {/* Logo Anchor */}
         <div className="flex items-center gap-2">
           {isHome && scrollToStage ? (
@@ -212,10 +213,18 @@ export const StudioHeader = React.memo(function StudioHeader({
               toggleDoodle();
             }}
             aria-label="Toggle Studio Pen Doodle Mode"
-            className="w-8 h-8 sm:w-9 sm:h-9 border-2 border-black dark:border-zinc-400 rounded-DEFAULT bg-white dark:bg-[#181824] hover:bg-yellow-100 dark:hover:bg-[#222232] comic-shadow-sm active:scale-90 transition-transform cursor-pointer flex items-center justify-center text-black dark:text-yellow-400"
-            title="Toggle Studio Pen Doodle Mode"
+            title={
+              isDoodleActive
+                ? "Studio Pen Active! (Click to stop drawing)"
+                : "Studio Pen: Click to draw doodles on the canvas ✍️"
+            }
+            className={`w-8 h-8 sm:w-9 sm:h-9 border-2 rounded-DEFAULT comic-shadow-sm active:scale-90 transition-all duration-150 cursor-pointer flex items-center justify-center select-none ${
+              isDoodleActive
+                ? "bg-yellow-400 text-black border-black rotate-6 scale-105 shadow-[0_0_12px_rgba(250,204,21,0.7)]"
+                : "bg-white dark:bg-[#181824] text-black dark:text-zinc-200 border-black dark:border-zinc-500 hover:bg-yellow-200 dark:hover:bg-[#222232] hover:text-black dark:hover:text-yellow-400 hover:translate-x-0.5 hover:translate-y-0.5"
+            }`}
           >
-            <Pencil className="w-4 h-4" />
+            <PenTool className="w-4 h-4" />
           </button>
         </div>
       </div>
