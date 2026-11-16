@@ -222,6 +222,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                         allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                         referrerPolicy="strict-origin-when-cross-origin"
                         allowFullScreen
+                        loading="lazy"
                         className="w-full h-full border-0"
                       />
                     </div>
@@ -388,6 +389,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                           className="w-full h-full border-0"
                           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                           allowFullScreen
+                          loading="lazy"
                         />
                       </div>
                     </div>

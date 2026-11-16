@@ -169,6 +169,14 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
     };
   }, []);
 
+  const handleExploreShowreel = React.useCallback(() => {
+    scrollToStage("stage-gallery");
+  }, [scrollToStage]);
+
+  const handleViewCapabilities = React.useCallback(() => {
+    scrollToStage("stage-03");
+  }, [scrollToStage]);
+
   return (
     <>
       <IntroLoader />
@@ -229,8 +237,8 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
               <ManifestoHero
                 content={heroContent}
                 companies={companies}
-                onExploreShowreel={() => scrollToStage("stage-gallery")}
-                onViewCapabilities={() => scrollToStage("stage-03")}
+                onExploreShowreel={handleExploreShowreel}
+                onViewCapabilities={handleViewCapabilities}
               />
             </section>
           </ScrollReveal>
