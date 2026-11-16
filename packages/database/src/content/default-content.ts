@@ -422,7 +422,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     studioLocations: '380 Maadi Corniche - Jawharet Maadi Towers - Tower "B", 35th floor - Cairo',
     submitButtonText: "SEND YOUR EVENT BRIEF",
     serviceOptions: [
-      "ُEvent Planning & Managment",
+      "Event Planning & Managment",
       "Exhibition Booth design & Production",
       "Promotional Giveaways",
     ],

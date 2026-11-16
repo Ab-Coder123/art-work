@@ -41,7 +41,7 @@ describe("CMS Phase 1: 8-Section Full-Site Content Schema, Defaults & Contract",
     assert.equal(DEFAULT_SERVICE_DISCIPLINES.length, 12);
     assert.equal(DEFAULT_SITE_CONTENT.services.disciplines.length, 12);
     assert.ok(DEFAULT_SITE_CONTENT.homeShowcase.headlinePrefix.length > 0);
-    assert.ok((DEFAULT_SITE_CONTENT.contact.serviceOptions?.length ?? 0) >= 4);
+    assert.ok((DEFAULT_SITE_CONTENT.contact.serviceOptions?.length ?? 0) >= 3);
     assert.equal(DEFAULT_SITE_CONTENT.whyUsPage.capabilityCards?.length, 4);
     assert.equal(DEFAULT_SITE_CONTENT.galleryPage.workflowSteps.length, 4);
     assert.equal(DEFAULT_SITE_CONTENT.galleryPage.filterAllLabel, "All Projects");

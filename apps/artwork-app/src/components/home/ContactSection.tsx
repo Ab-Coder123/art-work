@@ -9,23 +9,21 @@ import { MagneticButton } from "@/components/cinematic/MagneticButton";
 import type { ContactSectionProps } from "./types";
 
 const DEFAULT_SERVICE_OPTIONS = [
-  "Stage Design & Arena Rigging",
-  "Conferences & Keynote LED",
-  "Exhibition Booths",
-  "Brand Architecture",
-  "Custom Rigging & Tech",
+  "Event Planning & Managment",
+  "Exhibition Booth design & Production",
+  "Promotional Giveaways",
 ];
 
 export const ContactSection = React.memo(function ContactSection({
   content,
 }: ContactSectionProps) {
-  const serviceOptions = useMemo(
-    () =>
+  const serviceOptions = useMemo(() => {
+    const rawOptions =
       Array.isArray(content.serviceOptions) && content.serviceOptions.length > 0
         ? content.serviceOptions
-        : DEFAULT_SERVICE_OPTIONS,
-    [content.serviceOptions]
-  );
+        : DEFAULT_SERVICE_OPTIONS;
+    return rawOptions.map((opt) => opt.replace(/^[\u064B-\u065F]/, "").trim());
+  }, [content.serviceOptions]);
 
   const fieldMap = useMemo(() => {
     const fields = Array.isArray(content.formFields) ? content.formFields : [];
@@ -41,7 +39,7 @@ export const ContactSection = React.memo(function ContactSection({
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    serviceType: serviceOptions[0] || "Stage Design & Arena Rigging",
+    serviceType: serviceOptions[0] || DEFAULT_SERVICE_OPTIONS[0],
     brief: "",
     attachmentUrl: "",
     _hp: "",
@@ -105,7 +103,7 @@ export const ContactSection = React.memo(function ContactSection({
         setFormData({
           fullName: "",
           email: "",
-          serviceType: serviceOptions[0] || "Stage Design & Arena Rigging",
+          serviceType: serviceOptions[0] || DEFAULT_SERVICE_OPTIONS[0],
           brief: "",
           attachmentUrl: "",
           _hp: "",
