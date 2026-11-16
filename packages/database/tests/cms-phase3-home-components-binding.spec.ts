@@ -24,7 +24,7 @@ describe("CMS Phase 3: Full Home Page Component CMS Bindings & Multi-Video Stage
     assert.ok(controllerSrc.includes("content={homeShowcaseContent}"));
     assert.ok(controllerSrc.includes("initialProjects={projects}"));
     assert.ok(controllerSrc.includes("layout={layoutContent}"));
-    assert.ok(controllerSrc.includes('fetch("/api/projects?limit=24"'));
+    assert.ok(controllerSrc.includes('fetch("/api/projects?limit=500"'));
   });
 
   it("2. binds StudioHeader and StudioFooter to CMS layout labels while keeping dark logo polish", () => {

@@ -10,7 +10,7 @@ import { SEED_PROJECTS } from "@/data/seedContent";
 
 /**
  * GET /api/projects (Public Website Showcase API)
- * Query params: ?category=stage&q=arena&featured=true&page=1&limit=24
+ * Query params: ?category=stage&q=arena&featured=true&page=1&limit=500
  * Enforces `status = 'published'` via both PostgreSQL RLS and `listPublicProjects`.
  * Gracefully falls back to `SEED_PROJECTS` if offline or unseeded.
  */
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     q: searchParams.get("q") || "",
     featured: searchParams.get("featured") ?? undefined,
     page: searchParams.get("page") || "1",
-    limit: searchParams.get("limit") || "24",
+    limit: searchParams.get("limit") || "500",
   };
 
   try {

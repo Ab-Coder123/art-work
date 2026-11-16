@@ -782,7 +782,7 @@ export default function GalleryProjectsManager() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch("/api/projects?limit=50", { cache: "no-store" });
+        const res = await fetch("/api/projects?limit=500", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (mounted && Array.isArray(data.items) && data.items.length > 0) {

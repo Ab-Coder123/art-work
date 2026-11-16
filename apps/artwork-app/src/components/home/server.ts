@@ -50,7 +50,7 @@ async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
     const [contentRes, companiesRes, projectsRes] = await Promise.allSettled([
       fetchSiteContent(contentRepo),
       listCompanies(supabase, { category: "all", q: "", activeOnly: true }),
-      listPublicProjects({ limit: 24 }, projectsRepo),
+      listPublicProjects({ limit: 500 }, projectsRepo),
     ]);
 
     if (contentRes.status === "fulfilled" && contentRes.value.ok) {

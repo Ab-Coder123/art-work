@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     q: searchParams.get("q") || "",
     featured: searchParams.get("featured") ?? undefined,
     page: searchParams.get("page") || "1",
-    limit: searchParams.get("limit") || "50",
+    limit: searchParams.get("limit") || "500",
   };
 
   try {

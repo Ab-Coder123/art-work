@@ -111,7 +111,7 @@ export default function GalleryPage() {
     (async () => {
       try {
         const [projRes, contentRes] = await Promise.allSettled([
-          fetch("/api/projects?limit=24", { cache: "no-store" }),
+          fetch("/api/projects?limit=500", { cache: "no-store" }),
           fetch("/api/content", { cache: "no-store" }),
         ]);
 

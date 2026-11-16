@@ -123,7 +123,7 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
     Promise.allSettled([
       fetch("/api/content", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
       fetch("/api/companies", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
-      fetch("/api/projects?limit=24", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
+      fetch("/api/projects?limit=500", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
     ]).then(([contentRes, companiesRes, projectsRes]) => {
       if (!mounted) return;
 
