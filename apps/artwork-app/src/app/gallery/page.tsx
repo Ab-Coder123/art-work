@@ -561,7 +561,11 @@ export default function GalleryPage() {
                       ) : project.pdfUrl || project.category === "booths" ? (
                         <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-yellow-400/95 backdrop-blur-sm text-black font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
                           <FileText className="w-3 h-3" />
-                          <span>3D &amp; PDF</span>
+                          <span>
+                            {project.category === "branding"
+                              ? "CATALOG & PDF"
+                              : "3D & PDF"}
+                          </span>
                         </div>
                       ) : null}
                     </div>
@@ -599,7 +603,11 @@ export default function GalleryPage() {
                     ) : project.pdfUrl ? (
                       <>
                         <FileText className="w-3.5 h-3.5" />
-                        <span>VIEW 3D &amp; PDF ↗</span>
+                        <span>
+                          {project.category === "branding"
+                            ? "VIEW CATALOG & PDF ↗"
+                            : "VIEW 3D & PDF ↗"}
+                        </span>
                       </>
                     ) : (
                       <>
@@ -1057,7 +1065,7 @@ export default function GalleryPage() {
                     </div>
                   )}
 
-                  {/* Architectural PDF Blueprint Download Banner */}
+                  {/* Architectural / Giveaways PDF Document Download Banner */}
                   {selectedProject.pdfUrl && (
                     <div className="p-3.5 bg-yellow-400 text-black rounded-xl border-2 border-black comic-shadow-sm flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5 min-w-0">
@@ -1067,9 +1075,10 @@ export default function GalleryPage() {
                         <div className="min-w-0">
                           <div className="font-headline font-black text-xs uppercase truncate">
                             {selectedProject.pdfTitle ||
-                              "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET"}
+                              (selectedProject.category === "branding"
+                                ? "PROMOTIONAL GIVEAWAYS CATALOG & SPECS (PDF)"
+                                : "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET")}
                           </div>
-
                         </div>
                       </div>
                       <a
@@ -1078,7 +1087,6 @@ export default function GalleryPage() {
                         rel="noopener noreferrer"
                         className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border border-black flex items-center gap-1.5 active:scale-95 transition-transform shrink-0"
                       >
-
                         <ArrowRight className="w-3.5 h-3.5" />
                       </a>
                     </div>

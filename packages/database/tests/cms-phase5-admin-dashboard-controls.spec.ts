@@ -86,6 +86,24 @@ describe("CMS Phase 5: Admin Dashboard 8-Section CMS & ★ Star Home Video Contr
       src.includes('method: "PATCH"'),
       "handleToggleFeatured must dispatch lightweight PATCH request"
     );
+
+    // Giveaways PDF upload & catalog attachment controls
+    assert.ok(
+      src.includes("Giveaways Catalog & Specs (PDF)"),
+      "Admin project modal must include Giveaways Catalog & Specs (PDF) section"
+    );
+    assert.ok(
+      src.includes("giveawaysPdfInputRef"),
+      "Admin project modal must provide a dedicated file input ref for Giveaways PDF"
+    );
+    assert.ok(
+      src.includes("Drag &amp; drop Giveaways PDF catalog here"),
+      "Admin project modal must provide a Giveaways PDF drag & drop zone"
+    );
+    assert.ok(
+      src.includes("Set PDF URL"),
+      "Admin project modal must allow setting direct PDF URL for Giveaways"
+    );
   });
 
   it("3. ensures Admin content & project API routes return 200 and revalidate /, /why-us, /gallery", () => {

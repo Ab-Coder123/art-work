@@ -360,4 +360,72 @@ describe("Phase 06: Gallery Projects CRUD, Filtering & Reorder Service", () => {
       assert.ok(res.data.items[0].specs.includes("Precision CNC Joinery"));
     }
   });
+
+  it("should support adding, updating, and removing PDF catalogs on Giveaways & Branding projects", async () => {
+    const repo = createInMemoryProjectsRepository(SAMPLE_ROWS);
+    const adminUuid = "526191ee-4398-4617-ad66-30734ada24d3";
+
+    // 1. Create a Branding & Giveaways project with PDF
+    const createRes = await createProject(
+      {
+        slug: "corporate-giveaways-2026",
+        title: "Executive Corporate Merchandise & Giveaways Collection",
+        client: "Apex Health Group",
+        category: "branding",
+        year: 2026,
+        description: "Curated corporate gift sets, VIP executive metal pens, and branded giveaways with UV printing.",
+        tags: ["Giveaways", "Merchandise", "Branding"],
+        image: "/assets/images/gallery/giveaways_cover.jpg",
+        status: "published",
+        order: 10,
+        featured: false,
+        pdfUrl: "https://rqawbqowfecrxrezdnal.supabase.co/storage/v1/object/public/artwork-media/giveaways/apex_giveaways_catalog.pdf",
+        pdfTitle: "Apex Executive Giveaways 2026 Catalog & Specs (PDF)",
+      },
+      adminUuid,
+      repo
+    );
+
+    assert.equal(createRes.ok, true);
+    if (createRes.ok) {
+      assert.equal(createRes.data.category, "branding");
+      assert.equal(createRes.data.pdfUrl, "https://rqawbqowfecrxrezdnal.supabase.co/storage/v1/object/public/artwork-media/giveaways/apex_giveaways_catalog.pdf");
+      assert.equal(createRes.data.pdfTitle, "Apex Executive Giveaways 2026 Catalog & Specs (PDF)");
+    }
+
+    // 2. Fetch the project and verify PDF metadata is returned to public
+    const fetchRes = await getProjectByIdOrSlug("corporate-giveaways-2026", {}, repo);
+    assert.equal(fetchRes.ok, true);
+    if (fetchRes.ok) {
+      assert.equal(fetchRes.data.pdfUrl, "https://rqawbqowfecrxrezdnal.supabase.co/storage/v1/object/public/artwork-media/giveaways/apex_giveaways_catalog.pdf");
+      assert.equal(fetchRes.data.pdfTitle, "Apex Executive Giveaways 2026 Catalog & Specs (PDF)");
+    }
+
+    // 3. Update the PDF title & URL
+    const updateRes = await updateProject(
+      "corporate-giveaways-2026",
+      {
+        pdfUrl: "https://rqawbqowfecrxrezdnal.supabase.co/storage/v1/object/public/artwork-media/giveaways/apex_giveaways_revised_v2.pdf",
+        pdfTitle: "Revised 2026 Giveaways Price List & Spec Sheet (PDF)",
+      },
+      adminUuid,
+      repo
+    );
+
+    assert.equal(updateRes.ok, true);
+    if (updateRes.ok) {
+      assert.equal(updateRes.data.pdfUrl, "https://rqawbqowfecrxrezdnal.supabase.co/storage/v1/object/public/artwork-media/giveaways/apex_giveaways_revised_v2.pdf");
+      assert.equal(updateRes.data.pdfTitle, "Revised 2026 Giveaways Price List & Spec Sheet (PDF)");
+    }
+
+    // 4. Verify public projects list includes the giveaway project with PDF
+    const listRes = await listPublicProjects({ category: "branding" }, repo);
+    assert.equal(listRes.ok, true);
+    if (listRes.ok) {
+      const found = listRes.data.items.find((p) => p.category === "branding");
+      assert.ok(found, "Giveaway project should be listed in public branding projects");
+      assert.equal(found.pdfUrl, "https://rqawbqowfecrxrezdnal.supabase.co/storage/v1/object/public/artwork-media/giveaways/apex_giveaways_revised_v2.pdf");
+      assert.equal(found.pdfTitle, "Revised 2026 Giveaways Price List & Spec Sheet (PDF)");
+    }
+  });
 });
