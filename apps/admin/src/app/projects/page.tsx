@@ -613,6 +613,7 @@ export default function GalleryProjectsManager() {
   const [isBoothPdfDragging, setIsBoothPdfDragging] = useState(false);
   const [isGiveawaysPdfDragging, setIsGiveawaysPdfDragging] = useState(false);
   const [manualPdfUrl, setManualPdfUrl] = useState("");
+  const [manualCoverUrl, setManualCoverUrl] = useState("");
   const coverInputRef = React.useRef<HTMLInputElement | null>(null);
   const boothImagesInputRef = React.useRef<HTMLInputElement | null>(null);
   const boothPdfInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -683,7 +684,17 @@ export default function GalleryProjectsManager() {
 
       const data = await res.json();
       if (res.ok && data.url) {
-        setEditingProject((prev) => (prev ? { ...prev, image: data.url } : null));
+        setEditingProject((prev) => {
+          if (!prev) return null;
+          const currentImages = prev.images || [];
+          const nextImages = [data.url, ...currentImages.filter((img) => img !== data.url)];
+          return {
+            ...prev,
+            image: data.url,
+            images: nextImages,
+          };
+        });
+        setUploadError(null);
       } else {
         setUploadError(data.error || "Failed to upload cover image");
       }
@@ -771,6 +782,7 @@ export default function GalleryProjectsManager() {
             }
             : null
         );
+        setUploadError(null);
       } else {
         setUploadError(data.error || "Failed to upload PDF");
       }
@@ -1935,17 +1947,27 @@ export default function GalleryProjectsManager() {
                   )}
                 </div>
 
+                {/* Global Media Upload Error (All Categories & Files) */}
+                {uploadError && (
+                  <div className="p-3.5 bg-red-950/60 border-2 border-red-500/60 rounded-xl text-red-200 text-xs flex items-center justify-between gap-3 shadow-lg shadow-red-950/30">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold">⚠️ Upload Error:</span>
+                      <span>{uploadError}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setUploadError(null)}
+                      className="p-1 text-red-400 hover:text-white hover:bg-red-900/40 rounded-lg cursor-pointer transition-colors"
+                      title="Dismiss error"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
                 {/* 5. MEDIA ENGINE: DYNAMIC BASED ON BOOTH VS STANDARD */}
                 {editingProject.category === "booths" ? (
                   <div className="space-y-4">
-                    {uploadError && (
-                      <div className="p-3 bg-red-950/40 border border-red-500/50 rounded-xl text-red-300 text-xs flex items-center justify-between gap-2">
-                        <span>{uploadError}</span>
-                        <button type="button" onClick={() => setUploadError(null)} className="text-red-400 hover:text-white cursor-pointer">
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    )}
 
                     {/* SELECT MEDIA SOURCE TABS / أسلوب إرفاق الوسائط */}
                     <div className="p-1 bg-[#101018] border border-[#2b2b3d] rounded-2xl flex items-center gap-1.5 shadow-inner">
@@ -2683,6 +2705,40 @@ export default function GalleryProjectsManager() {
                             </>
                           )}
                         </div>
+                      </div>
+
+                      {/* Direct URL input for Cover Image */}
+                      <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-[#1e1e2d]">
+                        <input
+                          type="url"
+                          placeholder="Or paste direct image URL (e.g. /assets/images/... or https://...)..."
+                          value={manualCoverUrl}
+                          onChange={(e) => setManualCoverUrl(e.target.value)}
+                          className="flex-1 bg-[#151520] border border-[#2b2b3d] rounded-xl px-3 py-1.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-yellow-400 text-xs font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!manualCoverUrl.trim()) return;
+                            const url = manualCoverUrl.trim();
+                            setEditingProject((prev) => {
+                              if (!prev) return null;
+                              const currentImages = prev.images || [];
+                              const nextImages = [url, ...currentImages.filter((u) => u !== url)];
+                              return {
+                                ...prev,
+                                image: url,
+                                images: nextImages,
+                              };
+                            });
+                            setManualCoverUrl("");
+                            setUploadError(null);
+                          }}
+                          disabled={!manualCoverUrl.trim()}
+                          className="px-3.5 py-1.5 rounded-xl bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 border border-yellow-400/30 text-xs font-bold disabled:opacity-40 cursor-pointer whitespace-nowrap"
+                        >
+                          + Set Cover Image
+                        </button>
                       </div>
                     </div>
 

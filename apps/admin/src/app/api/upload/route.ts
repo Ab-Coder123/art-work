@@ -1,14 +1,58 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSessionFromCookies, createAdminClient } from "@art-work/database";
 
-const ALLOWED_MIME_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "application/pdf",
-]);
+function resolveSafeMimeType(file: File): string | null {
+  const rawType = (file.type || "").toLowerCase().trim();
+  const name = (file.name || "").toLowerCase().trim();
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB for architectural blueprints & high-res renders
+  // 1. PDF Documents (spec sheets, brochures, catalogs)
+  if (
+    rawType === "application/pdf" ||
+    rawType === "application/x-pdf" ||
+    rawType === "application/acrobat" ||
+    rawType === "applications/vnd.pdf" ||
+    rawType === "text/pdf" ||
+    name.endsWith(".pdf")
+  ) {
+    return "application/pdf";
+  }
+
+  // 2. JPEG Images
+  if (
+    rawType === "image/jpeg" ||
+    rawType === "image/jpg" ||
+    rawType === "image/pjpeg" ||
+    rawType === "image/jfif" ||
+    name.endsWith(".jpg") ||
+    name.endsWith(".jpeg") ||
+    name.endsWith(".jfif")
+  ) {
+    return "image/jpeg";
+  }
+
+  // 3. PNG Images
+  if (
+    rawType === "image/png" ||
+    rawType === "image/x-png" ||
+    name.endsWith(".png")
+  ) {
+    return "image/png";
+  }
+
+  // 4. WebP Images
+  if (rawType === "image/webp" || name.endsWith(".webp")) {
+    return "image/webp";
+  }
+
+  // 5. SVG Vector
+  if (rawType === "image/svg+xml" || name.endsWith(".svg")) {
+    return "image/svg+xml";
+  }
+
+  return null;
+}
+
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB for architectural blueprints, giveaway catalogs & high-res renders
 
 export async function POST(request: NextRequest) {
   const sessionCheck = await verifyAdminSessionFromCookies(
@@ -30,16 +74,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No valid file uploaded" }, { status: 400 });
     }
 
-    if (!ALLOWED_MIME_TYPES.has(file.type)) {
+    const resolvedMime = resolveSafeMimeType(file);
+    if (!resolvedMime) {
       return NextResponse.json(
-        { error: `Unsupported file type: ${file.type}. Allowed: PNG, JPG, WebP, PDF` },
+        { error: `Unsupported file type (${file.type || "unknown"}). Allowed formats: PDF, PNG, JPG/JPEG, WebP` },
         { status: 400 }
       );
     }
 
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: `File size exceeds 25MB limit (${(file.size / 1024 / 1024).toFixed(1)}MB)` },
+        { error: `File size exceeds 50MB limit (${(file.size / 1024 / 1024).toFixed(1)}MB)` },
         { status: 400 }
       );
     }
@@ -63,7 +108,7 @@ export async function POST(request: NextRequest) {
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("artwork-media")
       .upload(storagePath, buffer, {
-        contentType: file.type,
+        contentType: resolvedMime,
         upsert: false,
       });
 
@@ -97,7 +142,7 @@ export async function POST(request: NextRequest) {
             path: localFilePath,
             filename: file.name,
             size: file.size,
-            mimeType: file.type,
+            mimeType: resolvedMime,
           },
           { status: 201 }
         );
@@ -120,7 +165,7 @@ export async function POST(request: NextRequest) {
         path: uploadData.path,
         filename: file.name,
         size: file.size,
-        mimeType: file.type,
+        mimeType: resolvedMime,
       },
       { status: 201 }
     );

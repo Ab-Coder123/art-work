@@ -530,7 +530,12 @@ export default function GalleryPage() {
                         }
                       />
 
-                      {ytMedia ? (
+                      {project.category === "branding" && project.pdfUrl ? (
+                        <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-amber-400/95 backdrop-blur-sm text-black font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
+                          <FileText className="w-3 h-3" />
+                          <span>CATALOG &amp; PDF</span>
+                        </div>
+                      ) : ytMedia ? (
                         <div className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 bg-red-600/90 backdrop-blur-sm text-white font-headline font-black text-[10px] uppercase px-2.5 py-1 rounded-full shadow-sm">
                           {project.isShort || ytMedia.isShort ? (
                             <>
@@ -584,7 +589,12 @@ export default function GalleryPage() {
                     }}
                     className="w-full py-2.5 px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs uppercase rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-[0_2px_10px_rgba(234,179,8,0.25)] hover:shadow-[0_4px_16px_rgba(234,179,8,0.4)] active:scale-95 mt-2"
                   >
-                    {ytMedia ? (
+                    {project.category === "branding" && project.pdfUrl ? (
+                      <>
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>VIEW CATALOG &amp; PDF ↗</span>
+                      </>
+                    ) : ytMedia ? (
                       <>
                         <Play className="w-3.5 h-3.5 fill-current" />
                         <span>
@@ -1037,7 +1047,9 @@ export default function GalleryPage() {
                   {selectedProject.images && selectedProject.images.length > 1 && (
                     <div className="space-y-1">
                       <span className="font-mono text-[10px] uppercase font-bold text-black/60 dark:text-zinc-400">
-                        3D RENDERS &amp; BUILD ELEVATIONS ({selectedProject.images.length})
+                        {selectedProject.category === "branding"
+                          ? `GIVEAWAYS & MERCHANDISE PHOTOS (${selectedProject.images.length})`
+                          : `3D RENDERS & BUILD ELEVATIONS (${selectedProject.images.length})`}
                       </span>
                       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
                         {selectedProject.images.map((imgUrl, idx) => (
@@ -1064,33 +1076,67 @@ export default function GalleryPage() {
                       </div>
                     </div>
                   )}
+                </div>
+              )}
 
-                  {/* Architectural / Giveaways PDF Document Download Banner */}
-                  {selectedProject.pdfUrl && (
-                    <div className="p-3.5 bg-yellow-400 text-black rounded-xl border-2 border-black comic-shadow-sm flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-9 h-9 rounded-lg bg-black text-yellow-400 border border-black flex items-center justify-center font-bold shrink-0">
-                          <FileText className="w-5 h-5" />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="font-headline font-black text-xs uppercase truncate">
-                            {selectedProject.pdfTitle ||
-                              (selectedProject.category === "branding"
-                                ? "PROMOTIONAL GIVEAWAYS CATALOG & SPECS (PDF)"
-                                : "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET")}
-                          </div>
-                        </div>
+              {/* Architectural / Giveaways PDF Document Download Banner & Inline Viewer (ALWAYS available when pdfUrl exists) */}
+              {selectedProject.pdfUrl && (
+                <div className="mb-5 space-y-3">
+                  <div className="p-3.5 bg-yellow-400 text-black rounded-xl border-2 border-black comic-shadow-sm flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-9 h-9 rounded-lg bg-black text-yellow-400 border border-black flex items-center justify-center font-bold shrink-0">
+                        <FileText className="w-5 h-5" />
                       </div>
+                      <div className="min-w-0">
+                        <div className="font-headline font-black text-xs uppercase truncate">
+                          {selectedProject.pdfTitle ||
+                            (selectedProject.category === "branding"
+                              ? "PROMOTIONAL GIVEAWAYS CATALOG & SPECS (PDF)"
+                              : "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET")}
+                        </div>
+                        <span className="text-[10px] font-mono text-black/70 block">
+                          Official PDF Document • Click to view full catalog & specifications
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
                       <a
                         href={selectedProject.pdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border border-black flex items-center gap-1.5 active:scale-95 transition-transform shrink-0"
+                        className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border border-black flex items-center gap-1.5 active:scale-95 transition-transform"
                       >
+                        <span>OPEN PDF ↗</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </a>
                     </div>
-                  )}
+                  </div>
+
+                  {/* Embedded PDF Viewer */}
+                  <div className="rounded-xl overflow-hidden border-2 border-black dark:border-zinc-700 bg-neutral-900 shadow-md">
+                    <div className="bg-[#181824] px-3.5 py-2 border-b border-[#2b2b3d] flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-zinc-300 font-mono text-xs">
+                        <FileText className="w-3.5 h-3.5 text-yellow-400" />
+                        <span className="font-bold text-white truncate max-w-xs sm:max-w-md">
+                          {selectedProject.pdfTitle || "PDF Document Viewer"}
+                        </span>
+                      </div>
+                      <a
+                        href={selectedProject.pdfUrl}
+                        download
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[11px] font-mono text-yellow-400 hover:underline flex items-center gap-1 font-bold"
+                      >
+                        Full Screen ↗
+                      </a>
+                    </div>
+                    <iframe
+                      src={selectedProject.pdfUrl}
+                      title={selectedProject.pdfTitle || "PDF Document Viewer"}
+                      className="w-full h-80 sm:h-96 border-0 bg-white"
+                    />
+                  </div>
                 </div>
               )}
 
