@@ -22,8 +22,22 @@ describe("CMS Phase 5: Admin Dashboard 8-Section CMS & ★ Star Home Video Contr
     "apps/admin/src/app/api/projects/[id]/route.ts"
   );
 
+  function readAllTsFiles(dirPath: string): string {
+    if (!fs.existsSync(dirPath)) return "";
+    let combined = "";
+    for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
+      const fullPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        combined += "\n" + readAllTsFiles(fullPath);
+      } else if (entry.name.endsWith(".tsx") || entry.name.endsWith(".ts")) {
+        combined += "\n" + fs.readFileSync(fullPath, "utf-8");
+      }
+    }
+    return combined;
+  }
+
   it("1. upgrades /content dashboard editor with all 8 full-site CMS tabs", () => {
-    const src = fs.readFileSync(adminContentPagePath, "utf-8");
+    const src = readAllTsFiles(path.dirname(adminContentPagePath));
 
     for (const sectionKey of [
       "manifesto",
@@ -56,18 +70,7 @@ describe("CMS Phase 5: Admin Dashboard 8-Section CMS & ★ Star Home Video Contr
   });
 
   it("2. upgrades /projects dashboard manager with 1-click ★ Star Home Video toggle & modal checkbox", () => {
-    let src = fs.readFileSync(adminProjectsPagePath, "utf-8");
-    const componentsDir = path.join(rootDir, "apps/admin/src/app/projects/components");
-    const hooksDir = path.join(rootDir, "apps/admin/src/app/projects/hooks");
-    for (const dir of [componentsDir, hooksDir]) {
-      if (fs.existsSync(dir)) {
-        for (const file of fs.readdirSync(dir)) {
-          if (file.endsWith(".tsx") || file.endsWith(".ts")) {
-            src += "\n" + fs.readFileSync(path.join(dir, file), "utf-8");
-          }
-        }
-      }
-    }
+    const src = readAllTsFiles(path.dirname(adminProjectsPagePath));
 
     assert.ok(
       src.includes("handleToggleFeatured"),
