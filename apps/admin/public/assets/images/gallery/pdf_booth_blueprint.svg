@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="1200" height="750">
+  <defs>
+    <linearGradient id="blueBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070c18" />
+      <stop offset="50%" stop-color="#0b1428" />
+      <stop offset="100%" stop-color="#101d3b" />
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="50%" stop-color="#0EA5E9" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+    <linearGradient id="pdfRedGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444" />
+      <stop offset="100%" stop-color="#B91C1C" />
+    </linearGradient>
+    <pattern id="cadGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(56, 189, 248, 0.08)" stroke-width="1" />
+    </pattern>
+    <filter id="shadowCad" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.85" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#blueBgGrad)" />
+  <rect width="1200" height="750" fill="url(#cadGrid)" />
+
+  <!-- Frame Border -->
+  <rect x="24" y="24" width="1152" height="702" rx="20" fill="none" stroke="rgba(56, 189, 248, 0.25)" stroke-width="2" />
+  <rect x="32" y="32" width="1136" height="686" rx="14" fill="none" stroke="rgba(255, 255, 255, 0.04)" stroke-width="1" stroke-dasharray="6,6" />
+
+  <!-- Technical Corner Marks -->
+  <path d="M 44 64 L 44 44 L 64 44" fill="none" stroke="#38BDF8" stroke-width="3" />
+  <path d="M 1156 64 L 1156 44 L 1136 44" fill="none" stroke="#38BDF8" stroke-width="3" />
+  <path d="M 44 686 L 44 706 L 64 706" fill="none" stroke="#38BDF8" stroke-width="3" />
+  <path d="M 1156 686 L 1156 706 L 1136 706" fill="none" stroke="#38BDF8" stroke-width="3" />
+
+  <!-- Top Ribbon -->
+  <g transform="translate(64, 60)">
+    <rect x="0" y="0" width="180" height="32" rx="8" fill="#0EA5E9" />
+    <text x="90" y="21" font-family="'Arial Black', sans-serif" font-size="12" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">CAD ARCHITECTURE</text>
+    <text x="200" y="22" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="#38BDF8" letter-spacing="2">BLUEPRINT // 3D SPEC SHEET</text>
+  </g>
+
+  <!-- Left Content -->
+  <g transform="translate(74, 180)">
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="130" height="42" rx="10" fill="url(#pdfRedGrad2)" filter="url(#shadowCad)" />
+      <text x="65" y="27" font-family="'Arial Black', sans-serif" font-size="16" font-weight="900" fill="#FFFFFF" text-anchor="middle">PDF SPEC</text>
+    </g>
+
+    <text x="0" y="110" font-family="'Arial Black', sans-serif" font-size="52" font-weight="900" fill="#FFFFFF" letter-spacing="-1">ARCHITECTURAL</text>
+    <text x="0" y="170" font-family="'Arial Black', sans-serif" font-size="52" font-weight="900" fill="url(#cyanGrad)" letter-spacing="-1">BLUEPRINT &amp; CAD</text>
+    
+    <text x="0" y="225" font-family="'Arial', sans-serif" font-size="18" font-weight="700" fill="#BAE6FD" letter-spacing="1">TECHNICAL ELEVATION &amp; FLOOR PLAN (PDF)</text>
+
+    <text x="0" y="270" font-family="'Courier New', monospace" font-size="13" fill="#94A3B8" line-height="1.6">
+      <tspan x="0" dy="0">Complete structural engineering, 3D spatial elevations,</tspan>
+      <tspan x="0" dy="22">materials callout, rigging load charts, and assembly blueprints.</tspan>
+    </text>
+
+    <g transform="translate(0, 335)">
+      <rect x="0" y="0" width="180" height="36" rx="8" fill="#0f1f38" stroke="rgba(56,189,248,0.4)" stroke-width="1.5" />
+      <text x="90" y="22" font-family="'Courier New', monospace" font-size="11" font-weight="700" fill="#38BDF8" text-anchor="middle">✦ 3D ISOMETRIC CAD</text>
+
+      <rect x="195" y="0" width="180" height="36" rx="8" fill="#0f1f38" stroke="rgba(56,189,248,0.4)" stroke-width="1.5" />
+      <text x="285" y="22" font-family="'Courier New', monospace" font-size="11" font-weight="700" fill="#38BDF8" text-anchor="middle">✦ FULL STRUCTURAL</text>
+
+      <rect x="390" y="0" width="130" height="36" rx="8" fill="url(#cyanGrad)" />
+      <text x="455" y="22" font-family="'Arial Black', sans-serif" font-size="11" font-weight="900" fill="#000000" text-anchor="middle">OFFICIAL PDF</text>
+    </g>
+
+    <g transform="translate(0, 400)">
+      <rect x="0" y="0" width="520" height="60" rx="12" fill="#0c182c" stroke="#0EA5E9" stroke-width="1.5" />
+      <circle cx="36" cy="30" r="16" fill="rgba(14,165,233,0.2)" />
+      <path d="M 36 20 L 36 34 M 30 28 L 36 34 L 42 28 M 28 38 L 44 38" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      <text x="68" y="28" font-family="'Arial', sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">TECHNICAL BLUEPRINT (PDF) ATTACHED</text>
+      <text x="68" y="46" font-family="'Courier New', monospace" font-size="11" fill="#38BDF8">CLICK TO OPEN &amp; INSPECT CAD SPECIFICATION SHEET</text>
+    </g>
+  </g>
+
+  <!-- Right Isometric Blueprint Stack -->
+  <g transform="translate(720, 150)" filter="url(#shadowCad)">
+    <rect x="0" y="0" width="370" height="480" rx="16" fill="#0a1424" stroke="url(#cyanGrad)" stroke-width="2.5" />
+    <path d="M 40 40 L 330 40 L 330 240 L 40 240 Z" fill="none" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="6,4" />
+    <circle cx="185" cy="140" r="50" fill="none" stroke="#0EA5E9" stroke-width="2" />
+    <path d="M 185 80 L 185 200 M 125 140 L 245 140" stroke="#0EA5E9" stroke-width="1.5" stroke-dasharray="3,3" />
+    <text x="185" y="145" font-family="'Courier New', monospace" font-size="12" font-weight="700" fill="#38BDF8" text-anchor="middle">3D ELEVATION</text>
+    <rect x="40" y="260" width="290" height="8" rx="4" fill="#1e3a5f" />
+    <rect x="40" y="280" width="220" height="8" rx="4" fill="#1e3a5f" />
+    <rect x="40" y="320" width="290" height="120" rx="10" fill="#060d18" stroke="#1e3a5f" stroke-width="1" />
+    <text x="60" y="350" font-family="'Arial Black', sans-serif" font-size="12" font-weight="900" fill="#38BDF8">STRUCTURAL SPECIFICATION</text>
+    <text x="60" y="375" font-family="'Courier New', monospace" font-size="10" fill="#94A3B8">ALUMINUM TRUSS • LOAD BEARING: 2500KG</text>
+    <text x="60" y="395" font-family="'Courier New', monospace" font-size="10" fill="#94A3B8">FINISH: MATTE BLACK ANODIZED &amp; ACRYLIC</text>
+    <text x="60" y="420" font-family="'Courier New', monospace" font-size="10" fill="#38BDF8">STATUS: ENGINEERING SIGN-OFF APPROVED</text>
+  </g>
+</svg>

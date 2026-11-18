@@ -110,7 +110,7 @@ export function ProjectsTable({
                     <span className="text-[10px] font-mono uppercase bg-zinc-800 text-zinc-300 px-1.5 py-0.5 rounded border border-zinc-700">
                       {project.year || 2026}
                     </span>
-                    {project.metaBadge && (
+                    {project.metaBadge && project.metaBadge !== String(project.year || 2026) && (
                       <span className="text-[10px] font-mono uppercase bg-yellow-400/20 text-yellow-300 px-1.5 py-0.5 rounded border border-yellow-400/30">
                         {project.metaBadge}
                       </span>

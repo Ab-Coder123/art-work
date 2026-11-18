@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import {
   ProjectRecord,
+  DEFAULT_PLACEHOLDER_COVER,
   resolveSafeYouTubeEmbed,
   resolveSafeFacebookEmbed,
   isValidFacebookVideoUrl,
@@ -256,11 +257,23 @@ export function ProjectFormModal({
       const data = await res.json();
       if (res.ok && data.url) {
         const autoTitle = file.name.replace(/\.pdf$/i, "").replace(/[-_]/g, " ");
-        setEditingProject((prev) => ({
-          ...prev,
-          pdfUrl: data.url,
-          pdfTitle: prev.pdfTitle || autoTitle,
-        }));
+        const isBranding = (targetCategory || editingProject.category) === "branding";
+        const defaultPdfCover = isBranding
+          ? "/assets/images/gallery/pdf_giveaways_catalog.svg"
+          : "/assets/images/gallery/pdf_booth_blueprint.svg";
+
+        setEditingProject((prev) => {
+          const isGeneric =
+            !prev.image ||
+            prev.image === DEFAULT_PLACEHOLDER_COVER ||
+            prev.image.includes("project_01_neon_horizon.jpg");
+          return {
+            ...prev,
+            pdfUrl: data.url,
+            pdfTitle: prev.pdfTitle || autoTitle,
+            image: isGeneric ? defaultPdfCover : prev.image,
+          };
+        });
         setUploadError(null);
       } else {
         setUploadError(data.error || "Failed to upload PDF");
@@ -1218,7 +1231,7 @@ export function ProjectFormModal({
                               Drag &amp; drop architectural PDF here, or <span className="text-amber-400 underline">browse</span>
                             </p>
                             <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
-                              CAD drawings, spatial specs &amp; 3D axonometric sheets (Max 25MB)
+                              CAD drawings, spatial specs &amp; 3D axonometric sheets (Max 50MB)
                             </p>
                           </div>
                         </>
@@ -1627,7 +1640,7 @@ export function ProjectFormModal({
                             Drag &amp; drop Giveaways PDF catalog here, or <span className="text-amber-400 underline">browse</span>
                           </p>
                           <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
-                            Max file size 25MB • PDF Document, Merchandise Catalog or Spec Sheet
+                            Max file size 50MB • PDF Document, Merchandise Catalog or Spec Sheet
                           </p>
                         </div>
                       </>
@@ -1649,11 +1662,23 @@ export function ProjectFormModal({
                         if (!manualPdfUrl.trim()) return;
                         const fileName = manualPdfUrl.split("/").pop() || "Giveaways Catalog";
                         const autoTitle = fileName.replace(/\.pdf$/i, "").replace(/[-_]/g, " ");
-                        setEditingProject((prev) => ({
-                          ...prev,
-                          pdfUrl: manualPdfUrl.trim(),
-                          pdfTitle: prev.pdfTitle || autoTitle,
-                        }));
+                        const defaultPdfCover =
+                          editingProject.category === "branding"
+                            ? "/assets/images/gallery/pdf_giveaways_catalog.svg"
+                            : "/assets/images/gallery/pdf_booth_blueprint.svg";
+
+                        setEditingProject((prev) => {
+                          const isGeneric =
+                            !prev.image ||
+                            prev.image === DEFAULT_PLACEHOLDER_COVER ||
+                            prev.image.includes("project_01_neon_horizon.jpg");
+                          return {
+                            ...prev,
+                            pdfUrl: manualPdfUrl.trim(),
+                            pdfTitle: prev.pdfTitle || autoTitle,
+                            image: isGeneric ? defaultPdfCover : prev.image,
+                          };
+                        });
                         setManualPdfUrl("");
                       }}
                       disabled={!manualPdfUrl.trim()}

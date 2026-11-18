@@ -101,7 +101,7 @@ export interface DbProjectRecord {
   updated_at?: string;
 }
 
-const DEFAULT_PLACEHOLDER_COVER = "/assets/images/gallery/project_01_neon_horizon.jpg";
+export const DEFAULT_PLACEHOLDER_COVER = "/assets/images/gallery/project_01_neon_horizon.jpg";
 
 /**
  * Resolves the display thumbnail image for a project.
@@ -111,6 +111,9 @@ const DEFAULT_PLACEHOLDER_COVER = "/assets/images/gallery/project_01_neon_horizo
 export function getProjectThumbnailUrl(project: {
   image?: string | null;
   cover_image_url?: string | null;
+  category?: string | null;
+  pdfUrl?: string | null;
+  pdf_url?: string | null;
   youtubeVideoId?: string | null;
   youtubeUrl?: string | null;
   youtube_video_id?: string | null;
@@ -118,6 +121,13 @@ export function getProjectThumbnailUrl(project: {
 }): string {
   const currentImg = (project.image || project.cover_image_url || "").trim();
   const isGeneric = !currentImg || currentImg === DEFAULT_PLACEHOLDER_COVER || currentImg.includes("project_01_neon_horizon.jpg");
+
+  const pdfLink = (project.pdfUrl || project.pdf_url || "").trim();
+  if (pdfLink && isGeneric) {
+    return project.category === "branding"
+      ? "/assets/images/gallery/pdf_giveaways_catalog.svg"
+      : "/assets/images/gallery/pdf_booth_blueprint.svg";
+  }
 
   const ytInput =
     project.youtubeVideoId ||
@@ -146,6 +156,8 @@ export function mapDbProjectToRecord(row: DbProjectRecord): ProjectRecord {
   });
   const resolvedImage = getProjectThumbnailUrl({
     image: row.cover_image_url,
+    category: row.category,
+    pdfUrl: row.pdf_url,
     youtubeVideoId: row.youtube_video_id,
     youtubeUrl: row.youtube_url,
   });
@@ -198,6 +210,8 @@ export function mapRecordToDbProject(
   });
   const resolvedCoverImage = getProjectThumbnailUrl({
     image: record.image,
+    category: record.category,
+    pdfUrl: record.pdfUrl,
     youtubeVideoId: parsedYt?.videoId,
     youtubeUrl: parsedYt?.canonicalUrl,
   });

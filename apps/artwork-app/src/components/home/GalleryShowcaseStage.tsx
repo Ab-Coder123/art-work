@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Play, Star } from "lucide-react";
+import { ArrowRight, Play, Star, FileText } from "lucide-react";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { YouTubeVideoFacade } from "@/components/cinematic/YouTubeVideoFacade";
 import rawProjects from "@/data/projects.json";
@@ -63,29 +63,28 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
     [projectsList]
   );
 
-  const activeVideo = useMemo(() => {
-    if (!showcase.primaryVideo) return null;
+  const activeShowcase = useMemo(() => {
     if (selectedVideoId) {
-      const matched = showcase.featuredVideos.find((v) => v.id === selectedVideoId);
+      const matched = showcase.showcaseItems.find((p) => p.id === selectedVideoId);
       if (matched) return matched;
     }
-    return showcase.primaryVideo;
+    return showcase.primaryVideo || showcase.showcaseItems[0] || null;
   }, [showcase, selectedVideoId]);
 
   const activeYt = useMemo(
-    () => (activeVideo ? resolveSafeYouTubeEmbed(activeVideo) : null),
-    [activeVideo]
+    () => (activeShowcase ? resolveSafeYouTubeEmbed(activeShowcase) : null),
+    [activeShowcase]
   );
 
   const activeFb = useMemo(
-    () => (activeVideo ? resolveSafeFacebookEmbed(activeVideo, activeVideo.isShort) : null),
-    [activeVideo]
+    () => (activeShowcase ? resolveSafeFacebookEmbed(activeShowcase, activeShowcase.isShort) : null),
+    [activeShowcase]
   );
 
   const gridItems = useMemo(() => {
-    if (!activeVideo) return showcase.showcaseItems;
-    return showcase.showcaseItems.filter((item) => item.id !== activeVideo.id);
-  }, [showcase, activeVideo]);
+    if (!activeShowcase) return showcase.showcaseItems;
+    return showcase.showcaseItems.filter((item) => item.id !== activeShowcase.id);
+  }, [showcase, activeShowcase]);
 
   return (
     <div className="w-full max-w-[1216px] mx-auto pt-2 pb-6 flex flex-col justify-start">
@@ -130,7 +129,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
             <span>HOME VIDEOS ({showcase.featuredVideos.length})</span>
           </span>
           {showcase.featuredVideos.map((vid, idx) => {
-            const isCurrent = activeVideo?.id === vid.id;
+            const isCurrent = activeShowcase?.id === vid.id;
             return (
               <button
                 key={vid.id}
@@ -153,17 +152,17 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
       )}
 
       {/* Primary Featured Video Cinema Theater */}
-      {activeVideo && (activeYt || activeFb) && (
+      {activeShowcase && (activeYt || activeFb) && (
         <div className="mb-4 sm:mb-5 p-4 sm:p-6 rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-[#151520] shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_4px_12px_-2px_rgba(0,0,0,0.03)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.6)]">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
             {/* Responsive Embedded Player (YouTube or Facebook) */}
             <div className="lg:col-span-7">
               {activeYt ? (
                 <YouTubeVideoFacade
-                  key={activeVideo.id}
+                  key={activeShowcase.id}
                   embedUrl={activeYt.embedUrl}
-                  title={activeVideo.youtubeTitle || activeVideo.title}
-                  thumbnailUrl={getProjectThumbnailUrl(activeVideo)}
+                  title={activeShowcase.youtubeTitle || activeShowcase.title}
+                  thumbnailUrl={getProjectThumbnailUrl(activeShowcase)}
                   videoId={activeYt.videoId}
                   isShort={activeYt.isShort}
                   sizes="(max-width: 1024px) 100vw, 55vw"
@@ -172,8 +171,8 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                 const isFbVertical =
                   stageFbOrientationOverride !== null
                     ? stageFbOrientationOverride
-                    : activeVideo.isShort !== undefined && activeVideo.isShort !== null
-                    ? Boolean(activeVideo.isShort)
+                    : activeShowcase.isShort !== undefined && activeShowcase.isShort !== null
+                    ? Boolean(activeShowcase.isShort)
                     : Boolean(activeFb.isReel);
 
                 return (
@@ -218,7 +217,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     >
                       <iframe
                         src={activeFb.embedUrl}
-                        title={activeVideo.title}
+                        title={activeShowcase.title}
                         allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                         referrerPolicy="strict-origin-when-cross-origin"
                         allowFullScreen
@@ -236,34 +235,34 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
               <div>
                 <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm font-mono">
-                    {activeVideo.year || 2026}
+                    {activeShowcase.year || 2026}
                   </span>
-                  {activeVideo.metaBadge && (
+                  {activeShowcase.metaBadge && (
                     <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
-                      {activeVideo.metaBadge}
+                      {activeShowcase.metaBadge}
                     </span>
                   )}
                   <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm">
                     {content.featuredEventBadge}
                   </span>
                   <span className="text-xs font-mono text-black/60 dark:text-zinc-400 uppercase">
-                    {activeVideo.client}
+                    {activeShowcase.client}
                   </span>
                 </div>
 
                 <h3 className="font-headline font-black text-xl sm:text-2xl text-black dark:text-white tracking-tight mb-1.5">
-                  {activeVideo.title}
+                  {activeShowcase.title}
                 </h3>
 
-                {activeVideo.youtubeTitle &&
-                  activeVideo.youtubeTitle !== activeVideo.title && (
+                {activeShowcase.youtubeTitle &&
+                  activeShowcase.youtubeTitle !== activeShowcase.title && (
                     <div className="text-xs sm:text-sm font-headline font-extrabold text-red-600 dark:text-red-400 mb-1.5">
-                      🎬 {activeVideo.youtubeTitle}
+                      🎬 {activeShowcase.youtubeTitle}
                     </div>
                   )}
 
                 <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed line-clamp-4 mb-3">
-                  {activeVideo.youtubeDescription || activeVideo.description}
+                  {activeShowcase.youtubeDescription || activeShowcase.description}
                 </p>
               </div>
 
@@ -290,6 +289,100 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                       <span className="text-[10px]">↗</span>
                     </a>
                   ) : null}
+                  <Link
+                    href="/gallery"
+                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-headline font-black px-4 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
+                  >
+                    <span>{content.exploreGalleryCtaText}</span>
+                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Primary Interactive PDF Showcase Theater */}
+      {activeShowcase && !activeYt && !activeFb && activeShowcase.pdfUrl && (
+        <div className="mb-4 sm:mb-5 p-4 sm:p-6 rounded-2xl border border-amber-500/30 bg-white dark:bg-[#151520] shadow-[0_10px_35px_-5px_rgba(245,158,11,0.12),0_4px_12px_-2px_rgba(0,0,0,0.03)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.7)]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+            {/* Visual PDF Cover Preview */}
+            <div className="lg:col-span-7">
+              <div className="relative aspect-video rounded-xl overflow-hidden border-2 border-amber-500/40 bg-[#0d0d14] group shadow-inner">
+                <Image
+                  src={getProjectThumbnailUrl(activeShowcase)}
+                  alt={activeShowcase.title}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 55vw"
+                  className="object-contain p-2 group-hover:scale-[1.02] transition-transform duration-300"
+                  unoptimized={
+                    getProjectThumbnailUrl(activeShowcase).startsWith("http") ||
+                    getProjectThumbnailUrl(activeShowcase).startsWith("data:")
+                  }
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end justify-between p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 bg-amber-400 text-black px-2.5 py-1 rounded text-[11px] font-headline font-black uppercase border border-black shadow-sm">
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>{activeShowcase.category === "branding" ? "GIVEAWAYS CATALOG" : "BLUEPRINT & SPECS"}</span>
+                    </span>
+                  </div>
+                  <a
+                    href={activeShowcase.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black px-3.5 py-1.5 rounded-lg border-2 border-black font-headline font-black text-xs comic-shadow-sm transition-all"
+                  >
+                    <span>OPEN PDF ↗</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* PDF Info & Metadata */}
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-3">
+              <div>
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <span className="bg-yellow-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm font-mono">
+                    {activeShowcase.year || 2026}
+                  </span>
+                  <span className="bg-amber-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm uppercase">
+                    {activeShowcase.category === "branding" ? "PDF CATALOG" : "PDF BLUEPRINT"}
+                  </span>
+                  <span className="text-xs font-mono text-black/60 dark:text-zinc-400 uppercase">
+                    {activeShowcase.client}
+                  </span>
+                </div>
+
+                <h3 className="font-headline font-black text-xl sm:text-2xl text-black dark:text-white tracking-tight mb-1.5">
+                  {activeShowcase.title}
+                </h3>
+
+                {activeShowcase.pdfTitle && (
+                  <div className="text-xs sm:text-sm font-headline font-extrabold text-amber-500 dark:text-amber-400 mb-1.5 flex items-center gap-1.5">
+                    <FileText className="w-4 h-4 shrink-0" />
+                    <span>{activeShowcase.pdfTitle}</span>
+                  </div>
+                )}
+
+                <p className="font-body text-xs sm:text-sm text-black/80 dark:text-zinc-300 leading-relaxed line-clamp-4 mb-3">
+                  {activeShowcase.description}
+                </p>
+              </div>
+
+              <div className="pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-end flex-wrap gap-2">
+                <div className="flex items-center gap-2.5">
+                  <a
+                    href={activeShowcase.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-black text-xs font-headline font-black px-3.5 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>OPEN PDF CATALOG</span>
+                    <span className="text-[10px]">↗</span>
+                  </a>
                   <Link
                     href="/gallery"
                     className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-headline font-black px-4 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
@@ -430,6 +523,64 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                       <span>Facebook</span>
                       <span className="text-[9px]">↗</span>
                     </a>
+                  </div>
+                </div>
+              );
+            }
+
+            // If this item has a PDF attached, render a rich interactive PDF Document Card!
+            if (p.pdfUrl) {
+              return (
+                <div
+                  key={p.id}
+                  className="group border border-amber-500/20 hover:border-amber-500/50 p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#151520] shadow-[0_10px_30px_-5px_rgba(0,0,0,0.08),0_4px_12px_-2px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_48px_-12px_rgba(245,158,11,0.15)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.7)] hover:-translate-y-1.5 transition-all duration-300 ease-out flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="relative aspect-video rounded-lg overflow-hidden mb-2.5 bg-[#0d0d14] border border-amber-500/30 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+                      <Image
+                        src={cardThumb}
+                        alt={p.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-contain p-1 group-hover:scale-105 transition-transform duration-300"
+                        unoptimized={
+                          cardThumb.startsWith("http") || cardThumb.startsWith("data:")
+                        }
+                      />
+                      <span className="absolute top-2 left-2 bg-yellow-400 text-black text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm font-mono">
+                        {p.year || 2026}
+                      </span>
+                      <span className="absolute top-2 right-2 inline-flex items-center gap-1 bg-amber-500 text-black text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black shadow-sm uppercase">
+                        <FileText className="w-2.5 h-2.5" />
+                        <span>{p.category === "branding" ? "PDF CATALOG" : "PDF SPECS"}</span>
+                      </span>
+                    </div>
+                    <div className="text-[10px] sm:text-xs font-mono text-black/60 dark:text-zinc-400 mb-1 uppercase">
+                      {p.client}
+                    </div>
+                    <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white group-hover:text-amber-500 transition-colors mb-1 line-clamp-1">
+                      {p.title}
+                    </h3>
+                    <p className="font-body text-xs text-black/70 dark:text-zinc-300 line-clamp-2 leading-relaxed mb-2.5">
+                      {p.pdfTitle ? `📄 ${p.pdfTitle} • ` : ""}{p.description}
+                    </p>
+                  </div>
+                  <div className="pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between gap-2 text-xs font-headline font-bold">
+                    <a
+                      href={p.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 bg-amber-400 hover:bg-amber-300 text-black px-2.5 py-1 rounded border border-black comic-shadow-sm text-[11px] font-black transition-colors"
+                    >
+                      <FileText className="w-3 h-3" />
+                      <span>OPEN PDF ↗</span>
+                    </a>
+                    <Link
+                      href="/gallery"
+                      className="text-black dark:text-yellow-400 hover:underline inline-flex items-center gap-1 text-[11px]"
+                    >
+                      {content.cardExploreText}
+                    </Link>
                   </div>
                 </div>
               );
