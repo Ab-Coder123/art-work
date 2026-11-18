@@ -56,7 +56,18 @@ describe("CMS Phase 5: Admin Dashboard 8-Section CMS & ★ Star Home Video Contr
   });
 
   it("2. upgrades /projects dashboard manager with 1-click ★ Star Home Video toggle & modal checkbox", () => {
-    const src = fs.readFileSync(adminProjectsPagePath, "utf-8");
+    let src = fs.readFileSync(adminProjectsPagePath, "utf-8");
+    const componentsDir = path.join(rootDir, "apps/admin/src/app/projects/components");
+    const hooksDir = path.join(rootDir, "apps/admin/src/app/projects/hooks");
+    for (const dir of [componentsDir, hooksDir]) {
+      if (fs.existsSync(dir)) {
+        for (const file of fs.readdirSync(dir)) {
+          if (file.endsWith(".tsx") || file.endsWith(".ts")) {
+            src += "\n" + fs.readFileSync(path.join(dir, file), "utf-8");
+          }
+        }
+      }
+    }
 
     assert.ok(
       src.includes("handleToggleFeatured"),
