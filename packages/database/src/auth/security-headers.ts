@@ -37,6 +37,9 @@ export function buildContentSecurityPolicy(options: SecurityHeaderOptions = {}):
     "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
     "frame-src": [
       "'self'",
+      "https://*.supabase.co",
+      "https://docs.google.com",
+      "https://drive.google.com",
       "https://www.youtube.com",
       "https://www.youtube-nocookie.com",
       "https://www.facebook.com",
@@ -51,7 +54,7 @@ export function buildContentSecurityPolicy(options: SecurityHeaderOptions = {}):
       "https://va.vercel-scripts.com",
     ],
     "media-src": ["'self'", "data:", "blob:", "https://*.supabase.co"],
-    "object-src": ["'none'"],
+    "object-src": ["'self'", "https://*.supabase.co", "data:", "blob:"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],
     "frame-ancestors": [isAdmin ? "'none'" : "'self'"],

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Smartphone, FileText, ArrowRight } from "lucide-react";
+import { Play, FileText, ArrowRight } from "lucide-react";
 import {
   type ProjectRecord,
   resolveSafeYouTubeEmbed,
@@ -20,6 +20,7 @@ export function GalleryProjectModal({ project, onClose }: GalleryProjectModalPro
   const [activeModalImage, setActiveModalImage] = useState<string | null>(null);
   const [modalFbOrientationOverride, setModalFbOrientationOverride] = useState<boolean | null>(null);
   const [activeMediaTab, setActiveMediaTab] = useState<"youtube" | "facebook">("youtube");
+  const [useGoogleViewer, setUseGoogleViewer] = useState(false);
   const modalScrollRef = useRef<HTMLDivElement>(null);
 
   // Freeze Lenis & lock document scroll while modal is active
@@ -374,28 +375,66 @@ export function GalleryProjectModal({ project, onClose }: GalleryProjectModalPro
 
               {/* Embedded PDF Viewer */}
               <div className="rounded-xl overflow-hidden border-2 border-black dark:border-zinc-700 bg-neutral-900 shadow-md">
-                <div className="bg-[#181824] px-3.5 py-2 border-b border-[#2b2b3d] flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-zinc-300 font-mono text-xs">
-                    <FileText className="w-3.5 h-3.5 text-yellow-400" />
+                <div className="bg-[#181824] px-3.5 py-2 border-b border-[#2b2b3d] flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-zinc-300 font-mono text-xs min-w-0">
+                    <FileText className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
                     <span className="font-bold text-white truncate max-w-xs sm:max-w-md">
                       {project.pdfTitle || "PDF Document Viewer"}
                     </span>
                   </div>
-                  <a
-                    href={project.pdfUrl}
-                    download
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[11px] font-mono text-yellow-400 hover:underline flex items-center gap-1 font-bold"
-                  >
-                    Full Screen ↗
-                  </a>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setUseGoogleViewer((prev) => !prev)}
+                      className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-neutral-800 hover:bg-neutral-700 text-zinc-300 border border-zinc-700 transition-colors cursor-pointer"
+                      title="تبديل محرك العرض إذا واجهت حظر من المتصفح"
+                    >
+                      {useGoogleViewer ? "Direct PDF Mode" : "Google Cloud Engine"}
+                    </button>
+                    <a
+                      href={project.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-mono text-yellow-400 hover:underline flex items-center gap-1 font-bold"
+                    >
+                      <span>Full Screen ↗</span>
+                    </a>
+                  </div>
                 </div>
                 <iframe
-                  src={project.pdfUrl}
+                  src={
+                    useGoogleViewer
+                      ? `https://docs.google.com/viewer?url=${encodeURIComponent(project.pdfUrl)}&embedded=true`
+                      : project.pdfUrl
+                  }
                   title={project.pdfTitle || "PDF Document Viewer"}
                   className="w-full h-80 sm:h-96 border-0 bg-white"
                 />
+                <div className="bg-[#12121a] px-3 py-1.5 border-t border-[#2b2b3d] flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono text-zinc-400">
+                  <span>
+                    {useGoogleViewer
+                      ? "Rendering via Google Cloud Docs Viewer engine"
+                      : "Rendering via Native Browser PDF engine"}
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setUseGoogleViewer((v) => !v)}
+                      className="text-yellow-400 hover:underline cursor-pointer"
+                    >
+                      {useGoogleViewer ? "Switch to Native PDF" : "Switch to Google Cloud Engine"}
+                    </button>
+                    <span>•</span>
+                    <a
+                      href={project.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-yellow-400 hover:underline"
+                    >
+                      Open in New Window ↗
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           )}

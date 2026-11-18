@@ -25,6 +25,7 @@ describe("Phase 09: Security Headers & Content Security Policy (CSP)", () => {
     assert.match(csp, /connect-src.*https:\/\/\*\.supabase\.co/);
     assert.match(csp, /connect-src.*wss:\/\/\*\.supabase\.co/);
     assert.match(csp, /img-src.*https:\/\/\*\.supabase\.co/);
+    assert.match(csp, /frame-src.*https:\/\/\*\.supabase\.co/);
   });
 
   it("should configure CSP with Vercel analytics endpoints", () => {
