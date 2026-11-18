@@ -14,10 +14,15 @@ describe("CMS Phase 4: /why-us & /gallery Subpage CMS Bindings", () => {
   const whyUsPath = path.join(rootDir, "apps/artwork-app/src/app/why-us/page.tsx");
   const galleryPath = path.join(rootDir, "apps/artwork-app/src/app/gallery/page.tsx");
 
+  const storePath = path.join(rootDir, "apps/artwork-app/src/store/useShowcaseStore.ts");
+
   it("1. binds /why-us page to CMS whyUsPage (capabilityCards, callout, easel stamps) and layout", () => {
     const whyUsSrc = fs.readFileSync(whyUsPath, "utf-8");
+    const storeSrc = fs.readFileSync(storePath, "utf-8");
 
-    assert.ok(whyUsSrc.includes('fetch("/api/content"'));
+    assert.ok(whyUsSrc.includes("useShowcaseStore"));
+    assert.ok(whyUsSrc.includes("ensureFreshData"));
+    assert.ok(storeSrc.includes('fetcher("/api/content"'));
     assert.ok(whyUsSrc.includes("content.directorNote"));
     assert.ok(whyUsSrc.includes("content.tailoredStamp"));
     assert.ok(whyUsSrc.includes("content.zeroTemplatesBadge"));
@@ -32,8 +37,11 @@ describe("CMS Phase 4: /why-us & /gallery Subpage CMS Bindings", () => {
 
   it("2. binds /gallery page to CMS galleryPage, contact, layout, and ★ HOME featured badge", () => {
     const gallerySrc = fs.readFileSync(galleryPath, "utf-8");
+    const storeSrc = fs.readFileSync(storePath, "utf-8");
 
-    assert.ok(gallerySrc.includes('fetch("/api/content"'));
+    assert.ok(gallerySrc.includes("useShowcaseStore"));
+    assert.ok(gallerySrc.includes("ensureFreshData"));
+    assert.ok(storeSrc.includes('fetcher("/api/content"'));
     assert.ok(gallerySrc.includes("galleryContent.heroBadge"));
     assert.ok(gallerySrc.includes("galleryContent.headlinePart1"));
     assert.ok(gallerySrc.includes("galleryContent.headlinePart2"));

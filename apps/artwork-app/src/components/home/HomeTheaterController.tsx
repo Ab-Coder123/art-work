@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import { useTheaterStageController } from "@/hooks/useTheaterStageController";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 
 import {
   StudioHeader,
@@ -103,71 +104,32 @@ export function HomeTheaterController({ initialData }: HomeTheaterControllerProp
     triggerInkBurst,
   } = useTheaterStageController();
 
-  const [homeData, setHomeData] = useState<InitialHomeData>(initialData);
+  const storeSiteContent = useShowcaseStore((s) => s.siteContent);
+  const storeCompanies = useShowcaseStore((s) => s.companies);
+  const storeProjects = useShowcaseStore((s) => s.projects);
+  const hasSyncedLive = useShowcaseStore((s) => s.hasSyncedLive);
+  const hasHydratedServerData = useShowcaseStore((s) => s.hasHydratedServerData);
+  const hydrateFromServer = useShowcaseStore((s) => s.hydrateFromServer);
+  const ensureFreshData = useShowcaseStore((s) => s.ensureFreshData);
 
-  const {
-    heroContent,
-    whyUsContent,
-    servicesContent,
-    homeShowcaseContent,
-    contactContent,
-    layoutContent,
-    companies,
-    projects,
-  } = homeData;
-
-  // Background content & ★ Starred projects freshness re-synchronization in a single parallel batch
+  // Hydrate centralized Zustand store from SSR initialData & deduplicate background freshness sync
   useEffect(() => {
-    let mounted = true;
+    hydrateFromServer(initialData);
+    void ensureFreshData();
+  }, [initialData, hydrateFromServer, ensureFreshData]);
 
-    Promise.allSettled([
-      fetch("/api/content", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
-      fetch("/api/companies", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
-      fetch("/api/projects?limit=500", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
-    ]).then(([contentRes, companiesRes, projectsRes]) => {
-      if (!mounted) return;
-
-      const siteContent = contentRes.status === "fulfilled" ? contentRes.value : null;
-      const companiesPayload = companiesRes.status === "fulfilled" ? companiesRes.value : null;
-      const projectsPayload = projectsRes.status === "fulfilled" ? projectsRes.value : null;
-
-      const newCompanies =
-        companiesPayload?.ok && Array.isArray(companiesPayload.data) && companiesPayload.data.length > 0
-          ? companiesPayload.data
-          : null;
-      const newProjects =
-        Array.isArray(projectsPayload?.items) && projectsPayload.items.length > 0
-          ? projectsPayload.items
-          : null;
-
-      if (!siteContent && !newCompanies && !newProjects) return;
-
-      setHomeData((prev) => ({
-        ...prev,
-        heroContent: siteContent?.manifesto ? { ...prev.heroContent, ...siteContent.manifesto } : prev.heroContent,
-        whyUsContent: siteContent?.whyUsTeaser
-          ? {
-              ...prev.whyUsContent,
-              ...siteContent.whyUsTeaser,
-              blueprint: {
-                ...prev.whyUsContent.blueprint,
-                ...(siteContent.whyUsTeaser.blueprint || {}),
-              },
-            }
-          : prev.whyUsContent,
-        servicesContent: siteContent?.services ? { ...prev.servicesContent, ...siteContent.services } : prev.servicesContent,
-        homeShowcaseContent: siteContent?.homeShowcase ? { ...prev.homeShowcaseContent, ...siteContent.homeShowcase } : prev.homeShowcaseContent,
-        contactContent: siteContent?.contact ? { ...prev.contactContent, ...siteContent.contact } : prev.contactContent,
-        layoutContent: siteContent?.layout ? { ...prev.layoutContent, ...siteContent.layout } : prev.layoutContent,
-        companies: newCompanies || prev.companies,
-        projects: newProjects || prev.projects,
-      }));
-    });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  // Use SSR props during initial hydration pass to guarantee 0 hydration mismatches, then bind to Zustand store
+  const useStoreData = hasSyncedLive || hasHydratedServerData;
+  const heroContent = useStoreData ? storeSiteContent.manifesto : initialData.heroContent;
+  const whyUsContent = useStoreData ? storeSiteContent.whyUsTeaser : initialData.whyUsContent;
+  const servicesContent = useStoreData ? storeSiteContent.services : initialData.servicesContent;
+  const homeShowcaseContent = useStoreData
+    ? storeSiteContent.homeShowcase
+    : initialData.homeShowcaseContent;
+  const contactContent = useStoreData ? storeSiteContent.contact : initialData.contactContent;
+  const layoutContent = useStoreData ? storeSiteContent.layout : initialData.layoutContent;
+  const companies = useStoreData ? storeCompanies : initialData.companies;
+  const projects = useStoreData ? storeProjects : initialData.projects;
 
   const handleExploreShowreel = React.useCallback(() => {
     scrollToStage("stage-gallery");

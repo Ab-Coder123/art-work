@@ -7,6 +7,7 @@ import { ArrowRight, Play, Star, FileText } from "lucide-react";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { YouTubeVideoFacade } from "@/components/cinematic/YouTubeVideoFacade";
 import rawProjects from "@/data/projects.json";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 import {
   type ProjectRecord,
   resolveSafeYouTubeEmbed,
@@ -20,43 +21,26 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
   content = DEFAULT_HOME_SHOWCASE_CONTENT,
   initialProjects,
 }: GalleryShowcaseStageProps) {
-  const [projectsList, setProjectsList] = useState<ProjectRecord[]>(
-    Array.isArray(initialProjects) && initialProjects.length > 0
-      ? initialProjects
-      : (rawProjects as ProjectRecord[])
-  );
-  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+  const storeProjects = useShowcaseStore((s) => s.projects);
+  const hasSyncedLive = useShowcaseStore((s) => s.hasSyncedLive);
+  const ensureFreshData = useShowcaseStore((s) => s.ensureFreshData);
+  const selectedVideoId = useShowcaseStore((s) => s.selectedShowcaseVideoId);
+  const setSelectedVideoId = useShowcaseStore((s) => s.setSelectedShowcaseVideoId);
   const [stageFbOrientationOverride, setStageFbOrientationOverride] = useState<boolean | null>(null);
+
+  const projectsList = useMemo(() => {
+    if (hasSyncedLive && storeProjects.length > 0) return storeProjects;
+    if (Array.isArray(initialProjects) && initialProjects.length > 0) return initialProjects;
+    return rawProjects as ProjectRecord[];
+  }, [hasSyncedLive, storeProjects, initialProjects]);
 
   useEffect(() => {
     setStageFbOrientationOverride(null);
   }, [selectedVideoId]);
 
   useEffect(() => {
-    if (Array.isArray(initialProjects) && initialProjects.length > 0) {
-      setProjectsList(initialProjects);
-    }
-  }, [initialProjects]);
-
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const res = await fetch("/api/projects?limit=500", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (mounted && Array.isArray(data.items) && data.items.length > 0) {
-            setProjectsList(data.items);
-          }
-        }
-      } catch {
-        // Fallback to initialProjects / seed data
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    void ensureFreshData();
+  }, [ensureFreshData]);
 
   const showcase = useMemo(
     () => resolveHomeShowcaseItems(projectsList),

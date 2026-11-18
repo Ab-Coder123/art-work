@@ -20,11 +20,18 @@ describe("CMS Phase 3: Full Home Page Component CMS Bindings & Multi-Video Stage
     assert.ok(serverSrc.includes("layoutContent: contentData.layout"));
     assert.ok(serverSrc.includes('tags: ["site-content", "companies", "projects"]'));
 
+    const storeSrc = fs.readFileSync(
+      path.join(rootDir, "apps/artwork-app/src/store/useShowcaseStore.ts"),
+      "utf-8"
+    );
+
     assert.ok(controllerSrc.includes("<ServicesStage content={servicesContent} />"));
     assert.ok(controllerSrc.includes("content={homeShowcaseContent}"));
     assert.ok(controllerSrc.includes("initialProjects={projects}"));
     assert.ok(controllerSrc.includes("layout={layoutContent}"));
-    assert.ok(controllerSrc.includes('fetch("/api/projects?limit=500"'));
+    assert.ok(controllerSrc.includes("useShowcaseStore"));
+    assert.ok(controllerSrc.includes("ensureFreshData"));
+    assert.ok(storeSrc.includes('fetcher("/api/projects?limit=500"'));
   });
 
   it("2. binds StudioHeader and StudioFooter to CMS layout labels while keeping dark logo polish", () => {

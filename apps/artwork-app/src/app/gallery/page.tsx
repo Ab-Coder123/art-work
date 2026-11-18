@@ -52,125 +52,64 @@ import {
   Sparkles,
 } from "lucide-react";
 import {
-  type ContactSectionContent,
-  type GalleryPageContent,
-  type LayoutSectionContent,
   type ProjectCategory,
   type ProjectRecord,
   resolveSafeYouTubeEmbed,
   getProjectThumbnailUrl,
 } from "@art-work/types";
 import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
-import { SEED_PROJECTS } from "@/data/seedContent";
 import { GalleryProjectModal } from "@/components/gallery/GalleryProjectModal";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
+
+const KineticParticleCanvas = dynamic(
+  () =>
+    import("@/components/cinematic/KineticParticleCanvas").then(
+      (m) => m.KineticParticleCanvas
+    ),
+  { ssr: false }
+);
 
 export default function GalleryPage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [projects, setProjects] = useState<ProjectRecord[]>(SEED_PROJECTS);
-  const [galleryContent, setGalleryContent] = useState<GalleryPageContent>(
-    CANONICAL_SITE_CONTENT.galleryPage
+  const projects = useShowcaseStore((s) => s.projects);
+  const galleryContent = useShowcaseStore((s) => s.siteContent.galleryPage);
+  const layout = useShowcaseStore((s) => s.siteContent.layout);
+  const contact = useShowcaseStore((s) => s.siteContent.contact);
+  const activeFilter = useShowcaseStore((s) => s.activeCategoryFilter);
+  const setActiveFilter = useShowcaseStore((s) => s.setActiveCategoryFilter);
+  const selectedProjectId = useShowcaseStore((s) => s.selectedProjectId);
+  const setSelectedProjectId = useShowcaseStore((s) => s.setSelectedProjectId);
+  const hasSyncedLive = useShowcaseStore((s) => s.hasSyncedLive);
+  const hasHydratedServerData = useShowcaseStore((s) => s.hasHydratedServerData);
+  const ensureFreshData = useShowcaseStore((s) => s.ensureFreshData);
+
+  const [isLoading, setIsLoading] = useState(!hasSyncedLive && !hasHydratedServerData);
+
+  const selectedProject = React.useMemo(
+    () => projects.find((proj) => proj.id === selectedProjectId) || null,
+    [projects, selectedProjectId]
   );
-  const [layout, setLayout] = useState<LayoutSectionContent>(
-    CANONICAL_SITE_CONTENT.layout
+
+  const setSelectedProject = React.useCallback(
+    (project: ProjectRecord | null) => {
+      setSelectedProjectId(project ? project.id : null);
+    },
+    [setSelectedProjectId]
   );
-  const [contact, setContact] = useState<ContactSectionContent>(
-    CANONICAL_SITE_CONTENT.contact
-  );
-  const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
-  const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null);
 
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();
 
   useEffect(() => {
     let mounted = true;
-    (async () => {
-      try {
-        const [projRes, contentRes] = await Promise.allSettled([
-          fetch("/api/projects?limit=500", { cache: "no-store" }),
-          fetch("/api/content", { cache: "no-store" }),
-        ]);
-
-        if (projRes.status === "fulfilled" && projRes.value.ok) {
-          const data = await projRes.value.json();
-          if (mounted && Array.isArray(data.items) && data.items.length > 0) {
-            setProjects(data.items);
-          }
-        }
-
-        if (contentRes.status === "fulfilled" && contentRes.value.ok) {
-          const siteContent = await contentRes.value.json();
-          if (mounted && siteContent) {
-            if (siteContent.galleryPage) {
-              setGalleryContent((prev) => ({ ...prev, ...siteContent.galleryPage }));
-            }
-            if (siteContent.layout) {
-              setLayout((prev) => ({ ...prev, ...siteContent.layout }));
-            }
-            if (siteContent.contact) {
-              setContact((prev) => ({ ...prev, ...siteContent.contact }));
-            }
-          }
-        }
-      } catch {
-        // Fallback to defaults when offline
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
+    ensureFreshData().finally(() => {
+      if (mounted) {
+        setIsLoading(false);
       }
-    })();
+    });
     return () => {
       mounted = false;
     };
-  }, []);
-
-  // Mouse sparkle physics
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-
-    const createSparkle = (x: number, y: number) => {
-      const p = document.createElement("div");
-      p.className = "cursor-particle";
-      p.style.left = `${x}px`;
-      p.style.top = `${y}px`;
-      const size = Math.floor(Math.random() * 8) + 4;
-      p.style.width = `${size}px`;
-      p.style.height = `${size}px`;
-
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 25 + 5;
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-
-      document.body.appendChild(p);
-
-      requestAnimationFrame(() => {
-        p.style.transform = `translate(${vx}px, ${vy}px) scale(0)`;
-        p.style.opacity = "0";
-      });
-
-      setTimeout(() => {
-        if (p.parentNode) p.parentNode.removeChild(p);
-      }, 450);
-    };
-
-    let lastMove = 0;
-    const handleMouseMove = (e: MouseEvent) => {
-      const now = Date.now();
-      if (now - lastMove > 110) {
-        createSparkle(e.clientX, e.clientY);
-        lastMove = now;
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
+  }, [ensureFreshData]);
 
   if (isLoading) {
     return (
@@ -267,30 +206,12 @@ export default function GalleryPage() {
     const originX = rect.left + rect.width / 2;
     const originY = rect.top + rect.height / 2;
 
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement("div");
-      p.className = "cursor-particle";
-      p.style.left = `${originX}px`;
-      p.style.top = `${originY}px`;
-      const size = Math.floor(Math.random() * 8) + 4;
-      p.style.width = `${size}px`;
-      p.style.height = `${size}px`;
-
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 30 + 10;
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-
-      document.body.appendChild(p);
-
-      requestAnimationFrame(() => {
-        p.style.transform = `translate(${vx}px, ${vy}px) scale(0)`;
-        p.style.opacity = "0";
-      });
-
-      setTimeout(() => {
-        if (p.parentNode) p.parentNode.removeChild(p);
-      }, 500);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("artwork:particle-burst", {
+          detail: { x: originX, y: originY, count: 20 },
+        })
+      );
     }
   };
 
@@ -334,6 +255,9 @@ export default function GalleryPage() {
 
       {/* 4. High-Performance 60FPS Disappearing Ink Doodle Canvas */}
       <InteractiveDoodleCanvas />
+
+      {/* 4.5 Zero-DOM Pooled 2D Canvas Particle Engine */}
+      <KineticParticleCanvas />
 
       {/* 5. Dot Grid Sketchpad Canvas */}
       <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0"></div>

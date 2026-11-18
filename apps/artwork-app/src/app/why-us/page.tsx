@@ -10,7 +10,15 @@ import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
 import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
-import type { LayoutSectionContent, WhyUsPageContent } from "@art-work/types";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
+
+const KineticParticleCanvas = dynamic(
+  () =>
+    import("@/components/cinematic/KineticParticleCanvas").then(
+      (m) => m.KineticParticleCanvas
+    ),
+  { ssr: false }
+);
 
 // Dynamic imports for heavy canvas and 3D decorative modules
 const DeferredKinetic3DBackground = dynamic(
@@ -75,94 +83,31 @@ function renderCapabilityIcon(icon?: string) {
 }
 
 export default function WhyUsPage() {
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [content, setContent] = React.useState<WhyUsPageContent | null>(null);
-  const [layout, setLayout] = React.useState<LayoutSectionContent | null>(null);
-  const [whatsappPhone, setWhatsappPhone] = React.useState<string>(CANONICAL_SITE_CONTENT.contact.phone);
+  const content = useShowcaseStore((s) => s.siteContent.whyUsPage);
+  const layout = useShowcaseStore((s) => s.siteContent.layout);
+  const whatsappPhone = useShowcaseStore((s) => s.siteContent.contact.phone);
+  const hasSyncedLive = useShowcaseStore((s) => s.hasSyncedLive);
+  const hasHydratedServerData = useShowcaseStore((s) => s.hasHydratedServerData);
+  const ensureFreshData = useShowcaseStore((s) => s.ensureFreshData);
+
+  const [isLoading, setIsLoading] = React.useState<boolean>(
+    !hasSyncedLive && !hasHydratedServerData
+  );
 
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();
 
   useEffect(() => {
     let mounted = true;
-    fetch("/api/content", { cache: "no-store" })
-      .then((response) => (response.ok ? response.json() : Promise.reject()))
-      .then((siteContent: { whyUsPage?: WhyUsPageContent; layout?: LayoutSectionContent; contact?: { phone?: string } }) => {
-        if (!mounted || !siteContent) return;
-        if (siteContent.whyUsPage) {
-          setContent(siteContent.whyUsPage);
-        } else {
-          setContent(CANONICAL_SITE_CONTENT.whyUsPage);
-        }
-        if (siteContent.layout) {
-          setLayout(siteContent.layout);
-        } else {
-          setLayout(CANONICAL_SITE_CONTENT.layout);
-        }
-        if (siteContent.contact?.phone) {
-          setWhatsappPhone(siteContent.contact.phone);
-        }
-      })
-      .catch(() => {
-        // Fallback only if offline / server unreachable
-        if (mounted) {
-          setContent(CANONICAL_SITE_CONTENT.whyUsPage);
-          setLayout(CANONICAL_SITE_CONTENT.layout);
-        }
-      })
-      .finally(() => {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      });
+    ensureFreshData().finally(() => {
+      if (mounted) {
+        setIsLoading(false);
+      }
+    });
     return () => {
       mounted = false;
     };
-  }, []);
-
-  // Mouse sparkle trail physics from Stitch design
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-
-    const createSparkle = (x: number, y: number) => {
-      const p = document.createElement("div");
-      p.className = "cursor-particle";
-      p.style.left = `${x}px`;
-      p.style.top = `${y}px`;
-      const size = Math.floor(Math.random() * 8) + 4;
-      p.style.width = `${size}px`;
-      p.style.height = `${size}px`;
-
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 25 + 5;
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-
-      document.body.appendChild(p);
-
-      requestAnimationFrame(() => {
-        p.style.transform = `translate(${vx}px, ${vy}px) scale(0)`;
-        p.style.opacity = "0";
-      });
-
-      setTimeout(() => {
-        if (p.parentNode) p.parentNode.removeChild(p);
-      }, 450);
-    };
-
-    let lastMove = 0;
-    const handleMouseMove = (e: MouseEvent) => {
-      const now = Date.now();
-      if (now - lastMove > 110) {
-        createSparkle(e.clientX, e.clientY);
-        lastMove = now;
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [ensureFreshData]);
 
   if (isLoading || !content || !layout) {
     return (
@@ -274,6 +219,9 @@ export default function WhyUsPage() {
 
       {/* High-Performance 60FPS Disappearing Ink Doodle Canvas */}
       <InteractiveDoodleCanvas />
+
+      {/* Zero-DOM Pooled 2D Canvas Particle Engine */}
+      <KineticParticleCanvas />
 
       {/* ================= FIXED TOP STUDIO HEADER (SHARED) =================
           Shared across all pages; renders layout.navWhyUsLabel, artwork_logo_dark.png,
