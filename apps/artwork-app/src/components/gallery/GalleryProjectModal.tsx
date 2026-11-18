@@ -341,103 +341,110 @@ export function GalleryProjectModal({ project, onClose }: GalleryProjectModalPro
           )}
 
           {/* Architectural / Giveaways PDF Document Download Banner & Inline Viewer */}
-          {project.pdfUrl && (
-            <div className="mb-5 space-y-3">
-              <div className="p-3.5 bg-yellow-400 text-black rounded-xl border-2 border-black comic-shadow-sm flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-9 h-9 rounded-lg bg-black text-yellow-400 border border-black flex items-center justify-center font-bold shrink-0">
-                    <FileText className="w-5 h-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="font-headline font-black text-xs uppercase truncate">
-                      {project.pdfTitle ||
-                        (project.category === "branding"
-                          ? "PROMOTIONAL GIVEAWAYS CATALOG & SPECS (PDF)"
-                          : "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET")}
-                    </div>
-                    <span className="text-[10px] font-mono text-black/70 block">
-                      Official PDF Document • Click to view full catalog & specifications
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0 ml-auto">
-                  <a
-                    href={project.pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border border-black flex items-center gap-1.5 active:scale-95 transition-transform"
-                  >
-                    <span>OPEN PDF ↗</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              </div>
+          {project.pdfUrl && (() => {
+            const sameOriginPdfUrl = project.pdfUrl.startsWith("http")
+              ? `/api/pdf-proxy?url=${encodeURIComponent(project.pdfUrl)}`
+              : project.pdfUrl;
 
-              {/* Embedded PDF Viewer */}
-              <div className="rounded-xl overflow-hidden border-2 border-black dark:border-zinc-700 bg-neutral-900 shadow-md">
-                <div className="bg-[#181824] px-3.5 py-2 border-b border-[#2b2b3d] flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 text-zinc-300 font-mono text-xs min-w-0">
-                    <FileText className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
-                    <span className="font-bold text-white truncate max-w-xs sm:max-w-md">
-                      {project.pdfTitle || "PDF Document Viewer"}
-                    </span>
+            return (
+              <div className="mb-5 space-y-3">
+                <div className="p-3.5 bg-yellow-400 text-black rounded-xl border-2 border-black comic-shadow-sm flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-black text-yellow-400 border border-black flex items-center justify-center font-bold shrink-0">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-headline font-black text-xs uppercase truncate">
+                        {project.pdfTitle ||
+                          (project.category === "branding"
+                            ? "PROMOTIONAL GIVEAWAYS CATALOG & SPECS (PDF)"
+                            : "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET")}
+                      </div>
+                      <span className="text-[10px] font-mono text-black/70 block">
+                        Official PDF Document • Click to view full catalog & specifications
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setUseGoogleViewer((prev) => !prev)}
-                      className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-neutral-800 hover:bg-neutral-700 text-zinc-300 border border-zinc-700 transition-colors cursor-pointer"
-                      title="تبديل محرك العرض إذا واجهت حظر من المتصفح"
-                    >
-                      {useGoogleViewer ? "Direct PDF Mode" : "Google Cloud Engine"}
-                    </button>
+                  <div className="flex items-center gap-2 shrink-0 ml-auto">
                     <a
                       href={project.pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[11px] font-mono text-yellow-400 hover:underline flex items-center gap-1 font-bold"
+                      className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border border-black flex items-center gap-1.5 active:scale-95 transition-transform"
                     >
-                      <span>Full Screen ↗</span>
+                      <span>OPEN PDF ↗</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 </div>
-                <iframe
-                  src={
-                    useGoogleViewer
-                      ? `https://docs.google.com/viewer?url=${encodeURIComponent(project.pdfUrl)}&embedded=true`
-                      : project.pdfUrl
-                  }
-                  title={project.pdfTitle || "PDF Document Viewer"}
-                  className="w-full h-80 sm:h-96 border-0 bg-white"
-                />
-                <div className="bg-[#12121a] px-3 py-1.5 border-t border-[#2b2b3d] flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono text-zinc-400">
-                  <span>
-                    {useGoogleViewer
-                      ? "Rendering via Google Cloud Docs Viewer engine"
-                      : "Rendering via Native Browser PDF engine"}
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setUseGoogleViewer((v) => !v)}
-                      className="text-yellow-400 hover:underline cursor-pointer"
-                    >
-                      {useGoogleViewer ? "Switch to Native PDF" : "Switch to Google Cloud Engine"}
-                    </button>
-                    <span>•</span>
-                    <a
-                      href={project.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-yellow-400 hover:underline"
-                    >
-                      Open in New Window ↗
-                    </a>
+
+                {/* Embedded PDF Viewer */}
+                <div className="rounded-xl overflow-hidden border-2 border-black dark:border-zinc-700 bg-neutral-900 shadow-md">
+                  <div className="bg-[#181824] px-3.5 py-2 border-b border-[#2b2b3d] flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 text-zinc-300 font-mono text-xs min-w-0">
+                      <FileText className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
+                      <span className="font-bold text-white truncate max-w-xs sm:max-w-md">
+                        {project.pdfTitle || "PDF Document Viewer"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setUseGoogleViewer((prev) => !prev)}
+                        className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-neutral-800 hover:bg-neutral-700 text-zinc-300 border border-zinc-700 transition-colors cursor-pointer"
+                        title="تبديل محرك العرض إذا واجهت حظر من المتصفح"
+                      >
+                        {useGoogleViewer ? "Same-Origin Direct Mode" : "Google Cloud Engine"}
+                      </button>
+                      <a
+                        href={project.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-mono text-yellow-400 hover:underline flex items-center gap-1 font-bold"
+                      >
+                        <span>Full Screen ↗</span>
+                      </a>
+                    </div>
+                  </div>
+                  <iframe
+                    src={
+                      useGoogleViewer
+                        ? `https://docs.google.com/viewer?url=${encodeURIComponent(project.pdfUrl)}&embedded=true`
+                        : sameOriginPdfUrl
+                    }
+                    title={project.pdfTitle || "PDF Document Viewer"}
+                    className="w-full h-80 sm:h-96 border-0 bg-white"
+                    allow="fullscreen"
+                  />
+                  <div className="bg-[#12121a] px-3 py-1.5 border-t border-[#2b2b3d] flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono text-zinc-400">
+                    <span>
+                      {useGoogleViewer
+                        ? "Rendering via Google Cloud Docs Viewer engine"
+                        : "Rendering via Same-Origin Stream Engine (Bypasses Browser CSP Blocks)"}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setUseGoogleViewer((v) => !v)}
+                        className="text-yellow-400 hover:underline cursor-pointer"
+                      >
+                        {useGoogleViewer ? "Switch to Same-Origin Direct Mode" : "Switch to Google Cloud Engine"}
+                      </button>
+                      <span>•</span>
+                      <a
+                        href={project.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-yellow-400 hover:underline"
+                      >
+                        Open in New Window ↗
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           <div className="pt-4 border-t border-black/10 dark:border-zinc-800 flex items-center justify-end">
             <Link

@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { type CompanyRecord, type CompanyCategorySlug, DEFAULT_COMPANIES } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
+import { uploadFileDirect } from "@/lib/directUpload";
 
 const CATEGORIES: { slug: CompanyCategorySlug; label: string }[] = [
   { slug: "all", label: "All Sectors" },
@@ -76,28 +77,20 @@ export default function AdminCompaniesPage() {
       return;
     }
 
-    if (file.size > 8 * 1024 * 1024) {
-      showNotification("error", "File size exceeds 8MB limit.");
+    if (file.size > 50 * 1024 * 1024) {
+      showNotification("error", "File size exceeds 50MB limit.");
       return;
     }
 
     setIsUploadingLogo(true);
     try {
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", file);
-      uploadFormData.append("folder", "logos");
+      const uploadRes = await uploadFileDirect(file, "logos");
 
-      const res = await apiFetchWithCsrf("/api/upload", {
-        method: "POST",
-        body: uploadFormData,
-      });
-
-      const data = await res.json();
-      if (res.ok && data.url) {
-        setFormData((prev) => ({ ...prev, logo_url: data.url }));
+      if (uploadRes.ok && uploadRes.url) {
+        setFormData((prev) => ({ ...prev, logo_url: uploadRes.url! }));
         showNotification("success", "Logo uploaded to CDN successfully!");
       } else {
-        showNotification("error", data.error || "Failed to upload logo");
+        showNotification("error", uploadRes.error || "Failed to upload logo");
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Upload failed";

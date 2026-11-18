@@ -23,6 +23,7 @@ import {
   isGenericYouTubeDescription,
 } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
+import { uploadFileDirect } from "@/lib/directUpload";
 import { BehanceIcon, YouTubeIcon } from "./Icons";
 import { FacebookVideoFieldCard } from "./FacebookVideoFieldCard";
 
@@ -159,29 +160,21 @@ export function ProjectFormModal({
     setUploadError(null);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", "covers");
+      const uploadRes = await uploadFileDirect(file, "covers");
 
-      const res = await apiFetchWithCsrf("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (res.ok && data.url) {
+      if (uploadRes.ok && uploadRes.url) {
         setEditingProject((prev) => {
           const currentImages = prev.images || [];
-          const nextImages = [data.url, ...currentImages.filter((img) => img !== data.url)];
+          const nextImages = [uploadRes.url!, ...currentImages.filter((img) => img !== uploadRes.url)];
           return {
             ...prev,
-            image: data.url,
+            image: uploadRes.url!,
             images: nextImages,
           };
         });
         setUploadError(null);
       } else {
-        setUploadError(data.error || "Failed to upload cover image");
+        setUploadError(uploadRes.error || "Failed to upload cover image");
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Upload failed";
@@ -202,20 +195,12 @@ export function ProjectFormModal({
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       try {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("folder", "booths");
+        const uploadRes = await uploadFileDirect(file, "booths");
 
-        const res = await apiFetchWithCsrf("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        const data = await res.json();
-        if (res.ok && data.url) {
-          uploadedUrls.push(data.url);
+        if (uploadRes.ok && uploadRes.url) {
+          uploadedUrls.push(uploadRes.url);
         } else {
-          setUploadError(data.error || `Failed to upload ${file.name}`);
+          setUploadError(uploadRes.error || `Failed to upload ${file.name}`);
         }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Upload failed";
@@ -244,20 +229,14 @@ export function ProjectFormModal({
     setUploadError(null);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
       const category = targetCategory || editingProject.category;
-      formData.append("folder", category === "branding" ? "giveaways" : "blueprints");
+      const folder = category === "branding" ? "giveaways" : "blueprints";
 
-      const res = await apiFetchWithCsrf("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const uploadRes = await uploadFileDirect(file, folder);
 
-      const data = await res.json();
-      if (res.ok && data.url) {
+      if (uploadRes.ok && uploadRes.url) {
         const autoTitle = file.name.replace(/\.pdf$/i, "").replace(/[-_]/g, " ");
-        const isBranding = (targetCategory || editingProject.category) === "branding";
+        const isBranding = category === "branding";
         const defaultPdfCover = isBranding
           ? "/assets/images/gallery/pdf_giveaways_catalog.svg"
           : "/assets/images/gallery/pdf_booth_blueprint.svg";
@@ -269,14 +248,14 @@ export function ProjectFormModal({
             prev.image.includes("project_01_neon_horizon.jpg");
           return {
             ...prev,
-            pdfUrl: data.url,
+            pdfUrl: uploadRes.url,
             pdfTitle: prev.pdfTitle || autoTitle,
             image: isGeneric ? defaultPdfCover : prev.image,
           };
         });
         setUploadError(null);
       } else {
-        setUploadError(data.error || "Failed to upload PDF");
+        setUploadError(uploadRes.error || "Failed to upload PDF");
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "PDF upload failed";
