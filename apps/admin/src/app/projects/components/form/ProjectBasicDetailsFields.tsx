@@ -7,32 +7,34 @@ interface ProjectBasicDetailsFieldsProps {
   onChange: (project: ProjectRecord) => void;
 }
 
+const STUDIO_INPUT_CLS =
+  "w-full bg-[#0b0c10] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/15 transition-all";
+const STUDIO_LABEL_CLS = "block text-[13px] font-medium text-zinc-300 mb-1.5";
+
 export const ProjectBasicDetailsFields = React.memo(function ProjectBasicDetailsFields({
   project,
   onChange,
 }: ProjectBasicDetailsFieldsProps) {
   return (
-    <>
-      {/* Mode Indicator Banner */}
-      {project.category === "booths" ? (
-        <div className="p-3 bg-yellow-400/10 border border-yellow-400/30 rounded-xl flex items-center justify-between">
-          <div className="flex items-center gap-2 text-yellow-300">
+    <div className="space-y-4">
+      {project.category === "booths" && (
+        <div className="px-4 py-2.5 bg-amber-400/10 border border-amber-400/25 rounded-xl flex items-center justify-between">
+          <div className="flex items-center gap-2 text-amber-300 text-xs font-medium">
             <FileText className="w-4 h-4" />
-            <span className="font-bold uppercase tracking-wider text-[11px]">
-              Exhibition Booth &amp; Pavilion Production Mode
-            </span>
+            <span>Exhibition Booth &amp; Pavilion Production</span>
           </div>
-          <span className="text-[10px] text-zinc-400 font-mono">
-            Headline • Description • 3D Renders • PDF Blueprints
+          <span className="text-[11px] text-zinc-400">
+            Headline • Description • 3D Renders • Blueprints
           </span>
         </div>
-      ) : null}
+      )}
 
       {/* 1. Headline & Client */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-zinc-400 mb-1">
-            {project.category === "booths" ? "Booth / Pavilion Headline" : "Project Display Title"}
+          <label className={STUDIO_LABEL_CLS}>
+            {project.category === "booths" ? "Booth / Pavilion Headline" : "Project Title"}{" "}
+            <span className="text-amber-400">*</span>
           </label>
           <input
             type="text"
@@ -40,17 +42,18 @@ export const ProjectBasicDetailsFields = React.memo(function ProjectBasicDetails
             placeholder={
               project.category === "booths"
                 ? "e.g. Nova MedTech 36m² Custom Pavilion"
-                : "e.g. Neon Horizon Tour"
+                : "e.g. Mindray Annual Summit"
             }
             value={project.title}
             onChange={(e) => onChange({ ...project, title: e.target.value })}
-            className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
+            className={STUDIO_INPUT_CLS}
           />
         </div>
 
         <div>
-          <label className="block text-zinc-400 mb-1">
-            {project.category === "booths" ? "Exhibitor / Client Name" : "Client Name"}
+          <label className={STUDIO_LABEL_CLS}>
+            {project.category === "booths" ? "Exhibitor / Client Name" : "Client Name"}{" "}
+            <span className="text-amber-400">*</span>
           </label>
           <input
             type="text"
@@ -58,11 +61,11 @@ export const ProjectBasicDetailsFields = React.memo(function ProjectBasicDetails
             placeholder={
               project.category === "booths"
                 ? "e.g. Nova MedTech Innovations"
-                : "e.g. Global Music Group"
+                : "e.g. Mindray Bio-Medical"
             }
             value={project.client}
             onChange={(e) => onChange({ ...project, client: e.target.value })}
-            className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
+            className={STUDIO_INPUT_CLS}
           />
         </div>
       </div>
@@ -70,7 +73,7 @@ export const ProjectBasicDetailsFields = React.memo(function ProjectBasicDetails
       {/* 2. Category, Year, and Meta Badge */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
-          <label className="block text-zinc-400 mb-1">Category</label>
+          <label className={STUDIO_LABEL_CLS}>Category</label>
           <select
             value={project.category}
             onChange={(e) => {
@@ -93,16 +96,16 @@ export const ProjectBasicDetailsFields = React.memo(function ProjectBasicDetails
                     : project.image,
               });
             }}
-            className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
+            className={STUDIO_INPUT_CLS}
           >
             <option value="conferences">Conferences &amp; Medical Events</option>
             <option value="booths">Exhibition Booths</option>
-            <option value="branding">Branding &amp; Print &amp; Giveaways</option>
+            <option value="branding">Branding &amp; Giveaways</option>
           </select>
         </div>
 
         <div>
-          <label className="block text-zinc-400 mb-1">Year / التاريخ السنوي</label>
+          <label className={STUDIO_LABEL_CLS}>Year</label>
           <input
             type="number"
             min="2000"
@@ -118,13 +121,13 @@ export const ProjectBasicDetailsFields = React.memo(function ProjectBasicDetails
                 stamp: String(updatedYear),
               });
             }}
-            className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-mono"
+            className={STUDIO_INPUT_CLS}
           />
         </div>
 
         <div>
-          <label className="block text-zinc-400 mb-1">
-            {project.category === "booths" ? "Footprint Badge" : "Tagline / Badge (Right)"}
+          <label className={STUDIO_LABEL_CLS}>
+            {project.category === "booths" ? "Footprint Badge" : "Subtitle Badge"}
           </label>
           <input
             type="text"
@@ -133,81 +136,30 @@ export const ProjectBasicDetailsFields = React.memo(function ProjectBasicDetails
             }
             value={project.metaBadge ?? ""}
             onChange={(e) => onChange({ ...project, metaBadge: e.target.value })}
-            className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
+            className={STUDIO_INPUT_CLS}
           />
         </div>
       </div>
 
       {/* 3. Description */}
       <div>
-        <label className="block text-zinc-400 mb-1">
+        <label className={STUDIO_LABEL_CLS}>
           {project.category === "booths"
             ? "Booth Description & Spatial Concept"
-            : "Description & Scenography Narrative"}
+            : "Project Description"}
         </label>
         <textarea
           rows={3}
           placeholder={
             project.category === "booths"
-              ? "Describe the booth layout, spatial architecture, visitor journey, finishes (matte lacquer, acrylic, CNC joinery), and integrated audio-visual..."
-              : "Describe project scenography..."
+              ? "Describe the booth layout, spatial architecture, visitor journey, finishes, and integrated AV..."
+              : "Describe project highlights and deliverables..."
           }
           value={project.description}
           onChange={(e) => onChange({ ...project, description: e.target.value })}
-          className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 leading-relaxed font-sans"
+          className={`${STUDIO_INPUT_CLS} leading-relaxed`}
         />
       </div>
-
-      {/* 4. Tags & Filter Keywords */}
-      <div>
-        <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
-          <label className="block text-zinc-400">
-            Project Tags / Chips (Separated by commas)
-          </label>
-          <span className="text-[10px] text-zinc-500 font-mono">
-            First tag is highlighted in yellow as primary
-          </span>
-        </div>
-        <input
-          type="text"
-          placeholder="e.g. Corporate Gathering, Annual Event, Stage & Production, Event Management"
-          value={
-            Array.isArray(project.tags)
-              ? project.tags.join(", ")
-              : typeof project.tags === "string"
-              ? project.tags
-              : ""
-          }
-          onChange={(e) => {
-            const tagsArray = e.target.value.split(",").map((t) => t.trimStart());
-            onChange({ ...project, tags: tagsArray });
-          }}
-          onBlur={(e) => {
-            const cleanTags = e.target.value
-              .split(",")
-              .map((t) => t.trim())
-              .filter(Boolean);
-            onChange({ ...project, tags: cleanTags });
-          }}
-          className="w-full bg-[#0d0d12] border border-[#2b2b3d] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-mono text-xs"
-        />
-        {Array.isArray(project.tags) && project.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-2">
-            {project.tags.map((tag, idx) => (
-              <span
-                key={idx}
-                className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full border ${
-                  idx === 0
-                    ? "bg-yellow-400/20 text-yellow-300 border-yellow-400/40"
-                    : "bg-zinc-800 text-zinc-400 border-zinc-700"
-                }`}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-    </>
+    </div>
   );
 });

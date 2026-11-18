@@ -199,6 +199,18 @@ export default function AdminCompaniesPage() {
       showNotification("error", "Please upload or provide a company logo.");
       return;
     }
+
+    const generatedSlug =
+      formData.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "") || `partner-${Date.now()}`;
+
+    const payload = {
+      ...formData,
+      slug: editingCompany ? formData.slug || generatedSlug : generatedSlug,
+    };
+
     setIsSaving(true);
     try {
       const url = editingCompany
@@ -209,7 +221,7 @@ export default function AdminCompaniesPage() {
       const res = await apiFetchWithCsrf(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
@@ -539,105 +551,119 @@ export default function AdminCompaniesPage() {
 
       {/* Modal for Add / Edit */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#161622] border-2 border-black rounded-2xl w-full max-w-lg overflow-hidden shadow-[6px_6px_0px_#ffffff]">
-            <div className="p-4 border-b border-[#2a2a3c] flex items-center justify-between bg-[#12121a]">
-              <h2 className="font-headline font-bold text-sm uppercase text-white flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-yellow-400" />
-                <span>{editingCompany ? "Edit Company" : "Add New Partner Company"}</span>
-              </h2>
+        <div
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-hidden"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <form
+            onSubmit={handleSave}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#121318] border border-white/10 rounded-2xl w-full max-w-lg max-h-[88vh] flex flex-col overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.75)]"
+          >
+            {/* Sticky Header */}
+            <div className="px-6 py-4 border-b border-white/[0.08] flex items-center justify-between bg-[#16171e] shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-amber-400">
+                  <Building2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-white tracking-tight">
+                    {editingCompany ? "Edit Partner Company" : "Add Partner Company"}
+                  </h2>
+                  <p className="text-xs text-zinc-400">
+                    Displayed in the home partners marquee
+                  </p>
+                </div>
+              </div>
               <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-zinc-400 hover:text-white cursor-pointer"
+                className="w-8 h-8 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.06] flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Close modal"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="p-5 space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-zinc-400 font-mono uppercase mb-1">Company Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => {
-                      const name = e.target.value;
-                      const slug = name
+            {/* Dedicated Scrollable Y Body */}
+            <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-5 space-y-5 text-sm">
+              <div>
+                <label className="block text-[13px] font-medium text-zinc-300 mb-1.5">
+                  Company Name <span className="text-amber-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => {
+                    const name = e.target.value;
+                    const slug =
+                      name
                         .toLowerCase()
                         .replace(/[^a-z0-9]+/g, "-")
-                        .replace(/(^-|-$)+/g, "");
-                      setFormData({
-                        ...formData,
-                        name,
-                        slug: editingCompany ? formData.slug : slug,
-                      });
-                    }}
-                    placeholder="e.g. Red Bull"
-                    className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-zinc-400 font-mono uppercase mb-1">Slug *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    placeholder="e.g. red-bull"
-                    className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-mono"
-                  />
-                </div>
+                        .replace(/(^-|-$)+/g, "") || formData.slug;
+                    setFormData({
+                      ...formData,
+                      name,
+                      slug: editingCompany ? formData.slug : slug,
+                    });
+                  }}
+                  placeholder="e.g. Red Bull"
+                  className="w-full bg-[#0b0c10] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/15 transition-all"
+                />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-zinc-400 font-mono uppercase mb-1">Sector *</label>
+                  <label className="block text-[13px] font-medium text-zinc-300 mb-1.5">
+                    Sector <span className="text-amber-400">*</span>
+                  </label>
                   <select
                     value={formData.category}
                     onChange={(e) =>
                       setFormData({ ...formData, category: e.target.value as CompanyCategorySlug })
                     }
-                    className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-headline uppercase"
+                    className="w-full bg-[#0b0c10] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/15 transition-all"
                   >
                     <option value="corporate">Corporate</option>
-                    <option value="pharma">Pharma & Health</option>
+                    <option value="pharma">Pharma &amp; Health</option>
                     <option value="entertainment">Entertainment</option>
                     <option value="festivals">Festivals</option>
-                    <option value="tech">Tech & Telecom</option>
+                    <option value="tech">Tech &amp; Telecom</option>
                     <option value="real_estate">Real Estate</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-zinc-400 font-mono uppercase mb-1">Order Index</label>
+                  <label className="block text-[13px] font-medium text-zinc-300 mb-1.5">
+                    Display Order
+                  </label>
                   <input
                     type="number"
                     value={formData.order_index}
                     onChange={(e) =>
                       setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })
                     }
-                    className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
+                    className="w-full bg-[#0b0c10] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/15 transition-all"
                   />
                 </div>
               </div>
 
+              {/* Company Logo Uploader */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-zinc-400 font-mono uppercase text-[11px]">
-                    Company Logo *
+                  <label className="block text-[13px] font-medium text-zinc-300">
+                    Company Logo <span className="text-amber-400">*</span>
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowManualUrl(!showManualUrl)}
-                    className="text-[10px] text-zinc-500 hover:text-yellow-400 font-mono underline cursor-pointer transition-colors flex items-center gap-1"
+                    className="text-xs text-zinc-400 hover:text-amber-400 cursor-pointer transition-colors flex items-center gap-1"
                   >
-                    <Link2 className="w-3 h-3" />
-                    <span>{showManualUrl ? "Hide URL input" : "Or paste image URL"}</span>
+                    <Link2 className="w-3.5 h-3.5" />
+                    <span>{showManualUrl ? "Hide image URL" : "Paste image URL"}</span>
                   </button>
                 </div>
 
-                {/* Hidden File Input */}
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -646,17 +672,14 @@ export default function AdminCompaniesPage() {
                   className="hidden"
                 />
 
-                {/* Drag and Drop Zone or Preview */}
                 {formData.logo_url ? (
-                  <div className="relative bg-[#0e0e14] border-2 border-[#2a2a3c] rounded-xl p-3 flex items-center gap-3">
-                    {/* Visual Preview */}
-                    <div className="w-16 h-16 rounded-lg bg-[#1a1a26] border border-[#2a2a3c] flex items-center justify-center p-1 shrink-0 overflow-hidden relative">
-                      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:6px_6px]" />
+                  <div className="relative bg-[#0b0c10] border border-white/10 rounded-xl p-3.5 flex items-center gap-3.5">
+                    <div className="w-16 h-16 rounded-lg bg-[#16171e] border border-white/10 flex items-center justify-center p-1.5 shrink-0 overflow-hidden relative">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={formData.logo_url}
                         alt="Logo preview"
-                        className="max-h-full max-w-full object-contain relative z-10"
+                        className="max-h-full max-w-full object-contain"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
                             "https://placehold.co/100x100/1e1e2d/ffd700?text=Logo";
@@ -665,19 +688,19 @@ export default function AdminCompaniesPage() {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 text-emerald-400 text-[11px] font-mono mb-1">
+                      <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-medium mb-0.5">
                         <Check className="w-3.5 h-3.5" />
-                        <span>Logo Attached</span>
+                        <span>Logo attached</span>
                       </div>
-                      <p className="text-[10px] text-zinc-500 font-mono truncate" title={formData.logo_url}>
+                      <p className="text-xs text-zinc-500 truncate" title={formData.logo_url}>
                         {formData.logo_url}
                       </p>
-                      <div className="flex items-center gap-2 mt-2">
+                      <div className="flex items-center gap-2 mt-2.5">
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
                           disabled={isUploadingLogo}
-                          className="px-2.5 py-1 text-[10px] font-mono bg-[#1a1a26] hover:bg-yellow-400 hover:text-black text-zinc-300 rounded-md border border-[#2a2a3c] transition-colors cursor-pointer flex items-center gap-1"
+                          className="px-2.5 py-1 text-xs bg-white/[0.06] hover:bg-white/[0.12] text-zinc-200 rounded-lg border border-white/10 transition-colors cursor-pointer flex items-center gap-1.5"
                         >
                           <RefreshCw className={`w-3 h-3 ${isUploadingLogo ? "animate-spin" : ""}`} />
                           <span>Replace</span>
@@ -685,7 +708,7 @@ export default function AdminCompaniesPage() {
                         <button
                           type="button"
                           onClick={() => setFormData((prev) => ({ ...prev, logo_url: "" }))}
-                          className="px-2.5 py-1 text-[10px] font-mono bg-[#1a1a26] hover:bg-rose-500 hover:text-white text-zinc-400 rounded-md border border-[#2a2a3c] transition-colors cursor-pointer"
+                          className="px-2.5 py-1 text-xs bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 rounded-lg border border-rose-500/20 transition-colors cursor-pointer"
                         >
                           Remove
                         </button>
@@ -701,30 +724,31 @@ export default function AdminCompaniesPage() {
                     onDragLeave={() => setIsDragging(false)}
                     onDrop={handleDropFile}
                     onClick={() => !isUploadingLogo && fileInputRef.current?.click()}
-                    className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 ${
+                    className={`border border-dashed rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2.5 ${
                       isDragging
-                        ? "border-yellow-400 bg-yellow-400/10 scale-[1.01]"
-                        : "border-[#2a2a3c] bg-[#0e0e14] hover:border-yellow-400/60 hover:bg-[#12121c]"
+                        ? "border-amber-400 bg-amber-400/10"
+                        : "border-white/15 bg-[#0b0c10] hover:border-amber-400/60 hover:bg-[#14151c]"
                     }`}
                   >
                     {isUploadingLogo ? (
                       <div className="py-2 flex flex-col items-center gap-2">
-                        <Loader2 className="w-6 h-6 text-yellow-400 animate-spin" />
-                        <span className="font-mono text-zinc-400 text-[11px]">
-                          Uploading logo to Supabase CDN...
+                        <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
+                        <span className="text-zinc-400 text-xs">
+                          Uploading logo to storage...
                         </span>
                       </div>
                     ) : (
                       <>
-                        <div className="w-10 h-10 rounded-full bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center text-yellow-400">
+                        <div className="w-10 h-10 rounded-full bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-amber-400">
                           <UploadCloud className="w-5 h-5" />
                         </div>
                         <div>
-                          <p className="text-white font-mono text-[11px] font-bold">
-                            Drag & drop company logo here, or <span className="text-yellow-400 underline">browse</span>
+                          <p className="text-zinc-200 text-xs font-medium">
+                            Drag &amp; drop logo here, or{" "}
+                            <span className="text-amber-400 underline underline-offset-2">browse</span>
                           </p>
-                          <p className="text-[10px] text-zinc-500 font-mono mt-0.5">
-                            PNG (transparent), WebP, JPG (max 8MB)
+                          <p className="text-[11px] text-zinc-500 mt-1">
+                            PNG (transparent), WebP, JPG up to 50MB
                           </p>
                         </div>
                       </>
@@ -732,96 +756,67 @@ export default function AdminCompaniesPage() {
                   </div>
                 )}
 
-                {/* Collapsible Manual URL Input */}
                 {showManualUrl && (
-                  <div className="mt-2.5">
-                    <label className="block text-zinc-500 font-mono uppercase text-[10px] mb-1">
-                      Direct Image URL
-                    </label>
+                  <div className="mt-3">
                     <input
                       type="text"
                       value={formData.logo_url}
                       onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
                       placeholder="https://... or /assets/images/..."
-                      className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-mono text-[11px]"
+                      className="w-full bg-[#0b0c10] border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400/80"
                     />
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-zinc-400 font-mono uppercase mb-1">Website URL</label>
-                <input
-                  type="url"
-                  value={formData.website_url}
-                  onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-                  placeholder="https://company.com"
-                  className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400 font-mono text-[11px]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-zinc-400 font-mono uppercase mb-1">Collaboration Highlight</label>
+                <label className="block text-[13px] font-medium text-zinc-300 mb-1.5">
+                  Collaboration Highlight
+                </label>
                 <input
                   type="text"
                   value={formData.highlight}
                   onChange={(e) => setFormData({ ...formData, highlight: e.target.value })}
                   placeholder="e.g. Annual Gathering & Stage Rig"
-                  className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
+                  className="w-full bg-[#0b0c10] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/15 transition-all"
                 />
+                <p className="text-[11px] text-zinc-500 mt-1">
+                  Shown next to the sector tag when hovering a partner card
+                </p>
               </div>
+            </div>
 
-              <div>
-                <label className="block text-zinc-400 font-mono uppercase mb-1">Description</label>
-                <textarea
-                  rows={2}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Short description of the company and partnership context..."
-                  className="w-full bg-[#0e0e14] border border-[#2a2a3c] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-yellow-400"
-                ></textarea>
-              </div>
+            {/* Sticky Action Footer */}
+            <div className="px-6 py-4 border-t border-white/[0.08] bg-[#16171e] flex items-center justify-between gap-3 shrink-0">
+              <label className="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-zinc-300 select-none">
+                <input
+                  type="checkbox"
+                  checked={formData.is_active}
+                  onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+                  className="w-4 h-4 accent-amber-400 rounded border-white/20 cursor-pointer"
+                />
+                <span>Live on Website</span>
+              </label>
 
-              <div className="flex items-center gap-6 pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
-                  <input
-                    type="checkbox"
-                    checked={formData.featured}
-                    onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                    className="w-4 h-4 accent-yellow-400 rounded"
-                  />
-                  <span>★ Featured Partner</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
-                  <input
-                    type="checkbox"
-                    checked={formData.is_active}
-                    onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                    className="w-4 h-4 accent-yellow-400 rounded"
-                  />
-                  <span>Live on Website</span>
-                </label>
-              </div>
-
-              <div className="pt-4 border-t border-[#2a2a3c] flex items-center justify-end gap-3">
+              <div className="flex items-center gap-2.5">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-headline text-xs font-bold uppercase transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-zinc-300 hover:text-white text-xs font-medium border border-white/10 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs uppercase border-2 border-black shadow-[2px_2px_0px_#ffffff] transition-all cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50"
                 >
                   {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                   <span>{editingCompany ? "Save Changes" : "Create Company"}</span>
                 </button>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       )}
     </div>

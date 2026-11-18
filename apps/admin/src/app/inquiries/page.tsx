@@ -372,16 +372,23 @@ export default function InquiriesPage() {
 
       {/* Detailed Inquiry Modal */}
       {selectedInquiry && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#12121a] border-2 border-[#262638] rounded-2xl max-w-2xl w-full p-6 space-y-6 shadow-2xl relative animate-in fade-in zoom-in-95">
-            <div className="flex items-start justify-between border-b border-[#262638] pb-4">
+        <div
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4 overflow-hidden"
+          onClick={() => setSelectedInquiry(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#121318] border border-white/10 rounded-2xl max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.75)] relative"
+          >
+            {/* Sticky Header */}
+            <div className="px-6 py-4 border-b border-white/[0.08] bg-[#16171e] flex items-start justify-between shrink-0">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-mono tracking-widest text-yellow-400 uppercase font-bold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/20">
-                    LEAD DETAILS // STAGE 05
+                  <span className="text-[11px] font-medium text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-md border border-amber-400/20">
+                    Lead Details
                   </span>
                   <span
-                    className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full border ${
+                    className={`text-[11px] px-2.5 py-0.5 rounded-full border ${
                       STATUS_CONFIG[selectedInquiry.status].bg
                     } ${STATUS_CONFIG[selectedInquiry.status].text} ${
                       STATUS_CONFIG[selectedInquiry.status].border
@@ -390,101 +397,106 @@ export default function InquiriesPage() {
                     {STATUS_CONFIG[selectedInquiry.status].label}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-white">{selectedInquiry.fullName}</h3>
-                <p className="text-xs text-zinc-400 font-mono mt-0.5">
-                  ID: {selectedInquiry.id}
+                <h3 className="text-lg font-semibold text-white">{selectedInquiry.fullName}</h3>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Ref: {selectedInquiry.id}
                 </p>
               </div>
 
               <button
+                type="button"
                 onClick={() => setSelectedInquiry(null)}
-                className="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-[#1a1a26]"
+                className="w-8 h-8 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.06] flex items-center justify-center cursor-pointer transition-colors"
+                aria-label="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Client Metadata Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#181824] p-4 rounded-xl border border-[#262638]">
-              <div>
-                <span className="text-[10px] font-mono uppercase text-zinc-500 block">
-                  Client Email
-                </span>
-                <a
-                  href={`mailto:${selectedInquiry.email}`}
-                  className="text-xs font-semibold text-yellow-400 hover:underline flex items-center gap-1.5 mt-0.5"
-                >
-                  <Mail className="w-3.5 h-3.5" />
-                  <span>{selectedInquiry.email}</span>
-                </a>
+            {/* Dedicated Scrollable Body */}
+            <div className="flex-1 overflow-y-auto overscroll-contain p-6 space-y-5">
+              {/* Client Metadata Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#0b0c10] p-4 rounded-xl border border-white/10">
+                <div>
+                  <span className="text-xs text-zinc-500 block">
+                    Client Email
+                  </span>
+                  <a
+                    href={`mailto:${selectedInquiry.email}`}
+                    className="text-xs font-medium text-amber-400 hover:underline flex items-center gap-1.5 mt-1"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>{selectedInquiry.email}</span>
+                  </a>
+                </div>
+
+                <div>
+                  <span className="text-xs text-zinc-500 block">
+                    Target Service
+                  </span>
+                  <span className="text-xs font-medium text-white block mt-1">
+                    {selectedInquiry.serviceType}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-xs text-zinc-500 block">
+                    Submitted At
+                  </span>
+                  <span className="text-xs text-zinc-300 block mt-1">
+                    {new Date(selectedInquiry.createdAt).toLocaleString()}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-xs text-zinc-500 block">
+                    Security Hash (IP)
+                  </span>
+                  <span className="text-xs text-zinc-400 font-mono block mt-1 truncate">
+                    {selectedInquiry.ipHash || "N/A"}
+                  </span>
+                </div>
               </div>
 
-              <div>
-                <span className="text-[10px] font-mono uppercase text-zinc-500 block">
-                  Target Service
-                </span>
-                <span className="text-xs font-semibold text-white block mt-0.5">
-                  {selectedInquiry.serviceType}
-                </span>
+              {/* Full Brief Narrative */}
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-zinc-300 block">
+                  Project Brief &amp; Requirements
+                </label>
+                <div className="bg-[#0b0c10] border border-white/10 rounded-xl p-4 text-xs text-zinc-200 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap">
+                  {selectedInquiry.brief}
+                </div>
               </div>
 
-              <div>
-                <span className="text-[10px] font-mono uppercase text-zinc-500 block">
-                  Submitted At
+              {/* Lifecycle Status Switcher */}
+              <div className="space-y-2 border-t border-white/[0.08] pt-4">
+                <span className="text-xs text-zinc-400 font-medium block">
+                  Pipeline Status
                 </span>
-                <span className="text-xs text-zinc-300 font-mono block mt-0.5">
-                  {new Date(selectedInquiry.createdAt).toLocaleString()}
-                </span>
-              </div>
-
-              <div>
-                <span className="text-[10px] font-mono uppercase text-zinc-500 block">
-                  Security Hash (IP)
-                </span>
-                <span className="text-[11px] text-zinc-400 font-mono block mt-0.5 truncate">
-                  {selectedInquiry.ipHash || "N/A"}
-                </span>
+                <div className="flex flex-wrap gap-2">
+                  {(["pending", "reviewed", "contacted", "archived"] as InquiryStatus[]).map(
+                    (st) => (
+                      <button
+                        key={st}
+                        type="button"
+                        disabled={isUpdating || selectedInquiry.status === st}
+                        onClick={() => handleStatusChange(selectedInquiry.id, st)}
+                        className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all cursor-pointer ${
+                          selectedInquiry.status === st
+                            ? "bg-amber-400 text-zinc-950 border-amber-400 font-semibold"
+                            : "bg-[#0b0c10] text-zinc-300 border-white/10 hover:border-amber-400/50 hover:text-white"
+                        }`}
+                      >
+                        {STATUS_CONFIG[st].label}
+                      </button>
+                    )
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Full Brief Narrative */}
-            <div className="space-y-2">
-              <label className="text-[10px] font-mono uppercase tracking-wider text-yellow-400 font-bold block">
-                The Core Brief / Vision Constraints
-              </label>
-              <div className="bg-[#181824] border border-[#262638] rounded-xl p-4 text-xs text-zinc-200 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap font-body">
-                {selectedInquiry.brief}
-              </div>
-            </div>
-
-            {/* Lifecycle Status Switcher */}
-            <div className="space-y-2 border-t border-[#262638] pt-4">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold block">
-                Update Pipeline Status:
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {(["pending", "reviewed", "contacted", "archived"] as InquiryStatus[]).map(
-                  (st) => (
-                    <button
-                      key={st}
-                      type="button"
-                      disabled={isUpdating || selectedInquiry.status === st}
-                      onClick={() => handleStatusChange(selectedInquiry.id, st)}
-                      className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all cursor-pointer ${
-                        selectedInquiry.status === st
-                          ? "bg-yellow-400 text-black border-black font-bold shadow-[2px_2px_0px_#ffffff]"
-                          : "bg-[#1a1a24] text-zinc-300 border-[#262638] hover:border-yellow-400/50 hover:text-white"
-                      }`}
-                    >
-                      {STATUS_CONFIG[st].label}
-                    </button>
-                  )
-                )}
-              </div>
-            </div>
-
-            {/* Modal Footer Actions */}
-            <div className="flex items-center justify-between border-t border-[#262638] pt-4">
+            {/* Sticky Footer */}
+            <div className="px-6 py-4 border-t border-white/[0.08] bg-[#16171e] flex items-center justify-between shrink-0">
               <button
                 type="button"
                 onClick={() => handleDelete(selectedInquiry.id)}
@@ -495,11 +507,11 @@ export default function InquiriesPage() {
                 <span>Delete Lead</span>
               </button>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 <button
                   type="button"
                   onClick={() => setSelectedInquiry(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-[#1a1a26] transition-colors"
+                  className="px-4 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-white bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 transition-colors cursor-pointer"
                 >
                   Close
                 </button>
@@ -507,7 +519,7 @@ export default function InquiriesPage() {
                   href={`mailto:${selectedInquiry.email}?subject=Re:%20Art%20Work%20//%20Project%20Brief%20(${encodeURIComponent(
                     selectedInquiry.serviceType
                   )})`}
-                  className="px-4 py-2 rounded-xl bg-yellow-400 text-black font-bold text-xs hover:bg-yellow-300 transition-all flex items-center gap-2 shadow-[2px_2px_0px_#ffffff] cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-semibold text-xs transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Send Direct Email</span>
