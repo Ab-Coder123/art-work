@@ -16,8 +16,8 @@ export const ManifestoHero = React.memo(function ManifestoHero({
   content = DEFAULT_HERO_CONTENT,
   companies = DEFAULT_COMPANIES,
 }: ManifestoHeroProps) {
-  const heroImg = content.heroImage || "/assets/images/hero_studio_collective.jpg";
-  const heroAlt = content.heroImageAlt || "Art Work Creative Marketing Studio Collective";
+  const heroImg = content.heroImage || "/assets/images/creative_chief_intake.webp";
+  const heroAlt = content.heroImageAlt || "Art Work Event Producer On-Call Intake";
   const primaryCta = content.primaryCtaText || "VIEW OUR PROJECTS";
   const secondaryCta = content.secondaryCtaText || "EXPLORE OUR SERVICES";
   const proofTagline =
@@ -32,8 +32,15 @@ export const ManifestoHero = React.memo(function ManifestoHero({
         <div className="lg:col-span-6 flex flex-col justify-start">
           {/* Hero Typography Section */}
           <div className="relative mb-2 sm:mb-2.5 max-w-xl">
-            <h1 className="font-headline font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] xl:text-[46px] tracking-tight leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
-              <KineticBrushWord variant="wave" color="var(--color-primary-yellow, #dcb858)" strokeWidth={2.4} delay={0.1}>
+            <h1 className="font-headline font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] xl:text-[46px] tracking-[2px] sm:tracking-[3px] leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
+              <KineticBrushWord
+                variant="wave"
+                color="var(--color-primary-yellow, #dcb858)"
+                strokeWidth={2.4}
+                delay={0.1}
+                showBrushTip={false}
+                className="tracking-[0.12em] [font-kerning:none]"
+              >
                 {content.headlinePart1}
               </KineticBrushWord>{" "}
               <br />
@@ -47,7 +54,7 @@ export const ManifestoHero = React.memo(function ManifestoHero({
                 ></motion.span>
                 <span className="text-black relative z-10 px-1.5 sm:px-2.5">{content.headlinePart2}</span>
                 {/* Slender Hand-drawn Paintbrush Stroke */}
-                <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.0} delay={0.35} />
+                <KineticBrushStroke variant="double" color="#111111" strokeWidth={2.0} delay={0.35} showBrushTip={false} />
               </span>
             </h1>
           </div>
@@ -139,7 +146,7 @@ export const ManifestoHero = React.memo(function ManifestoHero({
               fill
               priority
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 45vw"
-              className="object-cover rounded-2xl"
+              className="object-cover object-center rounded-2xl"
               unoptimized={heroImg.startsWith("http") || heroImg.startsWith("data:")}
             />
           </div>

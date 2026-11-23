@@ -332,8 +332,8 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     ],
     canvasHeader: "EVENT_PRODUCTION_CANVAS.V4",
     canvasTag: "LIVE_DELIVERY_ACTIVE",
-    heroImage: SITE_MEDIA.heroCollective,
-    heroImageAlt: "Art Work Event Planning and Production Studio Collective",
+    heroImage: SITE_MEDIA.creativeChiefIntake,
+    heroImageAlt: "Art Work Event Producer On-Call Intake",
   },
 
   whyUsTeaser: {
