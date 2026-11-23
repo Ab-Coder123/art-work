@@ -32,14 +32,14 @@ export const ManifestoHero = React.memo(function ManifestoHero({
         <div className="lg:col-span-6 flex flex-col justify-start">
           {/* Hero Typography Section */}
           <div className="relative mb-2 sm:mb-2.5 max-w-xl">
-            <h1 className="font-headline font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] xl:text-[46px] tracking-[2px] sm:tracking-[3px] leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
+            <h1 className="font-headline font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[40px] xl:text-[46px] tracking-[1.5px] leading-[1.08] sm:leading-[1.04] text-black dark:text-white">
               <KineticBrushWord
                 variant="wave"
                 color="var(--color-primary-yellow, #dcb858)"
                 strokeWidth={2.4}
                 delay={0.1}
                 showBrushTip={false}
-                className="tracking-[0.12em] [font-kerning:none]"
+                className="[font-kerning:none]"
               >
                 {content.headlinePart1}
               </KineticBrushWord>{" "}
