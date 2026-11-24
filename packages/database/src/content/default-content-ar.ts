@@ -447,7 +447,7 @@ export const DEFAULT_SITE_CONTENT_AR: SiteContent = {
     sceneTitle: "منهجيتنا في التنفيذ",
     statusBadge: "فريق واحد // تنفيذ ميداني حي",
     heroHeadlineRow1: "لماذا",
-    heroHeadlineRow2: "آرت وورك",
+    heroHeadlineRow2: "ARTWORK",
     roiBadge: "تطوير إبداعي وتخطيط دقيق",
     contentCreationBadge: "إنتاج وتنفيذ ميداني متكامل",
     doodleStickers: [

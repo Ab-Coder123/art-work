@@ -232,12 +232,12 @@ export default function WhyUsPage() {
         whatsappPhone={whatsappPhone}
       />
 
-      {/* ================= VERTICAL STAGE SCROLLYTELLING INDICATOR (Fixed Right) ================= */}
-      <aside className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-center gap-4">
+      {/* ================= VERTICAL STAGE SCROLLYTELLING INDICATOR (Fixed Side) ================= */}
+      <aside className="fixed end-4 sm:end-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-center gap-4">
         <div className="text-[9px] font-bold uppercase tracking-widest text-black/40 dark:text-zinc-500 rotate-90 origin-bottom mb-4">
           Stage Cue
         </div>
-        <Link className="group flex items-center justify-end w-28 gap-2" href="/#stage-01" title="Scene 01">
+        <Link className="group flex items-center ltr:justify-end rtl:justify-start w-28 gap-2" href="/#stage-01" title="Scene 01">
           <span className="opacity-0 group-hover:opacity-100 transition-opacity font-headline text-[10px] font-extrabold tracking-wider uppercase text-black/60 dark:text-zinc-400">
             {layout.navHomeLabel}
           </span>
@@ -246,7 +246,7 @@ export default function WhyUsPage() {
           </span>
         </Link>
         <div className="w-0.5 h-6 bg-black/20 dark:bg-zinc-700"></div>
-        <div className="group flex items-center justify-end w-36 gap-2" title="Scene 02 Active">
+        <div className="group flex items-center ltr:justify-end rtl:justify-start w-36 gap-2" title="Scene 02 Active">
           <span className="font-headline text-[10px] font-black tracking-wider uppercase text-black bg-yellow-400 px-2 py-0.5 rounded border border-black">
             {layout.navWhyUsLabel}
           </span>
@@ -255,7 +255,7 @@ export default function WhyUsPage() {
           </span>
         </div>
         <div className="w-0.5 h-6 bg-black/20 dark:bg-zinc-700"></div>
-        <Link className="group flex items-center justify-end w-28 gap-2" href="/#stage-03" title="Scene 03">
+        <Link className="group flex items-center ltr:justify-end rtl:justify-start w-28 gap-2" href="/#stage-03" title="Scene 03">
           <span className="opacity-0 group-hover:opacity-100 transition-opacity font-headline text-[10px] font-extrabold tracking-wider uppercase text-black/60 dark:text-zinc-400">
             {layout.navServicesLabel}
           </span>
@@ -264,7 +264,7 @@ export default function WhyUsPage() {
           </span>
         </Link>
         <div className="w-0.5 h-6 bg-black/20 dark:bg-zinc-700"></div>
-        <Link className="group flex items-center justify-end w-28 gap-2" href="/#brief-inquiry" title="Scene 04">
+        <Link className="group flex items-center ltr:justify-end rtl:justify-start w-28 gap-2" href="/#brief-inquiry" title="Scene 04">
           <span className="opacity-0 group-hover:opacity-100 transition-opacity font-headline text-[10px] font-extrabold tracking-wider uppercase text-black/60 dark:text-zinc-400">
             {layout.navContactLabel}
           </span>
@@ -275,13 +275,13 @@ export default function WhyUsPage() {
       </aside>
 
       {/* ================= MAIN VIEWPORT STAGE ================= */}
-      <main className="relative z-10 pt-24 sm:pt-28 pb-20 max-w-6xl mx-auto px-6 sm:px-8 xl:pr-14">
+      <main className="relative z-10 pt-24 sm:pt-28 pb-20 max-w-6xl mx-auto px-6 sm:px-8 xl:px-12 xl:pe-20">
         {/* HERO SECTION: Interactive Sticky Board & Architectural Easel */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start mb-20">
           {/* LEFT COLUMN: Centerpiece Marker Typography & Surrounding Doodle Stickers */}
           <div className="lg:col-span-7 relative pt-2">
             {/* Top Floating Badges */}
-            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-3">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-4 sm:mb-5">
               <motion.div
                 initial={{ opacity: 0, y: -10, rotate: -4 }}
                 animate={{ opacity: 1, y: 0, rotate: -3 }}
@@ -305,8 +305,8 @@ export default function WhyUsPage() {
             </div>
 
             {/* ICONIC DRY-BRUSH MARKER CENTERPIECE */}
-            <div className="relative my-3 inline-block select-none">
-              <div className="absolute -top-8 left-36 sm:left-44 transform -rotate-12 z-20 pointer-events-none">
+            <div className="relative my-4 inline-block select-none">
+              <div className="absolute -top-8 ltr:left-36 ltr:sm:left-44 rtl:right-28 rtl:sm:right-36 transform -rotate-12 z-20 pointer-events-none">
                 <svg
                   className="w-12 h-10 text-yellow-500"
                   fill="currentColor"
@@ -323,17 +323,23 @@ export default function WhyUsPage() {
                 </svg>
               </div>
 
-              <div className="font-brush text-7xl sm:text-8xl md:text-9xl text-black dark:text-white leading-none tracking-tight">
+              <div
+                className={`${
+                  locale === "ar"
+                    ? "font-headline font-black text-6xl sm:text-7xl md:text-8xl"
+                    : "font-brush text-7xl sm:text-8xl md:text-9xl"
+                } text-black dark:text-white leading-none tracking-tight mb-2 sm:mb-3`}
+              >
                 {content.heroHeadlineRow1}
               </div>
 
-              <div className="relative inline-block mt-1 font-brush text-7xl sm:text-8xl md:text-9xl text-black leading-none brush-swipe-bg">
-                <span className="relative z-10">
+              <div className="relative inline-block mt-2 sm:mt-3 font-brush text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-black leading-none brush-swipe-bg">
+                <span className="relative z-10 px-3 sm:px-6 inline-block uppercase">
                   {content.heroHeadlineRow2}
                 </span>
               </div>
 
-              <div className="absolute -bottom-6 right-0 transform translate-x-12 translate-y-2 pointer-events-none hidden sm:block">
+              <div className="absolute -bottom-6 ltr:right-0 ltr:translate-x-12 rtl:left-0 rtl:-translate-x-12 rtl:scale-x-[-1] transform translate-y-2 pointer-events-none hidden sm:block">
                 <svg
                   className="w-16 h-14 text-black dark:text-zinc-400"
                   fill="none"
@@ -349,7 +355,7 @@ export default function WhyUsPage() {
             </div>
 
             {/* Surrounding Floating Taped Doodle Stickers */}
-            <div className="flex flex-wrap gap-2.5 sm:gap-3 items-center my-5 relative z-10">
+            <div className="flex flex-wrap gap-2.5 sm:gap-3 items-center my-6 sm:my-8 relative z-10">
               {stickers[0] && (
                 <motion.div
                   whileHover={{ scale: 1.05, rotate: 0 }}
@@ -485,7 +491,7 @@ export default function WhyUsPage() {
             </div>
 
             {/* Floating Badge: 0% COOKIE CUTTER */}
-            <div className="absolute -bottom-4 left-6 z-20 transform -rotate-2">
+            <div className="absolute -bottom-4 ltr:left-6 rtl:right-6 z-20 transform ltr:-rotate-2 rtl:rotate-2">
               <div className="bg-yellow-400 text-black border-2 border-black font-headline text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-xl comic-shadow-sm flex items-center gap-2">
                 <XCircle className="w-4 h-4 text-black stroke-[2.5]" />
                 <span>{content.zeroTemplatesBadge || "0% COOKIE-CUTTER TEMPLATES"}</span>
