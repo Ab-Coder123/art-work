@@ -1,4 +1,4 @@
-import type { SiteContent } from "@art-work/types";
+import type { Locale, SiteContent } from "@art-work/types";
 
 export type EditorSectionKey = Exclude<keyof SiteContent, "version" | "updatedAt">;
 
@@ -10,6 +10,7 @@ export type UpdateSectionFn = <K extends EditorSectionKey>(
 export interface RevisionItem {
   id: string;
   sectionKey: string;
+  locale?: Locale;
   action: string;
   actorEmail: string;
   createdAt: string;

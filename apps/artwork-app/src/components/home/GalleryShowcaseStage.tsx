@@ -10,6 +10,8 @@ import rawProjects from "@/data/projects.json";
 import { useShowcaseStore } from "@/store/useShowcaseStore";
 import {
   type ProjectRecord,
+  getUiDictionary,
+  resolveLocalizedProject,
   resolveSafeYouTubeEmbed,
   resolveSafeFacebookEmbed,
   getProjectThumbnailUrl,
@@ -21,6 +23,8 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
   content = DEFAULT_HOME_SHOWCASE_CONTENT,
   initialProjects,
 }: GalleryShowcaseStageProps) {
+  const locale = useShowcaseStore((s) => s.locale);
+  const dict = getUiDictionary(locale);
   const storeProjects = useShowcaseStore((s) => s.projects);
   const hasSyncedLive = useShowcaseStore((s) => s.hasSyncedLive);
   const ensureFreshData = useShowcaseStore((s) => s.ensureFreshData);
@@ -29,10 +33,14 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
   const [stageFbOrientationOverride, setStageFbOrientationOverride] = useState<boolean | null>(null);
 
   const projectsList = useMemo(() => {
-    if (hasSyncedLive && storeProjects.length > 0) return storeProjects;
-    if (Array.isArray(initialProjects) && initialProjects.length > 0) return initialProjects;
-    return rawProjects as ProjectRecord[];
-  }, [hasSyncedLive, storeProjects, initialProjects]);
+    const rawList =
+      hasSyncedLive && storeProjects.length > 0
+        ? storeProjects
+        : Array.isArray(initialProjects) && initialProjects.length > 0
+        ? initialProjects
+        : (rawProjects as ProjectRecord[]);
+    return rawList.map((p) => resolveLocalizedProject(p, locale));
+  }, [hasSyncedLive, storeProjects, initialProjects, locale]);
 
   useEffect(() => {
     setStageFbOrientationOverride(null);
@@ -100,7 +108,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
             <span>
               {content.viewAllCtaText} ({projectsList.length})
             </span>
-            <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+            <ArrowRight className="w-4 h-4 stroke-[2.5] rtl:rotate-180" />
           </Link>
         </div>
       </div>
@@ -110,7 +118,9 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
         <div className="mb-3 flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
           <span className="inline-flex items-center gap-1 bg-black text-yellow-400 text-[10px] font-headline font-black uppercase px-2.5 py-1.5 rounded-lg border border-black shrink-0">
             <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-            <span>HOME VIDEOS ({showcase.featuredVideos.length})</span>
+            <span>
+              {locale === "ar" ? "فيديوهات المختارة" : "HOME VIDEOS"} ({showcase.featuredVideos.length})
+            </span>
           </span>
           {showcase.featuredVideos.map((vid, idx) => {
             const isCurrent = activeShowcase?.id === vid.id;
@@ -278,7 +288,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-headline font-black px-4 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
                   >
                     <span>{content.exploreGalleryCtaText}</span>
-                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                    <ArrowRight className="w-4 h-4 stroke-[2.5] rtl:rotate-180" />
                   </Link>
                 </div>
               </div>
@@ -309,7 +319,15 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                   <div className="flex items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 bg-amber-400 text-black px-2.5 py-1 rounded text-[11px] font-headline font-black uppercase border border-black shadow-sm">
                       <FileText className="w-3.5 h-3.5" />
-                      <span>{activeShowcase.category === "branding" ? "GIVEAWAYS CATALOG" : "BLUEPRINT & SPECS"}</span>
+                      <span>
+                        {activeShowcase.category === "branding"
+                          ? locale === "ar"
+                            ? "كتالوج الهدايا الترويجية"
+                            : "GIVEAWAYS CATALOG"
+                          : locale === "ar"
+                          ? "المخطط والمواصفات"
+                          : "BLUEPRINT & SPECS"}
+                      </span>
                     </span>
                   </div>
                   <a
@@ -318,7 +336,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black px-3.5 py-1.5 rounded-lg border-2 border-black font-headline font-black text-xs comic-shadow-sm transition-all"
                   >
-                    <span>OPEN PDF ↗</span>
+                    <span>{dict.gallery.openInNewTab} ↗</span>
                   </a>
                 </div>
               </div>
@@ -332,7 +350,9 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     {activeShowcase.year || 2026}
                   </span>
                   <span className="bg-amber-400 text-black text-[10px] font-headline font-black px-2.5 py-0.5 rounded border border-black comic-shadow-sm uppercase">
-                    {activeShowcase.category === "branding" ? "PDF CATALOG" : "PDF BLUEPRINT"}
+                    {activeShowcase.category === "branding"
+                      ? dict.gallery.viewGiveawaysPdf
+                      : dict.gallery.viewBlueprint}
                   </span>
                   <span className="text-xs font-mono text-black/60 dark:text-zinc-400 uppercase">
                     {activeShowcase.client}
@@ -364,7 +384,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-black text-xs font-headline font-black px-3.5 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
                   >
                     <FileText className="w-4 h-4" />
-                    <span>OPEN PDF CATALOG</span>
+                    <span>{dict.gallery.tabPdf}</span>
                     <span className="text-[10px]">↗</span>
                   </a>
                   <Link
@@ -372,7 +392,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                     className="inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-headline font-black px-4 py-1.5 rounded border-2 border-black comic-shadow-sm transition-all"
                   >
                     <span>{content.exploreGalleryCtaText}</span>
-                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                    <ArrowRight className="w-4 h-4 stroke-[2.5] rtl:rotate-180" />
                   </Link>
                 </div>
               </div>
@@ -412,7 +432,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                         {p.client}
                       </span>
                       <span className="bg-yellow-400 text-black text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black shrink-0">
-                        ★ VIDEO
+                        ★ {dict.gallery.videoTag}
                       </span>
                     </div>
                     <h3 className="font-headline font-black text-sm sm:text-base text-black dark:text-white mb-1 line-clamp-1">
@@ -429,7 +449,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                       className="inline-flex items-center gap-1 text-[11px] bg-yellow-400 hover:bg-yellow-300 text-black font-black px-2.5 py-1 rounded border border-black cursor-pointer transition-colors"
                     >
                       <Play className="w-3 h-3 fill-current" />
-                      <span>MAIN STAGE</span>
+                      <span>{locale === "ar" ? "عرض رئيسي" : "MAIN STAGE"}</span>
                     </button>
                     <Link
                       href="/gallery"
@@ -496,7 +516,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                       className="inline-flex items-center gap-1 text-[11px] bg-yellow-400 hover:bg-yellow-300 text-black font-black px-2.5 py-1 rounded border border-black cursor-pointer transition-colors"
                     >
                       <Play className="w-3 h-3 fill-current" />
-                      <span>MAIN STAGE</span>
+                      <span>{locale === "ar" ? "عرض رئيسي" : "MAIN STAGE"}</span>
                     </button>
                     <a
                       href={fbEmbed.canonicalUrl}
@@ -534,9 +554,17 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                       <span className="absolute top-2 left-2 bg-yellow-400 text-black text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm font-mono">
                         {p.year || 2026}
                       </span>
-                      <span className="absolute top-2 right-2 inline-flex items-center gap-1 bg-amber-500 text-black text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black shadow-sm uppercase">
+                      <span className="absolute top-2 end-2 inline-flex items-center gap-1 bg-amber-500 text-black text-[9px] font-headline font-black px-2 py-0.5 rounded border border-black shadow-sm uppercase">
                         <FileText className="w-2.5 h-2.5" />
-                        <span>{p.category === "branding" ? "PDF CATALOG" : "PDF SPECS"}</span>
+                        <span>
+                          {p.category === "branding"
+                            ? locale === "ar"
+                              ? "كتالوج PDF"
+                              : "PDF CATALOG"
+                            : locale === "ar"
+                            ? "مواصفات PDF"
+                            : "PDF SPECS"}
+                        </span>
                       </span>
                     </div>
                     <div className="text-[10px] sm:text-xs font-mono text-black/60 dark:text-zinc-400 mb-1 uppercase">
@@ -557,7 +585,7 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
                       className="inline-flex items-center gap-1 bg-amber-400 hover:bg-amber-300 text-black px-2.5 py-1 rounded border border-black comic-shadow-sm text-[11px] font-black transition-colors"
                     >
                       <FileText className="w-3 h-3" />
-                      <span>OPEN PDF ↗</span>
+                      <span>{dict.gallery.openInNewTab} ↗</span>
                     </a>
                     <Link
                       href="/gallery"
@@ -625,10 +653,9 @@ export const GalleryShowcaseStage = React.memo(function GalleryShowcaseStage({
           className="w-full inline-flex items-center justify-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs py-2.5 px-4 rounded-lg border-2 border-black comic-shadow active:scale-95 transition-all"
         >
           <span>
-            {content.mobileArchiveCtaText} ({projectsList.length} SHOWCASE
-            {projectsList.length === 1 ? "" : "S"})
+            {content.mobileArchiveCtaText} ({projectsList.length})
           </span>
-          <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+          <ArrowRight className="w-4 h-4 stroke-[2.5] rtl:rotate-180" />
         </Link>
       </div>
     </div>

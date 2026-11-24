@@ -7,16 +7,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, FileText, ArrowRight } from "lucide-react";
 import {
   type ProjectRecord,
+  getUiDictionary,
+  resolveLocalizedProject,
   resolveSafeYouTubeEmbed,
   resolveSafeFacebookEmbed,
 } from "@art-work/types";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 
 interface GalleryProjectModalProps {
   project: ProjectRecord | null;
   onClose: () => void;
 }
 
-export function GalleryProjectModal({ project, onClose }: GalleryProjectModalProps) {
+export function GalleryProjectModal({ project: rawProject, onClose }: GalleryProjectModalProps) {
+  const locale = useShowcaseStore((s) => s.locale);
+  const dict = getUiDictionary(locale);
+  const project = rawProject ? resolveLocalizedProject(rawProject, locale) : null;
   const [activeModalImage, setActiveModalImage] = useState<string | null>(null);
   const [modalFbOrientationOverride, setModalFbOrientationOverride] = useState<boolean | null>(null);
   const [activeMediaTab, setActiveMediaTab] = useState<"youtube" | "facebook">("youtube");
@@ -78,8 +84,8 @@ export function GalleryProjectModal({ project, onClose }: GalleryProjectModalPro
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-yellow-400 hover:bg-black hover:text-white text-black border-2 border-black font-black flex items-center justify-center transition-colors cursor-pointer"
-            aria-label="Close dialog"
+            className="absolute top-4 end-4 w-9 h-9 rounded-full bg-yellow-400 hover:bg-black hover:text-white text-black border-2 border-black font-black flex items-center justify-center transition-colors cursor-pointer"
+            aria-label={dict.gallery.closeModal}
           >
             ✕
           </button>
@@ -357,23 +363,25 @@ export function GalleryProjectModal({ project, onClose }: GalleryProjectModalPro
                       <div className="font-headline font-black text-xs uppercase truncate">
                         {project.pdfTitle ||
                           (project.category === "branding"
-                            ? "PROMOTIONAL GIVEAWAYS CATALOG & SPECS (PDF)"
-                            : "ARCHITECTURAL BLUEPRINT & 3D SPEC SHEET")}
+                            ? dict.gallery.viewGiveawaysPdf
+                            : dict.gallery.viewBlueprint)}
                       </div>
                       <span className="text-[10px] font-mono text-black/70 block">
-                        Official PDF Document • Click to view full catalog & specifications
+                        {locale === "ar"
+                          ? "ملف PDF رسمي • اضغط لعرض الكتالوج والمواصفات الكاملة"
+                          : "Official PDF Document • Click to view full catalog & specifications"}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0 ml-auto">
+                  <div className="flex items-center gap-2 shrink-0 ms-auto">
                     <a
                       href={project.pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-yellow-400 font-headline font-bold text-xs uppercase rounded border border-black flex items-center gap-1.5 active:scale-95 transition-transform"
                     >
-                      <span>OPEN PDF ↗</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <span>{dict.gallery.openInNewTab} ↗</span>
+                      <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
                     </a>
                   </div>
                 </div>
@@ -451,7 +459,7 @@ export function GalleryProjectModal({ project, onClose }: GalleryProjectModalPro
               href="/#stage-04"
               className="w-full sm:w-auto px-6 py-2.5 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-300 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors text-center"
             >
-              REQUEST SIMILAR
+              {locale === "ar" ? "اطلب مشروعاً مماثلاً" : "REQUEST SIMILAR"}
             </Link>
           </div>
         </motion.div>

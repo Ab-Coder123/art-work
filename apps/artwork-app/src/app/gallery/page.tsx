@@ -54,6 +54,8 @@ import {
 import {
   type ProjectCategory,
   type ProjectRecord,
+  getUiDictionary,
+  resolveLocalizedProject,
   resolveSafeYouTubeEmbed,
   getProjectThumbnailUrl,
 } from "@art-work/types";
@@ -70,7 +72,13 @@ const KineticParticleCanvas = dynamic(
 );
 
 export default function GalleryPage() {
-  const projects = useShowcaseStore((s) => s.projects);
+  const locale = useShowcaseStore((s) => s.locale);
+  const dict = getUiDictionary(locale);
+  const rawProjects = useShowcaseStore((s) => s.projects);
+  const projects = React.useMemo(
+    () => rawProjects.map((p) => resolveLocalizedProject(p, locale)),
+    [rawProjects, locale]
+  );
   const galleryContent = useShowcaseStore((s) => s.siteContent.galleryPage);
   const layout = useShowcaseStore((s) => s.siteContent.layout);
   const contact = useShowcaseStore((s) => s.siteContent.contact);
@@ -476,22 +484,24 @@ export default function GalleryPage() {
                     {project.category === "branding" && project.pdfUrl ? (
                       <>
                         <FileText className="w-3.5 h-3.5" />
-                        <span>VIEW CATALOG &amp; PDF ↗</span>
+                        <span>{dict.gallery.viewGiveawaysPdf} ↗</span>
                       </>
                     ) : ytMedia ? (
                       <>
                         <Play className="w-3.5 h-3.5 fill-current" />
                         <span>
                           {project.isShort || ytMedia.isShort
-                            ? "WATCH REEL ↗"
-                            : "WATCH SHOWREEL ↗"}
+                            ? `${dict.gallery.youtubeShortsBadge} ↗`
+                            : `${dict.gallery.watchVideo} ↗`}
                         </span>
                       </>
                     ) : project.facebookUrl ? (
                       <>
                         <Play className="w-3.5 h-3.5 fill-current" />
                         <span>
-                          {project.isShort ? "WATCH FB REEL ↗" : "WATCH FB VIDEO ↗"}
+                          {project.isShort
+                            ? `${dict.gallery.facebookReelBadge} ↗`
+                            : `${dict.gallery.facebookVideoBadge} ↗`}
                         </span>
                       </>
                     ) : project.pdfUrl ? (
@@ -499,14 +509,16 @@ export default function GalleryPage() {
                         <FileText className="w-3.5 h-3.5" />
                         <span>
                           {project.category === "branding"
-                            ? "VIEW CATALOG & PDF ↗"
-                            : "VIEW 3D & PDF ↗"}
+                            ? `${dict.gallery.viewGiveawaysPdf} ↗`
+                            : `${dict.gallery.viewBlueprint} ↗`}
                         </span>
                       </>
                     ) : (
                       <>
                         <Pencil className="w-3.5 h-3.5" />
-                        <span>SEE MORE</span>
+                        <span>
+                          {locale === "ar" ? "عرض التفاصيل" : "SEE MORE"}
+                        </span>
                       </>
                     )}
                   </button>
@@ -517,7 +529,7 @@ export default function GalleryPage() {
             {filteredProjects.length === 0 && (
               <div className="col-span-full py-12 text-center border-2 border-dashed border-black/30 dark:border-zinc-700 rounded-xl bg-white/50 dark:bg-[#151520]/50">
                 <p className="font-headline font-bold text-sm text-black dark:text-zinc-200 mb-3">
-                  No projects categorized under this filter yet.
+                  {dict.gallery.noProjectsFound}
                 </p>
                 <button
                   onClick={() => setActiveFilter("all")}
@@ -618,7 +630,7 @@ export default function GalleryPage() {
                     className="w-full inline-flex items-center justify-center gap-2 py-3 px-6 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-300 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors"
                   >
                     <span>{galleryContent.spotlightCtaText}</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 rtl:rotate-180" />
                   </a>
                 </div>
               </div>
@@ -661,17 +673,24 @@ export default function GalleryPage() {
                   className="px-6 py-3 bg-white hover:bg-yellow-100 text-black font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm flex items-center gap-2 active:scale-95 transition-transform"
                 >
                   <span>
-                    {galleryContent.ctaEmailPrefix}: {contact.email}
+                    {galleryContent.ctaEmailPrefix}:{" "}
+                    <span dir="ltr">{contact.email}</span>
                   </span>
                 </a>
               </div>
 
               <div className="mt-6 pt-4 border-t border-black/20 flex flex-wrap items-center gap-4 font-mono text-xs text-black/80">
-                <span>★ ONE CONNECTED TEAM</span>
+                <span>
+                  {locale === "ar" ? "★ فريق واحد متكامل" : "★ ONE CONNECTED TEAM"}
+                </span>
                 <span>•</span>
                 <span>📍 {contact.studioLocations}</span>
                 <span>•</span>
-                <span>CREATIVE | PLANNING | PRODUCTION</span>
+                <span>
+                  {locale === "ar"
+                    ? "إبداع | تخطيط | إنتاج"
+                    : "CREATIVE | PLANNING | PRODUCTION"}
+                </span>
               </div>
             </div>
           </ScrollReveal>

@@ -3,6 +3,14 @@
  * Single source of truth shared across @art-work/artwork-app, @art-work/admin, and @art-work/database
  */
 
+import type {
+  CompanyTranslationsMap,
+  Locale,
+  ProjectTranslationsMap,
+} from "./i18n";
+
+export * from "./i18n";
+
 export type ProjectCategorySlug =
   | "stage"
   | "conferences"
@@ -58,6 +66,8 @@ export interface ProjectRecord {
   behanceUrl?: string | null;
   /** Optional Facebook video or reel link */
   facebookUrl?: string | null;
+  /** Optional localized text overrides (e.g. Arabic `translations.ar`) */
+  translations?: ProjectTranslationsMap;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -92,6 +102,7 @@ export interface DbProjectRecord {
   pdf_title?: string | null;
   behance_url?: string | null;
   facebook_url?: string | null;
+  translations?: ProjectTranslationsMap | null;
   status: PublicationStatus;
   order_index: number;
   featured: boolean;
@@ -192,6 +203,10 @@ export function mapDbProjectToRecord(row: DbProjectRecord): ProjectRecord {
     pdfTitle: row.pdf_title ?? null,
     behanceUrl: row.behance_url ?? null,
     facebookUrl: row.facebook_url ?? null,
+    translations:
+      row.translations && typeof row.translations === "object"
+        ? row.translations
+        : undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -242,6 +257,7 @@ export function mapRecordToDbProject(
     pdf_title: record.pdfTitle ?? null,
     behance_url: record.behanceUrl ? String(record.behanceUrl).trim() : null,
     facebook_url: record.facebookUrl ? String(record.facebookUrl).trim() : null,
+    translations: record.translations ?? {},
     status: record.status,
     order_index: record.order,
     featured: Boolean(record.featured),
@@ -634,6 +650,11 @@ export interface SiteContent {
   layout: LayoutSectionContent;
 }
 
+export interface BilingualSiteContent {
+  en: SiteContent;
+  ar: SiteContent;
+}
+
 // ---------------------------------------------------------------------------
 // Client Inquiry & Lead Submission Types (Phase 08)
 // ---------------------------------------------------------------------------
@@ -685,6 +706,8 @@ export interface CompanyRecord {
   order: number;
   featured?: boolean;
   isActive: boolean;
+  /** Optional localized text overrides (e.g. Arabic `translations.ar`) */
+  translations?: CompanyTranslationsMap;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -701,6 +724,7 @@ export interface DbCompanyRecord {
   order_index: number;
   featured: boolean;
   is_active: boolean;
+  translations?: CompanyTranslationsMap | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -718,8 +742,97 @@ export function mapDbCompanyToRecord(row: DbCompanyRecord): CompanyRecord {
     order: row.order_index ?? 0,
     featured: Boolean(row.featured),
     isActive: Boolean(row.is_active),
+    translations:
+      row.translations && typeof row.translations === "object"
+        ? row.translations
+        : undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+  };
+}
+
+function pickLocalizedString(
+  localized: string | null | undefined,
+  fallback: string
+): string {
+  return typeof localized === "string" && localized.trim().length > 0
+    ? localized.trim()
+    : fallback;
+}
+
+function pickLocalizedOptionalString(
+  localized: string | null | undefined,
+  fallback: string | null | undefined
+): string | null | undefined {
+  if (typeof localized === "string" && localized.trim().length > 0) {
+    return localized.trim();
+  }
+  return fallback;
+}
+
+function pickLocalizedArray(
+  localized: string[] | undefined,
+  fallback: string[]
+): string[] {
+  if (Array.isArray(localized)) {
+    const cleaned = localized
+      .filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+      .map((item) => item.trim());
+    if (cleaned.length > 0) return cleaned;
+  }
+  return fallback;
+}
+
+/**
+ * Resolves a ProjectRecord into the requested locale ("en" or "ar"),
+ * gracefully falling back field-by-field to English for any untranslated field.
+ */
+export function resolveLocalizedProject(
+  project: ProjectRecord,
+  locale: Locale
+): ProjectRecord {
+  if (locale !== "ar") return project;
+  const ar = project.translations?.ar;
+  if (!ar) return project;
+
+  return {
+    ...project,
+    title: pickLocalizedString(ar.title, project.title),
+    client: pickLocalizedString(ar.client, project.client),
+    description: pickLocalizedString(ar.description, project.description),
+    stamp: pickLocalizedString(ar.stamp, project.stamp),
+    metaBadge: pickLocalizedString(ar.metaBadge, project.metaBadge),
+    stats: pickLocalizedString(ar.stats, project.stats),
+    statsSub: pickLocalizedString(ar.statsSub, project.statsSub),
+    altText: pickLocalizedString(ar.altText, project.altText),
+    specs: pickLocalizedArray(ar.specs, project.specs),
+    tags: pickLocalizedArray(ar.tags, project.tags),
+    youtubeTitle: pickLocalizedOptionalString(ar.youtubeTitle, project.youtubeTitle),
+    youtubeDescription: pickLocalizedOptionalString(
+      ar.youtubeDescription,
+      project.youtubeDescription
+    ),
+    pdfTitle: pickLocalizedOptionalString(ar.pdfTitle, project.pdfTitle),
+  };
+}
+
+/**
+ * Resolves a CompanyRecord into the requested locale ("en" or "ar"),
+ * gracefully falling back field-by-field to English for any untranslated field.
+ */
+export function resolveLocalizedCompany(
+  company: CompanyRecord,
+  locale: Locale
+): CompanyRecord {
+  if (locale !== "ar") return company;
+  const ar = company.translations?.ar;
+  if (!ar) return company;
+
+  return {
+    ...company,
+    name: pickLocalizedString(ar.name, company.name),
+    highlight: pickLocalizedString(ar.highlight, company.highlight),
+    description: pickLocalizedString(ar.description, company.description),
   };
 }
 

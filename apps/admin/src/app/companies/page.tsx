@@ -20,8 +20,14 @@ import {
   UploadCloud,
   Link2,
   RefreshCw,
+  Languages,
 } from "lucide-react";
-import { type CompanyRecord, type CompanyCategorySlug, DEFAULT_COMPANIES } from "@art-work/types";
+import {
+  type CompanyRecord,
+  type CompanyCategorySlug,
+  type Locale,
+  DEFAULT_COMPANIES,
+} from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
 import { uploadFileDirect } from "@/lib/directUpload";
 
@@ -42,6 +48,7 @@ export default function AdminCompaniesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<CompanyRecord | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [modalLocale, setModalLocale] = useState<Locale>("en");
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   // Form State
@@ -56,6 +63,13 @@ export default function AdminCompaniesPage() {
     order_index: 0,
     featured: false,
     is_active: true,
+    translations: {
+      ar: {
+        name: "",
+        highlight: "",
+        description: "",
+      },
+    },
   });
 
   // Logo Upload & Drag-and-Drop State
@@ -155,6 +169,7 @@ export default function AdminCompaniesPage() {
 
   const handleOpenAdd = () => {
     setEditingCompany(null);
+    setModalLocale("en");
     setShowManualUrl(false);
     setIsDragging(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -169,12 +184,20 @@ export default function AdminCompaniesPage() {
       order_index: companies.length + 1,
       featured: false,
       is_active: true,
+      translations: {
+        ar: {
+          name: "",
+          highlight: "",
+          description: "",
+        },
+      },
     });
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (comp: CompanyRecord) => {
     setEditingCompany(comp);
+    setModalLocale("en");
     setShowManualUrl(false);
     setIsDragging(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -189,6 +212,13 @@ export default function AdminCompaniesPage() {
       order_index: comp.order,
       featured: Boolean(comp.featured),
       is_active: comp.isActive,
+      translations: {
+        ar: {
+          name: comp.translations?.ar?.name || "",
+          highlight: comp.translations?.ar?.highlight || "",
+          description: comp.translations?.ar?.description || "",
+        },
+      },
     });
     setIsModalOpen(true);
   };
@@ -585,8 +615,91 @@ export default function AdminCompaniesPage() {
               </button>
             </div>
 
+            {/* Bilingual Language Switcher Bar */}
+            <div className="px-6 py-2.5 border-b border-white/[0.06] bg-[#13141b] flex items-center justify-between gap-2 shrink-0">
+              <div className="flex items-center gap-1.5 text-xs text-zinc-400">
+                <Languages className="w-3.5 h-3.5 text-amber-400" />
+                <span>{modalLocale === "ar" ? "Arabic Translation (RTL)" : "English & Shared Logo"}</span>
+              </div>
+              <div className="inline-flex items-center gap-1 p-0.5 rounded-lg bg-[#0b0c10] border border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setModalLocale("en")}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                    modalLocale === "en"
+                      ? "bg-amber-400 text-zinc-950 font-semibold"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  EN
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModalLocale("ar")}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                    modalLocale === "ar"
+                      ? "bg-amber-400 text-zinc-950 font-semibold"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  العربية (AR)
+                </button>
+              </div>
+            </div>
+
             {/* Dedicated Scrollable Y Body */}
             <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-5 space-y-5 text-sm">
+              {modalLocale === "ar" ? (
+                <div dir="rtl" className="space-y-4">
+                  <div>
+                    <label className="block text-[13px] font-medium text-zinc-300 mb-1.5">
+                      اسم الشركة بالعربي
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.translations.ar.name}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          translations: {
+                            ...formData.translations,
+                            ar: {
+                              ...formData.translations.ar,
+                              name: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      placeholder={formData.name || "مثال: ريد بُل"}
+                      className="w-full bg-[#0b0c10] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/15 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[13px] font-medium text-zinc-300 mb-1.5">
+                      وصف التعاون بالعربي (يظهر عند تمرير الماوس على الشعار)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.translations.ar.highlight}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          translations: {
+                            ...formData.translations,
+                            ar: {
+                              ...formData.translations.ar,
+                              highlight: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      placeholder={formData.highlight || "مثال: الملتقى السنوي وتجهيز المسرح"}
+                      className="w-full bg-[#0b0c10] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/15 transition-all"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <>
               <div>
                 <label className="block text-[13px] font-medium text-zinc-300 mb-1.5">
                   Company Name <span className="text-amber-400">*</span>
@@ -784,6 +897,8 @@ export default function AdminCompaniesPage() {
                   Shown next to the sector tag when hovering a partner card
                 </p>
               </div>
+                </>
+              )}
             </div>
 
             {/* Sticky Action Footer */}

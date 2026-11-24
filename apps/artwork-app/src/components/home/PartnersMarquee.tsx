@@ -3,7 +3,12 @@
 import React, { useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
-import { DEFAULT_COMPANIES } from "@art-work/types";
+import {
+  DEFAULT_COMPANIES,
+  getUiDictionary,
+  resolveLocalizedCompany,
+} from "@art-work/types";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 import type { PartnerLogoCardProps, PartnersMarqueeProps } from "./types";
 
 export const PartnerLogoCard = React.memo(function PartnerLogoCard({
@@ -12,6 +17,11 @@ export const PartnerLogoCard = React.memo(function PartnerLogoCard({
   onToggle,
   tiltDirection = "left",
 }: PartnerLogoCardProps) {
+  const locale = useShowcaseStore((s) => s.locale);
+  const dict = getUiDictionary(locale);
+  const localizedCompany = resolveLocalizedCompany(company, locale);
+  const categoryLabel =
+    dict.companyCategories[localizedCompany.category] || localizedCompany.category;
   const hoverTilt = tiltDirection === "left" ? "hover:-rotate-1" : "hover:rotate-1";
 
   return (
@@ -25,7 +35,7 @@ export const PartnerLogoCard = React.memo(function PartnerLogoCard({
     >
       {/* Tape decoration on selected / hover */}
       <div
-        className={`absolute -top-2 left-3 w-8 h-3.5 bg-yellow-300/80 border border-black/30 -rotate-6 transition-opacity duration-200 pointer-events-none ${
+        className={`absolute -top-2 start-3 w-8 h-3.5 bg-yellow-300/80 border border-black/30 -rotate-6 transition-opacity duration-200 pointer-events-none ${
           isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         }`}
       ></div>
@@ -33,8 +43,8 @@ export const PartnerLogoCard = React.memo(function PartnerLogoCard({
       {/* High-Impact Large Logo Box */}
       <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl bg-white dark:bg-[#101018] overflow-hidden flex items-center justify-center p-1 border border-black/15 dark:border-white/10 shrink-0 shadow-inner">
         <Image
-          src={company.logo}
-          alt={company.name}
+          src={localizedCompany.logo}
+          alt={localizedCompany.name}
           width={80}
           height={80}
           className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110"
@@ -46,21 +56,21 @@ export const PartnerLogoCard = React.memo(function PartnerLogoCard({
       <div
         className={`overflow-hidden transition-all duration-300 ease-out flex flex-col justify-center ${
           isSelected
-            ? "max-w-[260px] opacity-100 ml-2.5 sm:ml-3 pr-2"
-            : "max-w-0 opacity-0 group-hover:max-w-[260px] group-hover:opacity-100 group-hover:ml-2.5 sm:group-hover:ml-3 group-hover:pr-2"
+            ? "max-w-[260px] opacity-100 ms-2.5 sm:ms-3 pe-2"
+            : "max-w-0 opacity-0 group-hover:max-w-[260px] group-hover:opacity-100 group-hover:ms-2.5 sm:group-hover:ms-3 group-hover:pe-2"
         }`}
       >
         <div className="whitespace-nowrap">
           <div className="font-headline font-black text-xs sm:text-sm text-black dark:text-white uppercase tracking-wider">
-            {company.name}
+            {localizedCompany.name}
           </div>
           <div className="flex items-center gap-1.5 mt-1">
             <span className="inline-block bg-yellow-400 text-black text-[9px] sm:text-[10px] font-headline font-black px-2 py-0.5 rounded border border-black comic-shadow-sm uppercase">
-              {company.category}
+              {categoryLabel}
             </span>
-            {company.highlight && (
+            {localizedCompany.highlight && (
               <span className="text-[10px] font-mono text-black/60 dark:text-zinc-400 uppercase hidden sm:inline-block">
-                • {company.highlight}
+                • {localizedCompany.highlight}
               </span>
             )}
           </div>
@@ -143,7 +153,10 @@ export const PartnersMarquee = React.memo(function PartnersMarquee({
       </div>
 
       {/* Dual Row Infinite Marquee Reel */}
-      <div className="relative overflow-hidden rounded-2xl border-2 border-black dark:border-zinc-700 bg-zinc-50/70 dark:bg-[#12121A]/70 py-4 sm:py-5 backdrop-blur-sm">
+      <div
+        dir="ltr"
+        className="relative overflow-hidden rounded-2xl border-2 border-black dark:border-zinc-700 bg-zinc-50/70 dark:bg-[#12121A]/70 py-4 sm:py-5 backdrop-blur-sm"
+      >
         {/* Row 1: Left */}
         <div className="flex w-max gap-4 sm:gap-5 py-1 animate-marquee-left">
           {marqueeRow1.map((comp, idx) => (

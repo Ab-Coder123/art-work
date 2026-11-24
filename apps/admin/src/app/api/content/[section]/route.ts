@@ -4,11 +4,13 @@ import {
   createSupabaseContentRepository,
   updateContentSection,
 } from "@art-work/database";
+import { isValidLocale, type Locale } from "@art-work/types";
 
 /**
  * PUT /api/content/[section]
  * Atomically updates a specific content section across all 8 full-site sections:
  * (manifesto, whyUsTeaser, services, homeShowcase, contact, whyUsPage, galleryPage, layout).
+ * Accepts either a direct section object (EN) or `{ locale: "en" | "ar", data: {...} }`.
  * Creates audit log via Supabase Postgres trigger and revalidates "/", "/why-us", and "/gallery".
  */
 export async function PUT(
@@ -38,10 +40,22 @@ export async function PUT(
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
+  let locale: Locale = "en";
+  let payload: unknown = body;
+  if (
+    isValidLocale(body.locale) &&
+    body.data !== null &&
+    typeof body.data === "object" &&
+    !Array.isArray(body.data)
+  ) {
+    locale = body.locale;
+    payload = body.data;
+  }
+
   try {
     const repo = createSupabaseContentRepository(sessionCheck.supabase);
     const actorEmail = sessionCheck.adminUser?.email || "admin@art-work.agency";
-    const result = await updateContentSection(section, body, repo, actorEmail);
+    const result = await updateContentSection(section, payload, repo, actorEmail, locale);
 
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: result.status });

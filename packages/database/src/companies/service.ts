@@ -145,6 +145,7 @@ export async function createCompany(
     order: validated.order_index,
     featured: validated.featured,
     isActive: validated.is_active,
+    translations: validated.translations,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -162,6 +163,7 @@ export async function createCompany(
         order_index: validated.order_index,
         featured: validated.featured,
         is_active: validated.is_active,
+        translations: validated.translations ?? {},
       };
 
       const { data, error } = await supabase
@@ -213,6 +215,7 @@ export async function updateCompany(
       if (validated.order_index !== undefined) dbUpdates.order_index = validated.order_index;
       if (validated.featured !== undefined) dbUpdates.featured = validated.featured;
       if (validated.is_active !== undefined) dbUpdates.is_active = validated.is_active;
+      if (validated.translations !== undefined) dbUpdates.translations = validated.translations;
 
       const { data, error } = await supabase
         .from("companies")
@@ -256,6 +259,7 @@ export async function updateCompany(
     order: validated.order_index ?? existing.order,
     featured: validated.featured ?? existing.featured,
     isActive: validated.is_active ?? existing.isActive,
+    translations: validated.translations ?? existing.translations,
     updatedAt: new Date().toISOString(),
   };
 

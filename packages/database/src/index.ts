@@ -33,6 +33,7 @@ export * from "./projects/service";
 
 // Site Content Versioning & Dynamic Content Service (Phase 07)
 export * from "./content/default-content";
+export * from "./content/default-content-ar";
 export * from "./content/contract";
 export * from "./content/service";
 

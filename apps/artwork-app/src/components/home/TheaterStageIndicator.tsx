@@ -1,34 +1,34 @@
 "use client";
 
 import React from "react";
+import { getUiDictionary } from "@art-work/types";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 import type { StageId, TheaterStageIndicatorProps } from "./types";
-
-interface StageItem {
-  id: StageId;
-  label: string;
-}
-
-const STAGE_ITEMS: StageItem[] = [
-  { id: "stage-01", label: "Home" },
-  { id: "stage-02", label: "Why Us" },
-  { id: "stage-03", label: "Services" },
-  { id: "stage-gallery", label: "★ Gallery" },
-  { id: "stage-04", label: "Contact" },
-];
 
 export const TheaterStageIndicator = React.memo(function TheaterStageIndicator({
   activeStage,
   scrollToStage,
 }: TheaterStageIndicatorProps) {
+  const locale = useShowcaseStore((s) => s.locale);
+  const dict = getUiDictionary(locale);
+
+  const stageItems: { id: StageId; label: string }[] = [
+    { id: "stage-01", label: dict.stages.home },
+    { id: "stage-02", label: dict.stages.whyUs },
+    { id: "stage-03", label: dict.stages.services },
+    { id: "stage-gallery", label: dict.stages.gallery },
+    { id: "stage-04", label: dict.stages.contact },
+  ];
+
   return (
-    <aside className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
-      {STAGE_ITEMS.map((item) => {
+    <aside className="fixed end-4 sm:end-6 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-end gap-3.5">
+      {stageItems.map((item) => {
         const isActive = activeStage === item.id;
         return (
           <button
             key={item.id}
             onClick={() => scrollToStage(item.id)}
-            className="group flex items-center gap-2.5 text-right cursor-pointer"
+            className="group flex items-center gap-2.5 text-end cursor-pointer"
           >
             <span className="text-[10px] font-headline font-bold uppercase tracking-wider bg-black text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
               {item.label}

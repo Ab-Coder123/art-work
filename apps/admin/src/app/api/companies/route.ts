@@ -6,6 +6,24 @@ import {
 } from "@art-work/database";
 import type { CompanyCategorySlug } from "@art-work/types";
 
+function revalidateCompaniesShowcase() {
+  const publicAppUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.PUBLIC_APP_URL ||
+    "https://artwork-agency.vercel.app";
+  const revalidateSecret = process.env.REVALIDATION_SECRET;
+  if (!revalidateSecret) return;
+
+  fetch(`${publicAppUrl}/api/revalidate`, {
+    method: "POST",
+    headers: {
+      "x-revalidate-secret": revalidateSecret,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ tag: "companies", path: "/" }),
+  }).catch(() => {});
+}
+
 /**
  * GET /api/companies (Admin Dashboard)
  * Lists all companies including inactive/draft.
@@ -56,6 +74,7 @@ export async function POST(request: NextRequest) {
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: 400 });
     }
+    revalidateCompaniesShowcase();
     return NextResponse.json(result.data, { status: 201 });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to create company";

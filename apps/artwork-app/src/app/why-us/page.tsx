@@ -83,6 +83,7 @@ function renderCapabilityIcon(icon?: string) {
 }
 
 export default function WhyUsPage() {
+  const locale = useShowcaseStore((s) => s.locale);
   const content = useShowcaseStore((s) => s.siteContent.whyUsPage);
   const layout = useShowcaseStore((s) => s.siteContent.layout);
   const whatsappPhone = useShowcaseStore((s) => s.siteContent.contact.phone);
@@ -564,7 +565,7 @@ export default function WhyUsPage() {
           >
             <div className="washi-tape !w-24 !h-5 !bg-black/20"></div>
             <div className="relative z-10 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 sm:gap-8">
-              <div className="flex-1 max-w-2xl text-left">
+              <div className="flex-1 max-w-2xl text-start">
                 <div className="font-brush text-sm tracking-wider uppercase text-black mb-2">
                   {content.calloutTag || "TELL US WHAT YOU’RE PLANNING"}
                 </div>
@@ -605,18 +606,23 @@ export default function WhyUsPage() {
             className="inline-flex items-center gap-2 font-headline text-xs font-black uppercase tracking-wider text-black/60 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
             href="/#stage-01"
           >
-            <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>PREV: {layout.navHomeLabel}</span>
+            <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5] rtl:rotate-180" />
+            <span>
+              {locale === "ar" ? "السابق:" : "PREV:"} {layout.navHomeLabel}
+            </span>
           </Link>
           <div className="text-xs font-mono font-bold uppercase bg-yellow-400 text-black px-3 py-1 rounded border border-black">
-            {content.sceneBadge} {"// ACTIVE"}
+            {content.sceneBadge} {"// "}
+            {locale === "ar" ? "نشط" : "ACTIVE"}
           </div>
           <Link
             className="inline-flex items-center gap-2 font-headline text-xs font-black uppercase tracking-wider text-black dark:text-zinc-200 hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors"
             href="/#stage-03"
           >
-            <span>NEXT: {layout.navServicesLabel}</span>
-            <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>
+              {locale === "ar" ? "التالي:" : "NEXT:"} {layout.navServicesLabel}
+            </span>
+            <ArrowRight className="w-3.5 h-3.5 stroke-[2.5] rtl:rotate-180" />
           </Link>
         </div>
       </main>

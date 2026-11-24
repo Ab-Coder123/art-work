@@ -45,7 +45,7 @@ export const WhyUsTeaser = React.memo(function WhyUsTeaser({
             className="inline-flex items-center gap-1.5 font-headline font-black text-xs uppercase bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black px-4 py-2 rounded border border-black comic-shadow-sm transition-all"
           >
             <span>{content.exploreCtaText}</span>
-            <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+            <ArrowRight className="w-4 h-4 stroke-[2.5] rtl:rotate-180" />
           </Link>
         </div>
       </div>

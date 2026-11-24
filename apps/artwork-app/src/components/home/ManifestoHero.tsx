@@ -72,7 +72,7 @@ export const ManifestoHero = React.memo(function ManifestoHero({
                 className="relative group inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-headline font-black text-xs sm:text-sm px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 border-black comic-shadow transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95 cursor-pointer"
               >
                 <span>{primaryCta}</span>
-                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                <ArrowRight className="w-4 h-4 stroke-[2.5] rtl:rotate-180" />
               </Link>
 
               <MagneticButton soundType="click">

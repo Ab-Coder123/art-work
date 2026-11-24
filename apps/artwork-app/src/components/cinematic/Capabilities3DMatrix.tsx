@@ -21,6 +21,8 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import type { ServicesSectionContent, ServiceDisciplineItem } from "@art-work/types";
+import { getUiDictionary } from "@art-work/types";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
 import { KineticBrushWord } from "@/components/cinematic/KineticBrushStroke";
 import { ScrollReveal } from "@/components/cinematic/ScrollReveal";
@@ -179,6 +181,8 @@ export interface Capabilities3DMatrixProps {
 export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
   content = CANONICAL_SITE_CONTENT.services,
 }) => {
+  const locale = useShowcaseStore((s) => s.locale);
+  const dict = getUiDictionary(locale);
   const [selectedDiscipline, setSelectedDiscipline] = useState<Discipline | null>(null);
   const [activeFilter, setActiveFilter] = useState<ServiceCategory>("all");
 
@@ -284,8 +288,8 @@ export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
               {/* Close Button */}
               <button
                 onClick={() => setSelectedDiscipline(null)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black border-2 border-black font-black flex items-center justify-center transition-colors cursor-pointer"
-                aria-label="Close dialog"
+                className="absolute top-4 end-4 w-9 h-9 rounded-full bg-yellow-400 hover:bg-black hover:text-white dark:hover:bg-yellow-300 dark:hover:text-black text-black border-2 border-black font-black flex items-center justify-center transition-colors cursor-pointer"
+                aria-label={dict.services.closeDialog}
               >
                 ✕
               </button>
@@ -306,7 +310,7 @@ export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
 
               <div className="border-t-2 border-black/10 dark:border-white/10 pt-4 mb-6">
                 <h4 className="font-headline font-bold text-xs uppercase text-black/60 dark:text-zinc-400 tracking-wider mb-3">
-                  Scope &amp; Deliverables
+                  {dict.services.deliverablesHeading}
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {selectedDiscipline.deliverables.map((item, idx) => (
@@ -323,7 +327,9 @@ export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
 
               <div className="flex items-center justify-between pt-2">
                 <span className="text-xs font-mono text-black/60 dark:text-zinc-400">
-                  CREATIVE • PLANNING • PRODUCTION • LIVE DELIVERY
+                  {locale === "ar"
+                    ? "إبداع • تخطيط • إنتاج • تنفيذ ميداني"
+                    : "CREATIVE • PLANNING • PRODUCTION • LIVE DELIVERY"}
                 </span>
                 <a
                   href="#stage-04"
@@ -331,7 +337,7 @@ export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
                   className="inline-flex items-center gap-2 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 dark:hover:bg-yellow-300 hover:text-black font-headline font-bold text-xs px-5 py-2.5 rounded-lg border-2 border-black comic-shadow-sm transition-all cursor-pointer"
                 >
                   <span>{content.modalSelectCtaText}</span>
-                  <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2.5] rtl:rotate-180" />
                 </a>
               </div>
             </motion.div>
@@ -342,7 +348,7 @@ export const Capabilities3DMatrix: React.FC<Capabilities3DMatrixProps> = ({
       {/* Event Planning Banner */}
       <ScrollReveal direction="pop" distance={20} className="mt-4 sm:mt-6">
         <div className="bg-black dark:bg-[#14141E] text-white px-5 py-4 sm:py-5 rounded-2xl border-2 border-black dark:border-zinc-700 comic-shadow relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="relative z-10 max-w-xl text-left">
+          <div className="relative z-10 max-w-xl text-start">
             <div className="flex items-center gap-1.5 mb-1 text-yellow-400 font-headline font-black text-xs tracking-wider uppercase">
               <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
               <span>{content.bannerEyebrow}</span>

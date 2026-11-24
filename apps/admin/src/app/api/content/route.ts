@@ -3,13 +3,15 @@ import {
   verifyAdminSessionFromCookies,
   createSupabaseContentRepository,
   createBrowserClient,
+  fetchBilingualSiteContent,
   fetchSiteContent,
   normalizeSiteContent,
 } from "@art-work/database";
+import { normalizeLocale } from "@art-work/types";
 
 /**
  * GET /api/content
- * Retrieves the compiled SiteContent tree for the admin editor.
+ * Retrieves the compiled SiteContent tree (or bilingual { en, ar } bundle when ?includeLocales=true).
  */
 export async function GET(request: NextRequest) {
   const sessionCheck = await verifyAdminSessionFromCookies({
@@ -21,13 +23,25 @@ export async function GET(request: NextRequest) {
     ? sessionCheck.supabase
     : createBrowserClient();
 
+  const searchParams = new URL(request.url).searchParams;
+  const includeLocales = searchParams.get("includeLocales") === "true";
+  const locale = normalizeLocale(searchParams.get("locale"));
+
   try {
     const repo = createSupabaseContentRepository(supabase);
-    const result = await fetchSiteContent(repo);
+    if (includeLocales) {
+      const bilingual = await fetchBilingualSiteContent(repo);
+      if (!bilingual.ok) {
+        return NextResponse.json({ error: bilingual.error }, { status: bilingual.status });
+      }
+      return NextResponse.json(bilingual.data, { status: 200 });
+    }
+
+    const result = await fetchSiteContent(repo, locale);
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
-    return NextResponse.json(normalizeSiteContent(result.data), { status: 200 });
+    return NextResponse.json(normalizeSiteContent(result.data, locale), { status: 200 });
   } catch (err: unknown) {
     const message =
       err instanceof Error ? err.message : "Failed to load site content";

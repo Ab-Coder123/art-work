@@ -26,6 +26,7 @@
   --font-body: var(--font-plus-jakarta), sans-serif;
   --font-label: var(--font-plus-jakarta), sans-serif;
   --font-brush: var(--font-permanent-marker), cursive;
+  --font-arabic: var(--font-arabic), sans-serif;
 }
 
 :root {
@@ -70,6 +71,26 @@
 
 .font-brush {
   font-family: var(--font-permanent-marker), cursive;
+}
+
+/* Professional Arabic Typography & RTL Ligature Protection */
+[dir="rtl"] body,
+[dir="rtl"] .font-headline,
+[dir="rtl"] .font-display,
+[dir="rtl"] .font-body,
+[dir="rtl"] .font-label {
+  font-family: var(--font-arabic), var(--font-plus-jakarta), sans-serif;
+  letter-spacing: 0 !important;
+  font-kerning: normal;
+}
+
+[dir="rtl"] .font-headline,
+[dir="rtl"] .uppercase {
+  text-transform: none;
+}
+
+[dir="rtl"] .font-mono {
+  letter-spacing: 0 !important;
 }
 
 /* Border and Radius Helpers */

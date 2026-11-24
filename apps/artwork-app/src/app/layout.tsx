@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Permanent_Marker } from "next/font/google";
+import { cookies, headers } from "next/headers";
+import { Plus_Jakarta_Sans, Permanent_Marker, Cairo } from "next/font/google";
+import { LOCALE_COOKIE_NAME, isValidLocale, type Locale } from "@art-work/types";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -12,6 +14,13 @@ const permanentMarker = Permanent_Marker({
   subsets: ["latin"],
   variable: "--font-permanent-marker",
   weight: ["400"],
+  display: "swap",
+});
+
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  variable: "--font-arabic",
+  weight: ["400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
@@ -67,16 +76,34 @@ export const metadata: Metadata = {
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { FloatingContactWidget } from "@/components/home/FloatingContactWidget";
 
-export default function RootLayout({
+async function resolveRootLocale(): Promise<Locale> {
+  try {
+    const headerStore = await headers();
+    const hLocale = headerStore.get("x-artwork-locale");
+    if (isValidLocale(hLocale)) return hLocale;
+    const cookieStore = await cookies();
+    const cLocale = cookieStore.get(LOCALE_COOKIE_NAME)?.value;
+    if (isValidLocale(cLocale)) return cLocale;
+  } catch {
+    // Fallback cleanly during static pre-rendering
+  }
+  return "en";
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const initialLocale = await resolveRootLocale();
+  const initialDir = initialLocale === "ar" ? "rtl" : "ltr";
+
   return (
     <html
-      lang="en"
+      lang={initialLocale}
+      dir={initialDir}
       suppressHydrationWarning
-      className={`${plusJakartaSans.variable} ${permanentMarker.variable} scroll-smooth`}
+      className={`${plusJakartaSans.variable} ${permanentMarker.variable} ${cairo.variable} scroll-smooth`}
     >
       <head>
         <script

@@ -3,6 +3,8 @@
 import React, { useState, useCallback } from "react";
 import Image from "next/image";
 import { Play } from "lucide-react";
+import { getUiDictionary } from "@art-work/types";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 
 export interface YouTubeVideoFacadeProps {
   embedUrl: string;
@@ -25,6 +27,8 @@ export const YouTubeVideoFacade = React.memo(function YouTubeVideoFacade({
   sizes = "(max-width: 1024px) 100vw, 60vw",
   priority = false,
 }: YouTubeVideoFacadeProps) {
+  const locale = useShowcaseStore((s) => s.locale);
+  const dict = getUiDictionary(locale);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isWarmed, setIsWarmed] = useState(false);
 
@@ -124,7 +128,7 @@ export const YouTubeVideoFacade = React.memo(function YouTubeVideoFacade({
 
             {/* Micro Badge */}
             <div className="mt-3.5 inline-flex items-center gap-1.5 bg-yellow-400 text-black text-[10px] sm:text-xs font-headline font-black uppercase px-3 py-1 rounded border border-black comic-shadow-sm tracking-wider group-hover:bg-yellow-300 transition-colors">
-              <span>★ CLICK TO PLAY REEL</span>
+              <span>★ {dict.gallery.playVideo}</span>
             </div>
           </div>
         </div>

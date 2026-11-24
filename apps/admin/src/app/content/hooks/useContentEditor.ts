@@ -1,17 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
-import type { SiteContent } from "@art-work/types";
+import type { BilingualSiteContent, Locale, SiteContent } from "@art-work/types";
 import { apiFetchWithCsrf } from "@/lib/csrf";
 import { DEFAULT_SITE_CONTENT } from "@art-work/database/content/default-content";
+import { DEFAULT_SITE_CONTENT_AR } from "@art-work/database/content/default-content-ar";
 import { normalizeSiteContent } from "@art-work/database/content/contract";
 import type { EditorSectionKey, RevisionItem, UpdateSectionFn } from "../types";
 
 export function useContentEditor() {
-  const [content, setContent] = useState<SiteContent>(() =>
-    normalizeSiteContent(DEFAULT_SITE_CONTENT)
-  );
+  const [editingLocale, setEditingLocale] = useState<Locale>("en");
+  const [contentByLocale, setContentByLocale] = useState<BilingualSiteContent>(() => ({
+    en: normalizeSiteContent(DEFAULT_SITE_CONTENT, "en"),
+    ar: normalizeSiteContent(DEFAULT_SITE_CONTENT_AR, "ar"),
+  }));
   const [activeSection, setActiveSection] = useState<EditorSectionKey>("manifesto");
   const [isSaved, setIsSaved] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
+  const [dirtyByLocale, setDirtyByLocale] = useState<{ en: boolean; ar: boolean }>({
+    en: false,
+    ar: false,
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -22,11 +28,20 @@ export function useContentEditor() {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [rollingBackId, setRollingBackId] = useState<string | null>(null);
 
-  const loadContentFromApi = useCallback(async () => {
-    const res = await fetch("/api/content", { cache: "no-store" });
+  const loadContentFromApi = useCallback(async (): Promise<BilingualSiteContent> => {
+    const res = await fetch("/api/content?includeLocales=true", { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    return normalizeSiteContent(data);
+    if (data && typeof data === "object" && ("en" in data || "ar" in data)) {
+      return {
+        en: normalizeSiteContent(data.en ?? DEFAULT_SITE_CONTENT, "en"),
+        ar: normalizeSiteContent(data.ar ?? DEFAULT_SITE_CONTENT_AR, "ar"),
+      };
+    }
+    return {
+      en: normalizeSiteContent(data, "en"),
+      ar: normalizeSiteContent(DEFAULT_SITE_CONTENT_AR, "ar"),
+    };
   }, []);
 
   useEffect(() => {
@@ -35,7 +50,7 @@ export function useContentEditor() {
       try {
         const normalized = await loadContentFromApi();
         if (!mounted) return;
-        setContent(normalized);
+        setContentByLocale(normalized);
       } catch (err) {
         console.error("Failed to load content:", err);
         if (mounted) {
@@ -57,27 +72,33 @@ export function useContentEditor() {
   const refreshContent = useCallback(async () => {
     try {
       const normalized = await loadContentFromApi();
-      setContent(normalized);
-      setIsDirty(false);
+      setContentByLocale(normalized);
+      setDirtyByLocale({ en: false, ar: false });
     } catch (err) {
       console.error("Failed to refresh content:", err);
     }
   }, [loadContentFromApi]);
 
-  const updateSection: UpdateSectionFn = useCallback((section, updater) => {
-    setContent((prev) => ({
-      ...prev,
-      [section]: updater(prev[section]),
-    }));
-    setIsDirty(true);
-    setIsSaved(false);
-  }, []);
+  const updateSection: UpdateSectionFn = useCallback(
+    (section, updater) => {
+      setContentByLocale((prev) => ({
+        ...prev,
+        [editingLocale]: {
+          ...prev[editingLocale],
+          [section]: updater(prev[editingLocale][section]),
+        },
+      }));
+      setDirtyByLocale((prev) => ({ ...prev, [editingLocale]: true }));
+      setIsSaved(false);
+    },
+    [editingLocale]
+  );
 
   const handleSave = useCallback(async () => {
     setIsSaving(true);
     setErrorMessage(null);
 
-    const payload = content[activeSection];
+    const payload = contentByLocale[editingLocale][activeSection];
 
     try {
       const res = await apiFetchWithCsrf(`/api/content/${activeSection}`, {
@@ -85,7 +106,10 @@ export function useContentEditor() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          locale: editingLocale,
+          data: payload,
+        }),
       });
 
       if (!res.ok) {
@@ -94,7 +118,7 @@ export function useContentEditor() {
       }
 
       setIsSaved(true);
-      setIsDirty(false);
+      setDirtyByLocale((prev) => ({ ...prev, [editingLocale]: false }));
       setTimeout(() => setIsSaved(false), 3500);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to publish changes";
@@ -102,7 +126,7 @@ export function useContentEditor() {
     } finally {
       setIsSaving(false);
     }
-  }, [content, activeSection]);
+  }, [contentByLocale, editingLocale, activeSection]);
 
   const handleOpenHistory = useCallback(async () => {
     setIsHistoryOpen(true);
@@ -147,8 +171,15 @@ export function useContentEditor() {
     [refreshContent]
   );
 
+  const content: SiteContent = contentByLocale[editingLocale];
+  const isDirty = dirtyByLocale[editingLocale];
+
   return {
     content,
+    contentByLocale,
+    editingLocale,
+    setEditingLocale,
+    dirtyByLocale,
     activeSection,
     setActiveSection,
     isSaved,

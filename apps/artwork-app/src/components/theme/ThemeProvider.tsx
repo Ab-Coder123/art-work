@@ -9,6 +9,7 @@ import React, {
   useEffect,
 } from "react";
 import { soundFX } from "@/utils/soundFX";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 
 type Theme = "light" | "dark" | "system";
 type ResolvedTheme = "light" | "dark";
@@ -86,6 +87,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     syncDOM(resolvedTheme);
   }, [resolvedTheme, syncDOM]);
+
+  // Synchronize active locale with SSR-rendered DOM on initial mount
+  useEffect(() => {
+    useShowcaseStore.getState().hydrateLocaleFromDom();
+  }, []);
 
   const setTheme = useCallback((newTheme: Theme) => {
     try {

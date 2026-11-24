@@ -22,7 +22,7 @@ describe("CMS Phase 4: /why-us & /gallery Subpage CMS Bindings", () => {
 
     assert.ok(whyUsSrc.includes("useShowcaseStore"));
     assert.ok(whyUsSrc.includes("ensureFreshData"));
-    assert.ok(storeSrc.includes('fetcher("/api/content"'));
+    assert.ok(storeSrc.includes('fetcher("/api/content'));
     assert.ok(whyUsSrc.includes("content.directorNote"));
     assert.ok(whyUsSrc.includes("content.tailoredStamp"));
     assert.ok(whyUsSrc.includes("content.zeroTemplatesBadge"));
@@ -41,7 +41,7 @@ describe("CMS Phase 4: /why-us & /gallery Subpage CMS Bindings", () => {
 
     assert.ok(gallerySrc.includes("useShowcaseStore"));
     assert.ok(gallerySrc.includes("ensureFreshData"));
-    assert.ok(storeSrc.includes('fetcher("/api/content"'));
+    assert.ok(storeSrc.includes('fetcher("/api/content'));
     assert.ok(gallerySrc.includes("galleryContent.heroBadge"));
     assert.ok(gallerySrc.includes("galleryContent.headlinePart1"));
     assert.ok(gallerySrc.includes("galleryContent.headlinePart2"));

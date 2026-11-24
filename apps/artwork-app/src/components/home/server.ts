@@ -1,20 +1,26 @@
-import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
+import {
+  CANONICAL_BILINGUAL_CONTENT,
+  CANONICAL_SITE_CONTENT,
+  CANONICAL_SITE_CONTENT_AR,
+} from "@/lib/siteContent";
 import { unstable_cache } from "next/cache";
 import {
   createBrowserClient,
   createSupabaseContentRepository,
   createSupabaseProjectsRepository,
-  fetchSiteContent,
+  fetchBilingualSiteContent,
   listPublicProjects,
   normalizeSiteContent,
   listCompanies,
 } from "@art-work/database";
 import {
   DEFAULT_COMPANIES,
+  type BilingualSiteContent,
   type CompanyRecord,
   type ContactSectionContent,
   type HomeShowcaseSectionContent,
   type LayoutSectionContent,
+  type Locale,
   type ProjectRecord,
   type ServicesSectionContent,
 } from "@art-work/types";
@@ -22,6 +28,8 @@ import { SEED_PROJECTS } from "@/data/seedContent";
 import type { HeroContentData, WhyUsContentData } from "./types";
 
 export interface InitialHomeData {
+  locale?: Locale;
+  bilingualContent?: BilingualSiteContent;
   heroContent: HeroContentData;
   whyUsContent: WhyUsContentData;
   servicesContent: ServicesSectionContent;
@@ -34,11 +42,11 @@ export interface InitialHomeData {
 
 /**
  * Server-side data pre-fetcher for RSC Shell.
- * Fetches full 8-section CMS content, partner network, and public projects
+ * Fetches full 8-section bilingual CMS content (EN + AR), partner network, and public projects
  * with Next.js Data Cache tag binding and deterministic fallback guarantees.
  */
-async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
-  let contentData = CANONICAL_SITE_CONTENT;
+async function fetchInitialHomeDataRaw(locale: Locale = "en"): Promise<InitialHomeData> {
+  let bilingualContent: BilingualSiteContent = CANONICAL_BILINGUAL_CONTENT;
   let companiesData: CompanyRecord[] = DEFAULT_COMPANIES;
   let projectsData: ProjectRecord[] = SEED_PROJECTS;
 
@@ -48,16 +56,28 @@ async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
     const projectsRepo = createSupabaseProjectsRepository(supabase);
 
     const [contentRes, companiesRes, projectsRes] = await Promise.allSettled([
-      fetchSiteContent(contentRepo),
+      fetchBilingualSiteContent(contentRepo),
       listCompanies(supabase, { category: "all", q: "", activeOnly: true }),
       listPublicProjects({ limit: 500 }, projectsRepo),
     ]);
 
     if (contentRes.status === "fulfilled" && contentRes.value.ok) {
-      contentData = normalizeSiteContent({
-        ...CANONICAL_SITE_CONTENT,
-        ...contentRes.value.data,
-      });
+      bilingualContent = {
+        en: normalizeSiteContent(
+          {
+            ...CANONICAL_SITE_CONTENT,
+            ...contentRes.value.data.en,
+          },
+          "en"
+        ),
+        ar: normalizeSiteContent(
+          {
+            ...CANONICAL_SITE_CONTENT_AR,
+            ...contentRes.value.data.ar,
+          },
+          "ar"
+        ),
+      };
     }
 
     if (
@@ -81,7 +101,11 @@ async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
     // Graceful offline fallback to defaults
   }
 
+  const contentData = locale === "ar" ? bilingualContent.ar : bilingualContent.en;
+
   return {
+    locale,
+    bilingualContent,
     heroContent: contentData.manifesto,
     whyUsContent: contentData.whyUsTeaser,
     servicesContent: contentData.services,
@@ -95,7 +119,7 @@ async function fetchInitialHomeDataRaw(): Promise<InitialHomeData> {
 
 export const getInitialHomeData = unstable_cache(
   fetchInitialHomeDataRaw,
-  ["home-initial-data-v2"],
+  ["home-initial-data-v3"],
   {
     tags: ["site-content", "companies", "projects"],
     revalidate: 60,

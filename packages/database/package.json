@@ -18,6 +18,10 @@
       "types": "./src/content/default-content.ts",
       "default": "./src/content/default-content.ts"
     },
+    "./content/default-content-ar": {
+      "types": "./src/content/default-content-ar.ts",
+      "default": "./src/content/default-content-ar.ts"
+    },
     "./content/contract": {
       "types": "./src/content/contract.ts",
       "default": "./src/content/contract.ts"

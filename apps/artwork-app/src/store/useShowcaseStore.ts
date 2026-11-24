@@ -1,12 +1,21 @@
 import { create } from "zustand";
 import {
   DEFAULT_COMPANIES,
+  DEFAULT_LOCALE,
+  LOCALE_COOKIE_NAME,
+  isValidLocale,
+  type BilingualSiteContent,
   type CompanyRecord,
+  type Locale,
   type ProjectCategory,
   type ProjectRecord,
   type SiteContent,
 } from "@art-work/types";
-import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
+import {
+  CANONICAL_BILINGUAL_CONTENT,
+  CANONICAL_SITE_CONTENT,
+  CANONICAL_SITE_CONTENT_AR,
+} from "@/lib/siteContent";
 import { SEED_PROJECTS } from "@/data/seedContent";
 import type { InitialHomeData } from "@/components/home/server";
 
@@ -19,7 +28,9 @@ export interface ShowcaseSyncOptions {
 }
 
 export interface ShowcaseState {
-  // Core domain data
+  // Active Locale & Bilingual Core Domain Data
+  locale: Locale;
+  siteContentByLocale: BilingualSiteContent;
   siteContent: SiteContent;
   companies: CompanyRecord[];
   projects: ProjectRecord[];
@@ -37,6 +48,8 @@ export interface ShowcaseState {
   selectedShowcaseVideoId: string | null;
 
   // Actions
+  setLocale: (locale: Locale) => void;
+  hydrateLocaleFromDom: () => void;
   hydrateFromServer: (data: InitialHomeData) => void;
   ensureFreshData: (options?: ShowcaseSyncOptions) => Promise<void>;
   setActiveCategoryFilter: (category: ProjectCategory) => void;
@@ -90,7 +103,21 @@ function mergeSiteContent(
   };
 }
 
+function applyDocumentLocale(locale: Locale) {
+  if (typeof document === "undefined") return;
+  document.documentElement.lang = locale;
+  document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+  try {
+    document.cookie = `${LOCALE_COOKIE_NAME}=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+    window.localStorage.setItem(LOCALE_COOKIE_NAME, locale);
+  } catch {
+    // Ignore storage errors in restricted environments
+  }
+}
+
 export const useShowcaseStore = create<ShowcaseState>((set, get) => ({
+  locale: DEFAULT_LOCALE,
+  siteContentByLocale: CANONICAL_BILINGUAL_CONTENT,
   siteContent: CANONICAL_SITE_CONTENT,
   companies: DEFAULT_COMPANIES,
   projects: SEED_PROJECTS,
@@ -105,51 +132,100 @@ export const useShowcaseStore = create<ShowcaseState>((set, get) => ({
   selectedProjectId: null,
   selectedShowcaseVideoId: null,
 
+  setLocale: (nextLocale) => {
+    const safeLocale: Locale = isValidLocale(nextLocale) ? nextLocale : DEFAULT_LOCALE;
+    applyDocumentLocale(safeLocale);
+    set((prev) => ({
+      locale: safeLocale,
+      siteContent: prev.siteContentByLocale[safeLocale] || prev.siteContent,
+    }));
+  },
+
+  hydrateLocaleFromDom: () => {
+    if (typeof document === "undefined") return;
+    const htmlLang = document.documentElement.lang;
+    let detected: Locale | null = isValidLocale(htmlLang) ? htmlLang : null;
+    if (!detected) {
+      try {
+        const stored = window.localStorage.getItem(LOCALE_COOKIE_NAME);
+        if (isValidLocale(stored)) detected = stored;
+      } catch {
+        // Ignore
+      }
+    }
+    if (detected && detected !== get().locale) {
+      applyDocumentLocale(detected);
+      set((prev) => ({
+        locale: detected!,
+        siteContent: prev.siteContentByLocale[detected!] || prev.siteContent,
+      }));
+    }
+  },
+
   hydrateFromServer: (data) => {
     const state = get();
     // Avoid overwriting fresher client-synced state unless store hasn't been hydrated yet
     if (state.hasSyncedLive) return;
 
-    set((prev) => ({
-      hasHydratedServerData: true,
-      lastSyncedAt: prev.lastSyncedAt ?? Date.now(),
-      companies:
-        Array.isArray(data.companies) && data.companies.length > 0
-          ? data.companies
-          : prev.companies,
-      projects:
-        Array.isArray(data.projects) && data.projects.length > 0
-          ? data.projects
-          : prev.projects,
-      siteContent: {
-        ...prev.siteContent,
-        manifesto: data.heroContent
-          ? { ...prev.siteContent.manifesto, ...data.heroContent }
-          : prev.siteContent.manifesto,
-        whyUsTeaser: data.whyUsContent
-          ? {
-              ...prev.siteContent.whyUsTeaser,
-              ...data.whyUsContent,
-              blueprint: {
-                ...prev.siteContent.whyUsTeaser.blueprint,
-                ...(data.whyUsContent.blueprint || {}),
-              },
-            }
-          : prev.siteContent.whyUsTeaser,
-        services: data.servicesContent
-          ? { ...prev.siteContent.services, ...data.servicesContent }
-          : prev.siteContent.services,
-        homeShowcase: data.homeShowcaseContent
-          ? { ...prev.siteContent.homeShowcase, ...data.homeShowcaseContent }
-          : prev.siteContent.homeShowcase,
-        contact: data.contactContent
-          ? { ...prev.siteContent.contact, ...data.contactContent }
-          : prev.siteContent.contact,
-        layout: data.layoutContent
-          ? { ...prev.siteContent.layout, ...data.layoutContent }
-          : prev.siteContent.layout,
-      },
-    }));
+    const activeLocale: Locale = isValidLocale(data.locale) ? data.locale : state.locale;
+
+    set((prev) => {
+      const nextByLocale: BilingualSiteContent = data.bilingualContent
+        ? {
+            en: mergeSiteContent(prev.siteContentByLocale.en, data.bilingualContent.en),
+            ar: mergeSiteContent(prev.siteContentByLocale.ar, data.bilingualContent.ar),
+          }
+        : {
+            ...prev.siteContentByLocale,
+            [activeLocale]: {
+              ...prev.siteContentByLocale[activeLocale],
+              manifesto: data.heroContent
+                ? { ...prev.siteContentByLocale[activeLocale].manifesto, ...data.heroContent }
+                : prev.siteContentByLocale[activeLocale].manifesto,
+              whyUsTeaser: data.whyUsContent
+                ? {
+                    ...prev.siteContentByLocale[activeLocale].whyUsTeaser,
+                    ...data.whyUsContent,
+                    blueprint: {
+                      ...prev.siteContentByLocale[activeLocale].whyUsTeaser.blueprint,
+                      ...(data.whyUsContent.blueprint || {}),
+                    },
+                  }
+                : prev.siteContentByLocale[activeLocale].whyUsTeaser,
+              services: data.servicesContent
+                ? { ...prev.siteContentByLocale[activeLocale].services, ...data.servicesContent }
+                : prev.siteContentByLocale[activeLocale].services,
+              homeShowcase: data.homeShowcaseContent
+                ? {
+                    ...prev.siteContentByLocale[activeLocale].homeShowcase,
+                    ...data.homeShowcaseContent,
+                  }
+                : prev.siteContentByLocale[activeLocale].homeShowcase,
+              contact: data.contactContent
+                ? { ...prev.siteContentByLocale[activeLocale].contact, ...data.contactContent }
+                : prev.siteContentByLocale[activeLocale].contact,
+              layout: data.layoutContent
+                ? { ...prev.siteContentByLocale[activeLocale].layout, ...data.layoutContent }
+                : prev.siteContentByLocale[activeLocale].layout,
+            },
+          };
+
+      return {
+        locale: activeLocale,
+        hasHydratedServerData: true,
+        lastSyncedAt: prev.lastSyncedAt ?? Date.now(),
+        companies:
+          Array.isArray(data.companies) && data.companies.length > 0
+            ? data.companies
+            : prev.companies,
+        projects:
+          Array.isArray(data.projects) && data.projects.length > 0
+            ? data.projects
+            : prev.projects,
+        siteContentByLocale: nextByLocale,
+        siteContent: nextByLocale[activeLocale],
+      };
+    });
   },
 
   ensureFreshData: async (options = {}) => {
@@ -181,7 +257,7 @@ export const useShowcaseStore = create<ShowcaseState>((set, get) => ({
     const runSync = async () => {
       try {
         const [contentRes, companiesRes, projectsRes] = await Promise.allSettled([
-          fetcher("/api/content", { cache: "no-store" }).then((r) =>
+          fetcher("/api/content?includeLocales=true", { cache: "no-store" }).then((r) =>
             r.ok ? r.json() : null
           ),
           fetcher("/api/companies", { cache: "no-store" }).then((r) =>
@@ -192,9 +268,12 @@ export const useShowcaseStore = create<ShowcaseState>((set, get) => ({
           ),
         ]);
 
-        const incomingContent =
+        const rawContentPayload =
           contentRes.status === "fulfilled"
-            ? (contentRes.value as Partial<SiteContent> | null)
+            ? (contentRes.value as
+                | Partial<BilingualSiteContent>
+                | Partial<SiteContent>
+                | null)
             : null;
         const companiesPayload =
           companiesRes.status === "fulfilled" ? companiesRes.value : null;
@@ -213,15 +292,42 @@ export const useShowcaseStore = create<ShowcaseState>((set, get) => ({
             ? (projectsPayload.items as ProjectRecord[])
             : null;
 
-        set((prev) => ({
-          siteContent: mergeSiteContent(prev.siteContent, incomingContent),
-          companies: nextCompanies || prev.companies,
-          projects: nextProjects || prev.projects,
-          hasSyncedLive: true,
-          isSyncing: false,
-          lastSyncedAt: Date.now(),
-          syncError: null,
-        }));
+        set((prev) => {
+          const isBilingualPayload =
+            rawContentPayload &&
+            typeof rawContentPayload === "object" &&
+            ("en" in rawContentPayload || "ar" in rawContentPayload);
+
+          const nextByLocale: BilingualSiteContent = isBilingualPayload
+            ? {
+                en: mergeSiteContent(
+                  prev.siteContentByLocale.en,
+                  (rawContentPayload as Partial<BilingualSiteContent>).en
+                ),
+                ar: mergeSiteContent(
+                  prev.siteContentByLocale.ar || CANONICAL_SITE_CONTENT_AR,
+                  (rawContentPayload as Partial<BilingualSiteContent>).ar
+                ),
+              }
+            : {
+                ...prev.siteContentByLocale,
+                en: mergeSiteContent(
+                  prev.siteContentByLocale.en,
+                  rawContentPayload as Partial<SiteContent> | null
+                ),
+              };
+
+          return {
+            siteContentByLocale: nextByLocale,
+            siteContent: nextByLocale[prev.locale],
+            companies: nextCompanies || prev.companies,
+            projects: nextProjects || prev.projects,
+            hasSyncedLive: true,
+            isSyncing: false,
+            lastSyncedAt: Date.now(),
+            syncError: null,
+          };
+        });
       } catch (err: unknown) {
         const message =
           err instanceof Error ? err.message : "Failed to synchronize platform data";
@@ -243,6 +349,8 @@ export const useShowcaseStore = create<ShowcaseState>((set, get) => ({
   resetStore: () => {
     inFlightSyncPromise = null;
     set({
+      locale: DEFAULT_LOCALE,
+      siteContentByLocale: CANONICAL_BILINGUAL_CONTENT,
       siteContent: CANONICAL_SITE_CONTENT,
       companies: DEFAULT_COMPANIES,
       projects: SEED_PROJECTS,

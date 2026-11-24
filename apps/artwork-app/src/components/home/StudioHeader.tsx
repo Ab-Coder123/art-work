@@ -7,7 +7,9 @@ import { usePathname } from "next/navigation";
 import { PenTool } from "lucide-react";
 import { ThemeToggle } from "@/components/cinematic/ThemeToggle";
 import { SoundToggle } from "@/components/cinematic/SoundToggle";
+import { LanguageToggle } from "@/components/cinematic/LanguageToggle";
 import { useDoodleStore } from "@/store/useDoodleStore";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 import { DEFAULT_LAYOUT_CONTENT, type StudioHeaderProps } from "./types";
 
 export const StudioHeader = React.memo(function StudioHeader({
@@ -17,6 +19,7 @@ export const StudioHeader = React.memo(function StudioHeader({
   layout = DEFAULT_LAYOUT_CONTENT,
 }: StudioHeaderProps) {
   const pathname = usePathname();
+  const locale = useShowcaseStore((s) => s.locale);
   const isDoodleActive = useDoodleStore((state) => state.isDoodleActive);
   const toggleDoodle = useDoodleStore((state) => state.toggleDoodle);
 
@@ -29,6 +32,17 @@ export const StudioHeader = React.memo(function StudioHeader({
     !layout.fullVaultCtaText.toLowerCase().includes("vault")
       ? layout.fullVaultCtaText
       : `★ ${layout.navGalleryLabel} ↗`;
+
+  const penAriaLabel =
+    locale === "ar" ? "تبديل وضع الرسم الحر" : "Toggle Studio Pen Doodle Mode";
+  const penTitle =
+    locale === "ar"
+      ? isDoodleActive
+        ? "قلم الرسم مفعّل! (اضغط لإيقاف الرسم)"
+        : "قلم الاستوديو: اضغط للرسم على الشاشة ✍️"
+      : isDoodleActive
+      ? "Studio Pen Active! (Click to stop drawing)"
+      : "Studio Pen: Click to draw doodles on the canvas ✍️";
 
   return (
     <header className="fixed top-0 left-0 w-full z-40 bg-white/95 dark:bg-[#0D0D12]/95 backdrop-blur-md nav-shadow transition-colors duration-200">
@@ -201,8 +215,9 @@ export const StudioHeader = React.memo(function StudioHeader({
           )}
         </nav>
 
-        {/* Trailing Primary Actions: Theme Toggle + Sound Toggle + Studio Pen */}
+        {/* Trailing Primary Actions: Language Toggle + Theme Toggle + Sound Toggle + Studio Pen */}
         <div className="flex items-center gap-2 sm:gap-2.5">
+          <LanguageToggle />
           <ThemeToggle />
           <SoundToggle />
 
@@ -212,12 +227,8 @@ export const StudioHeader = React.memo(function StudioHeader({
               onInkBurst?.(e);
               toggleDoodle();
             }}
-            aria-label="Toggle Studio Pen Doodle Mode"
-            title={
-              isDoodleActive
-                ? "Studio Pen Active! (Click to stop drawing)"
-                : "Studio Pen: Click to draw doodles on the canvas ✍️"
-            }
+            aria-label={penAriaLabel}
+            title={penTitle}
             className={`w-8 h-8 sm:w-9 sm:h-9 border-2 rounded-DEFAULT comic-shadow-sm active:scale-90 transition-all duration-150 cursor-pointer flex items-center justify-center select-none ${
               isDoodleActive
                 ? "bg-yellow-400 text-black border-black rotate-6 scale-105 shadow-[0_0_12px_rgba(250,204,21,0.7)]"

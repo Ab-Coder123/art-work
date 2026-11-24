@@ -75,6 +75,28 @@ export const SlugSchema = z
   .max(100, "Slug cannot exceed 100 characters")
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase alphanumeric with hyphens (e.g. 'project-slug')");
 
+export const ProjectTranslationFieldsSchema = z.object({
+  title: z.string().trim().max(200).optional(),
+  client: z.string().trim().max(150).optional(),
+  description: z.string().trim().optional(),
+  stamp: z.string().trim().optional(),
+  metaBadge: z.string().trim().optional(),
+  stats: z.string().trim().optional(),
+  statsSub: z.string().trim().optional(),
+  specs: z.array(z.string().trim().min(1)).optional(),
+  tags: z.array(z.string().trim().min(1)).optional(),
+  altText: z.string().trim().optional(),
+  youtubeTitle: z.string().trim().max(300).nullable().optional(),
+  youtubeDescription: z.string().trim().max(2000).nullable().optional(),
+  pdfTitle: z.string().trim().max(200).nullable().optional(),
+});
+
+export const ProjectTranslationsSchema = z
+  .object({
+    ar: ProjectTranslationFieldsSchema.optional(),
+  })
+  .default({});
+
 /**
  * Zod schema for project creation / update payloads.
  */
@@ -108,6 +130,7 @@ export const ProjectInputSchema = z.object({
   pdf_title: z.string().max(200).nullable().optional(),
   behance_url: BehanceUrlSchema,
   facebook_url: FacebookUrlSchema,
+  translations: ProjectTranslationsSchema.optional(),
   status: ContentStatusEnum.default("draft"),
   order_index: z.number().int().default(0),
   featured: z.boolean().default(false),

@@ -289,6 +289,12 @@ export function normalizeProjectInput(
           ? String(rawInput.pdf_title).trim()
           : null
         : existing?.pdf_title ?? null,
+    translations:
+      rawInput.translations !== undefined &&
+      rawInput.translations !== null &&
+      typeof rawInput.translations === "object"
+        ? rawInput.translations
+        : existing?.translations ?? {},
     status: rawInput.status ?? existing?.status ?? "draft",
     order_index: Number(
       rawInput.order_index ?? rawInput.order ?? existing?.order_index ?? 1

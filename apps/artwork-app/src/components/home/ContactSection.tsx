@@ -7,6 +7,8 @@ import { CheckCircle2, AlertCircle, Loader2, Send } from "lucide-react";
 import { soundFX } from "@/utils/soundFX";
 import { MagneticButton } from "@/components/cinematic/MagneticButton";
 import { CANONICAL_SITE_CONTENT } from "@/lib/siteContent";
+import { getUiDictionary } from "@art-work/types";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 import type { ContactSectionProps } from "./types";
 
 const DEFAULT_SERVICE_OPTIONS =
@@ -19,6 +21,8 @@ const DEFAULT_SERVICE_OPTIONS =
 export const ContactSection = React.memo(function ContactSection({
   content,
 }: ContactSectionProps) {
+  const locale = useShowcaseStore((s) => s.locale);
+  const dict = getUiDictionary(locale);
   const serviceOptions = useMemo(() => {
     const rawOptions =
       Array.isArray(content.serviceOptions) && content.serviceOptions.length > 0
@@ -92,15 +96,12 @@ export const ContactSection = React.memo(function ContactSection({
       if (!response.ok || !data.ok) {
         setSubmitStatus({
           type: "error",
-          message:
-            data.error ||
-            "Failed to submit project brief. Please check your information.",
+          message: data.error || dict.contact.errorFallback,
         });
       } else {
         setSubmitStatus({
           type: "success",
-          message:
-            "⚡ Brief dispatched! Our stage director has received your specifications and will respond within 24 hours.",
+          message: dict.contact.successMessage,
         });
         setFormData({
           fullName: "",
@@ -115,8 +116,7 @@ export const ContactSection = React.memo(function ContactSection({
     } catch {
       setSubmitStatus({
         type: "error",
-        message:
-          "Network error occurred while sending your brief. Please verify your connection.",
+        message: dict.contact.networkError,
       });
     } finally {
       setIsSubmitting(false);
@@ -169,7 +169,7 @@ export const ContactSection = React.memo(function ContactSection({
                 <span className="w-5 h-5 rounded-full bg-yellow-400 text-black border border-black flex items-center justify-center font-bold text-[10px]">
                   @
                 </span>
-                <a href={`mailto:${content.email}`} className="hover:underline">
+                <a href={`mailto:${content.email}`} dir="ltr" className="hover:underline">
                   {content.email}
                 </a>
               </div>
@@ -179,6 +179,7 @@ export const ContactSection = React.memo(function ContactSection({
                     ☎
                   </span>
                   <a
+                    dir="ltr"
                     href={`tel:${
                       !content.phone ||
                       content.phone.includes("2794") ||
@@ -285,7 +286,8 @@ export const ContactSection = React.memo(function ContactSection({
                     {fieldMap.email?.label || "Email Address"}
                   </label>
                   <input
-                    className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500"
+                    dir="ltr"
+                    className="w-full border-2 border-black dark:border-zinc-700 rounded-xl p-2.5 sm:p-3 font-body text-xs sm:text-sm focus:ring-2 focus:ring-yellow-400 focus:outline-none bg-white dark:bg-[#12121A] text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-zinc-500 text-start"
                     placeholder={fieldMap.email?.placeholder || "alex@company.com"}
                     required
                     type="email"
@@ -362,7 +364,9 @@ export const ContactSection = React.memo(function ContactSection({
 
               <div className="flex items-center justify-between pt-1">
                 <span className="text-[10px] sm:text-xs font-body text-black/60 dark:text-zinc-400">
-                  ⚡ 24h rapid response standard
+                  {locale === "ar"
+                    ? "⚡ نرد على طلبك خلال 24 ساعة"
+                    : "⚡ 24h rapid response standard"}
                 </span>
                 <MagneticButton soundType="pop">
                   <button
@@ -373,12 +377,12 @@ export const ContactSection = React.memo(function ContactSection({
                     {isSubmitting ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>DISPATCHING...</span>
+                        <span>{dict.contact.sending}</span>
                       </>
                     ) : (
                       <>
                         <span>{content.submitButtonText}</span>
-                        <Send className="w-4 h-4 stroke-[2.5]" />
+                        <Send className="w-4 h-4 stroke-[2.5] rtl:-scale-x-100" />
                       </>
                     )}
                   </button>

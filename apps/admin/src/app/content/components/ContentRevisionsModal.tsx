@@ -74,6 +74,9 @@ export const ContentRevisionsModal = React.memo(function ContentRevisionsModal({
                     <span className="px-2 py-0.5 rounded-md bg-amber-400/10 text-amber-300 text-[11px] font-medium border border-amber-400/20">
                       {rev.sectionKey}
                     </span>
+                    <span className="px-1.5 py-0.5 rounded bg-white/5 text-zinc-300 text-[10px] font-mono uppercase border border-white/10">
+                      {rev.locale === "ar" ? "AR" : "EN"}
+                    </span>
                     <span className="text-xs text-zinc-400 capitalize">
                       {rev.action}
                     </span>

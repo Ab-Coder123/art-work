@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { SiteContent } from "@art-work/types";
+import type { BilingualSiteContent, Locale, SiteContent } from "@art-work/types";
 import { DEFAULT_SITE_CONTENT } from "./default-content";
-import { normalizeSiteContent } from "./contract";
+import { DEFAULT_SITE_CONTENT_AR } from "./default-content-ar";
+import { getDefaultSiteContentForLocale, normalizeSiteContent } from "./contract";
 
 /* =========================================================================
    ZOD SECTION VALIDATION SCHEMAS
@@ -274,6 +275,7 @@ export function normalizeSectionKey(key: string): ValidSectionKey | null {
 export interface ContentRevisionItem {
   id: string;
   sectionKey: ValidSectionKey;
+  locale?: Locale;
   action: "insert" | "update" | "delete";
   actorEmail: string;
   beforeState: Record<string, unknown> | null;
@@ -282,25 +284,48 @@ export interface ContentRevisionItem {
 }
 
 /**
+ * Detects whether a site_content audit row mutated Arabic (`data_ar`) or English (`data`).
+ */
+export function detectAuditSnapshotLocale(
+  beforeRow: unknown,
+  afterRow: unknown
+): Locale {
+  if (
+    beforeRow !== null &&
+    typeof beforeRow === "object" &&
+    afterRow !== null &&
+    typeof afterRow === "object"
+  ) {
+    const b = beforeRow as Record<string, unknown>;
+    const a = afterRow as Record<string, unknown>;
+    if ("data_ar" in a || "data_ar" in b) {
+      if (JSON.stringify(b.data_ar ?? null) !== JSON.stringify(a.data_ar ?? null)) {
+        return "ar";
+      }
+    }
+  }
+  return "en";
+}
+
+/**
  * The audit trigger stores the full site_content row. Expose only its JSONB
  * content payload to the editor and rollback service while accepting older
  * audit records that stored the section payload directly.
  */
 export function normalizeContentAuditSnapshot(
-  value: unknown
+  value: unknown,
+  locale: Locale = "en"
 ): Record<string, unknown> | null {
   if (value === null || typeof value !== "object" || Array.isArray(value)) {
     return null;
   }
 
   const snapshot = value as Record<string, unknown>;
-  if (
-    typeof snapshot.section_key === "string" &&
-    snapshot.data !== null &&
-    typeof snapshot.data === "object" &&
-    !Array.isArray(snapshot.data)
-  ) {
-    return snapshot.data as Record<string, unknown>;
+  if (typeof snapshot.section_key === "string") {
+    const payload = locale === "ar" ? snapshot.data_ar : snapshot.data;
+    if (payload !== null && typeof payload === "object" && !Array.isArray(payload)) {
+      return payload as Record<string, unknown>;
+    }
   }
 
   return snapshot;
@@ -315,19 +340,22 @@ export type ContentServiceResult<T> =
    ========================================================================= */
 
 export interface ContentRepository {
-  getSiteContent(): Promise<SiteContent>;
-  getSectionData(key: ValidSectionKey): Promise<Record<string, unknown> | null>;
+  getSiteContent(locale?: Locale): Promise<SiteContent>;
+  getBilingualSiteContent?(): Promise<BilingualSiteContent>;
+  getSectionData(key: ValidSectionKey, locale?: Locale): Promise<Record<string, unknown> | null>;
   saveSection(
     key: ValidSectionKey,
     data: Record<string, unknown>,
-    actorEmail?: string
+    actorEmail?: string,
+    expectedVersion?: number,
+    locale?: Locale
   ): Promise<{ version: number; updatedAt: string }>;
   listRevisions(limit?: number): Promise<ContentRevisionItem[]>;
   getRevision(revisionId: string): Promise<ContentRevisionItem | null>;
   rollback(
     revisionId: string,
     actorEmail?: string
-  ): Promise<{ sectionKey: ValidSectionKey; restoredVersion: number }>;
+  ): Promise<{ sectionKey: ValidSectionKey; restoredVersion: number; locale?: Locale }>;
 }
 
 /* =========================================================================
@@ -336,13 +364,17 @@ export interface ContentRepository {
 
 export class InMemoryContentRepository implements ContentRepository {
   private content: SiteContent;
+  private contentAr: SiteContent;
   private versions: Record<ValidSectionKey, number>;
   private revisions: ContentRevisionItem[];
 
-  constructor(initialContent?: SiteContent) {
+  constructor(initialContent?: SiteContent, initialContentAr?: SiteContent) {
     this.content = initialContent
-      ? normalizeSiteContent(JSON.parse(JSON.stringify(initialContent)))
+      ? normalizeSiteContent(JSON.parse(JSON.stringify(initialContent)), "en")
       : JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT));
+    this.contentAr = initialContentAr
+      ? normalizeSiteContent(JSON.parse(JSON.stringify(initialContentAr)), "ar")
+      : JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT_AR));
     this.versions = {
       manifesto: 1,
       whyUsTeaser: 1,
@@ -356,31 +388,48 @@ export class InMemoryContentRepository implements ContentRepository {
     this.revisions = [];
   }
 
-  async getSiteContent(): Promise<SiteContent> {
-    return normalizeSiteContent(JSON.parse(JSON.stringify(this.content)));
+  async getSiteContent(locale: Locale = "en"): Promise<SiteContent> {
+    const source = locale === "ar" ? this.contentAr : this.content;
+    return normalizeSiteContent(JSON.parse(JSON.stringify(source)), locale);
   }
 
-  async getSectionData(key: ValidSectionKey): Promise<Record<string, unknown> | null> {
-    return (this.content[key] as unknown as Record<string, unknown>) || null;
+  async getBilingualSiteContent(): Promise<BilingualSiteContent> {
+    return {
+      en: await this.getSiteContent("en"),
+      ar: await this.getSiteContent("ar"),
+    };
+  }
+
+  async getSectionData(
+    key: ValidSectionKey,
+    locale: Locale = "en"
+  ): Promise<Record<string, unknown> | null> {
+    const source = locale === "ar" ? this.contentAr : this.content;
+    return (source[key] as unknown as Record<string, unknown>) || null;
   }
 
   async saveSection(
     key: ValidSectionKey,
     data: Record<string, unknown>,
-    actorEmail = "admin@art-work.agency"
+    actorEmail = "admin@art-work.agency",
+    _expectedVersion?: number,
+    locale: Locale = "en"
   ): Promise<{ version: number; updatedAt: string }> {
-    const beforeState = JSON.parse(JSON.stringify(this.content[key]));
+    void _expectedVersion;
+    const target = locale === "ar" ? this.contentAr : this.content;
+    const beforeState = JSON.parse(JSON.stringify(target[key]));
     const nextVersion = (this.versions[key] || 1) + 1;
     this.versions[key] = nextVersion;
 
-    ((this.content as unknown) as Record<string, unknown>)[key] = JSON.parse(JSON.stringify(data));
+    ((target as unknown) as Record<string, unknown>)[key] = JSON.parse(JSON.stringify(data));
     const now = new Date().toISOString();
-    this.content.updatedAt = now;
-    this.content.version = `1.${nextVersion}.0`;
+    target.updatedAt = now;
+    target.version = `1.${nextVersion}.0`;
 
     const revision: ContentRevisionItem = {
       id: `rev-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       sectionKey: key,
+      locale,
       action: "update",
       actorEmail,
       beforeState,
@@ -404,7 +453,7 @@ export class InMemoryContentRepository implements ContentRepository {
   async rollback(
     revisionId: string,
     actorEmail = "admin@art-work.agency"
-  ): Promise<{ sectionKey: ValidSectionKey; restoredVersion: number }> {
+  ): Promise<{ sectionKey: ValidSectionKey; restoredVersion: number; locale?: Locale }> {
     const rev = await this.getRevision(revisionId);
     if (!rev) {
       throw new Error(`Revision ${revisionId} not found`);
@@ -414,12 +463,15 @@ export class InMemoryContentRepository implements ContentRepository {
       throw new Error(`Revision ${revisionId} has no previous state to restore`);
     }
 
+    const locale = rev.locale || "en";
     const { version } = await this.saveSection(
       rev.sectionKey,
       rev.beforeState,
-      `rollback:${actorEmail}`
+      `rollback:${actorEmail}`,
+      undefined,
+      locale
     );
-    return { sectionKey: rev.sectionKey, restoredVersion: version };
+    return { sectionKey: rev.sectionKey, restoredVersion: version, locale };
   }
 }
 
@@ -430,63 +482,194 @@ export class InMemoryContentRepository implements ContentRepository {
 export class SupabaseContentRepository implements ContentRepository {
   constructor(private supabase: SupabaseClient) {}
 
-  async getSiteContent(): Promise<SiteContent> {
+  private compileRowsForLocale(
+    rows: Array<{
+      section_key: string;
+      data?: Record<string, unknown> | null;
+      data_ar?: Record<string, unknown> | null;
+      version?: number | null;
+      updated_at?: string | null;
+    }>,
+    locale: Locale = "en"
+  ): SiteContent {
+    const defaults = getDefaultSiteContentForLocale(locale);
+    const compiled: Record<string, unknown> = JSON.parse(JSON.stringify(defaults));
+    let latestUpdated = defaults.updatedAt;
+    let maxVersion = 1;
+
+    for (const row of rows) {
+      const canonicalKey = normalizeSectionKey(row.section_key);
+      if (!canonicalKey) continue;
+
+      const enPayload =
+        row.data && typeof row.data === "object" && !Array.isArray(row.data)
+          ? row.data
+          : null;
+      const arPayload =
+        row.data_ar && typeof row.data_ar === "object" && !Array.isArray(row.data_ar)
+          ? row.data_ar
+          : null;
+
+      if (locale === "ar") {
+        // Carry over non-linguistic shared visual assets & contact details from EN row when AR is sparse
+        const mergedAr: Record<string, unknown> = {
+          ...(compiled[canonicalKey] as Record<string, unknown>),
+        };
+        if (enPayload) {
+          if (typeof enPayload.heroImage === "string" && enPayload.heroImage) {
+            mergedAr.heroImage = enPayload.heroImage;
+          }
+          if (typeof enPayload.intakeImage === "string" && enPayload.intakeImage) {
+            mergedAr.intakeImage = enPayload.intakeImage;
+          }
+          if (typeof enPayload.email === "string" && enPayload.email) {
+            mergedAr.email = enPayload.email;
+          }
+          if (typeof enPayload.phone === "string" && enPayload.phone) {
+            mergedAr.phone = enPayload.phone;
+          }
+          if (typeof enPayload.presentationImage === "string" && enPayload.presentationImage) {
+            mergedAr.presentationImage = enPayload.presentationImage;
+          }
+          if (typeof enPayload.spotlightImage === "string" && enPayload.spotlightImage) {
+            mergedAr.spotlightImage = enPayload.spotlightImage;
+          }
+        }
+        if (arPayload && Object.keys(arPayload).length > 0) {
+          Object.assign(mergedAr, arPayload);
+        }
+        compiled[canonicalKey] = mergedAr;
+      } else if (enPayload) {
+        compiled[canonicalKey] = enPayload;
+      }
+
+      if (row.version && row.version > maxVersion) {
+        maxVersion = row.version;
+      }
+      if (row.updated_at && row.updated_at > latestUpdated) {
+        latestUpdated = row.updated_at;
+      }
+    }
+
+    const normalized = normalizeSiteContent(compiled, locale);
+    normalized.version = `1.${maxVersion}.0`;
+    normalized.updatedAt = latestUpdated;
+    return normalized;
+  }
+
+  async getSiteContent(locale: Locale = "en"): Promise<SiteContent> {
     try {
       const { data, error } = await this.supabase
         .from("site_content")
-        .select("section_key, data, version, updated_at")
+        .select("section_key, data, data_ar, version, updated_at")
         .eq("status", "published");
 
       if (error || !data || data.length === 0) {
-        return DEFAULT_SITE_CONTENT;
+        return getDefaultSiteContentForLocale(locale);
       }
 
-      const compiled: Record<string, unknown> = JSON.parse(
-        JSON.stringify(DEFAULT_SITE_CONTENT)
-      );
-      let latestUpdated = DEFAULT_SITE_CONTENT.updatedAt;
-      let maxVersion = 1;
-
-      for (const row of data) {
-        const canonicalKey = normalizeSectionKey(row.section_key);
-        if (canonicalKey && row.data && typeof row.data === "object") {
-          compiled[canonicalKey] = row.data;
-          if (row.version && row.version > maxVersion) {
-            maxVersion = row.version;
-          }
-          if (row.updated_at && row.updated_at > latestUpdated) {
-            latestUpdated = row.updated_at;
-          }
-        }
-      }
-
-      const normalized = normalizeSiteContent(compiled);
-      normalized.version = `1.${maxVersion}.0`;
-      normalized.updatedAt = latestUpdated;
-      return normalized;
+      return this.compileRowsForLocale(data, locale);
     } catch {
-      return DEFAULT_SITE_CONTENT;
+      return getDefaultSiteContentForLocale(locale);
     }
   }
 
-  async getSectionData(key: ValidSectionKey): Promise<Record<string, unknown> | null> {
+  async getBilingualSiteContent(): Promise<BilingualSiteContent> {
+    try {
+      const { data, error } = await this.supabase
+        .from("site_content")
+        .select("section_key, data, data_ar, version, updated_at")
+        .eq("status", "published");
+
+      if (error || !data || data.length === 0) {
+        return {
+          en: DEFAULT_SITE_CONTENT,
+          ar: DEFAULT_SITE_CONTENT_AR,
+        };
+      }
+
+      return {
+        en: this.compileRowsForLocale(data, "en"),
+        ar: this.compileRowsForLocale(data, "ar"),
+      };
+    } catch {
+      return {
+        en: DEFAULT_SITE_CONTENT,
+        ar: DEFAULT_SITE_CONTENT_AR,
+      };
+    }
+  }
+
+  async getSectionData(
+    key: ValidSectionKey,
+    locale: Locale = "en"
+  ): Promise<Record<string, unknown> | null> {
+    const column = locale === "ar" ? "data_ar" : "data";
     const { data, error } = await this.supabase
       .from("site_content")
-      .select("data")
+      .select(column)
       .eq("section_key", key)
       .maybeSingle();
 
     if (error || !data) return null;
-    return (data.data as Record<string, unknown>) || null;
+    const row = data as unknown as Record<string, unknown>;
+    return (row[column] as Record<string, unknown>) || null;
   }
 
   async saveSection(
     key: ValidSectionKey,
     data: Record<string, unknown>,
     actorEmail = "admin@art-work.agency",
-    expectedVersion?: number
+    expectedVersion?: number,
+    locale: Locale = "en"
   ): Promise<{ version: number; updatedAt: string }> {
-    // 1. Attempt atomic PostgreSQL function with row-level lock & concurrency check
+    if (locale === "ar") {
+      const { data: existing } = await this.supabase
+        .from("site_content")
+        .select("version, data")
+        .eq("section_key", key)
+        .maybeSingle();
+
+      const nextVersion = existing?.version ? existing.version + 1 : 1;
+      const now = new Date().toISOString();
+
+      if (existing) {
+        const { error } = await this.supabase
+          .from("site_content")
+          .update({
+            data_ar: data,
+            status: "published",
+            version: nextVersion,
+            updated_at: now,
+          })
+          .eq("section_key", key);
+
+        if (error) {
+          throw new Error(`Failed to save Arabic section ${key}: ${error.message}`);
+        }
+      } else {
+        const defaultEn = (DEFAULT_SITE_CONTENT[key] || {}) as unknown as Record<string, unknown>;
+        const { error } = await this.supabase.from("site_content").upsert(
+          {
+            section_key: key,
+            data: defaultEn,
+            data_ar: data,
+            status: "published",
+            version: nextVersion,
+            updated_at: now,
+          },
+          { onConflict: "section_key" }
+        );
+
+        if (error) {
+          throw new Error(`Failed to insert Arabic section ${key}: ${error.message}`);
+        }
+      }
+
+      return { version: nextVersion, updatedAt: now };
+    }
+
+    // 1. Attempt atomic PostgreSQL function with row-level lock & concurrency check (English canonical data)
     try {
       const { data: rpcData, error: rpcError } = await this.supabase.rpc("save_site_content", {
         p_section_key: key,
@@ -544,16 +727,18 @@ export class SupabaseContentRepository implements ContentRepository {
     if (error || !data) return [];
 
     return data
-      .map((row) => {
+      .map<ContentRevisionItem | null>((row) => {
         const canonicalKey = normalizeSectionKey(row.entity_id || "");
         if (!canonicalKey) return null;
+        const locale = detectAuditSnapshotLocale(row.before_state, row.after_state);
         return {
           id: row.id,
           sectionKey: canonicalKey,
+          locale,
           action: row.action as "insert" | "update" | "delete",
           actorEmail: row.actor_email || "system@art-work.internal",
-          beforeState: normalizeContentAuditSnapshot(row.before_state),
-          afterState: normalizeContentAuditSnapshot(row.after_state),
+          beforeState: normalizeContentAuditSnapshot(row.before_state, locale),
+          afterState: normalizeContentAuditSnapshot(row.after_state, locale),
           createdAt: row.created_at,
         };
       })
@@ -570,14 +755,16 @@ export class SupabaseContentRepository implements ContentRepository {
     if (error || !data) return null;
     const canonicalKey = normalizeSectionKey(data.entity_id || "");
     if (!canonicalKey) return null;
+    const locale = detectAuditSnapshotLocale(data.before_state, data.after_state);
 
     return {
       id: data.id,
       sectionKey: canonicalKey,
+      locale,
       action: data.action as "insert" | "update" | "delete",
       actorEmail: data.actor_email || "system@art-work.internal",
-      beforeState: normalizeContentAuditSnapshot(data.before_state),
-      afterState: normalizeContentAuditSnapshot(data.after_state),
+      beforeState: normalizeContentAuditSnapshot(data.before_state, locale),
+      afterState: normalizeContentAuditSnapshot(data.after_state, locale),
       createdAt: data.created_at,
     };
   }
@@ -585,7 +772,7 @@ export class SupabaseContentRepository implements ContentRepository {
   async rollback(
     revisionId: string,
     actorEmail = "admin@art-work.agency"
-  ): Promise<{ sectionKey: ValidSectionKey; restoredVersion: number }> {
+  ): Promise<{ sectionKey: ValidSectionKey; restoredVersion: number; locale?: Locale }> {
     const rev = await this.getRevision(revisionId);
     if (!rev) {
       throw new Error(`Revision ${revisionId} not found`);
@@ -595,12 +782,15 @@ export class SupabaseContentRepository implements ContentRepository {
       throw new Error(`Revision ${revisionId} does not have a previous snapshot`);
     }
 
+    const locale = rev.locale || "en";
     const { version } = await this.saveSection(
       rev.sectionKey,
       rev.beforeState,
-      `rollback:${actorEmail}`
+      `rollback:${actorEmail}`,
+      undefined,
+      locale
     );
-    return { sectionKey: rev.sectionKey, restoredVersion: version };
+    return { sectionKey: rev.sectionKey, restoredVersion: version, locale };
   }
 }
 
@@ -683,13 +873,14 @@ export function validateSectionPayload(
 }
 
 /**
- * Retrieves the compiled site content tree.
+ * Retrieves the compiled site content tree for the requested locale ("en" or "ar").
  */
 export async function fetchSiteContent(
-  repo: ContentRepository
+  repo: ContentRepository,
+  locale: Locale = "en"
 ): Promise<ContentServiceResult<SiteContent>> {
   try {
-    const content = await repo.getSiteContent();
+    const content = await repo.getSiteContent(locale);
     return { ok: true, status: 200, data: content };
   } catch (err) {
     return {
@@ -701,15 +892,41 @@ export async function fetchSiteContent(
 }
 
 /**
+ * Retrieves both English and Arabic compiled site content trees for Admin CMS editing.
+ */
+export async function fetchBilingualSiteContent(
+  repo: ContentRepository
+): Promise<ContentServiceResult<BilingualSiteContent>> {
+  try {
+    if (typeof repo.getBilingualSiteContent === "function") {
+      const bilingual = await repo.getBilingualSiteContent();
+      return { ok: true, status: 200, data: bilingual };
+    }
+    const [en, ar] = await Promise.all([
+      repo.getSiteContent("en"),
+      repo.getSiteContent("ar"),
+    ]);
+    return { ok: true, status: 200, data: { en, ar } };
+  } catch (err) {
+    return {
+      ok: false,
+      status: 500,
+      error: `Failed to retrieve bilingual site content: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+}
+
+/**
  * Updates a specific site content section with Zod validation and version tracking.
  */
 export async function updateContentSection(
   sectionKey: string,
   rawPayload: unknown,
   repo: ContentRepository,
-  actorEmail?: string
+  actorEmail?: string,
+  locale: Locale = "en"
 ): Promise<
-  ContentServiceResult<{ section: ValidSectionKey; version: number; updatedAt: string }>
+  ContentServiceResult<{ section: ValidSectionKey; locale: Locale; version: number; updatedAt: string }>
 > {
   const normalizedKey = normalizeSectionKey(sectionKey);
   if (!normalizedKey) {
@@ -726,12 +943,19 @@ export async function updateContentSection(
   }
 
   try {
-    const result = await repo.saveSection(normalizedKey, validation.data, actorEmail);
+    const result = await repo.saveSection(
+      normalizedKey,
+      validation.data,
+      actorEmail,
+      undefined,
+      locale
+    );
     return {
       ok: true,
       status: 200,
       data: {
         section: normalizedKey,
+        locale,
         version: result.version,
         updatedAt: result.updatedAt,
       },

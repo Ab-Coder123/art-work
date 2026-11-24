@@ -4,12 +4,18 @@ import type {
   HeroManifestoContent,
   HomeShowcaseSectionContent,
   LayoutSectionContent,
+  Locale,
   ServicesSectionContent,
   SiteContent,
   WhyUsPageContent,
   WhyUsTeaserContent,
 } from "@art-work/types";
 import { DEFAULT_SITE_CONTENT, normalizeSiteMediaPath } from "./default-content";
+import { DEFAULT_SITE_CONTENT_AR } from "./default-content-ar";
+
+export function getDefaultSiteContentForLocale(locale: Locale = "en"): SiteContent {
+  return locale === "ar" ? DEFAULT_SITE_CONTENT_AR : DEFAULT_SITE_CONTENT;
+}
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -33,8 +39,11 @@ function readStringArray(record: UnknownRecord, key: string, fallback: string[])
   return cleaned.length > 0 ? cleaned : fallback;
 }
 
-function normalizeMetrics(value: unknown): HeroManifestoContent["metrics"] {
-  if (!Array.isArray(value)) return DEFAULT_SITE_CONTENT.manifesto.metrics;
+function normalizeMetrics(
+  value: unknown,
+  fallback: HeroManifestoContent["metrics"] = DEFAULT_SITE_CONTENT.manifesto.metrics
+): HeroManifestoContent["metrics"] {
+  if (!Array.isArray(value)) return fallback;
   const metrics = value
     .map(asRecord)
     .filter(
@@ -45,7 +54,7 @@ function normalizeMetrics(value: unknown): HeroManifestoContent["metrics"] {
         item.label.trim().length > 0
     )
     .map((item) => ({ num: item.num as string, label: item.label as string }));
-  return metrics.length ? metrics : DEFAULT_SITE_CONTENT.manifesto.metrics;
+  return metrics.length ? metrics : fallback;
 }
 
 /**
@@ -53,9 +62,12 @@ function normalizeMetrics(value: unknown): HeroManifestoContent["metrics"] {
  * SiteContent contract. The old `manifesto` shape remains the API DTO while
  * legacy rows are migrated incrementally.
  */
-export function normalizeHeroManifestoContent(value: unknown): HeroManifestoContent {
+export function normalizeHeroManifestoContent(
+  value: unknown,
+  locale: Locale = "en"
+): HeroManifestoContent {
   const raw = asRecord(value);
-  const defaults = DEFAULT_SITE_CONTENT.manifesto;
+  const defaults = getDefaultSiteContentForLocale(locale).manifesto;
   const modernShape =
     "headline_highlight" in raw ||
     "headline_suffix" in raw ||
@@ -100,13 +112,16 @@ export function normalizeHeroManifestoContent(value: unknown): HeroManifestoCont
       middle: readString(starburst, "middle", defaults.starburstText.middle),
       bottom: readString(starburst, "bottom", defaults.starburstText.bottom),
     },
-    metrics: normalizeMetrics(raw.metrics),
+    metrics: normalizeMetrics(raw.metrics, defaults.metrics),
   };
 }
 
-function normalizeWhyUsTeaser(value: unknown): WhyUsTeaserContent {
+function normalizeWhyUsTeaser(
+  value: unknown,
+  locale: Locale = "en"
+): WhyUsTeaserContent {
   const raw = asRecord(value);
-  const defaults = DEFAULT_SITE_CONTENT.whyUsTeaser;
+  const defaults = getDefaultSiteContentForLocale(locale).whyUsTeaser;
   const modernShape = "manifesto_lead" in raw || "paragraphs" in raw;
   if (modernShape) {
     return {
@@ -160,9 +175,12 @@ function normalizeWhyUsTeaser(value: unknown): WhyUsTeaserContent {
   };
 }
 
-export function normalizeServicesContent(value: unknown): ServicesSectionContent {
+export function normalizeServicesContent(
+  value: unknown,
+  locale: Locale = "en"
+): ServicesSectionContent {
   const raw = asRecord(value);
-  const defaults = DEFAULT_SITE_CONTENT.services;
+  const defaults = getDefaultSiteContentForLocale(locale).services;
   const disciplines =
     Array.isArray(raw.disciplines) && raw.disciplines.length > 0
       ? raw.disciplines
@@ -213,9 +231,12 @@ export function normalizeServicesContent(value: unknown): ServicesSectionContent
   };
 }
 
-export function normalizeHomeShowcaseContent(value: unknown): HomeShowcaseSectionContent {
+export function normalizeHomeShowcaseContent(
+  value: unknown,
+  locale: Locale = "en"
+): HomeShowcaseSectionContent {
   const raw = asRecord(value);
-  const defaults = DEFAULT_SITE_CONTENT.homeShowcase;
+  const defaults = getDefaultSiteContentForLocale(locale).homeShowcase;
   return {
     ...defaults,
     badge: readString(raw, "badge", defaults.badge),
@@ -231,9 +252,12 @@ export function normalizeHomeShowcaseContent(value: unknown): HomeShowcaseSectio
   };
 }
 
-function normalizeWhyUsPage(value: unknown): WhyUsPageContent {
+function normalizeWhyUsPage(
+  value: unknown,
+  locale: Locale = "en"
+): WhyUsPageContent {
   const raw = asRecord(value);
-  const defaults = DEFAULT_SITE_CONTENT.whyUsPage;
+  const defaults = getDefaultSiteContentForLocale(locale).whyUsPage;
   if ("manifesto_lead" in raw || "paragraphs" in raw) {
     const paragraphs = Array.isArray(raw.paragraphs)
       ? raw.paragraphs.filter((paragraph): paragraph is string => typeof paragraph === "string" && paragraph.trim().length > 0)
@@ -295,7 +319,7 @@ function normalizeWhyUsPage(value: unknown): WhyUsPageContent {
       defaults.presentationImage
     ),
     presentationImageAlt: readString(raw, "presentationImageAlt", defaults.presentationImageAlt),
-    metrics: normalizeMetrics(raw.metrics),
+    metrics: normalizeMetrics(raw.metrics, defaults.metrics),
     primaryCtaText: readString(raw, "primaryCtaText", defaults.primaryCtaText || ""),
     secondaryCtaText: readString(raw, "secondaryCtaText", defaults.secondaryCtaText || ""),
     easelTag: readString(raw, "easelTag", defaults.easelTag || ""),
@@ -316,9 +340,12 @@ function normalizeWhyUsPage(value: unknown): WhyUsPageContent {
   };
 }
 
-function normalizeContact(value: unknown): ContactSectionContent {
+function normalizeContact(
+  value: unknown,
+  locale: Locale = "en"
+): ContactSectionContent {
   const raw = asRecord(value);
-  const defaults = DEFAULT_SITE_CONTENT.contact;
+  const defaults = getDefaultSiteContentForLocale(locale).contact;
   const legacy = { ...defaults, ...raw } as ContactSectionContent;
   const rawPhone = readString(raw, "phone", defaults.phone);
   const phone =
@@ -356,9 +383,12 @@ function normalizeContact(value: unknown): ContactSectionContent {
   };
 }
 
-export function normalizeGalleryPageContent(value: unknown): GalleryPageContent {
+export function normalizeGalleryPageContent(
+  value: unknown,
+  locale: Locale = "en"
+): GalleryPageContent {
   const raw = asRecord(value);
-  const defaults = DEFAULT_SITE_CONTENT.galleryPage;
+  const defaults = getDefaultSiteContentForLocale(locale).galleryPage;
   const workflowSteps =
     Array.isArray(raw.workflowSteps) && raw.workflowSteps.length > 0
       ? raw.workflowSteps
@@ -408,9 +438,12 @@ export function normalizeGalleryPageContent(value: unknown): GalleryPageContent 
   };
 }
 
-export function normalizeLayoutContent(value: unknown): LayoutSectionContent {
+export function normalizeLayoutContent(
+  value: unknown,
+  locale: Locale = "en"
+): LayoutSectionContent {
   const raw = asRecord(value);
-  const defaults = DEFAULT_SITE_CONTENT.layout;
+  const defaults = getDefaultSiteContentForLocale(locale).layout;
   return {
     ...defaults,
     navHomeLabel: readString(raw, "navHomeLabel", defaults.navHomeLabel),
@@ -427,19 +460,23 @@ export function normalizeLayoutContent(value: unknown): LayoutSectionContent {
 }
 
 /** Return the stable API tree regardless of whether the database row is old or new. */
-export function normalizeSiteContent(value: unknown): SiteContent {
+export function normalizeSiteContent(
+  value: unknown,
+  locale: Locale = "en"
+): SiteContent {
   const raw = asRecord(value);
+  const defaults = getDefaultSiteContentForLocale(locale);
   const manifesto = raw.manifesto ?? raw.hero;
   return {
-    ...DEFAULT_SITE_CONTENT,
+    ...defaults,
     ...raw,
-    manifesto: normalizeHeroManifestoContent(manifesto),
-    whyUsTeaser: normalizeWhyUsTeaser(raw.whyUsTeaser ?? raw.why_us),
-    services: normalizeServicesContent(raw.services ?? raw.capabilities),
-    homeShowcase: normalizeHomeShowcaseContent(raw.homeShowcase ?? raw.home_showcase),
-    contact: normalizeContact(raw.contact),
-    whyUsPage: normalizeWhyUsPage(raw.whyUsPage ?? raw.why_us_page),
-    galleryPage: normalizeGalleryPageContent(raw.galleryPage ?? raw.gallery_page),
-    layout: normalizeLayoutContent(raw.layout ?? raw.navigation),
+    manifesto: normalizeHeroManifestoContent(manifesto, locale),
+    whyUsTeaser: normalizeWhyUsTeaser(raw.whyUsTeaser ?? raw.why_us, locale),
+    services: normalizeServicesContent(raw.services ?? raw.capabilities, locale),
+    homeShowcase: normalizeHomeShowcaseContent(raw.homeShowcase ?? raw.home_showcase, locale),
+    contact: normalizeContact(raw.contact, locale),
+    whyUsPage: normalizeWhyUsPage(raw.whyUsPage ?? raw.why_us_page, locale),
+    galleryPage: normalizeGalleryPageContent(raw.galleryPage ?? raw.gallery_page, locale),
+    layout: normalizeLayoutContent(raw.layout ?? raw.navigation, locale),
   } as SiteContent;
 }

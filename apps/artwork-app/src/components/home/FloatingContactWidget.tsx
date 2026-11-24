@@ -4,10 +4,21 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mail } from "lucide-react";
+import { getUiDictionary } from "@art-work/types";
+import { useShowcaseStore } from "@/store/useShowcaseStore";
 
 export function FloatingContactWidget() {
   const pathname = usePathname();
-  const [phone, setPhone] = useState<string>("01092611230");
+  const locale = useShowcaseStore((s) => s.locale);
+  const storePhone = useShowcaseStore((s) => s.siteContent.contact.phone);
+  const dict = getUiDictionary(locale);
+  const [phone, setPhone] = useState<string>(storePhone || "01092611230");
+
+  useEffect(() => {
+    if (storePhone) {
+      setPhone(storePhone);
+    }
+  }, [storePhone]);
 
   useEffect(() => {
     let mounted = true;
@@ -63,15 +74,15 @@ export function FloatingContactWidget() {
 
   return (
     <div
-      aria-label="Floating Action Dock"
-      className="fixed right-4 sm:right-6 bottom-6 sm:bottom-8 z-50 flex flex-col items-center gap-3 select-none pointer-events-auto"
+      aria-label={dict.floatingDock.ariaLabel}
+      className="fixed end-4 sm:end-6 bottom-6 sm:bottom-8 z-50 flex flex-col items-center gap-3 select-none pointer-events-auto"
     >
       {/* 1. BLUE ACTION BUTTON: Email / Direct Brief Spec */}
       <Link
         href="/#stage-04"
         onClick={handleEmailClick}
-        aria-label="Send Project Brief / Email Inquiry"
-        title="Send Project Brief / Email Inquiry"
+        aria-label={dict.floatingDock.emailTooltip}
+        title={dict.floatingDock.emailTooltip}
         className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#1D4ED8] hover:bg-[#1E40AF] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(29,78,216,0.4)] hover:shadow-[0_6px_20px_rgba(29,78,216,0.6)] hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer border border-white/20"
       >
         <Mail className="w-5 h-5 text-white stroke-[2.2]" />
@@ -82,8 +93,8 @@ export function FloatingContactWidget() {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Direct WhatsApp Chat"
-        title="Direct WhatsApp Chat"
+        aria-label={dict.floatingDock.whatsappTooltip}
+        title={dict.floatingDock.whatsappTooltip}
         className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-[0_4px_14px_rgba(37,211,102,0.4)] hover:shadow-[0_6px_20px_rgba(37,211,102,0.6)] hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer border border-white/20"
       >
         <svg

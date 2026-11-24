@@ -19,6 +19,18 @@ export const CompanyCategoryEnum = z.enum([
   "corporate",
 ]);
 
+export const CompanyTranslationFieldsSchema = z.object({
+  name: z.string().trim().max(120).optional(),
+  highlight: z.string().trim().max(100).optional(),
+  description: z.string().trim().max(500).optional(),
+});
+
+export const CompanyTranslationsSchema = z
+  .object({
+    ar: CompanyTranslationFieldsSchema.optional(),
+  })
+  .default({});
+
 export const CompanyRecordSchema = z.object({
   id: z.string().uuid().optional(),
   slug: z
@@ -35,6 +47,7 @@ export const CompanyRecordSchema = z.object({
   order_index: z.number().int().min(0).default(0),
   featured: z.boolean().default(false),
   is_active: z.boolean().default(true),
+  translations: CompanyTranslationsSchema.optional(),
 });
 
 export const CreateCompanySchema = CompanyRecordSchema.omit({ id: true });
