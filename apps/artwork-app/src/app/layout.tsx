@@ -26,7 +26,7 @@ const cairo = Cairo({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://artwork-marketing.vercel.app"),
-  title: "artwork - marketing solution",
+  title: "Artwork Marketing Solution",
   description:
     "We are Art Work: an interdisciplinary marketing and experiential design collective translating bold cultural visions into arena-scale reality.",
   keywords: [
@@ -48,11 +48,11 @@ export const metadata: Metadata = {
     apple: "/apple-icon.png",
   },
   openGraph: {
-    title: "artwork - marketing solution",
+    title: "Artwork Marketing Solution",
     description:
       "Interdisciplinary marketing and experiential design collective translating bold cultural visions into arena-scale reality.",
     url: "https://artwork-solutions.stage",
-    siteName: "Art Work Marketing Solutions",
+    siteName: "Artwork Marketing Solution",
     images: [
       {
         url: "/assets/images/artwork_logo.png",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "artwork - marketing solution",
+    title: "Artwork Marketing Solution",
     description:
       "Interdisciplinary marketing and experiential design collective translating bold cultural visions into arena-scale reality.",
     images: ["/assets/images/artwork_logo.png"],
