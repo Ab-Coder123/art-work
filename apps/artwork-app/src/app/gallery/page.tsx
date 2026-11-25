@@ -91,6 +91,7 @@ export default function GalleryPage() {
   const ensureFreshData = useShowcaseStore((s) => s.ensureFreshData);
 
   const [isLoading, setIsLoading] = useState(!hasSyncedLive && !hasHydratedServerData);
+  const deepLinkResolvedRef = React.useRef(false);
 
   const selectedProject = React.useMemo(
     () => projects.find((proj) => proj.id === selectedProjectId) || null,
@@ -100,9 +101,43 @@ export default function GalleryPage() {
   const setSelectedProject = React.useCallback(
     (project: ProjectRecord | null) => {
       setSelectedProjectId(project ? project.id : null);
+      if (typeof window !== "undefined") {
+        const nextUrl = new URL(window.location.href);
+        if (project) {
+          nextUrl.searchParams.set("project", project.slug || project.id);
+        } else {
+          nextUrl.searchParams.delete("project");
+          deepLinkResolvedRef.current = true;
+        }
+        window.history.replaceState(null, "", `${nextUrl.pathname}${nextUrl.search}`);
+      }
     },
     [setSelectedProjectId]
   );
+
+  // Auto-open project card modal when visiting a shared /gallery?project=<slug-or-id> link
+  useEffect(() => {
+    if (typeof window === "undefined" || deepLinkResolvedRef.current || projects.length === 0) {
+      return;
+    }
+    const targetParam = new URLSearchParams(window.location.search).get("project")?.trim();
+    if (!targetParam) {
+      deepLinkResolvedRef.current = true;
+      return;
+    }
+    const normalizedTarget = targetParam.toLowerCase();
+    const matched = projects.find(
+      (p) =>
+        p.id.toLowerCase() === normalizedTarget ||
+        (p.slug && p.slug.toLowerCase() === normalizedTarget)
+    );
+    if (matched) {
+      deepLinkResolvedRef.current = true;
+      setSelectedProjectId(matched.id);
+    } else if (!isLoading) {
+      deepLinkResolvedRef.current = true;
+    }
+  }, [projects, isLoading, setSelectedProjectId]);
 
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();

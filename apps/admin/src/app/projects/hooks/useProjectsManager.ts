@@ -153,11 +153,13 @@ export function useProjectsManager() {
     }
   }, [projects]);
 
-  const handleMoveOrder = useCallback(async (id: string, direction: "up" | "down") => {
+  const handleSetOrder = useCallback(async (id: string, targetOrder: number) => {
+    if (!Number.isFinite(targetOrder)) return;
     const index = projects.findIndex((p) => p.id === id);
     if (index < 0) return;
-    const targetIndex = direction === "up" ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= projects.length) return;
+    const clampedOrder = Math.max(1, Math.min(projects.length, Math.floor(targetOrder)));
+    const targetIndex = clampedOrder - 1;
+    if (index === targetIndex) return;
 
     const updated = [...projects];
     const [moved] = updated.splice(index, 1);
@@ -177,13 +179,20 @@ export function useProjectsManager() {
         setNotification({
           type: "success",
           title: "تم حفظ ترتيب عرض المشاريع بنجاح",
-          detail: "تم تحديث ترتيب ظهور الكروت في معرض المشاريع على الموقع.",
+          detail: `تم نقل "${moved.title}" إلى الترتيب رقم #${clampedOrder} وتحديث ترتيب باقي المشاريع تلقائياً.`,
         });
       }
     } catch {
       // Optimistic state kept locally
     }
   }, [projects]);
+
+  const handleMoveOrder = useCallback(async (id: string, direction: "up" | "down") => {
+    const index = projects.findIndex((p) => p.id === id);
+    if (index < 0) return;
+    const targetOrder = direction === "up" ? index : index + 2;
+    await handleSetOrder(id, targetOrder);
+  }, [projects, handleSetOrder]);
 
   const handleDelete = useCallback(async (id: string) => {
     setProjects((prev) => prev.filter((p) => p.id !== id));
@@ -364,6 +373,7 @@ export function useProjectsManager() {
     handleToggleFeatured,
     handleToggleStatus,
     handleMoveOrder,
+    handleSetOrder,
     handleDelete,
     openNewProjectModal,
     openEditProjectModal,

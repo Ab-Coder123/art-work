@@ -2,8 +2,6 @@ import React from "react";
 import {
   Edit2,
   Trash2,
-  ArrowUp,
-  ArrowDown,
   Star,
   FileText,
 } from "lucide-react";
@@ -13,17 +11,112 @@ import { BehanceIcon, FacebookIcon, YouTubeIcon } from "./Icons";
 export interface ProjectsTableProps {
   projects: ProjectRecord[];
   totalCount: number;
-  onMoveOrder: (id: string, direction: "up" | "down") => void;
+  onSetOrder: (id: string, targetOrder: number) => void;
+  onMoveOrder?: (id: string, direction: "up" | "down") => void;
   onToggleFeatured: (id: string) => void;
   onToggleStatus: (id: string) => void;
   onEdit: (project: ProjectRecord) => void;
   onDeleteRequest: (id: string) => void;
 }
 
+function ProjectOrderNumberInput({
+  projectId,
+  currentOrder,
+  totalCount,
+  onSetOrder,
+}: {
+  projectId: string;
+  currentOrder: number;
+  totalCount: number;
+  onSetOrder: (id: string, targetOrder: number) => void;
+}) {
+  const [draftOrder, setDraftOrder] = React.useState<string>(String(currentOrder));
+  const debounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  React.useEffect(() => {
+    setDraftOrder(String(currentOrder));
+  }, [currentOrder]);
+
+  React.useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  const commitOrder = (rawValue: string) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+    const parsed = parseInt(rawValue, 10);
+    if (!Number.isFinite(parsed) || parsed < 1) {
+      setDraftOrder(String(currentOrder));
+      return;
+    }
+    const maxOrder = Math.max(1, totalCount);
+    const clamped = Math.max(1, Math.min(maxOrder, parsed));
+    setDraftOrder(String(clamped));
+    if (clamped !== currentOrder) {
+      onSetOrder(projectId, clamped);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-1 bg-[#0d0d12] border border-[#2b2b3d] focus-within:border-yellow-400 hover:border-zinc-600 rounded-xl px-2.5 py-1.5 shrink-0 transition-colors">
+      <span className="text-[11px] font-mono font-bold text-yellow-400 select-none">#</span>
+      <input
+        type="number"
+        min={1}
+        max={Math.max(1, totalCount)}
+        value={draftOrder}
+        onFocus={(e) => e.currentTarget.select()}
+        onChange={(e) => {
+          const val = e.target.value;
+          setDraftOrder(val);
+          if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+          }
+          const parsed = parseInt(val, 10);
+          const maxOrder = Math.max(1, totalCount);
+          if (
+            Number.isFinite(parsed) &&
+            parsed >= 1 &&
+            parsed <= maxOrder &&
+            parsed !== currentOrder
+          ) {
+            debounceTimerRef.current = setTimeout(() => {
+              onSetOrder(projectId, parsed);
+            }, 350);
+          }
+        }}
+        onBlur={(e) => commitOrder(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            commitOrder(e.currentTarget.value);
+            e.currentTarget.blur();
+          } else if (e.key === "Escape") {
+            if (debounceTimerRef.current) {
+              clearTimeout(debounceTimerRef.current);
+            }
+            setDraftOrder(String(currentOrder));
+            e.currentTarget.blur();
+          }
+        }}
+        aria-label={`Project order position (currently #${currentOrder})`}
+        title="اكتب رقم الترتيب مباشرة (مثلاً 1 ليصبح المشروع رقم 1)"
+        className="w-12 bg-transparent text-center font-mono text-xs font-bold text-white focus:outline-none"
+      />
+    </div>
+  );
+}
+
 export function ProjectsTable({
   projects,
   totalCount,
-  onMoveOrder,
+  onSetOrder,
   onToggleFeatured,
   onToggleStatus,
   onEdit,
@@ -44,32 +137,19 @@ export function ProjectsTable({
             No projects found matching the active filter criteria.
           </div>
         ) : (
-          projects.map((project, idx) => (
+          projects.map((project) => (
             <div
               key={project.id}
               className="p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:bg-[#181824] transition-colors"
             >
-              {/* Left: Thumbnail & Core Info */}
+              {/* Left: Order Input, Thumbnail & Core Info */}
               <div className="flex items-center gap-4">
-                <div className="flex flex-col items-center gap-1 font-mono text-xs text-zinc-500">
-                  <button
-                    onClick={() => onMoveOrder(project.id, "up")}
-                    disabled={idx === 0}
-                    className="p-1 hover:text-white disabled:opacity-20 cursor-pointer"
-                    aria-label="Move project up"
-                  >
-                    <ArrowUp className="w-3.5 h-3.5" />
-                  </button>
-                  <span className="text-[11px] font-bold text-zinc-400">#{project.order}</span>
-                  <button
-                    onClick={() => onMoveOrder(project.id, "down")}
-                    disabled={idx === projects.length - 1}
-                    className="p-1 hover:text-white disabled:opacity-20 cursor-pointer"
-                    aria-label="Move project down"
-                  >
-                    <ArrowDown className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                <ProjectOrderNumberInput
+                  projectId={project.id}
+                  currentOrder={project.order}
+                  totalCount={totalCount}
+                  onSetOrder={onSetOrder}
+                />
 
                 <div className="w-16 h-12 rounded-xl bg-black/40 border border-[#2b2b3d] overflow-hidden relative shrink-0">
                   {project.image ? (

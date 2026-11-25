@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, FileText, ArrowRight } from "lucide-react";
+import { Play, FileText, ArrowRight, Link2, Check } from "lucide-react";
 import {
   type ProjectRecord,
   getUiDictionary,
@@ -27,7 +27,9 @@ export function GalleryProjectModal({ project: rawProject, onClose }: GalleryPro
   const [modalFbOrientationOverride, setModalFbOrientationOverride] = useState<boolean | null>(null);
   const [activeMediaTab, setActiveMediaTab] = useState<"youtube" | "facebook">("youtube");
   const [useGoogleViewer, setUseGoogleViewer] = useState(false);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
   const modalScrollRef = useRef<HTMLDivElement>(null);
+  const copyResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Freeze Lenis & lock document scroll while modal is active
   useEffect(() => {
@@ -36,6 +38,7 @@ export function GalleryProjectModal({ project: rawProject, onClose }: GalleryPro
       document.body.style.overflow = "hidden";
       setActiveModalImage(project.image);
       setModalFbOrientationOverride(null);
+      setIsLinkCopied(false);
       if (project.youtubeVideoId || project.youtubeUrl) {
         setActiveMediaTab("youtube");
       } else if (project.facebookUrl) {
@@ -48,10 +51,41 @@ export function GalleryProjectModal({ project: rawProject, onClose }: GalleryPro
     return () => {
       window.__lenis?.start();
       document.body.style.overflow = "";
+      if (copyResetTimerRef.current) {
+        clearTimeout(copyResetTimerRef.current);
+      }
     };
   }, [project]);
 
   if (!project) return null;
+
+  const handleCopyProjectLink = async () => {
+    if (typeof window === "undefined") return;
+    const projectKey = project.slug || project.id;
+    const shareUrl = `${window.location.origin}/gallery?project=${encodeURIComponent(projectKey)}`;
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      }
+    } catch {
+      // Clipboard write handled safely
+    }
+
+    if (window.location.pathname === "/gallery") {
+      const nextUrl = new URL(window.location.href);
+      nextUrl.searchParams.set("project", projectKey);
+      window.history.replaceState(null, "", `${nextUrl.pathname}${nextUrl.search}`);
+    }
+
+    setIsLinkCopied(true);
+    if (copyResetTimerRef.current) {
+      clearTimeout(copyResetTimerRef.current);
+    }
+    copyResetTimerRef.current = setTimeout(() => {
+      setIsLinkCopied(false);
+    }, 2200);
+  };
 
   const selectedYtEmbed = resolveSafeYouTubeEmbed(
     project.youtubeVideoId || project.youtubeUrl,
@@ -81,23 +115,52 @@ export function GalleryProjectModal({ project: rawProject, onClose }: GalleryPro
           data-lenis-prevent="true"
           className="bg-white dark:bg-[#151520] border-4 border-black dark:border-zinc-700 rounded-2xl p-6 sm:p-8 max-w-2xl w-full comic-shadow relative max-h-[85vh] overflow-y-auto overscroll-contain touch-pan-y"
         >
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 end-4 w-9 h-9 rounded-full bg-yellow-400 hover:bg-black hover:text-white text-black border-2 border-black font-black flex items-center justify-center transition-colors cursor-pointer"
-            aria-label={dict.gallery.closeModal}
-          >
-            ✕
-          </button>
+          {/* Top Header Bar: Badge, Copy Link & Close Button */}
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div className="inline-flex items-center gap-2 bg-yellow-400 text-black px-3 py-1 border-2 border-black font-mono text-xs font-black uppercase">
+              <span>{project.year || 2026}</span>
+              {project.metaBadge && (
+                <>
+                  <span>•</span>
+                  <span>{project.metaBadge}</span>
+                </>
+              )}
+            </div>
 
-          <div className="inline-flex items-center gap-2 bg-yellow-400 text-black px-3 py-1 border-2 border-black font-mono text-xs font-black uppercase mb-3">
-            <span>{project.year || 2026}</span>
-            {project.metaBadge && (
-              <>
-                <span>•</span>
-                <span>{project.metaBadge}</span>
-              </>
-            )}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleCopyProjectLink}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-black font-headline font-black text-xs uppercase transition-all cursor-pointer comic-shadow-sm ${
+                  isLinkCopied
+                    ? "bg-emerald-400 text-black"
+                    : "bg-white dark:bg-[#20202e] text-black dark:text-white hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-400 dark:hover:text-black"
+                }`}
+                aria-label={dict.gallery.copyLink}
+                title={dict.gallery.copyLink}
+              >
+                {isLinkCopied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>{dict.gallery.linkCopied}</span>
+                  </>
+                ) : (
+                  <>
+                    <Link2 className="w-3.5 h-3.5 stroke-[2.2]" />
+                    <span>{dict.gallery.copyLink}</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-9 h-9 rounded-full bg-yellow-400 hover:bg-black hover:text-white text-black border-2 border-black font-black flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                aria-label={dict.gallery.closeModal}
+              >
+                ✕
+              </button>
+            </div>
           </div>
 
           <h2 className="text-2xl font-black font-headline uppercase text-black dark:text-white mb-2">
@@ -454,7 +517,28 @@ export function GalleryProjectModal({ project: rawProject, onClose }: GalleryPro
             );
           })()}
 
-          <div className="pt-4 border-t border-black/10 dark:border-zinc-800 flex items-center justify-end">
+          <div className="pt-4 border-t border-black/10 dark:border-zinc-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+            <button
+              type="button"
+              onClick={handleCopyProjectLink}
+              className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded border-2 border-black font-headline font-bold text-xs uppercase transition-colors cursor-pointer comic-shadow-sm ${
+                isLinkCopied
+                  ? "bg-emerald-400 text-black"
+                  : "bg-white dark:bg-[#20202e] text-black dark:text-white hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-400 dark:hover:text-black"
+              }`}
+            >
+              {isLinkCopied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>{dict.gallery.linkCopied}</span>
+                </>
+              ) : (
+                <>
+                  <Link2 className="w-3.5 h-3.5 stroke-[2.2]" />
+                  <span>{dict.gallery.copyLink}</span>
+                </>
+              )}
+            </button>
             <Link
               href="/#stage-04"
               className="w-full sm:w-auto px-6 py-2.5 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-300 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors text-center"

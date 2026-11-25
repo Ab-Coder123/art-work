@@ -222,4 +222,33 @@ describe("Bilingual AR/EN i18n Contracts, CMS Versioning & UI Wiring", () => {
     assert.ok(projectModalSrc.includes("ProjectArabicFieldsCard"));
     assert.ok(companiesSrc.includes("translations"));
   });
+
+  it("6. wires Gallery project card Copy Link deep-linking and Admin direct number input project ordering", () => {
+    const galleryModalSrc = fs.readFileSync(
+      path.join(rootDir, "apps/artwork-app/src/components/gallery/GalleryProjectModal.tsx"),
+      "utf-8"
+    );
+    const galleryPageSrc = fs.readFileSync(
+      path.join(rootDir, "apps/artwork-app/src/app/gallery/page.tsx"),
+      "utf-8"
+    );
+    const projectsTableSrc = fs.readFileSync(
+      path.join(rootDir, "apps/admin/src/app/projects/components/ProjectsTable.tsx"),
+      "utf-8"
+    );
+    const projectsHookSrc = fs.readFileSync(
+      path.join(rootDir, "apps/admin/src/app/projects/hooks/useProjectsManager.ts"),
+      "utf-8"
+    );
+
+    assert.ok(galleryModalSrc.includes("handleCopyProjectLink"));
+    assert.ok(galleryModalSrc.includes("/gallery?project="));
+    assert.ok(galleryModalSrc.includes("dict.gallery.copyLink"));
+    assert.ok(galleryModalSrc.includes("dict.gallery.linkCopied"));
+    assert.ok(galleryPageSrc.includes('.get("project")'));
+    assert.ok(galleryPageSrc.includes('searchParams.set("project"'));
+    assert.ok(projectsTableSrc.includes('type="number"'));
+    assert.ok(projectsTableSrc.includes("ProjectOrderNumberInput"));
+    assert.ok(projectsHookSrc.includes("handleSetOrder"));
+  });
 });

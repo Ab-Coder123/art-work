@@ -132,6 +132,8 @@ export interface UiDictionary {
     videoTag: string;
     closeVideo: string;
     playVideo: string;
+    copyLink: string;
+    linkCopied: string;
   };
   services: {
     deliverablesHeading: string;
@@ -252,6 +254,8 @@ export const UI_DICTIONARY: Record<Locale, UiDictionary> = {
       videoTag: "VIDEO",
       closeVideo: "Close",
       playVideo: "Play Video",
+      copyLink: "Copy Link",
+      linkCopied: "Link Copied!",
     },
     services: {
       deliverablesHeading: "Key Deliverables & Scope",
@@ -377,6 +381,8 @@ export const UI_DICTIONARY: Record<Locale, UiDictionary> = {
       videoTag: "فيديو",
       closeVideo: "إغلاق",
       playVideo: "تشغيل الفيديو",
+      copyLink: "نسخ الرابط",
+      linkCopied: "تم نسخ الرابط!",
     },
     services: {
       deliverablesHeading: "المخرجات ونطاق التنفيذ",

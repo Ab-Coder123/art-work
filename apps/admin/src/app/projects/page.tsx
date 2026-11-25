@@ -39,6 +39,7 @@ export default function GalleryProjectsManager() {
     handleToggleFeatured,
     handleToggleStatus,
     handleMoveOrder,
+    handleSetOrder,
     handleDelete,
     openNewProjectModal,
     openEditProjectModal,
@@ -174,6 +175,7 @@ export default function GalleryProjectsManager() {
         <ProjectsTable
           projects={filtered}
           totalCount={projects.length}
+          onSetOrder={handleSetOrder}
           onMoveOrder={handleMoveOrder}
           onToggleFeatured={handleToggleFeatured}
           onToggleStatus={handleToggleStatus}
