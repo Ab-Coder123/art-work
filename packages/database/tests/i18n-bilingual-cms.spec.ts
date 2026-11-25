@@ -247,6 +247,8 @@ describe("Bilingual AR/EN i18n Contracts, CMS Versioning & UI Wiring", () => {
     assert.ok(galleryModalSrc.includes("dict.gallery.linkCopied"));
     assert.ok(galleryPageSrc.includes('.get("project")'));
     assert.ok(galleryPageSrc.includes('searchParams.set("project"'));
+    assert.ok(galleryPageSrc.includes('shareUrl.searchParams.set("category"'));
+    assert.ok(galleryPageSrc.includes('.get("category")'));
     assert.ok(projectsTableSrc.includes('type="number"'));
     assert.ok(projectsTableSrc.includes("ProjectOrderNumberInput"));
     assert.ok(projectsHookSrc.includes("handleSetOrder"));

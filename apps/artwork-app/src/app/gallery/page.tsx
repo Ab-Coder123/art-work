@@ -139,6 +139,33 @@ export default function GalleryPage() {
     }
   }, [projects, isLoading, setSelectedProjectId]);
 
+  // Apply a shared /gallery?category=<key> filter link on first load
+  const categoryDeepLinkResolvedRef = React.useRef(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || categoryDeepLinkResolvedRef.current) return;
+    categoryDeepLinkResolvedRef.current = true;
+    const categoryParam = new URLSearchParams(window.location.search)
+      .get("category")
+      ?.trim()
+      .toLowerCase();
+    if (
+      categoryParam === "all" ||
+      categoryParam === "conferences" ||
+      categoryParam === "booths" ||
+      categoryParam === "branding"
+    ) {
+      setActiveFilter(categoryParam as ProjectCategory);
+    }
+  }, [setActiveFilter]);
+
+  const [copiedFilterKey, setCopiedFilterKey] = useState<string | null>(null);
+  const filterCopyTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (filterCopyTimerRef.current) clearTimeout(filterCopyTimerRef.current);
+    };
+  }, []);
+
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();
 
@@ -233,9 +260,36 @@ export default function GalleryPage() {
     );
   }
 
-  const handleFilterClick = (cat: ProjectCategory) => {
+  const handleFilterClick = async (cat: ProjectCategory) => {
     soundFX.playClick();
     setActiveFilter(cat);
+
+    if (typeof window === "undefined") return;
+    const shareUrl = new URL(`${window.location.origin}/gallery`);
+    if (cat !== "all") {
+      shareUrl.searchParams.set("category", cat);
+    }
+
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.delete("project");
+    if (cat === "all") {
+      currentUrl.searchParams.delete("category");
+    } else {
+      currentUrl.searchParams.set("category", cat);
+    }
+    window.history.replaceState(null, "", `${currentUrl.pathname}${currentUrl.search}`);
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl.toString());
+      }
+    } catch {
+      // Clipboard write handled safely
+    }
+
+    setCopiedFilterKey(cat);
+    if (filterCopyTimerRef.current) clearTimeout(filterCopyTimerRef.current);
+    filterCopyTimerRef.current = setTimeout(() => setCopiedFilterKey(null), 2200);
   };
 
   const handleInspectClick = (project: ProjectRecord) => {
@@ -384,6 +438,15 @@ export default function GalleryPage() {
                 {chip.label}
               </button>
             ))}
+
+            {copiedFilterKey && (
+              <span
+                role="status"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-400 text-black border-2 border-black font-headline font-black text-[11px] uppercase comic-shadow-sm"
+              >
+                ✓ {dict.gallery.linkCopied}
+              </span>
+            )}
           </div>
         </section>
 
