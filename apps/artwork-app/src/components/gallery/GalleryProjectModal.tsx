@@ -131,24 +131,18 @@ export function GalleryProjectModal({ project: rawProject, onClose }: GalleryPro
               <button
                 type="button"
                 onClick={handleCopyProjectLink}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-black font-headline font-black text-xs uppercase transition-all cursor-pointer comic-shadow-sm ${
+                className={`w-9 h-9 rounded-full border-2 border-black flex items-center justify-center transition-all cursor-pointer comic-shadow-sm shrink-0 ${
                   isLinkCopied
                     ? "bg-emerald-400 text-black"
                     : "bg-white dark:bg-[#20202e] text-black dark:text-white hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-400 dark:hover:text-black"
                 }`}
-                aria-label={dict.gallery.copyLink}
-                title={dict.gallery.copyLink}
+                aria-label={isLinkCopied ? dict.gallery.linkCopied : dict.gallery.copyLink}
+                title={isLinkCopied ? dict.gallery.linkCopied : dict.gallery.copyLink}
               >
                 {isLinkCopied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                    <span>{dict.gallery.linkCopied}</span>
-                  </>
+                  <Check className="w-4 h-4 stroke-[2.5]" />
                 ) : (
-                  <>
-                    <Link2 className="w-3.5 h-3.5 stroke-[2.2]" />
-                    <span>{dict.gallery.copyLink}</span>
-                  </>
+                  <Link2 className="w-4 h-4 stroke-[2.2]" />
                 )}
               </button>
 
@@ -517,28 +511,7 @@ export function GalleryProjectModal({ project: rawProject, onClose }: GalleryPro
             );
           })()}
 
-          <div className="pt-4 border-t border-black/10 dark:border-zinc-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
-            <button
-              type="button"
-              onClick={handleCopyProjectLink}
-              className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded border-2 border-black font-headline font-bold text-xs uppercase transition-colors cursor-pointer comic-shadow-sm ${
-                isLinkCopied
-                  ? "bg-emerald-400 text-black"
-                  : "bg-white dark:bg-[#20202e] text-black dark:text-white hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-400 dark:hover:text-black"
-              }`}
-            >
-              {isLinkCopied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>{dict.gallery.linkCopied}</span>
-                </>
-              ) : (
-                <>
-                  <Link2 className="w-3.5 h-3.5 stroke-[2.2]" />
-                  <span>{dict.gallery.copyLink}</span>
-                </>
-              )}
-            </button>
+          <div className="pt-4 border-t border-black/10 dark:border-zinc-800 flex justify-end">
             <Link
               href="/#stage-04"
               className="w-full sm:w-auto px-6 py-2.5 bg-black dark:bg-yellow-400 text-white dark:text-black hover:bg-yellow-400 hover:text-black dark:hover:bg-yellow-300 font-headline font-bold text-xs uppercase rounded border-2 border-black comic-shadow-sm transition-colors text-center"

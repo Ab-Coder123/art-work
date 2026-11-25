@@ -158,14 +158,6 @@ export default function GalleryPage() {
     }
   }, [setActiveFilter]);
 
-  const [copiedFilterKey, setCopiedFilterKey] = useState<string | null>(null);
-  const filterCopyTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    return () => {
-      if (filterCopyTimerRef.current) clearTimeout(filterCopyTimerRef.current);
-    };
-  }, []);
-
   // Activate Lenis luxury virtual smooth scroll
   useSmoothScroll();
 
@@ -286,10 +278,6 @@ export default function GalleryPage() {
     } catch {
       // Clipboard write handled safely
     }
-
-    setCopiedFilterKey(cat);
-    if (filterCopyTimerRef.current) clearTimeout(filterCopyTimerRef.current);
-    filterCopyTimerRef.current = setTimeout(() => setCopiedFilterKey(null), 2200);
   };
 
   const handleInspectClick = (project: ProjectRecord) => {
@@ -438,15 +426,6 @@ export default function GalleryPage() {
                 {chip.label}
               </button>
             ))}
-
-            {copiedFilterKey && (
-              <span
-                role="status"
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-400 text-black border-2 border-black font-headline font-black text-[11px] uppercase comic-shadow-sm"
-              >
-                ✓ {dict.gallery.linkCopied}
-              </span>
-            )}
           </div>
         </section>
 
